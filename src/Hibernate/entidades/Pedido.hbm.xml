@@ -1,0 +1,124 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/08/2015 05:39:12 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.Pedido" table="pedido" >
+        <id name="idPedido" type="java.lang.Integer">
+            <column name="id_pedido" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="usuarioByBloqueado" class="Hibernate.entidades.Usuario" fetch="select">
+            <column name="bloqueado" length="10" />
+        </many-to-one>
+        <many-to-one name="empleado" class="Hibernate.entidades.Empleado" fetch="select">
+            <column name="comprador" />
+        </many-to-one>
+        <many-to-one name="partida" class="Hibernate.entidades.Partida" fetch="select">
+            <column name="partida_enlazada" />
+        </many-to-one>
+        <many-to-one name="proveedorByIdProveedor" class="Hibernate.entidades.Proveedor" fetch="select">
+            <column name="id_proveedor" not-null="true">
+                <comment>proveedor</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="usuarioByAutorizo2" class="Hibernate.entidades.Usuario" fetch="select">
+            <column name="autorizo2" length="10">
+                <comment>usuario que autorizo 2</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="usuarioByAutorizo" class="Hibernate.entidades.Usuario" fetch="select">
+            <column name="autorizo" length="10">
+                <comment>usuario que autorizo 1</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="proveedorByIdEmpresa" class="Hibernate.entidades.Proveedor" fetch="select">
+            <column name="id_empresa" not-null="true">
+                <comment>facturar a</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="ordenExterna" class="Hibernate.entidades.OrdenExterna" fetch="select">
+            <column name="id_orden_externa">
+                <comment>orden externa</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="orden" class="Hibernate.entidades.Orden" fetch="select">
+            <column name="id_orden">
+                <comment>orden interna</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="usuarioByIdUsuario" class="Hibernate.entidades.Usuario" fetch="select">
+            <column name="id_usuario" length="10" not-null="true">
+                <comment>usuario que genero el pedido</comment>
+            </column>
+        </many-to-one>
+        <property name="fechaPedido" type="timestamp">
+            <column name="fecha_pedido" length="19" not-null="true">
+                <comment>fecha del pedido</comment>
+            </column>
+        </property>
+        <property name="fechaAutorizo" type="timestamp">
+            <column name="fecha_autorizo" length="19">
+                <comment>fecha de autorizado 1</comment>
+            </column>
+        </property>
+        <property name="fechaAutorizo2" type="timestamp">
+            <column name="fecha_autorizo2" length="19">
+                <comment>fecha de autorizado 2</comment>
+            </column>
+        </property>
+        <property name="notas" type="string">
+            <column name="notas" length="200">
+                <comment>notas del pedido</comment>
+            </column>
+        </property>
+        <property name="idExterno" type="string">
+            <column name="id_externo" length="10">
+                <comment>id de otro taller</comment>
+            </column>
+        </property>
+        <property name="noFactura" type="java.lang.Integer">
+            <column name="no_factura">
+                <comment>factura con la que ingreso</comment>
+            </column>
+        </property>
+        <property name="formaPago" type="java.lang.Integer">
+            <column name="forma_pago">
+                <comment>forma de pago:</comment>
+            </column>
+        </property>
+        <property name="noRerefencia" type="string">
+            <column name="no_rerefencia" length="45">
+                <comment>numero de referencia de pago</comment>
+            </column>
+        </property>
+        <property name="tipoPedido" type="string">
+            <column name="tipo_pedido" length="10" not-null="true">
+                <comment>tipo de pedido:</comment>
+            </column>
+        </property>
+        <property name="ventana" type="string">
+            <column name="ventana" length="5" />
+        </property>
+        <set name="partidaExternas" table="partida_externa" inverse="true" lazy="true" fetch="select" cascade="all">
+            <key>
+                <column name="id_pedido" />
+            </key>
+            <one-to-many class="Hibernate.entidades.PartidaExterna" />
+        </set>
+        <set name="partidas" table="partida" inverse="true" lazy="true" fetch="select" cascade="save-update">
+            <key>
+                <column name="id_pedido">
+                    <comment>Numero de Pedido</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Partida" />
+        </set>
+        <set name="almacens" table="almacen" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_pedido" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Almacen" />
+        </set>
+    </class>
+</hibernate-mapping>

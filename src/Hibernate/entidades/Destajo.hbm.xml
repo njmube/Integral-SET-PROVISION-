@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 13/07/2016 09:31:28 AM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.Destajo" table="destajo">
+        <id name="idDestajo" type="int">
+            <column name="id_destajo" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="orden" class="Hibernate.entidades.Orden" fetch="select">
+            <column name="id_orden" not-null="true" />
+        </many-to-one>
+        <many-to-one name="usuario" class="Hibernate.entidades.Usuario" fetch="select">
+            <column name="id_usuario" length="10" />
+        </many-to-one>
+        <property name="fechaDestajo" type="date">
+            <column name="fecha_destajo" length="10" />
+        </property>
+        <property name="avance" type="java.lang.Double">
+            <column name="avance" precision="22" scale="0" />
+        </property>
+        <property name="horas" type="java.lang.Double">
+            <column name="horas" precision="22" scale="0" />
+        </property>
+        <property name="importe" type="java.lang.Double">
+            <column name="importe" precision="22" scale="0" />
+        </property>
+        <property name="notas" type="string">
+            <column name="notas" length="150" />
+        </property>
+        <property name="especialidad" type="string">
+            <column name="especialidad" length="1" not-null="true" />
+        </property>
+        <property name="fechaModifico" type="timestamp">
+            <column name="fecha_modifico" length="19" />
+        </property>
+    </class>
+</hibernate-mapping>

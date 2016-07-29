@@ -1,0 +1,116 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/08/2015 05:39:12 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.Compania" table="compania" >
+        <id name="idCompania" type="java.lang.Integer">
+            <column name="id_compania" />
+            <generator class="identity" />
+        </id>
+        <property name="nombre" type="string">
+            <column name="nombre" length="100" not-null="true" />
+        </property>
+        <property name="social" type="string">
+            <column name="social" length="200"/>
+        </property>
+        <property name="direccion" type="string">
+            <column name="direccion" length="200" />
+        </property>
+        <property name="colonia" type="string">
+            <column name="colonia" length="150" />
+        </property>
+        <property name="poblacion" type="string">
+            <column name="poblacion" length="150" />
+        </property>
+        <property name="estado" type="string">
+            <column name="estado" length="100" />
+        </property>
+        <property name="cp" type="string">
+            <column name="cp" length="5" />
+        </property>
+        <property name="telefono" type="string">
+            <column name="telefono" length="13" />
+        </property>
+        <property name="fax" type="string">
+            <column name="fax" length="13" />
+        </property>
+        <property name="email" type="string">
+            <column name="email" length="100" />
+        </property>
+        <property name="representante1" type="string">
+            <column name="representante1" length="200" />
+        </property>
+        <property name="r1Puesto" type="string">
+            <column name="r1_puesto" length="100" />
+        </property>
+        <property name="representante2" type="string">
+            <column name="representante2" length="200" />
+        </property>
+        <property name="r2Puesto" type="string">
+            <column name="r2_puesto" length="100" />
+        </property>
+        <property name="importeHora" type="java.lang.Float">
+            <column name="importe_hora" precision="12" scale="0" />
+        </property>
+        <property name="importeMax" type="java.lang.Float">
+            <column name="importe_max" precision="12" scale="0" />
+        </property>
+        <property name="tipoPago" type="string">
+            <column name="tipo_pago" length="10" />
+        </property>
+        <property name="plazo" type="java.lang.Integer">
+            <column name="plazo" />
+        </property>
+        <property name="programaReporte" type="string">
+            <column name="programa_reporte" length="10" />
+        </property>
+        <property name="comentarios" type="string">
+            <column name="comentarios" length="300" />
+        </property>
+        <property name="grupoEjecutivo" type="string">
+            <column name="grupo_ejecutivo" length="1" />
+        </property>
+        <property name="foto" type="string">
+            <column name="foto" length="100" />
+        </property>
+        <property name="rfc" type="string">
+            <column name="rfc" length="12" />
+        </property>
+        <property name="municipio" type="string">
+            <column name="municipio" length="100" />
+        </property>
+        <property name="pais" type="string">
+            <column name="pais" length="20" />
+        </property>
+        <property name="numeroExterior" type="string">
+            <column name="numero_exterior" length="10" />
+        </property>
+        <set name="ordenExternas" table="ordenExterna" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_compania" />
+            </key>
+            <one-to-many class="Hibernate.entidades.OrdenExterna" />
+        </set>
+        <set name="cuentas" table="cuenta" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_compania" not-null="true" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Cuenta" />
+        </set>
+        <set name="documentoses" table="documentos" inverse="true" lazy="true" fetch="select" cascade="all">
+            <key>
+                <column name="id_compania" not-null="true" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Documentos" />
+        </set>
+        <set name="ordens" table="orden" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_compania">
+                    <comment>Id de compania de seguros</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Orden" />
+        </set>
+    </class>
+</hibernate-mapping>

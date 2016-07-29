@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/08/2015 05:39:12 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.Perdidas" table="perdidas" >
+        <id name="idPerdida" type="java.lang.Integer">
+            <column name="id_perdida" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="partida" class="Hibernate.entidades.Partida" fetch="select">
+            <column name="id_partida">
+                <comment>numero de partida</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="usuario" class="Hibernate.entidades.Usuario" fetch="select">
+            <column name="id_usuario" length="10">
+                <comment>usuario que la ingreso</comment>
+            </column>
+        </many-to-one>
+        <property name="fechaEntrada" type="date">
+            <column name="fecha_entrada" length="10">
+                <comment>fecha que ingreso la pieza</comment>
+            </column>
+        </property>
+        <property name="pasillo" type="int">
+            <column name="pasillo" not-null="true">
+                <comment>ubicacion de la pieza</comment>
+            </column>
+        </property>
+        <property name="rack" type="int">
+            <column name="rack" not-null="true">
+                <comment>ubicacion de la pieza</comment>
+            </column>
+        </property>
+        <property name="nivel" type="int">
+            <column name="nivel" not-null="true">
+                <comment>ubicacion de la pieza</comment>
+            </column>
+        </property>
+        <property name="estado" type="string">
+            <column name="estado" length="15">
+                <comment>estado de la pieza</comment>
+            </column>
+        </property>
+        <property name="recibio" type="string">
+            <column name="recibio" length="100">
+                <comment>nombre de la persona que le entrega el material de salida</comment>
+            </column>
+        </property>
+        <property name="descripcion" type="string">
+            <column name="descripcion" length="100" />
+        </property>
+        <property name="notas" type="string">
+            <column name="notas" length="150" />
+        </property>
+    </class>
+</hibernate-mapping>

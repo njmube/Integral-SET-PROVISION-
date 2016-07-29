@@ -1,0 +1,98 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/08/2015 05:39:12 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.OrdenExterna" table="orden_externa" >
+        <id name="idOrden" type="java.lang.Integer">
+            <column name="id_orden" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="marca" class="Hibernate.entidades.Marca" fetch="select">
+            <column name="marca" length="4" />
+        </many-to-one>
+        <many-to-one name="tipo" class="Hibernate.entidades.Tipo" fetch="select">
+            <column name="id_tipo" length="20" />
+        </many-to-one>
+        <many-to-one name="compania" class="Hibernate.entidades.Compania" fetch="select">
+            <column name="id_compania" />
+        </many-to-one>
+        <property name="noSerie" type="string">
+            <column name="no_serie" length="20" />
+        </property>
+        <property name="modelo" type="java.lang.Integer">
+            <column name="modelo" />
+        </property>
+        <property name="siniestro" type="string">
+            <column name="siniestro" length="20" />
+        </property>
+        <property name="asegurado" type="string">
+            <column name="asegurado" length="150" />
+        </property>
+        <property name="poliza" type="string">
+            <column name="poliza" length="20" />
+        </property>
+        <property name="noReporte" type="string">
+            <column name="no_reporte" length="11" />
+        </property>
+        <property name="inciso" type="string">
+            <column name="inciso" length="10" />
+        </property>
+        <property name="noMotor" type="string">
+            <column name="no_motor" length="15" />
+        </property>
+        <property name="noPlacas" type="string">
+            <column name="no_placas" length="8" />
+        </property>
+        <property name="noEconomico" type="string">
+            <column name="no_economico" length="5" />
+        </property>
+        <property name="deducible" type="java.lang.Double">
+            <column name="deducible" precision="22" scale="0" />
+        </property>
+        <property name="tipoCliente" type="string">
+            <column name="tipo_cliente" length="1" />
+        </property>
+        <property name="moDirecta" type="java.lang.Double">
+            <column name="mo_directa" precision="22" scale="0" />
+        </property>
+        <property name="color" type="string">
+            <column name="color" length="20" />
+        </property>
+        <property name="propietario" type="string">
+            <column name="propietario" length="30" />
+        </property>
+        <property name="codigoAsegurado" type="string">
+            <column name="codigo_asegurado" length="30" />
+        </property>
+        <property name="contratante" type="string">
+            <column name="contratante" length="150" />
+        </property>
+        <property name="tipoVehiculo" type="string">
+            <column name="tipo_vehiculo" length="20" />
+        </property>
+        <property name="km" type="string">
+            <column name="km" length="10" />
+        </property>
+        <set name="facturas" table="factura" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_orden_factura" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Factura" />
+        </set>
+        <set name="pedidos" table="pedido" inverse="true" lazy="true" fetch="select" cascade="save-update">
+            <key>
+                <column name="id_orden_externa">
+                    <comment>orden externa</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Pedido" />
+        </set>
+        <set name="notas" table="nota" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_orden_factura" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Nota" />
+        </set>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,623 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/08/2015 05:39:12 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.Usuario" table="usuario">
+        <id name="idUsuario" type="string">
+            <column name="id_usuario" length="10" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="empleado" class="Hibernate.entidades.Empleado" fetch="select">
+            <column name="id_empleado" />
+        </many-to-one>
+        <property name="clave" type="string">
+            <column name="clave" length="10" />
+        </property>
+        <property name="session" type="string">
+            <column name="session" length="10" />
+        </property>
+        <property name="aperturaOrden" type="java.lang.Boolean">
+            <column name="apertura_orden" />
+        </property>
+        <property name="editarAperturaOrden" type="java.lang.Boolean">
+            <column name="editar_apertura_orden" />
+        </property>
+        <property name="crearClientes" type="java.lang.Boolean">
+            <column name="crear_clientes" />
+        </property>
+        <property name="modificarClientes" type="java.lang.Boolean">
+            <column name="modificar_clientes" />
+        </property>
+        <property name="consultarSeguimiento" type="java.lang.Boolean">
+            <column name="consultar_seguimiento" />
+        </property>
+        <property name="altaSeguimiento" type="java.lang.Boolean">
+            <column name="alta_seguimiento" />
+        </property>
+        <property name="verFechaCliente" type="java.lang.Boolean">
+            <column name="ver_fecha_cliente">
+                <comment>permite ver la fecha promesa del cliente</comment>
+            </column>
+        </property>
+        <property name="altaMetas" type="java.lang.Boolean">
+            <column name="alta_metas" />
+        </property>
+        <property name="consultaGaleria" type="java.lang.Boolean">
+            <column name="consulta_galeria" />
+        </property>
+        <property name="editaGaleria" type="java.lang.Boolean">
+            <column name="edita_galeria" />
+        </property>
+        <property name="consultaDocumentos" type="java.lang.Boolean">
+            <column name="consulta_documentos" />
+        </property>
+        <property name="editaDocumentos" type="java.lang.Boolean">
+            <column name="edita_documentos" />
+        </property>
+        <property name="consultaFormatos" type="java.lang.Boolean">
+            <column name="consulta_formatos" />
+        </property>
+        <property name="consultaObservaciones" type="java.lang.Boolean">
+            <column name="consulta_observaciones" />
+        </property>
+        <property name="editaObservaciones" type="java.lang.Boolean">
+            <column name="edita_observaciones" />
+        </property>
+        <property name="consultaAgenda" type="java.lang.Boolean">
+            <column name="consulta_agenda" />
+        </property>
+        <property name="editaAgenda" type="java.lang.Boolean">
+            <column name="edita_agenda" />
+        </property>
+        <property name="consultaLevantamiento" type="java.lang.Boolean">
+            <column name="consulta_levantamiento" />
+        </property>
+        <property name="ordinariaLevantamiento" type="java.lang.Boolean">
+            <column name="ordinaria_levantamiento" />
+        </property>
+        <property name="enlazadaLevantamiento" type="java.lang.Boolean">
+            <column name="enlazada_levantamiento" />
+        </property>
+        <property name="carrarLevantamiento" type="java.lang.Boolean">
+            <column name="carrar_levantamiento" />
+        </property>
+        <property name="abrirLevantamiento" type="java.lang.Boolean">
+            <column name="abrir_levantamiento" />
+        </property>
+        <property name="editarLevantamiento" type="java.lang.Boolean">
+            <column name="editar_levantamiento" />
+        </property>
+        <property name="complementariaLevantamiento" type="java.lang.Boolean">
+            <column name="complementaria_levantamiento" />
+        </property>
+        <property name="adicionalLevantamiento" type="java.lang.Boolean">
+            <column name="adicional_levantamiento" />
+        </property>
+        <property name="AValuacionLevantamiento" type="java.lang.Boolean">
+            <column name="a_valuacion_levantamiento" />
+        </property>
+        <property name="consultaEmpleados" type="java.lang.Boolean">
+            <column name="consulta_empleados" />
+        </property>
+        <property name="editaEmpleados" type="java.lang.Boolean">
+            <column name="edita_empleados" />
+        </property>
+        <property name="consultaCompania" type="java.lang.Boolean">
+            <column name="consulta_compania" />
+        </property>
+        <property name="editaCompania" type="java.lang.Boolean">
+            <column name="edita_compania" />
+        </property>
+        <property name="consultaCatalogo" type="java.lang.Boolean">
+            <column name="consulta_catalogo" />
+        </property>
+        <property name="editaCatalogo" type="java.lang.Boolean">
+            <column name="edita_catalogo" />
+        </property>
+        <property name="consultaMecanico" type="java.lang.Boolean">
+            <column name="consulta_mecanico" />
+        </property>
+        <property name="editaMecanico" type="java.lang.Boolean">
+            <column name="edita_mecanico" />
+        </property>
+        <property name="consultaEstatus" type="java.lang.Boolean">
+            <column name="consulta_estatus" />
+        </property>
+        <property name="editaEstatus" type="java.lang.Boolean">
+            <column name="edita_estatus" />
+        </property>
+        <property name="consultaMarca" type="java.lang.Boolean">
+            <column name="consulta_marca" />
+        </property>
+        <property name="editaMarca" type="java.lang.Boolean">
+            <column name="edita_marca" />
+        </property>
+        <property name="consultaPuestos" type="java.lang.Boolean">
+            <column name="consulta_puestos" />
+        </property>
+        <property name="editaPuestos" type="java.lang.Boolean">
+            <column name="edita_puestos" />
+        </property>
+        <property name="consultaReparacion" type="java.lang.Boolean">
+            <column name="consulta_reparacion" />
+        </property>
+        <property name="editaReparacion" type="java.lang.Boolean">
+            <column name="edita_reparacion" />
+        </property>
+        <property name="consultaTipo" type="java.lang.Boolean">
+            <column name="consulta_tipo" />
+        </property>
+        <property name="editaTipo" type="java.lang.Boolean">
+            <column name="edita_tipo" />
+        </property>
+        <property name="consultaInventario" type="java.lang.Boolean">
+            <column name="consulta_inventario" />
+        </property>
+        <property name="editaInventario" type="java.lang.Boolean">
+            <column name="edita_inventario" />
+        </property>
+        <property name="editaPeriodo" type="java.lang.Boolean">
+            <column name="edita_periodo" />
+        </property>
+        <property name="editaUsuario" type="java.lang.Boolean">
+            <column name="edita_usuario" />
+        </property>
+        <property name="editaCierre" type="java.lang.Boolean">
+            <column name="edita_cierre" />
+        </property>
+        <property name="respaldar" type="java.lang.Boolean">
+            <column name="respaldar" />
+        </property>
+        <property name="restaurar" type="java.lang.Boolean">
+            <column name="restaurar" />
+        </property>
+        <property name="editaHoras" type="java.lang.Boolean">
+            <column name="edita_horas">
+                <comment>permiso para editar las horas en valuacion</comment>
+            </column>
+        </property>
+        <property name="editaCodigo" type="java.lang.Boolean">
+            <column name="edita_codigo">
+                <comment>permiso para cambiar el codigo de la partida</comment>
+            </column>
+        </property>
+        <property name="editaPrecioCu" type="java.lang.Boolean">
+            <column name="edita_precio_cu">
+                <comment>permiso para editar el precio unitario de la partida</comment>
+            </column>
+        </property>
+        <property name="editaPorcentaje" type="java.lang.Boolean">
+            <column name="edita_porcentaje">
+                <comment>permiso para fijar el porcentaje de incremento para el precio de cia seguros</comment>
+            </column>
+        </property>
+        <property name="editaCantAut" type="java.lang.Boolean">
+            <column name="edita_cant_aut">
+                <comment>permiso para editar la cantidad autorizada</comment>
+            </column>
+        </property>
+        <property name="editaCostoAut" type="java.lang.Boolean">
+            <column name="edita_costo_aut">
+                <comment>permiso para editar el precio autorizado</comment>
+            </column>
+        </property>
+        <property name="editaAutorizaPartida" type="java.lang.Boolean">
+            <column name="edita_autoriza_partida">
+                <comment>permiso para autorizar la partida</comment>
+            </column>
+        </property>
+        <property name="editaAutorizaCompra" type="java.lang.Boolean">
+            <column name="edita_autoriza_compra">
+                <comment>permiso para autorizar la compra de la parte</comment>
+            </column>
+        </property>
+        <property name="editaTipoSustido" type="java.lang.Boolean">
+            <column name="edita_tipo_sustido">
+                <comment>permiso para autorizar editar el tipo de surtido(IP SO PD)</comment>
+            </column>
+        </property>
+        <property name="editaRefPresupuesto" type="java.lang.Boolean">
+            <column name="edita_ref_presupuesto">
+                <comment>permiso para editar ref presupustadas</comment>
+            </column>
+        </property>
+        <property name="editaRefAutorizadoDirecto" type="java.lang.Boolean">
+            <column name="edita_ref_autorizado_directo">
+                <comment>permiso para editar ref Autorizadas</comment>
+            </column>
+        </property>
+        <property name="editaMoPresupuestada" type="java.lang.Boolean">
+            <column name="edita_mo_presupuestada">
+                <comment>permiso para editar mo presupuestada</comment>
+            </column>
+        </property>
+        <property name="editaMoDirecta" type="java.lang.Boolean">
+            <column name="edita_mo_directa">
+                <comment>permiso para editar mo Directa</comment>
+            </column>
+        </property>
+        <property name="cerrarValuacion" type="java.lang.Boolean">
+            <column name="cerrar_valuacion">
+                <comment>permiso para cerrar valuacion</comment>
+            </column>
+        </property>
+        <property name="abrirValuacion" type="java.lang.Boolean">
+            <column name="abrir_valuacion">
+                <comment>permiso para abrir valuacion</comment>
+            </column>
+        </property>
+        <property name="editarCotizaciones" type="java.lang.Boolean">
+            <column name="`editar cotizaciones`" />
+        </property>
+        <property name="cerrarCotizaciones" type="java.lang.Boolean">
+            <column name="cerrar_cotizaciones" />
+        </property>
+        <property name="abrirCotizaciones" type="java.lang.Boolean">
+            <column name="abrir_cotizaciones" />
+        </property>
+        <property name="reportes" type="java.lang.Boolean">
+            <column name="reportes" />
+        </property>
+        <property name="generaPedidos" type="java.lang.Boolean">
+            <column name="generaPedidos" />
+        </property>
+        <property name="editaPedidos" type="java.lang.Boolean">
+            <column name="editaPedidos" />
+        </property>
+        <property name="reportesPedidos" type="java.lang.Boolean">
+            <column name="reportes_pedidos" />
+        </property>
+        <property name="consultaPedidos" type="java.lang.Boolean">
+            <column name="consulta_pedidos" />
+        </property>
+        <property name="eliminaPedidos" type="java.lang.Boolean">
+            <column name="elimina_pedidos" />
+        </property>
+        <property name="autorizarPedidos" type="java.lang.Boolean">
+            <column name="autorizar_pedidos" />
+        </property>
+        <property name="cerrarCompras" type="java.lang.Boolean">
+            <column name="cerrar_compras" />
+        </property>
+        <property name="autorizarSobrecosto" type="java.lang.Boolean">
+            <column name="autorizar_sobrecosto" />
+        </property>
+        <property name="consultaValuacion" type="java.lang.Boolean">
+            <column name="consulta_valuacion" />
+        </property>
+        <property name="editaDd" type="java.lang.Boolean">
+            <column name="edita_dd" />
+        </property>
+        <property name="consultarEjemplar" type="java.lang.Boolean">
+            <column name="consultar_ejemplar" />
+        </property>
+        <property name="editarEjemplar" type="java.lang.Boolean">
+            <column name="editar_ejemplar" />
+        </property>
+        <property name="consultarProveedores" type="java.lang.Boolean">
+            <column name="consultar_proveedores" />
+        </property>
+        <property name="editarProveedores" type="java.lang.Boolean">
+            <column name="editar_proveedores" />
+        </property>
+        <property name="configuracion" type="java.lang.Boolean">
+            <column name="configuracion" />
+        </property>
+        <property name="enviarConta" type="java.lang.Boolean">
+            <column name="enviar_conta" />
+        </property>
+        <property name="cancelarEnvio" type="java.lang.Boolean">
+            <column name="cancelar_envio" />
+        </property>
+        <property name="generarFactura" type="java.lang.Boolean">
+            <column name="generar_factura" />
+        </property>
+        <property name="autorizarFactura" type="java.lang.Boolean">
+            <column name="autorizar_factura" />
+        </property>
+        <property name="cancelarFactura" type="java.lang.Boolean">
+            <column name="cancelar_factura" />
+        </property>
+        <property name="autorizaEntregas" type="java.lang.Boolean">
+            <column name="autoriza_entregas">
+                <comment>autoriza entrega de material sin muestras</comment>
+            </column>
+        </property>
+        <property name="movimientoAlmacen" type="java.lang.Boolean">
+            <column name="movimiento_almacen" />
+        </property>
+        <property name="consultaMovimientoAlmacen" type="java.lang.Boolean">
+            <column name="consulta_movimiento_almacen" />
+        </property>
+        <property name="cancelaMovimientoAlmacen" type="java.lang.Boolean">
+            <column name="cancela_movimiento_almacen" />
+        </property>
+        <property name="mivimientoMuestra" type="java.lang.Boolean">
+            <column name="mivimiento_muestra" />
+        </property>
+        <property name="consultaMuestra" type="java.lang.Boolean">
+            <column name="consulta_muestra" />
+        </property>
+        <property name="cancelaMuestra" type="java.lang.Boolean">
+            <column name="cancela_muestra" />
+        </property>
+        <property name="generarCiclo" type="java.lang.Boolean">
+            <column name="generar_ciclo" />
+        </property>
+        <property name="editarCiclo" type="java.lang.Boolean">
+            <column name="editar_ciclo" />
+        </property>
+        <property name="editaPrecioAutorizado" type="java.lang.Boolean">
+            <column name="edita_precio_autorizado" />
+        </property>
+        <property name="consultaTaller" type="java.lang.Boolean">
+            <column name="consulta_taller" />
+        </property>
+        <property name="editaTaller" type="java.lang.Boolean">
+            <column name="edita_taller" />
+        </property>
+        <property name="herramienta" type="java.lang.Boolean">
+            <column name="herramienta" />
+        </property>
+        <property name="responsiva" type="java.lang.Boolean">
+            <column name="responsiva" />
+        </property>
+        <set name="pedidosForAutorizo" table="pedido" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="autorizo" length="10">
+                    <comment>usuario que autorizo 1</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Pedido" />
+        </set>
+        <set name="ordensForREntregarAsigno" table="orden" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="r_entregar_asigno" length="10">
+                    <comment>Usuario que entrego la unidad</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Orden" />
+        </set>
+        <set name="ordensForRLevantamientoAsigno" table="orden" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="r_levantamiento_asigno" length="10">
+                    <comment>Usuario que asigno responsable de levantamiento</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Orden" />
+        </set>
+        <set name="ordensForAutorizaClienteAsigno" table="orden" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="autoriza_cliente_asigno" length="10">
+                    <comment>Usuario que obtuvo la autorizaci&#195;&#179;n</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Orden" />
+        </set>
+        <set name="cotizacionsForIdUsuario" table="cotizacion" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_usuario" length="10" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Cotizacion" />
+        </set>
+        <set name="ordensForRValuacionCierreAsigno" table="orden" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="r_valuacion_cierre_asigno" length="10" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Orden" />
+        </set>
+        <set name="mensajes" table="mensaje" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_usuario" length="10" not-null="true" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Mensaje" />
+        </set>
+        <set name="cotizacionsForAutorizo" table="cotizacion" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="autorizo" length="10" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Cotizacion" />
+        </set>
+        <set name="destajos" table="destajo" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_usuario" length="10" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Destajo" />
+        </set>
+        <set name="pedidosForIdUsuario" table="pedido" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_usuario" length="10" not-null="true">
+                    <comment>usuario que genero el pedido</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Pedido" />
+        </set>
+        <set name="almacens" table="almacen" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="usuario" length="10" not-null="true" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Almacen" />
+        </set>
+        <set name="notasForGenero" table="nota" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="genero" length="10" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Nota" />
+        </set>
+        <set name="ordensForRCotizaAsigno" table="orden" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="r_cotiza_asigno" length="10">
+                    <comment>Usuario que asigno responsable de cotizar</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Orden" />
+        </set>
+        <set name="pedidosForAutorizo2" table="pedido" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="autorizo2" length="10">
+                    <comment>usuario que autorizo 2</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Pedido" />
+        </set>
+        <set name="ordensForRExpedienteAsigno" table="orden" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="r_expediente_asigno" length="10">
+                    <comment>Usuario que asigno responsable de expediente</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Orden" />
+        </set>
+        <set name="ordensForBloqueada" table="orden" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="bloqueada" length="10">
+                    <comment>Usuario que tiene bloqueada una orden</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Orden" />
+        </set>
+        <set name="ordensForAutorizaCompaniaAsigno" table="orden" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="autoriza_compania_asigno" length="10">
+                    <comment>Usuario que recibi&#195;&#179; la autorizaci&#195;&#179;n de la compania de seguros</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Orden" />
+        </set>
+        <set name="partidas" table="partida" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="autorizo_costo" length="10" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Partida" />
+        </set>
+        <set name="ordensForIdModificado" table="orden" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_modificado" length="10">
+                    <comment>Usuario que realizo la ultima modificaci&#195;&#179;n</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Orden" />
+        </set>
+        <set name="ordensForRRefaccionesAsigno" table="orden" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="r_refacciones_asigno" length="10">
+                    <comment>Usuario que Asigno responsable de refacciones</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Orden" />
+        </set>
+        <set name="pedidosForBloqueado" table="pedido" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="bloqueado" length="10" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Pedido" />
+        </set>
+        <set name="correos" table="correo" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_usuario" length="10" not-null="true" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Correo" />
+        </set>
+        <set name="ordensForRFactura" table="orden" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="r_factura" length="10">
+                    <comment>14.- Usuario que factur&#195;&#179;</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Orden" />
+        </set>
+        <set name="facturasForAutorizo" table="factura" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="autorizo" length="10" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Factura" />
+        </set>
+        <set name="perdidases" table="perdidas" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_usuario" length="10">
+                    <comment>usuario que la ingreso</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Perdidas" />
+        </set>
+        <set name="ordensForIdUserApertura" table="orden" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_user_apertura" length="10">
+                    <comment>1.- Usuario que realiza apertura</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Orden" />
+        </set>
+        <set name="facturasForGenero" table="factura" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="genero" length="10" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Factura" />
+        </set>
+        <set name="ordensForEnvioCompaniaAsigno" table="orden" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="envio_compania_asigno" length="10">
+                    <comment>Usuario que envio valuaci&#195;&#179;n a la compania</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Orden" />
+        </set>
+        <set name="configuracions" table="configuracion" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="modifico" length="10" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Configuracion" />
+        </set>
+        <set name="ordensForRCierre" table="orden" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="r_cierre" length="10">
+                    <comment>15.- Usuario que cerro la orden</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Orden" />
+        </set>
+        <set name="notasForAutorizo" table="nota" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="autorizo" length="10" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Nota" />
+        </set>
+        <set name="ordensForRAutorizacionInternaAsigno" table="orden" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="r_autorizacion_interna_asigno" length="10">
+                    <comment>Usuario que dio la autorizaci&#195;&#179;n</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Orden" />
+        </set>
+        <set name="ordensForRValuacionAsigno" table="orden" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="r_valuacion_asigno" length="10">
+                    <comment>Usuario que asigno valuador</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Orden" />
+        </set>
+        <set name="ordensForRReparacionInicioAsigno" table="orden" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="r_reparacion_inicio_asigno" length="10">
+                    <comment>Usuario que autorizo la reparaci&#195;&#179;n</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Orden" />
+        </set>
+        <set name="partidasForMecanico" table="partida" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="mecanico" length="10" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Partida" />
+        </set>
+        <set name="partidaExternasForMecanico" table="partida_externa" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="mecanico" length="10" />
+            </key>
+            <one-to-many class="Hibernate.entidades.PartidaExterna" />
+        </set>
+    </class>
+</hibernate-mapping>

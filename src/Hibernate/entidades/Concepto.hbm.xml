@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/08/2015 05:39:12 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.Concepto" table="concepto" >
+        <id name="idConcepto" type="java.lang.Integer">
+            <column name="id_concepto" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="nota" class="Hibernate.entidades.Nota" fetch="select">
+            <column name="id_nota" />
+        </many-to-one>
+        <many-to-one name="factura" class="Hibernate.entidades.Factura" fetch="select">
+            <column name="id_factura" />
+        </many-to-one>
+        <property name="cantidad" type="double">
+            <column name="cantidad" precision="22" scale="0" not-null="true" />
+        </property>
+        <property name="medida" type="string">
+            <column name="medida" length="5" not-null="true" />
+        </property>
+        <property name="descripcion" type="string">
+            <column name="descripcion" length="250" not-null="true" />
+        </property>
+        <property name="precio" type="double">
+            <column name="precio" precision="22" scale="0" not-null="true" />
+        </property>
+        <property name="descuento" type="java.lang.Double">
+            <column name="descuento" precision="22" scale="0" />
+        </property>
+        <property name="recargo" type="java.lang.Double">
+            <column name="recargo" precision="22" scale="0" />
+        </property>
+    </class>
+</hibernate-mapping>

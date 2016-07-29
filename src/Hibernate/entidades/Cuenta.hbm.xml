@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/08/2015 05:39:12 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.Cuenta" table="cuenta" >
+        <id name="idCuenta" type="java.lang.Integer">
+            <column name="id_cuenta" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="compania" class="Hibernate.entidades.Compania" fetch="select">
+            <column name="id_compania" not-null="true" />
+        </many-to-one>
+        <property name="banco" type="string">
+            <column name="banco" length="45" />
+        </property>
+        <property name="convenio" type="java.lang.Integer">
+            <column name="convenio" />
+        </property>
+        <property name="transferencia" type="string">
+            <column name="transferencia" length="20" />
+        </property>
+        <property name="nombre" type="string">
+            <column name="nombre" length="100" />
+        </property>
+    </class>
+</hibernate-mapping>

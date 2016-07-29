@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/08/2015 05:39:12 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.Almacen" table="almacen">
+        <id name="idAlmacen" type="java.lang.Integer">
+            <column name="id_almacen" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="usuario" class="Hibernate.entidades.Usuario" fetch="select">
+            <column name="usuario" length="10" not-null="true" />
+        </many-to-one>
+        <many-to-one name="pedido" class="Hibernate.entidades.Pedido" fetch="select">
+            <column name="id_pedido" />
+        </many-to-one>
+        <many-to-one name="orden" class="Hibernate.entidades.Orden" fetch="select">
+            <column name="id_orden" >
+                <comment>numero de orden para consumibles</comment>
+            </column>
+        </many-to-one>
+        <property name="entrego" type="string">
+            <column name="entrego" not-null="true" />
+        </property>
+        <property name="fecha" type="timestamp">
+            <column name="fecha" length="19" not-null="true" />
+        </property>
+        <property name="tipoMovimiento" type="int">
+            <column name="tipo_movimiento" not-null="true" />
+        </property>
+        <property name="operacion" type="int">
+            <column name="operacion" not-null="true" />
+        </property>
+        <property name="documento" type="string">
+            <column name="documento" length="15" />
+        </property>
+        <property name="notas" type="string">
+            <column name="notas" />
+        </property>
+        <property name="autorizo" type="string">
+            <column name="autorizo" length="10" />
+        </property>
+        <property name="tipoDocumento" type="string">
+            <column name="tipo_documento" length="1" />
+        </property>
+        <set name="movimientos" table="movimiento" inverse="true" lazy="true" fetch="select" cascade="all">
+            <key>
+                <column name="id_almacen" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Movimiento" />
+        </set>
+    </class>
+</hibernate-mapping>

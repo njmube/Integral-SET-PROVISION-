@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/08/2015 05:39:12 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.Correo" table="correo" >
+        <id name="idCorreo" type="java.lang.Integer">
+            <column name="id_correo" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="usuario" class="Hibernate.entidades.Usuario" fetch="select">
+            <column name="id_usuario" length="10" not-null="true" />
+        </many-to-one>
+        <property name="destinatario" type="string">
+            <column name="destinatario" length="600" not-null="true" />
+        </property>
+        <property name="cc" type="string">
+            <column name="cc" length="600" />
+        </property>
+        <property name="asunto" type="string">
+            <column name="asunto" length="300" />
+        </property>
+        <property name="mensaje" type="string">
+            <column name="mensaje" length="1500" />
+        </property>
+        <property name="archivo" type="string">
+            <column name="archivo" length="200" />
+        </property>
+        <property name="fecha" type="timestamp">
+            <column name="fecha" length="19" />
+        </property>
+    </class>
+</hibernate-mapping>

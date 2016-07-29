@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/08/2015 05:39:12 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.Archivo" table="archivo">
+        <id name="idArchivo" type="java.lang.Integer">
+            <column name="id_archivo" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="orden" class="Hibernate.entidades.Orden" fetch="select">
+            <column name="id_orden" not-null="true" />
+        </many-to-one>
+        <property name="nombreDocumento" type="string">
+            <column name="nombre_documento" length="80" />
+        </property>
+        <property name="fechaDocumento" type="timestamp">
+            <column name="fecha_documento" length="19" />
+        </property>
+    </class>
+</hibernate-mapping>

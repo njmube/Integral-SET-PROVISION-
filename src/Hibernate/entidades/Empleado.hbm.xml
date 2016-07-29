@@ -1,0 +1,140 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/08/2015 05:39:12 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.Empleado" table="empleado" >
+        <id name="idEmpleado" type="java.lang.Integer">
+            <column name="id_empleado" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="puestos" class="Hibernate.entidades.Puestos" fetch="select">
+            <column name="id_puesto" not-null="true" />
+        </many-to-one>
+        <property name="nombre" type="string">
+            <column name="nombre" length="250" not-null="true" />
+        </property>
+        <property name="direccion" type="string">
+            <column name="direccion" length="300" not-null="true" />
+        </property>
+        <property name="telefono" type="string">
+            <column name="telefono" length="13" />
+        </property>
+        <property name="email" type="string">
+            <column name="email" length="100" />
+        </property>
+        <property name="fomaPago" type="int">
+            <column name="foma_pago" not-null="true" />
+        </property>
+        <property name="importe" type="java.lang.Double">
+            <column name="importe" precision="22" scale="0" not-null="true" />
+        </property>
+        <property name="password" type="string">
+            <column name="password" length="45" />
+        </property>
+        <property name="smtp" type="string">
+            <column name="smtp" length="100" />
+        </property>
+        <property name="tls" type="boolean">
+            <column name="TLS" not-null="true" />
+        </property>
+        <property name="puerto" type="java.lang.Integer">
+            <column name="puerto" />
+        </property>
+        <property name="autentificacion" type="java.lang.Boolean">
+            <column name="autentificacion" />
+        </property>
+        <set name="ordensForRSuspension" table="orden" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="r_suspension">
+                    <comment>12.1.- Responsable de reparaci&#195;&#179;n de suspension</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Orden" />
+        </set>
+        <set name="ordensForRElectrico" table="orden" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="r_electrico">
+                    <comment>12.1.- Responsable de reparaci&#195;&#179;n de el&#195;&#169;ctrico</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Orden" />
+        </set>
+        <set name="ordensForRRefacciones" table="orden" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="r_refacciones">
+                    <comment>11.- Responsable de las refacciones</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Orden" />
+        </set>
+        <set name="ordensForRExpediente" table="orden" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="r_expediente">
+                    <comment>2.- Responsable de expediente</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Orden" />
+        </set>
+        <set name="ordensForRLevantamiento" table="orden" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="r_levantamiento">
+                    <comment>3.- Responsable del levantamiento</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Orden" />
+        </set>
+        <set name="ordensForRMecanica" table="orden" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="r_mecanica">
+                    <comment>12.1.- Responsable de reparaci&#195;&#179;n de mec&#195;&#161;nica</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Orden" />
+        </set>
+        <set name="ordensForRHojalateria" table="orden" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="r_hojalateria">
+                    <comment>12.1.- Responsable de reparaci&#195;&#179;n de hojalateria</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Orden" />
+        </set>
+        <set name="ordensForRPintura" table="orden" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="r_pintura">
+                    <comment>12.1.- Responsable de reparacion de pintura</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Orden" />
+        </set>
+        <set name="ordensForRValuacion" table="orden" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="r_valuacion">
+                    <comment>7.- Responsable de valuaci&#195;&#179;n</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Orden" />
+        </set>
+        <set name="pedidos" table="pedido" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="comprador" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Pedido" />
+        </set>
+        <set name="ordensForRCotiza" table="orden" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="r_cotiza">
+                    <comment>4.- Responsable de levantamiento</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Orden" />
+        </set>
+        <set name="usuarios" table="usuario" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_empleado" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Usuario" />
+        </set>
+    </class>
+</hibernate-mapping>

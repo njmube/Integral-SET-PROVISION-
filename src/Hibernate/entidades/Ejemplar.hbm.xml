@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/08/2015 05:39:12 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.Ejemplar" table="ejemplar">
+        <id name="idParte" type="string">
+            <column name="id_Parte" length="35" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="marca" class="Hibernate.entidades.Marca" fetch="select">
+            <column name="id_marca" length="4" />
+        </many-to-one>
+        <many-to-one name="tipo" class="Hibernate.entidades.Tipo" fetch="select">
+            <column name="tipo_nombre" length="20" />
+        </many-to-one>
+        <property name="catalogo" type="string">
+            <column name="id_catalogo" length="150" />
+        </property>
+        <property name="medida" type="string">
+            <column name="medida" length="10" />
+        </property>
+        <property name="modelo" type="java.lang.Integer">
+            <column name="modelo" />
+        </property>
+        <property name="inventario" type="java.lang.Integer">
+            <column name="inventario" />
+        </property>
+        <property name="existencias" type="java.lang.Double">
+            <column name="existencias" />
+        </property>
+        <property name="precio" type="java.lang.Double">
+            <column name="precio" />
+        </property>
+        <property name="maximo" type="java.lang.Double">
+            <column name="maximo" />
+        </property>
+        <property name="minimo" type="java.lang.Double">
+            <column name="minimo" />
+        </property>
+        <property name="comentario" type="string">
+            <column name="comentario" length="100" />
+        </property>
+        <property name="imagen" type="string">
+            <column name="imagen" length="30" />
+        </property>
+        <set name="partidas" table="partida" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_parte" length="35">
+                    <comment>numero de serie del articulo de dicha partida</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Partida" />
+        </set>
+        <set name="partidasExternas" table="partida_externa" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_parte" length="35">
+                    <comment>numero de serie del articulo de dicha partida</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Partida" />
+        </set>
+        <set name="movimientos" table="movimiento" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_Parte" length="35" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Movimiento" />
+        </set>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,583 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 9/09/2015 03:17:33 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.Orden" table="orden">
+        <id name="idOrden" type="int">
+            <column name="id_orden" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="usuarioByREntregarAsigno" class="Hibernate.entidades.Usuario" fetch="select">
+            <column name="r_entregar_asigno" length="10">
+                <comment>Usuario que entrego la unidad</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="reparacion" class="Hibernate.entidades.Reparacion" fetch="select">
+            <column name="id_reparacion">
+                <comment>Tipo de reparacion(chico mediano grande pago de da&#241;os etc)</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="usuarioByIdModificado" class="Hibernate.entidades.Usuario" fetch="select">
+            <column name="id_modificado" length="10">
+                <comment>Usuario que realizo la ultima modificaci&#243;n</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="marca" class="Hibernate.entidades.Marca" fetch="select">
+            <column name="id_marca" length="4" not-null="true">
+                <comment>Marca de la Unidad</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="usuarioByRAutorizacionInternaAsigno" class="Hibernate.entidades.Usuario" fetch="select">
+            <column name="r_autorizacion_interna_asigno" length="10">
+                <comment>Usuario que dio la autorizaci&#243;n</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="compania" class="Hibernate.entidades.Compania" fetch="select">
+            <column name="id_compania">
+                <comment>Id de compania de seguros</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="usuarioByRCierre" class="Hibernate.entidades.Usuario" fetch="select">
+            <column name="r_cierre" length="10">
+                <comment>15.- Usuario que cerro la orden</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="estatus" class="Hibernate.entidades.Estatus" fetch="select">
+            <column name="estatus_nombre" length="20" not-null="true">
+                <comment>Estatus de la Unidad</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="usuarioByIdUserApertura" class="Hibernate.entidades.Usuario" fetch="select">
+            <column name="id_user_apertura" length="10" unique="true">
+                <comment>1.- Usuario que realiza apertura</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="empleadoByRMecanica" class="Hibernate.entidades.Empleado" fetch="select">
+            <column name="r_mecanica">
+                <comment>12.1.- Responsable de reparaci&#243;n de mec&#225;nica</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="usuarioByRElectricoAsigno" class="Hibernate.entidades.Usuario" fetch="select">
+            <column name="r_electrico_asigno" length="10" />
+        </many-to-one>
+        <many-to-one name="usuarioByRValuacionCierreAsigno" class="Hibernate.entidades.Usuario" fetch="select">
+            <column name="r_valuacion_cierre_asigno" length="10" />
+        </many-to-one>
+        <many-to-one name="usuarioByAutorizaCompaniaAsigno" class="Hibernate.entidades.Usuario" fetch="select">
+            <column name="autoriza_compania_asigno" length="10">
+                <comment>Usuario que recibi&#243; la autorizaci&#243;n de la compania de seguros</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="usuarioByRLevantamientoAsigno" class="Hibernate.entidades.Usuario" fetch="select">
+            <column name="r_levantamiento_asigno" length="10">
+                <comment>Usuario que asigno responsable de levantamiento</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="usuarioByRExpedienteAsigno" class="Hibernate.entidades.Usuario" fetch="select">
+            <column name="r_expediente_asigno" length="10">
+                <comment>Usuario que asigno responsable de expediente</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="usuarioByRRefaccionesAsigno" class="Hibernate.entidades.Usuario" fetch="select">
+            <column name="r_refacciones_asigno" length="10">
+                <comment>Usuario que Asigno responsable de refacciones</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="empleadoByRRefacciones" class="Hibernate.entidades.Empleado" fetch="select">
+            <column name="r_refacciones">
+                <comment>11.- Responsable de las refacciones</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="usuarioByRCotizaAsigno" class="Hibernate.entidades.Usuario" fetch="select">
+            <column name="r_cotiza_asigno" length="10">
+                <comment>Usuario que asigno responsable de cotizar</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="empleadoByRElectrico" class="Hibernate.entidades.Empleado" fetch="select">
+            <column name="r_electrico">
+                <comment>12.1.- Responsable de reparaci&#243;n de el&#233;ctrico</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="tipo" class="Hibernate.entidades.Tipo" fetch="select">
+            <column name="tipo_nombre" length="20" not-null="true">
+                <comment>Tipo de unidad</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="empleadoByRValuacion" class="Hibernate.entidades.Empleado" fetch="select">
+            <column name="r_valuacion">
+                <comment>7.- Responsable de valuaci&#243;n</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="empleadoByRHojalateria" class="Hibernate.entidades.Empleado" fetch="select">
+            <column name="r_hojalateria">
+                <comment>12.1.- Responsable de reparaci&#243;n de hojalateria</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="empleadoByRCotiza" class="Hibernate.entidades.Empleado" fetch="select">
+            <column name="r_cotiza">
+                <comment>4.- Responsable de levantamiento</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="empleadoByRLevantamiento" class="Hibernate.entidades.Empleado" fetch="select">
+            <column name="r_levantamiento">
+                <comment>3.- Responsable del levantamiento</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="usuarioByAutorizaClienteAsigno" class="Hibernate.entidades.Usuario" fetch="select">
+            <column name="autoriza_cliente_asigno" length="10">
+                <comment>Usuario que obtuvo la autorizaci&#243;n</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="usuarioByEnvioCompaniaAsigno" class="Hibernate.entidades.Usuario" fetch="select">
+            <column name="envio_compania_asigno" length="10">
+                <comment>Usuario que envio valuaci&#243;n a la compania</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="clientes" class="Hibernate.entidades.Clientes" fetch="select">
+            <column name="id_cliente" not-null="true">
+                <comment>numero de cliente (due&#241;o de la unidad)</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="usuarioByRHojalateriaAsigno" class="Hibernate.entidades.Usuario" fetch="select">
+            <column name="r_hojalateria_asigno" length="10" />
+        </many-to-one>
+        <many-to-one name="usuarioByRFactura" class="Hibernate.entidades.Usuario" fetch="select">
+            <column name="r_factura" length="10">
+                <comment>14.- Usuario que factur&#243;</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="usuarioByRSuspensionAsigno" class="Hibernate.entidades.Usuario" fetch="select">
+            <column name="r_suspension_asigno" length="10" />
+        </many-to-one>
+        <many-to-one name="usuarioByBloqueada" class="Hibernate.entidades.Usuario" fetch="select">
+            <column name="bloqueada" length="10">
+                <comment>Usuario que tiene bloqueada una orden</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="usuarioByRMecanicaAsigno" class="Hibernate.entidades.Usuario" fetch="select">
+            <column name="r_mecanica_asigno" length="10" />
+        </many-to-one>
+        <many-to-one name="empleadoByRSuspension" class="Hibernate.entidades.Empleado" fetch="select">
+            <column name="r_suspension">
+                <comment>12.1.- Responsable de reparaci&#243;n de suspension</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="usuarioByRValuacionAsigno" class="Hibernate.entidades.Usuario" fetch="select">
+            <column name="r_valuacion_asigno" length="10">
+                <comment>Usuario que asigno valuador</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="usuarioByRReparacionInicioAsigno" class="Hibernate.entidades.Usuario" fetch="select">
+            <column name="r_reparacion_inicio_asigno" length="10">
+                <comment>Usuario que autorizo la reparaci&#243;n</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="empleadoByRExpediente" class="Hibernate.entidades.Empleado" fetch="select">
+            <column name="r_expediente">
+                <comment>2.- Responsable de expediente</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="ciclo" class="Hibernate.entidades.Ciclo" fetch="select">
+            <column name="id_ciclo">
+                <comment>ciclo al cual pertenece la orden</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="empleadoByRPintura" class="Hibernate.entidades.Empleado" fetch="select">
+            <column name="r_pintura">
+                <comment>12.1.- Responsable de reparaci&#243;n de pintura</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="usuarioByRPinturaAsigno" class="Hibernate.entidades.Usuario" fetch="select">
+            <column name="r_pintura_asigno" length="10" />
+        </many-to-one>
+        <property name="fecha" type="date">
+            <column name="fecha" length="10" not-null="true">
+                <comment>Fecha de Apertura de orden</comment>
+            </column>
+        </property>
+        <property name="hora" type="time">
+            <column name="hora" length="8">
+                <comment>Hora de apertura de orden</comment>
+            </column>
+        </property>
+        <property name="siniestro" type="string">
+            <column name="siniestro" length="20">
+                <comment>numero de siniestro</comment>
+            </column>
+        </property>
+        <property name="poliza" type="string">
+            <column name="poliza" length="20">
+                <comment>numero de poliza</comment>
+            </column>
+        </property>
+        <property name="noReporte" type="string">
+            <column name="no_reporte" length="20">
+                <comment>numero de reporte</comment>
+            </column>
+        </property>
+        <property name="fechaSiniestro" type="date">
+            <column name="fecha_siniestro" length="10">
+                <comment>fecha del siniestro</comment>
+            </column>
+        </property>
+        <property name="inciso" type="string">
+            <column name="inciso" length="10" />
+        </property>
+        <property name="noMotor" type="string">
+            <column name="no_motor" length="15">
+                <comment>Numero de motor de la unidad</comment>
+            </column>
+        </property>
+        <property name="noPlacas" type="string">
+            <column name="no_placas" length="8">
+                <comment>numero de placas</comment>
+            </column>
+        </property>
+        <property name="modelo" type="java.lang.Integer">
+            <column name="modelo">
+                <comment>Modelo de la unidad (anio)</comment>
+            </column>
+        </property>
+        <property name="noSerie" type="string">
+            <column name="no_serie" length="20">
+                <comment>Numero de serie de la unidad</comment>
+            </column>
+        </property>
+        <property name="noEconomico" type="string">
+            <column name="no_economico" length="5">
+                <comment>Numero economico de la unidad</comment>
+            </column>
+        </property>
+        <property name="deducible" type="java.lang.Double">
+            <column name="deducible" precision="22" scale="0">
+                <comment>Deducible aplicado a la unidad</comment>
+            </column>
+        </property>
+        <property name="demerito" type="java.lang.Double">
+            <column name="demerito" precision="22" scale="0">
+                <comment>Demerito aplicado a la unidad</comment>
+            </column>
+        </property>
+        <property name="tipoCliente" type="string">
+            <column name="tipo_cliente" length="1">
+                <comment>Tipo de cliente (asegurado, tercero, t asegurado, particular)</comment>
+            </column>
+        </property>
+        <property name="fechaEstatus" type="date">
+            <column name="fecha_estatus" length="10">
+                <comment>Fecha en la que se asigno el estatus</comment>
+            </column>
+        </property>
+        <property name="fechaTaller" type="date">
+            <column name="fecha_taller" length="10">
+                <comment>Fecha para entregar la unidad Taller (Interna)</comment>
+            </column>
+        </property>
+        <property name="fechaCliente" type="date">
+            <column name="fecha_cliente" length="10">
+                <comment>Fecha para entregar la unidad al cliente (externa)</comment>
+            </column>
+        </property>
+        <property name="RExpedienteFecha" type="timestamp">
+            <column name="r_expediente_fecha" length="19">
+                <comment>Fecha que se asigno responsable de expediente</comment>
+            </column>
+        </property>
+        <property name="RLevantamientoInicio" type="timestamp">
+            <column name="r_levantamiento_inicio" length="19">
+                <comment>Fecha de inicio del levantamiento</comment>
+            </column>
+        </property>
+        <property name="RLevantamientoCierre" type="timestamp">
+            <column name="r_levantamiento_cierre" length="19">
+                <comment>Fecha de cierre de levanamiento</comment>
+            </column>
+        </property>
+        <property name="RCotizaInicio" type="timestamp">
+            <column name="r_cotiza_inicio" length="19">
+                <comment>fecha de inicio de cotizacion</comment>
+            </column>
+        </property>
+        <property name="RCotizaCierre" type="timestamp">
+            <column name="r_cotiza_cierre" length="19">
+                <comment>fecha de cierre de cotizacion</comment>
+            </column>
+        </property>
+        <property name="autorizaCliente" type="timestamp">
+            <column name="autoriza_cliente" length="19">
+                <comment>5.- indica si ya se tiene la autorizaci&#243;n del cliente para la reparacion</comment>
+            </column>
+        </property>
+        <property name="RAutorizacionInterna" type="timestamp">
+            <column name="r_autorizacion_interna" length="19">
+                <comment>5.- Fecha en que se autorizo la reparaci&#243;n interna</comment>
+            </column>
+        </property>
+        <property name="RValuacionInicio" type="timestamp">
+            <column name="r_valuacion_inicio" length="19">
+                <comment>fecha de inicio de la valuacion</comment>
+            </column>
+        </property>
+        <property name="envioCompania" type="timestamp">
+            <column name="envio_compania" length="19">
+                <comment>8.- Fecha en la que se env&#237;o a la comania de seguros la valuaci&#243;n completa</comment>
+            </column>
+        </property>
+        <property name="autorizaCompania" type="timestamp">
+            <column name="autoriza_compania" length="19">
+                <comment>9.- Fecha en la que autorizo la compania la valuacion y reparaci&#243;n</comment>
+            </column>
+        </property>
+        <property name="RValuacionCierre" type="timestamp">
+            <column name="r_valuacion_cierre" length="19">
+                <comment>10.- fecha de cierre de valuaci&#243;n</comment>
+            </column>
+        </property>
+        <property name="metaValuacion" type="date">
+            <column name="meta_valuacion" length="10">
+                <comment>fecha optima para terminar la valuaci&#243;n</comment>
+            </column>
+        </property>
+        <property name="inicioRefacciones" type="timestamp">
+            <column name="inicio_refacciones" length="19">
+                <comment>Fecha de inicio de Refacciones</comment>
+            </column>
+        </property>
+        <property name="cierreRefacciones" type="timestamp">
+            <column name="cierre_refacciones" length="19">
+                <comment>Fecha de cierre de Refacciones</comment>
+            </column>
+        </property>
+        <property name="metaRefacciones" type="date">
+            <column name="meta_refacciones" length="10">
+                <comment>Meta para cierre de refacciones</comment>
+            </column>
+        </property>
+        <property name="RReparacionInicio" type="timestamp">
+            <column name="r_reparacion_inicio" length="19">
+                <comment>12.- fecha de inicio de reparaci&#243;n</comment>
+            </column>
+        </property>
+        <property name="RHojalateriaFecha" type="timestamp">
+            <column name="r_hojalateria_fecha" length="19" />
+        </property>
+        <property name="RMecanicaFecha" type="timestamp">
+            <column name="r_mecanica_fecha" length="19" />
+        </property>
+        <property name="RSuspensionFecha" type="timestamp">
+            <column name="r_suspension_fecha" length="19" />
+        </property>
+        <property name="RElectricoFecha" type="timestamp">
+            <column name="r_electrico_fecha" length="19" />
+        </property>
+        <property name="RReparacionCierre" type="timestamp">
+            <column name="r_reparacion_cierre" length="19">
+                <comment>Fecha de cierre de la reparaci&#243;n</comment>
+            </column>
+        </property>
+        <property name="metaReparacion" type="date">
+            <column name="meta_reparacion" length="10">
+                <comment>Meta para terminar la reparaci&#243;n.</comment>
+            </column>
+        </property>
+        <property name="REntregarFecha" type="timestamp">
+            <column name="r_entregar_fecha" length="19">
+                <comment>13.- Fecha eb la que se entrego la unidad</comment>
+            </column>
+        </property>
+        <property name="noFactura" type="java.lang.Integer">
+            <column name="no_factura">
+                <comment>Numero de factura</comment>
+            </column>
+        </property>
+        <property name="fehaFectura" type="date">
+            <column name="feha_fectura" length="10">
+                <comment>fecha co la que se facturo</comment>
+            </column>
+        </property>
+        <property name="fechaCierre" type="date">
+            <column name="fecha_cierre" length="10">
+                <comment>fecha con la cual se cerr&#243; la orden</comment>
+            </column>
+        </property>
+        <property name="idObservacion" type="java.lang.Integer">
+            <column name="id_observacion" />
+        </property>
+        <property name="session" type="string">
+            <column name="session" length="10">
+                <comment>Session e la cual se bloqueo la orden</comment>
+            </column>
+        </property>
+        <property name="ventana" type="string">
+            <column name="ventana" length="5">
+                <comment>ventana que bloqueo la orden</comment>
+            </column>
+        </property>
+        <property name="refPresupuesto" type="java.lang.Double">
+            <column name="ref_presupuesto" precision="22" scale="0" />
+        </property>
+        <property name="refAutorizadas" type="java.lang.Double">
+            <column name="ref_autorizadas" precision="22" scale="0" />
+        </property>
+        <property name="moPresupuestada" type="java.lang.Double">
+            <column name="mo_presupuestada" precision="22" scale="0" />
+        </property>
+        <property name="moDirecta" type="java.lang.Double">
+            <column name="mo_directa" precision="22" scale="0" />
+        </property>
+        <property name="autorizadoFacturar" type="java.lang.Boolean">
+            <column name="autorizado_facturar" />
+        </property>
+        <property name="color" type="string">
+            <column name="color" length="20" />
+        </property>
+        <property name="propietario" type="string">
+            <column name="propietario" length="30" />
+        </property>
+        <property name="codigoAsegurado" type="string">
+            <column name="codigo_asegurado" length="30" />
+        </property>
+        <property name="tipoVehiculo" type="string">
+            <column name="tipo_vehiculo" length="20" />
+        </property>
+        <property name="contratante" type="string">
+            <column name="contratante" length="150" />
+        </property>
+        <property name="Km" type="string">
+            <column name="km" length="10" />
+        </property>
+        <property name="vales" type="java.lang.Double">
+            <column name="vales" precision="22" scale="0" />
+        </property>
+        <property name="RPinturaFecha" type="timestamp">
+            <column name="r_pintura_fecha" length="19" />
+        </property>
+        <property name="hojalateriaLimite" type="date">
+            <column name="hojalateria_limite" length="10">
+                <comment>fecha limite hojalateria</comment>
+            </column>
+        </property>
+        <property name="mecanicaLimite" type="date">
+            <column name="mecanica_limite" length="10">
+                <comment>fecha limite mecanica</comment>
+            </column>
+        </property>
+        <property name="suspensionLimite" type="date">
+            <column name="suspension_limite" length="10">
+                <comment>fecha limite suspencion</comment>
+            </column>
+        </property>
+        <property name="electricoLimite" type="date">
+            <column name="electrico_limite" length="10">
+                <comment>fecha limite electrico</comment>
+            </column>
+        </property>
+        <property name="pinturaLimite" type="date">
+            <column name="pintura_limite" length="10">
+                <comment>fecha limite pintura</comment>
+            </column>
+        </property>
+        <property name="importeHojalateria" type="java.lang.Double">
+            <column name="importe_hojalateria" precision="22" scale="0" />
+        </property>
+        <property name="importeMecanica" type="java.lang.Double">
+            <column name="importe_mecanica" precision="22" scale="0" />
+        </property>
+        <property name="importeSuspension" type="java.lang.Double">
+            <column name="importe_suspension" precision="22" scale="0" />
+        </property>
+        <property name="importeElectrico" type="java.lang.Double">
+            <column name="importe_electrico" precision="22" scale="0" />
+        </property>
+        <property name="importePintura" type="java.lang.Double">
+            <column name="importe_pintura" precision="22" scale="0" />
+        </property>
+        <set name="archivos" table="archivo" inverse="true" lazy="true" fetch="select" cascade="all">
+            <key>
+                <column name="id_orden" not-null="true" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Archivo" />
+        </set>
+        <set name="partidasForEnlazada" table="partida" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="enlazada">
+                    <comment>no de orden a la cual pertenece</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Partida" />
+        </set>
+        <set name="notas" table="nota" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_orden">
+                    <comment>numero de orden si existe</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Nota" />
+        </set>
+        <set name="adicionaleses" table="adicionales" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_orden" not-null="true">
+                    <comment>orden a la que pertenece</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Adicionales" />
+        </set>
+        <set name="agendas" table="agenda" inverse="true" lazy="true" fetch="select" cascade="all">
+            <key>
+                <column name="id_orden">
+                    <comment>orden a la que pertenece el recordatorio</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Agenda" />
+        </set>
+        <set name="destajos" table="destajo" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_orden" not-null="true" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Destajo" />
+        </set>
+        <set name="inventarios" table="inventario" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_orden" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Inventario" />
+        </set>
+        <set name="facturas" table="factura" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_orden">
+                    <comment>numero de orden si existe</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Factura" />
+        </set>
+        <set name="fotos" table="foto" inverse="true" lazy="true" fetch="select" cascade="all">
+            <key>
+                <column name="id_orden" not-null="true" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Foto" />
+        </set>
+        <set name="mensajes" table="mensaje" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_orden" not-null="true" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Mensaje" />
+        </set>
+        <set name="partidasForIdOrden" table="partida" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_orden" not-null="true">
+                    <comment>numero de orden</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Partida" />
+        </set>
+        <set name="pedidos" table="pedido" inverse="true" lazy="true" fetch="select" cascade="save-update">
+            <key>
+                <column name="id_orden">
+                    <comment>orden</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Pedido" />
+        </set>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 16/06/2016 03:01:05 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.Herramienta" table="herramienta">
+        <id name="idHerramienta" type="java.lang.String">
+            <column name="id_herramienta" length="10"/>
+        </id>
+        <property name="nombre" type="string">
+            <column name="nombre" length="100" />
+        </property>
+        <property name="imagen" type="string">
+            <column name="imagen" length="30" />
+        </property>
+        <property name="ubicacion" type="string">
+            <column name="ubicacion" length="50" />
+        </property>
+        <property name="existencias" type="java.lang.Double">
+            <column name="existencias" precision="22" scale="0" />
+        </property>
+        <property name="comentario" type="string">
+            <column name="comentario" length="100" />
+        </property>
+        <set name="responsivas" table="responsiva" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_herramienta" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Responsiva" />
+        </set>
+    </class>
+</hibernate-mapping>

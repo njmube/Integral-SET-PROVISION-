@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/08/2015 05:39:12 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.Catalogo" table="catalogo">
+        <id name="idCatalogo" type="java.lang.Integer">
+            <column name="id_catalogo" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="especialidad" class="Hibernate.entidades.Especialidad" fetch="select" cascade="save-update">
+            <column name="id_grupo_mecanico" not-null="true" />
+        </many-to-one>
+        <property name="nombre" type="string">
+            <column name="nombre" length="100" />
+        </property>
+        <set name="partidas" table="partida" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_catalogo">
+                    <comment>id del articulo ordenado</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Partida" />
+        </set>
+    </class>
+</hibernate-mapping>

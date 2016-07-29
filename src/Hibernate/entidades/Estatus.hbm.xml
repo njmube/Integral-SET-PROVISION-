@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/08/2015 05:39:12 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.Estatus" table="estatus" >
+        <id name="estatusNombre" type="string">
+            <column name="estatus_nombre" length="20" />
+            <generator class="assigned" />
+        </id>
+        <property name="descripcion" type="string">
+            <column name="descripcion" length="100" />
+        </property>
+        <set name="ordens" table="orden" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="estatus_nombre" length="20" not-null="true">
+                    <comment>Estatus de la Unidad</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Orden" />
+        </set>
+    </class>
+</hibernate-mapping>

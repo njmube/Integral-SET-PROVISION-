@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 23/10/2015 08:59:18 AM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.Item" table="item" >
+        <id name="idReparacion" type="int">
+            <column name="id_reparacion" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="catalogo" class="Hibernate.entidades.Catalogo" fetch="select">
+            <column name="id_catalogo" not-null="true" />
+        </many-to-one>
+        <many-to-one name="servicio" class="Hibernate.entidades.Servicio" fetch="select">
+            <column name="id_servicio" length="15" not-null="true" />
+        </many-to-one>
+    </class>
+</hibernate-mapping>

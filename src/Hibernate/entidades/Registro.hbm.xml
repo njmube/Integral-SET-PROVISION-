@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 9/05/2016 11:25:56 AM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.Registro" table="registro">
+        <id name="idRegistro" type="java.lang.Integer">
+            <column name="id_registro" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="cuentas" class="Hibernate.entidades.Cuentas" fetch="select">
+            <column name="id_cuentas" length="20" />
+        </many-to-one>
+        <many-to-one name="asiento" class="Hibernate.entidades.Asiento" fetch="select">
+            <column name="id_asiento" />
+        </many-to-one>
+        <property name="depto" type="string">
+            <column name="depto" length="3" />
+        </property>
+        <property name="concepto" type="string">
+            <column name="concepto" length="120" />
+        </property>
+        <property name="cambio" type="java.lang.Double">
+            <column name="cambio" precision="22" scale="0" />
+        </property>
+        <property name="cantidad" type="java.lang.Double">
+            <column name="cantidad" precision="22" scale="0" />
+        </property>
+        <property name="tipo" type="string">
+            <column name="tipo" length="1" />
+        </property>
+        <property name="tipoAsiento" type="string">
+            <column name="tipo_asiento" length="2" />
+        </property>
+    </class>
+</hibernate-mapping>

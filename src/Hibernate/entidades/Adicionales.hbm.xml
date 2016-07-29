@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/08/2015 05:39:12 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.Adicionales" table="adicionales">
+        <id name="idAdicionales" type="java.lang.Integer">
+            <column name="id_adicionales" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="orden" class="Hibernate.entidades.Orden" fetch="select">
+            <column name="id_orden" not-null="true">
+                <comment>orden a la que pertenece</comment>
+            </column>
+        </many-to-one>
+        <property name="cantidad" type="double">
+            <column name="cantidad" precision="22" scale="0" not-null="true">
+                <comment>cantidad de articulos</comment>
+            </column>
+        </property>
+        <property name="medida" type="string">
+            <column name="medida" length="5" not-null="true">
+                <comment>medida en que se agrupan los aerticulos</comment>
+            </column>
+        </property>
+        <property name="descripcion" type="string">
+            <column name="descripcion" length="100" not-null="true">
+                <comment>descripcion de articulo</comment>
+            </column>
+        </property>
+        <property name="precio" type="double">
+            <column name="precio" precision="22" scale="0" not-null="true">
+                <comment>precio de articulo</comment>
+            </column>
+        </property>
+        <property name="descuento" type="java.lang.Double">
+            <column name="descuento" precision="22" scale="0">
+                <comment>descuento aplicado a articulo</comment>
+            </column>
+        </property>
+        <property name="recargo" type="java.lang.Double">
+            <column name="recargo" precision="22" scale="0">
+                <comment>recargo aplicado a articulo</comment>
+            </column>
+        </property>
+    </class>
+</hibernate-mapping>

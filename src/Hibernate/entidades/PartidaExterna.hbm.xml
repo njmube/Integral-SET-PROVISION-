@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/08/2015 05:39:12 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.PartidaExterna" table="partida_externa" >
+        <id name="idPartidaExterna" type="java.lang.Integer">
+            <column name="id_partida_externa" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="pedido" class="Hibernate.entidades.Pedido" fetch="select">
+            <column name="id_pedido" />
+        </many-to-one>
+        <many-to-one name="mecanico" class="Hibernate.entidades.Usuario" fetch="select">
+            <column name="mecanico" length="10" />
+        </many-to-one>
+        <many-to-one name="ejemplar" class="Hibernate.entidades.Ejemplar" fetch="select" cascade="save-update">
+            <column name="id_parte" length="35">
+                <comment>numero de serie del articulo de dicha partida</comment>
+            </column>
+        </many-to-one>
+        <property name="partida" type="string">
+            <column name="partida" length="7" />
+        </property>
+        <property name="cantidad" type="java.lang.Double">
+            <column name="cantidad" precision="22" scale="0" />
+        </property>
+        <property name="unidad" type="string">
+            <column name="unidad" length="5" />
+        </property>
+        <property name="descripcion" type="string">
+            <column name="descripcion" length="150" />
+        </property>
+        <property name="idValuacion" type="string">
+            <column name="id_valuacion" length="10" />
+        </property>
+        <property name="noParte" type="string">
+            <column name="noParte" length="45" />
+        </property>
+        <property name="costo" type="java.lang.Double">
+            <column name="costo" precision="22" scale="0" />
+        </property>
+        <property name="servicio" type="java.lang.Boolean">
+            <column name="servicio" />
+        </property>
+        <property name="idExternos" type="string">
+            <column name="id_externos" length="12" />
+        </property>
+        <property name="plazo" type="date">
+            <column name="plazo" length="10" />
+        </property>
+        <property name="facturaPedido" type="java.lang.Integer">
+            <column name="factura_pedido" />
+        </property>
+        <property name="surtido" type="java.lang.Boolean">
+            <column name="surtido">
+                <comment>indica si la partida ya fue surtida</comment>
+            </column>
+        </property>
+        <property name="muestra" type="java.lang.Boolean">
+            <column name="muestra">
+                <comment>indica si la partida requiere muestra</comment>
+            </column>
+        </property>
+        <property name="op" type="java.lang.Boolean">
+            <column name="op">
+                <comment>indica si la partida la reviso el operario</comment>
+            </column>
+        </property>
+        <property name="fechaMecanico" type="date">
+            <column name="fecha_mecanico" length="10">
+                <comment>mecanico que autorizo la pieza</comment>
+            </column>
+        </property>
+        <property name="oriCon" type="string">
+            <column name="ori_con" length="1" >
+                <comment>identifica el origen en conciliacion -, N, D, R, M.</comment>
+            </column>
+        </property>
+        <property name="facturado" type="java.lang.Boolean">
+            <column name="facturado">
+                <comment>indica si la partida se va a facturar(Conciliacion)</comment>
+            </column>
+        </property>
+        <property name="d" type="java.lang.Double">
+            <column name="d" precision="22" scale="0" />
+        </property>
+        <property name="r" type="java.lang.Double">
+            <column name="r" precision="22" scale="0" />
+        </property>
+        <property name="m" type="java.lang.Double">
+            <column name="m" precision="22" scale="0" />
+        </property>
+        <set name="movimientos" table="movimiento" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_externos" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Movimiento" />
+        </set>
+    </class>
+</hibernate-mapping>

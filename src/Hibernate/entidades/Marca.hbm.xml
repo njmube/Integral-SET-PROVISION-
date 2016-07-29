@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/08/2015 05:39:12 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.Marca" table="marca" >
+        <id name="idMarca" type="string">
+            <column name="id_marca" length="4" />
+            <generator class="assigned" />
+        </id>
+        <property name="marcaNombre" type="string">
+            <column name="marca_nombre" length="20" not-null="true" />
+        </property>
+        <set name="ordens" table="orden" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_marca" length="4" not-null="true">
+                    <comment>Marca de la Unidad</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Orden" />
+        </set>
+        <set name="ejemplars" table="ejemplar" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_marca" length="4" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Ejemplar" />
+        </set>
+        <set name="ordenExternas" table="ordenExterna" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="marca" length="4" />
+            </key>
+            <one-to-many class="Hibernate.entidades.OrdenExterna" />
+        </set>
+    </class>
+</hibernate-mapping>

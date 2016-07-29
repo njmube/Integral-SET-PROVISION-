@@ -1,0 +1,341 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 15/09/2015 10:36:00 AM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.Partida" table="partida" >
+        <id name="idPartida" type="java.lang.Integer">
+            <column name="id_partida" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="usuario" class="Hibernate.entidades.Usuario" fetch="select">
+            <column name="autorizo_costo" length="10" />
+        </many-to-one>
+        <many-to-one name="mecanico" class="Hibernate.entidades.Usuario" fetch="select">
+            <column name="mecanico" length="10" />
+        </many-to-one>
+        <many-to-one name="proveedor" class="Hibernate.entidades.Proveedor" fetch="select">
+            <column name="tot">
+                <comment>trabajo realizado en otro taller</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="pedido" class="Hibernate.entidades.Pedido" fetch="select">
+            <column name="id_pedido">
+                <comment>Numero de Pedido</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="ordenByIdOrden" class="Hibernate.entidades.Orden" fetch="select">
+            <column name="id_orden" not-null="true">
+                <comment>numero de orden</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="ordenByEnlazada" class="Hibernate.entidades.Orden" fetch="select">
+            <column name="enlazada">
+                <comment>no de orden a la cual pertenece</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="catalogo" class="Hibernate.entidades.Catalogo" fetch="select" cascade="save-update">
+            <column name="id_catalogo">
+                <comment>id del articulo ordenado</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="ejemplar" class="Hibernate.entidades.Ejemplar" fetch="select" cascade="save-update">
+            <column name="id_parte" length="35">
+                <comment>numero de serie del articulo de dicha partida</comment>
+            </column>
+        </many-to-one>
+        <property name="idEvaluacion" type="int">
+            <column name="id_evaluacion" not-null="true">
+                <comment>numero de partida en valuacion por orden</comment>
+            </column>
+        </property>
+        <property name="subPartida" type="int">
+            <column name="sub_partida" not-null="true">
+                <comment>numero de sub partida en valuacion por orden</comment>
+            </column>
+        </property>
+        <property name="espHoj" type="boolean">
+            <column name="esp_hoj" not-null="true">
+                <comment>especialidad hojalateria compania</comment>
+            </column>
+        </property>
+        <property name="espMec" type="boolean">
+            <column name="esp_mec" not-null="true">
+                <comment>especialidad mecanica compania</comment>
+            </column>
+        </property>
+        <property name="espSus" type="boolean">
+            <column name="esp_sus" not-null="true">
+                <comment>especialidad suspension compania</comment>
+            </column>
+        </property>
+        <property name="espEle" type="boolean">
+            <column name="esp_ele" not-null="true">
+                <comment>especialidad electricidad compania</comment>
+            </column>
+        </property>
+        <property name="dm" type="double">
+            <column name="dm" precision="22" scale="0" not-null="true">
+                <comment>desmontar compania</comment>
+            </column>
+        </property>
+        <property name="cam" type="double">
+            <column name="cam" precision="22" scale="0" not-null="true">
+                <comment>cambiar compania</comment>
+            </column>
+        </property>
+        <property name="repMin" type="double">
+            <column name="rep_min" precision="22" scale="0" not-null="true">
+                <comment>reparacion minima compania</comment>
+            </column>
+        </property>
+        <property name="repMed" type="double">
+            <column name="rep_med" precision="22" scale="0" not-null="true">
+                <comment>reparacion media compania</comment>
+            </column>
+        </property>
+        <property name="repMax" type="double">
+            <column name="rep_max" precision="22" scale="0" not-null="true">
+                <comment>reparacion maxima compania</comment>
+            </column>
+        </property>
+        <property name="pint" type="double">
+            <column name="pint" precision="22" scale="0" not-null="true">
+                <comment>pintura compania</comment>
+            </column>
+        </property>
+        <property name="cant" type="double">
+            <column name="cant" precision="22" scale="0" not-null="true">
+                <comment>cantidad de articulos</comment>
+            </column>
+        </property>
+        <property name="med" type="string">
+            <column name="med" length="4">
+                <comment>unidad de medida</comment>
+            </column>
+        </property>
+        <property name="refCoti" type="boolean">
+            <column name="ref_coti" not-null="true">
+                <comment>autorizado para salir en el reporte</comment>
+            </column>
+        </property>
+        <property name="ori" type="boolean">
+            <column name="ori" not-null="true">
+                <comment>pieza original</comment>
+            </column>
+        </property>
+        <property name="nal" type="boolean">
+            <column name="nal" not-null="true">
+                <comment>pieza nacional</comment>
+            </column>
+        </property>
+        <property name="desm" type="boolean">
+            <column name="desm" not-null="true">
+                <comment>pieza desmontada</comment>
+            </column>
+        </property>
+        <property name="pd" type="boolean">
+            <column name="pd" not-null="true">
+                <comment>demerito</comment>
+            </column>
+        </property>
+        <property name="intDesm" type="double">
+            <column name="int_desm" precision="22" scale="0" not-null="true">
+                <comment>desmontar interno</comment>
+            </column>
+        </property>
+        <property name="intCamb" type="double">
+            <column name="Int_camb" precision="22" scale="0" not-null="true">
+                <comment>cambiar interno</comment>
+            </column>
+        </property>
+        <property name="intRepMin" type="double">
+            <column name="Int_rep_min" precision="22" scale="0" not-null="true">
+                <comment>reparacion minima interno</comment>
+            </column>
+        </property>
+        <property name="intRepMed" type="double">
+            <column name="Int_rep_med" precision="22" scale="0" not-null="true">
+                <comment>reparacion media interno</comment>
+            </column>
+        </property>
+        <property name="intRepMax" type="double">
+            <column name="Int_rep_max" precision="22" scale="0" not-null="true">
+                <comment>reparacion maxima interno</comment>
+            </column>
+        </property>
+        <property name="intPinMin" type="double">
+            <column name="int_pin_min" precision="22" scale="0" not-null="true">
+                <comment>pintura minima interno</comment>
+            </column>
+        </property>
+        <property name="intPinMed" type="double">
+            <column name="int_pin_med" precision="22" scale="0" not-null="true">
+                <comment>pintura media interno</comment>
+            </column>
+        </property>
+        <property name="intPinMax" type="double">
+            <column name="int_pin_max" precision="22" scale="0" not-null="true">
+                <comment>pintura maxima interno</comment>
+            </column>
+        </property>
+        <property name="instruccion" type="string">
+            <column name="Instruccion" length="100">
+                <comment>intruccion extra interno</comment>
+            </column>
+        </property>
+        <property name="CU" type="double">
+            <column name="c_u" precision="22" scale="0" not-null="true">
+                <comment>costo unitario</comment>
+            </column>
+        </property>
+        <property name="porcentaje" type="double">
+            <column name="porcentaje" precision="22" scale="0" not-null="true">
+                <comment>porcentaje de ganancia</comment>
+            </column>
+        </property>
+        <property name="precioCiaSegurosCU" type="double">
+            <column name="Precio_cia_seguros_c_u" precision="22" scale="0" not-null="true">
+                <comment>precio para la compa&#241;ia</comment>
+            </column>
+        </property>
+        <property name="cantidadAut" type="double">
+            <column name="Cantidad_aut" precision="22" scale="0" not-null="true">
+                <comment>cantidad autorizada</comment>
+            </column>
+        </property>
+        <property name="precioAutCU" type="double">
+            <column name="Precio_aut_c_u" precision="22" scale="0" not-null="true">
+                <comment>precio autorizado</comment>
+            </column>
+        </property>
+        <property name="porcentajeUtilidad" type="int">
+            <column name="porcentaje_utilidad" not-null="true" />
+        </property>
+        <property name="autorizado" type="boolean">
+            <column name="autorizado" not-null="true">
+                <comment>partida autorizada</comment>
+            </column>
+        </property>
+        <property name="horas" type="double">
+            <column name="horas" precision="22" scale="0" not-null="true">
+                <comment>horas de mano de obra</comment>
+            </column>
+        </property>
+        <property name="refComp" type="boolean">
+            <column name="ref_comp" not-null="true">
+                <comment>la partida debe de comprarse</comment>
+            </column>
+        </property>
+        <property name="so" type="boolean">
+            <column name="so" not-null="true">
+                <comment>surte otro taller</comment>
+            </column>
+        </property>
+        <property name="plazo" type="date">
+            <column name="plazo" length="10">
+                <comment>plazo o fecha para que llegue la mercancia comprada</comment>
+            </column>
+        </property>
+        <property name="tipo" type="string">
+            <column name="tipo" length="1" not-null="true">
+                <comment>identifica el tipo de partida: o=ordinaria. a=adicional c=complementaria</comment>
+            </column>
+        </property>
+        <property name="incluida" type="boolean">
+            <column name="incluida" not-null="true">
+                <comment>indica si la partida esta congelada =1</comment>
+            </column>
+        </property>
+        <property name="autorizadoValuacion" type="boolean">
+            <column name="autorizado_valuacion" not-null="true">
+                <comment>partida autorizada para valuacion</comment>
+            </column>
+        </property>
+        <property name="pcp" type="java.lang.Double">
+            <column name="pcp" precision="22" scale="0">
+                <comment>Precio de Compra de Pedido</comment>
+            </column>
+        </property>
+        <property name="cantPcp" type="java.lang.Double">
+            <column name="cant_pcp" precision="22" scale="0" />
+        </property>
+        <property name="descripcionFactura" type="string">
+            <column name="descripcion_factura" length="100" />
+        </property>
+        <property name="precioFactura" type="java.lang.Double">
+            <column name="precio_factura" precision="22" scale="0" />
+        </property>
+        <property name="cantidadFactura" type="java.lang.Double">
+            <column name="cantidad_factura" precision="22" scale="0" />
+        </property>
+        <property name="facturado" type="java.lang.Boolean">
+            <column name="facturado">
+                <comment>infica si la partida se va a facturar</comment>
+            </column>
+        </property>
+        <property name="facturaPedido" type="java.lang.Integer">
+            <column name="factura_pedido" />
+        </property>
+        <property name="surtido" type="java.lang.Boolean">
+            <column name="surtido">
+                <comment>indica si la partida ya fue surtida</comment>
+            </column>
+        </property>
+        <property name="muestra" type="java.lang.Boolean">
+            <column name="muestra">
+                <comment>indica si la partida requiere muestra</comment>
+            </column>
+        </property>
+        <property name="op" type="java.lang.Boolean">
+            <column name="op">
+                <comment>indica si la partida la reviso el operario</comment>
+            </column>
+        </property>
+        <property name="fechaMecanico" type="date">
+            <column name="fecha_mecanico" length="10">
+                <comment>mecanico que autorizo la pieza</comment>
+            </column>
+        </property>
+        <property name="oriCon" type="string">
+            <column name="ori_con" length="1" >
+                <comment>identifica el origen en conciliacion -, N, D, R, M.</comment>
+            </column>
+        </property>
+        <property name="d" type="java.lang.Double">
+            <column name="d" precision="22" scale="0" />
+        </property>
+        <property name="r" type="java.lang.Double">
+            <column name="r" precision="22" scale="0" />
+        </property>
+        <property name="m" type="java.lang.Double">
+            <column name="m" precision="22" scale="0" />
+        </property>
+        <set name="partidaCotizacions" table="partida_cotizacion" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_partida" not-null="true" />
+            </key>
+            <one-to-many class="Hibernate.entidades.PartidaCotizacion" />
+        </set>
+        <set name="movimientos" table="movimiento" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_partida" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Movimiento" />
+        </set>
+        <set name="perdidases" table="perdidas" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_partida">
+                    <comment>numero de partida</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Perdidas" />
+        </set>
+        <set name="pedidos" table="pedido" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="partida_enlazada" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Pedido" />
+        </set>
+    </class>
+</hibernate-mapping>

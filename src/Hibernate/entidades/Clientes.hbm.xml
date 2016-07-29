@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/08/2015 05:39:12 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.Clientes" table="clientes" >
+        <id name="idClientes" type="java.lang.Integer">
+            <column name="id_clientes" />
+            <generator class="identity" />
+        </id>
+        <property name="nombre" type="string">
+            <column name="nombre" length="150" not-null="true" />
+        </property>
+        <property name="direccion" type="string">
+            <column name="direccion" length="150" />
+        </property>
+        <property name="colonia" type="string">
+            <column name="colonia" length="150" />
+        </property>
+        <property name="poblacion" type="string">
+            <column name="poblacion" length="150" />
+        </property>
+        <property name="cp" type="java.lang.Integer">
+            <column name="cp" />
+        </property>
+        <property name="estado" type="string">
+            <column name="estado" length="45" />
+        </property>
+        <property name="rfc" type="string">
+            <column name="rfc" length="13" />
+        </property>
+        <property name="telefono" type="string">
+            <column name="telefono" length="13" />
+        </property>
+        <property name="email" type="string">
+            <column name="email" length="100" />
+        </property>
+        <property name="contacto" type="string">
+            <column name="contacto" length="150" />
+        </property>
+        <property name="nextel" type="string">
+            <column name="nextel" length="13" />
+        </property>
+        <property name="municipio" type="string">
+            <column name="municipio" length="20" />
+        </property>
+        <property name="pais" type="string">
+            <column name="pais" length="20" />
+        </property>
+        <property name="numeroExterior" type="string">
+            <column name="numero_exterior" length="10" />
+        </property>
+        <property name="receptor" type="string">
+            <column name="receptor" length="100" />
+        </property>
+        <property name="emailReceptor" type="string">
+            <column name="email_receptor" length="100" />
+        </property>
+        <set name="ordens" table="orden" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_cliente" not-null="true">
+                    <comment>numero de cliente (due&#195;&#177;o de la unidad)</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Orden" />
+        </set>
+    </class>
+</hibernate-mapping>

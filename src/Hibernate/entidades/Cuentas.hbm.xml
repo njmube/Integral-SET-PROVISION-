@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 9/05/2016 11:25:56 AM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.Cuentas" table="cuentas">
+        <id name="idCuentas" type="string">
+            <column name="id_cuentas" length="20" />
+            <generator class="assigned" />
+        </id>
+        <property name="nombre" type="string">
+            <column name="nombre" length="100" />
+        </property>
+        <property name="saldo" type="string">
+            <column name="saldo" length="1" />
+        </property>
+        <set name="registros" table="registro" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_cuentas" length="20" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Registro" />
+        </set>
+        <set name="proveedorsForCtaAbono" table="proveedor" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="cta_abono" length="20" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Proveedor" />
+        </set>
+        <set name="proveedorsForCtaCargo" table="proveedor" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="cta_cargo" length="20" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Proveedor" />
+        </set>
+    </class>
+</hibernate-mapping>

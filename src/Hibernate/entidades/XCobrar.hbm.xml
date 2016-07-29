@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 9/05/2016 11:25:56 AM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.XCobrar" table="x_cobrar">
+        <id name="idCobrar" type="java.lang.Integer">
+            <column name="id_cobrar" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="reclamo" class="Hibernate.entidades.Reclamo" fetch="select">
+            <column name="id_reclamo" not-null="true" />
+        </many-to-one>
+        <property name="idPedido" type="int">
+            <column name="id_pedido" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>

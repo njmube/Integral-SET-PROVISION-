@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/08/2015 05:39:12 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.Inventario" table="inventario" >
+        <id name="idInventario" type="java.lang.Integer">
+            <column name="id_inventario" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="conceptos" class="Hibernate.entidades.Conceptos" fetch="select">
+            <column name="id_concepto" />
+        </many-to-one>
+        <many-to-one name="orden" class="Hibernate.entidades.Orden" fetch="select">
+            <column name="id_orden" />
+        </many-to-one>
+        <property name="contiene" type="boolean">
+            <column name="contiene" not-null="true" />
+        </property>
+        <property name="observacion" type="string">
+            <column name="observacion" length="50" />
+        </property>
+    </class>
+</hibernate-mapping>

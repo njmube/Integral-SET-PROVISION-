@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/08/2015 05:39:12 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.Conceptos" table="conceptos" >
+        <id name="idConcepto" type="java.lang.Integer">
+            <column name="id_concepto" />
+            <generator class="identity" />
+        </id>
+        <property name="nombre" type="string">
+            <column name="nombre" length="45" />
+        </property>
+        <property name="vehiculo" type="java.lang.Integer">
+            <column name="vehiculo" />
+        </property>
+        <set name="inventarios" table="inventario" inverse="true" lazy="true" fetch="select" cascade="all">
+            <key>
+                <column name="id_concepto" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Inventario" />
+        </set>
+    </class>
+</hibernate-mapping>

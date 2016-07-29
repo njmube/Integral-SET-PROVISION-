@@ -1,0 +1,123 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/08/2015 05:39:12 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.Proveedor" table="proveedor" >
+        <id name="idProveedor" type="java.lang.Integer">
+            <column name="id_proveedor" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="cuentasByCtaProv" class="Hibernate.entidades.Cuentas" fetch="select">
+            <column name="cta_prov" length="20" />
+        </many-to-one>
+        <many-to-one name="cuentasByCtaGasto" class="Hibernate.entidades.Cuentas" fetch="select">
+            <column name="cta_gasto" length="20" />
+        </many-to-one>
+        <property name="nombre" type="string">
+            <column name="nombre" length="150" not-null="true" />
+        </property>
+        <property name="direccion" type="string">
+            <column name="direccion" length="250" />
+        </property>
+        <property name="colonia" type="string">
+            <column name="colonia" length="150" />
+        </property>
+        <property name="cp" type="string">
+            <column name="cp" length="6" />
+        </property>
+        <property name="poblacion" type="string">
+            <column name="poblacion" length="150" />
+        </property>
+        <property name="estado" type="string">
+            <column name="estado" length="45" />
+        </property>
+        <property name="rfc" type="string">
+            <column name="rfc" length="13" not-null="true" unique="true" />
+        </property>
+        <property name="tel1" type="string">
+            <column name="`tel-1`" length="12" />
+        </property>
+        <property name="tel2" type="string">
+            <column name="`tel-2`" length="12" />
+        </property>
+        <property name="fax" type="string">
+            <column name="fax" length="12" />
+        </property>
+        <property name="email" type="string">
+            <column name="email" length="50" />
+        </property>
+        <property name="representante" type="string">
+            <column name="representante" length="150" />
+        </property>
+        <property name="cta" type="string">
+            <column name="cta" length="10" />
+        </property>
+        <property name="credLimite" type="java.lang.Float">
+            <column name="cred_limite" precision="12" scale="0" />
+        </property>
+        <property name="credPlazo" type="int">
+            <column name="cred_plazo" not-null="true" />
+        </property>
+        <property name="credDescuento" type="float">
+            <column name="cred_descuento" precision="12" scale="0" not-null="true" />
+        </property>
+        <property name="tiempoEntrega" type="int">
+            <column name="tiempo_entrega" not-null="true" />
+        </property>
+        <property name="impCompras" type="float">
+            <column name="imp_compras" precision="12" scale="0" not-null="true" />
+        </property>
+        <property name="giro" type="string">
+            <column name="giro" length="150" />
+        </property>
+        <property name="tipo" type="int">
+            <column name="tipo" not-null="true" />
+        </property>
+        <property name="espHojalateria" type="boolean">
+            <column name="esp_hojalateria" not-null="true" />
+        </property>
+        <property name="espMecanica" type="boolean">
+            <column name="esp_mecanica" not-null="true" />
+        </property>
+        <property name="espSuspension" type="boolean">
+            <column name="esp_suspension" not-null="true" />
+        </property>
+        <property name="espElectricidad" type="boolean">
+            <column name="esp_electricidad" not-null="true" />
+        </property>
+        <property name="notas" type="string">
+            <column name="notas" length="250" />
+        </property>
+        <set name="cotizacions" table="cotizacion" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_proveedor" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Cotizacion" />
+        </set>
+        <set name="pedidosForIdProveedor" table="pedido" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_proveedor" not-null="true">
+                    <comment>proveedor</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Pedido" />
+        </set>
+        <set name="pedidosForIdEmpresa" table="pedido" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_empresa" not-null="true">
+                    <comment>facturar a</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Pedido" />
+        </set>
+        <set name="partidas" table="partida" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="tot">
+                    <comment>trabajo realizado en otro taller</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Partida" />
+        </set>
+    </class>
+</hibernate-mapping>

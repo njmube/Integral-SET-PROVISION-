@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 9/05/2016 11:25:56 AM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.ArchivoNota" table="archivo_nota">
+        <id name="idNota" type="java.lang.Integer">
+            <column name="id_nota" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="reclamo" class="Hibernate.entidades.Reclamo" fetch="select">
+            <column name="id_reclamo" />
+        </many-to-one>
+        <property name="nombre" type="string">
+            <column name="nombre" length="40" />
+        </property>
+        <property name="folio" type="string">
+            <column name="folio" length="50" />
+        </property>
+        <property name="uuid" type="string">
+            <column name="uuid" length="80" />
+        </property>
+        <property name="moneda" type="string">
+            <column name="moneda" length="50" />
+        </property>
+        <property name="cambio" type="java.lang.Double">
+            <column name="cambio" precision="22" scale="0" />
+        </property>
+        <property name="subTotal" type="java.lang.Double">
+            <column name="sub_total" precision="22" scale="0" />
+        </property>
+        <property name="iva" type="java.lang.Double">
+            <column name="iva" precision="22" scale="0" />
+        </property>
+        <property name="estatus" type="string">
+            <column name="estatus" length="1" />
+        </property>
+        <property name="cancelado" type="string">
+            <column name="cancelado" length="50" />
+        </property>
+    </class>
+</hibernate-mapping>

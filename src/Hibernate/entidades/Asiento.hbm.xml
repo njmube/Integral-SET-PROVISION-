@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 9/05/2016 11:25:56 AM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.Asiento" table="asiento" >
+        <id name="idAsiento" type="java.lang.Integer">
+            <column name="id_asiento" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="reclamo" class="Hibernate.entidades.Reclamo" fetch="select">
+            <column name="id_reclamo" />
+        </many-to-one>
+        <many-to-one name="excelProvision" class="Hibernate.entidades.Excel" fetch="select">
+            <column name="excel_provision" />
+        </many-to-one>
+        <many-to-one name="usuarioProvision" class="Hibernate.entidades.Usuario" fetch="select">
+            <column name="usr_provision" length="10" />
+        </many-to-one>
+        <many-to-one name="excelPago" class="Hibernate.entidades.Excel" fetch="select">
+            <column name="excel_pago" />
+        </many-to-one>
+        <many-to-one name="usuarioPago" class="Hibernate.entidades.Usuario" fetch="select">
+            <column name="usr_pago" length="10" />
+        </many-to-one>
+        <property name="fechaProvision" type="date">
+            <column name="fecha_provision" length="10" />
+        </property>
+        <property name="fechaPago" type="date">
+            <column name="fecha_pago" length="10" />
+        </property>
+        <set name="registros" table="registro" inverse="true" lazy="true" fetch="select" cascade="all">
+            <key>
+                <column name="id_asiento" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Registro" />
+        </set>
+    </class>
+</hibernate-mapping>

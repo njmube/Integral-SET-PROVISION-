@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/08/2015 05:39:12 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.Cotizacion" table="cotizacion" >
+        <id name="idCotizacion" type="java.lang.Integer">
+            <column name="id_cotizacion" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="proveedor" class="Hibernate.entidades.Proveedor" fetch="select">
+            <column name="id_proveedor" />
+        </many-to-one>
+        <many-to-one name="usuarioByIdUsuario" class="Hibernate.entidades.Usuario" fetch="select">
+            <column name="id_usuario" length="10" />
+        </many-to-one>
+        <many-to-one name="usuarioByAutorizo" class="Hibernate.entidades.Usuario" fetch="select">
+            <column name="autorizo" length="10" />
+        </many-to-one>
+        <property name="fechaEnvio" type="timestamp">
+            <column name="fecha_envio" length="19" />
+        </property>
+        <set name="partidaCotizacions" table="partida_cotizacion" inverse="true" lazy="true" fetch="select" cascade="all">
+            <key>
+                <column name="id_cotizacion" not-null="true" />
+            </key>
+            <one-to-many class="Hibernate.entidades.PartidaCotizacion" />
+        </set>
+    </class>
+</hibernate-mapping>

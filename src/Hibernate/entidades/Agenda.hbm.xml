@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/08/2015 05:39:12 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.Agenda" table="agenda">
+        <id name="idAgenda" type="java.lang.Integer">
+            <column name="id_agenda" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="orden" class="Hibernate.entidades.Orden" fetch="select">
+            <column name="id_orden">
+                <comment>orden a la que pertenece el recordatorio</comment>
+            </column>
+        </many-to-one>
+        <property name="fecha" type="date">
+            <column name="fecha" length="10">
+                <comment>fecha del evento</comment>
+            </column>
+        </property>
+        <property name="hora" type="time">
+            <column name="hora" length="8">
+                <comment>hora del evento</comment>
+            </column>
+        </property>
+        <property name="asunto" type="string">
+            <column name="asunto" length="150">
+                <comment>asunto que se realizo</comment>
+            </column>
+        </property>
+    </class>
+</hibernate-mapping>

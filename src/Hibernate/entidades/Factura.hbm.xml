@@ -1,0 +1,261 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/08/2015 05:39:12 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.Factura" table="factura" >
+        <id name="idFactura" type="java.lang.Integer">
+            <column name="id_factura" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="orden" class="Hibernate.entidades.Orden" fetch="select">
+            <column name="id_orden">
+                <comment>numero de orden si existe</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="usuarioByAutorizo" class="Hibernate.entidades.Usuario" fetch="select">
+            <column name="autorizo" length="10" />
+        </many-to-one>
+        <many-to-one name="ordenExterna" class="Hibernate.entidades.OrdenExterna" fetch="select">
+            <column name="id_orden_factura" />
+        </many-to-one>
+        <many-to-one name="usuarioByGenero" class="Hibernate.entidades.Usuario" fetch="select">
+            <column name="genero" length="10" />
+        </many-to-one>
+        <property name="fecha" type="timestamp">
+            <column name="fecha" length="19">
+                <comment>fecha interna de factura</comment>
+            </column>
+        </property>
+        <property name="rfcEmisor" type="string">
+            <column name="rfc_emisor" length="13">
+                <comment>rfc del emisor</comment>
+            </column>
+        </property>
+        <property name="nombreEmisor" type="string">
+            <column name="nombre_emisor" length="200">
+                <comment>razon social del emisor</comment>
+            </column>
+        </property>
+        <property name="calleEmisor" type="string">
+            <column name="calle_emisor" length="150">
+                <comment>calle del emisor</comment>
+            </column>
+        </property>
+        <property name="coloniaEmisor" type="string">
+            <column name="colonia_emisor" length="100">
+                <comment>colonia del emisor</comment>
+            </column>
+        </property>
+        <property name="numeroExteriorEmisor" type="string">
+            <column name="numero_exterior_emisor" length="10">
+                <comment>numero exterior del emisor</comment>
+            </column>
+        </property>
+        <property name="municipioEmisor" type="string">
+            <column name="municipio_emisor" length="100">
+                <comment>municipio del emisor</comment>
+            </column>
+        </property>
+        <property name="estadoEmisor" type="string">
+            <column name="estado_emisor" length="80">
+                <comment>esyado del emisor</comment>
+            </column>
+        </property>
+        <property name="paisEmisor" type="string">
+            <column name="pais_emisor" length="45">
+                <comment>pais emisor</comment>
+            </column>
+        </property>
+        <property name="cpEmisor" type="string">
+            <column name="cp_emisor" length="10">
+                <comment>codigo postal del emisor</comment>
+            </column>
+        </property>
+        <property name="rfcReceptor" type="string">
+            <column name="rfc_receptor" length="13">
+                <comment>rfc del receptor</comment>
+            </column>
+        </property>
+        <property name="nombreReceptor" type="string">
+            <column name="nombre_receptor" length="200">
+                <comment>nombre del receptor</comment>
+            </column>
+        </property>
+        <property name="calleReceptor" type="string">
+            <column name="calle_receptor" length="200">
+                <comment>calle del receptor</comment>
+            </column>
+        </property>
+        <property name="coloniaReceptor" type="string">
+            <column name="colonia_receptor" length="150">
+                <comment>colonia del receptor</comment>
+            </column>
+        </property>
+        <property name="numeroExteriorReceptor" type="string">
+            <column name="numero_exterior_receptor" length="10">
+                <comment>numero exterior receptor</comment>
+            </column>
+        </property>
+        <property name="municipioReceptor" type="string">
+            <column name="municipio_receptor" length="150">
+                <comment>municipio del receptor</comment>
+            </column>
+        </property>
+        <property name="estadoReceptor" type="string">
+            <column name="estado_receptor" length="100">
+                <comment>estado del receptor</comment>
+            </column>
+        </property>
+        <property name="paisReceptor" type="string">
+            <column name="pais_receptor" length="80">
+                <comment>pais del receptor</comment>
+            </column>
+        </property>
+        <property name="cpReceptor" type="string">
+            <column name="cp_receptor" length="6">
+                <comment>codigo postal de receptor</comment>
+            </column>
+        </property>
+        <property name="deducible" type="java.lang.Double">
+            <column name="deducible" precision="22" scale="0">
+                <comment>monto del deducible a descontar</comment>
+            </column>
+        </property>
+        <property name="estadoFactura" type="string">
+            <column name="estado_factura" length="15">
+                <comment>estado de la factura</comment>
+            </column>
+        </property>
+        <property name="FFiscal" type="string">
+            <column name="f_fiscal" length="45">
+                <comment>folio fiscal</comment>
+            </column>
+        </property>
+        <property name="fechaFiscal" type="string">
+            <column name="fecha_fiscal" length="45">
+                <comment>fecha de mysuite</comment>
+            </column>
+        </property>
+        <property name="serie" type="string">
+            <column name="serie" length="4">
+                <comment>serie de mysuite</comment>
+            </column>
+        </property>
+        <property name="folio" type="string">
+            <column name="folio" length="10">
+                <comment>Folio de mysuite</comment>
+            </column>
+        </property>
+        <property name="metodoPago" type="string">
+            <column name="metodo_pago" length="35" />
+        </property>
+        <property name="cuentaPago" type="string">
+            <column name="cuenta_pago" length="30" />
+        </property>
+        <property name="moneda" type="string">
+            <column name="moneda" length="3" />
+        </property>
+        <property name="factorCambio" type="java.lang.Double">
+            <column name="factor_cambio" precision="22" scale="0" />
+        </property>
+        <property name="area" type="string">
+            <column name="area" length="25" />
+        </property>
+        <property name="tipoPoliza" type="string">
+            <column name="tipo_poliza" length="10" />
+        </property>
+        <property name="tipoEmisor" type="string">
+            <column name="tipo_emisor" length="15" />
+        </property>
+        <property name="contactoEmisor" type="string">
+            <column name="contacto_emisor" length="100" />
+        </property>
+        <property name="correoEmisor" type="string">
+            <column name="correo_emisor" length="100" />
+        </property>
+        <property name="telefonoEmisor" type="string">
+            <column name="telefono_emisor" length="13" />
+        </property>
+        <property name="tipoReceptor" type="string">
+            <column name="tipo_receptor" length="15" />
+        </property>
+        <property name="contactoReceptor" type="string">
+            <column name="contacto_receptor" length="100" />
+        </property>
+        <property name="correoReceptor" type="string">
+            <column name="correo_receptor" length="100" />
+        </property>
+        <property name="telefonoReceptor" type="string">
+            <column name="telefono_receptor" length="13" />
+        </property>
+        <property name="codigoOficina" type="string">
+            <column name="codigo_oficina" length="20" />
+        </property>
+        <property name="foliosElectronicos" type="string">
+            <column name="folios_electronicos" length="200" />
+        </property>
+        <property name="nombreDocumento" type="string">
+            <column name="nombre_documento" length="45">
+                <comment>nombre del documento</comment>
+            </column>
+        </property>
+        <property name="error" type="string">
+            <column name="error" length="150" />
+        </property>
+        <property name="addenda" type="string">
+            <column name="addenda" length="20" />
+        </property>
+        <property name="riEmosor" type="string">
+            <column name="ri_emosor" length="20" />
+        </property>
+        <property name="riReceptor" type="string">
+            <column name="ri_receptor" length="20" />
+        </property>
+        <property name="proveedor" type="string">
+            <column name="proveedor" length="20" />
+        </property>
+        <property name="condicionesPago" type="string">
+            <column name="condiciones_pago" length="20" />
+        </property>
+        <property name="tipoFacturacion" type="string">
+            <column name="tipo_facturacion" length="15" />
+        </property>
+        <property name="descripcionEmisor" type="string">
+            <column name="descripcion_emisor" length="20" />
+        </property>
+        <property name="medioPago" type="string">
+            <column name="medio_pago" length="20" />
+        </property>
+        <property name="fechaMedioPago" type="date">
+            <column name="fecha_medio_pago" length="10" />
+        </property>
+        <property name="fechaCondicionesPago" type="date">
+            <column name="fecha_condiciones_pago" length="10" />
+        </property>
+        <property name="riesgo" type="string">
+            <column name="riesgo" length="45" />
+        </property>
+        <property name="iva" type="java.lang.Integer">
+            <column name="iva" />
+        </property>
+        <property name="extra" type="string">
+            <column name="extra" length="100" />
+        </property>
+        <property name="estatus" type="string">
+            <column name="estatus" length="12" />
+        </property>
+        <property name="fEstatus" type="date">
+            <column name="f_estatus" length="10" />
+        </property>
+        <property name="texto" type="string">
+            <column name="texto" length="200" />
+        </property>        
+        <set name="conceptos" table="concepto" inverse="true" lazy="true" fetch="select" cascade="all">
+            <key>
+                <column name="id_factura" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Concepto" />
+        </set>
+    </class>
+</hibernate-mapping>

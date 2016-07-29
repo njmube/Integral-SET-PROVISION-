@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 9/05/2016 11:25:56 AM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.Reclamo" table="reclamo">
+        <id name="idReclamo" type="java.lang.Integer">
+            <column name="id_reclamo" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="proveedor" class="Hibernate.entidades.Proveedor" fetch="select">
+            <column name="id_proveedor" not-null="true" />
+        </many-to-one>
+        <many-to-one name="usuario" class="Hibernate.entidades.Usuario" fetch="select">
+            <column name="usuario" length="10" />
+        </many-to-one>
+        <many-to-one name="pagoReclamo" class="Hibernate.entidades.PagoReclamo" fetch="select">
+            <column name="id_pago_reclamo" />
+        </many-to-one>
+        <property name="fechaReclamo" type="date">
+            <column name="fecha_reclamo" length="10" not-null="true" />
+        </property>
+        <property name="estatus" type="string">
+            <column name="estatus" length="1" />
+        </property>
+        <property name="fechaModificado" type="date">
+            <column name="fecha_modificado" length="10" />
+        </property>
+        <property name="fechaAceptado" type="date">
+            <column name="fecha_aceptado" length="10" />
+        </property>
+        <property name="fechaProgramado" type="date">
+            <column name="fecha_programado" length="10" />
+        </property>
+        <property name="notas" type="string">
+            <column name="notas" length="300" />
+        </property>
+        <property name="tipo" type="java.lang.Integer">
+            <column name="tipo" />
+        </property>
+        <property name="sucursal" type="string">
+            <column name="sucursal" length="10" />
+        </property>
+        <set name="asientos" table="asiento" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_reclamo" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Asiento" />
+        </set>
+        <set name="archivoNotas" table="archivo_nota" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_reclamo" />
+            </key>
+            <one-to-many class="Hibernate.entidades.ArchivoNota" />
+        </set>
+        <set name="archivoFacturas" table="archivo_factura" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_reclamo" />
+            </key>
+            <one-to-many class="Hibernate.entidades.ArchivoFactura" />
+        </set>
+        <set name="XCobrars" table="x_cobrar" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_reclamo" not-null="true" />
+            </key>
+            <one-to-many class="Hibernate.entidades.XCobrar" />
+        </set>
+    </class>
+</hibernate-mapping>

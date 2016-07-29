@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+  <session-factory>
+    <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+    <property name="connection.pool_size">1</property>
+    <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+    <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/mydb?noAccessToProcedureBodies=true</property>
+    <property name="hibernate.connection.username">red</property>
+    <property name="hibernate.connection.password">04650077</property>
+    <property name="hibernate.connection.base">mydb</property>
+    <property name="hibernate.connection.servidor">localhost</property>
+    <mapping resource="Hibernate/entidades/Cuenta.hbm.xml"/>
+    <mapping resource="Hibernate/entidades/Movimiento.hbm.xml"/>
+    <mapping resource="Hibernate/entidades/Catalogo.hbm.xml"/>
+    <mapping resource="Hibernate/entidades/Concepto.hbm.xml"/>
+    <mapping resource="Hibernate/entidades/Empleado.hbm.xml"/>
+    <mapping resource="Hibernate/entidades/Clientes.hbm.xml"/>
+    <mapping resource="Hibernate/entidades/Proveedor.hbm.xml"/>
+    <mapping resource="Hibernate/entidades/Marca.hbm.xml"/>
+    <mapping resource="Hibernate/entidades/Puestos.hbm.xml"/>
+    <mapping resource="Hibernate/entidades/Inventario.hbm.xml"/>
+    <mapping resource="Hibernate/entidades/OrdenExterna.hbm.xml"/>
+    <mapping resource="Hibernate/entidades/Partida.hbm.xml"/>
+    <mapping resource="Hibernate/entidades/Ciclo.hbm.xml"/>
+    <mapping resource="Hibernate/entidades/Correo.hbm.xml"/>
+    <mapping resource="Hibernate/entidades/Pedido.hbm.xml"/>
+    <mapping resource="Hibernate/entidades/PartidaCotizacion.hbm.xml"/>
+    <mapping resource="Hibernate/entidades/Tipo.hbm.xml"/>
+    <mapping resource="Hibernate/entidades/Configuracion.hbm.xml"/>
+    <mapping resource="Hibernate/entidades/Agenda.hbm.xml"/>
+    <mapping resource="Hibernate/entidades/Factura.hbm.xml"/>
+    <mapping resource="Hibernate/entidades/Archivo.hbm.xml"/>
+    <mapping resource="Hibernate/entidades/Nota.hbm.xml"/>
+    <mapping resource="Hibernate/entidades/Conceptos.hbm.xml"/>
+    <mapping resource="Hibernate/entidades/Reparacion.hbm.xml"/>
+    <mapping resource="Hibernate/entidades/Foto.hbm.xml"/>
+    <mapping resource="Hibernate/entidades/PartidaExterna.hbm.xml"/>
+    <mapping resource="Hibernate/entidades/Almacen.hbm.xml"/>
+    <mapping resource="Hibernate/entidades/Mensaje.hbm.xml"/>
+    <mapping resource="Hibernate/entidades/Estatus.hbm.xml"/>
+    <mapping resource="Hibernate/entidades/Especialidad.hbm.xml"/>
+    <mapping resource="Hibernate/entidades/Perdidas.hbm.xml"/>
+    <mapping resource="Hibernate/entidades/Ejemplar.hbm.xml"/>
+    <mapping resource="Hibernate/entidades/Orden.hbm.xml"/>
+    <mapping resource="Hibernate/entidades/Documentos.hbm.xml"/>
+    <mapping resource="Hibernate/entidades/Cotizacion.hbm.xml"/>
+    <mapping resource="Hibernate/entidades/Adicionales.hbm.xml"/>
+    <mapping resource="Hibernate/entidades/Compania.hbm.xml"/>
+    <mapping resource="Hibernate/entidades/Usuario.hbm.xml"/>
+  </session-factory>
+</hibernate-configuration>

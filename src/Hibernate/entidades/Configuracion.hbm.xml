@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/08/2015 05:39:12 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.Configuracion" table="configuracion" >
+        <id name="idConfiguracion" type="int">
+            <column name="id_configuracion" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="usuario" class="Hibernate.entidades.Usuario" fetch="select">
+            <column name="modifico" length="10" />
+        </many-to-one>
+        <property name="empresa" type="string">
+            <column name="empresa" length="300" />
+        </property>
+        <property name="logo" type="string">
+            <column name="logo" length="45" />
+        </property>
+        <property name="sello" type="string">
+            <column name="sello" length="45" />
+        </property>
+        <property name="cinta" type="string">
+            <column name="cinta" length="45" />
+        </property>
+        <property name="iva" type="java.lang.Integer">
+            <column name="iva" />
+        </property>
+        <property name="requestor" type="string">
+            <column name="requestor" length="45" />
+        </property>
+        <property name="rfc" type="string">
+            <column name="rfc" length="13" />
+        </property>
+        <property name="usuario_1" type="string">
+            <column name="usuario" length="20" />
+        </property>
+        <property name="nombre" type="string">
+            <column name="nombre" length="200" />
+        </property>
+        <property name="cp" type="string">
+            <column name="cp" length="8" />
+        </property>
+        <property name="direccion" type="string">
+            <column name="direccion" length="200" />
+        </property>
+        <property name="no" type="string">
+            <column name="no" length="10" />
+        </property>
+        <property name="colonia" type="string">
+            <column name="colonia" length="200" />
+        </property>
+        <property name="municipio" type="string">
+            <column name="municipio" length="200" />
+        </property>
+        <property name="estado" type="string">
+            <column name="estado" length="25" />
+        </property>
+        <property name="pais" type="string">
+            <column name="pais" length="25" />
+        </property>
+        <property name="contacto" type="string">
+            <column name="contacto" length="200" />
+        </property>
+        <property name="mail" type="string">
+            <column name="mail" length="200" />
+        </property>
+        <property name="tel" type="string">
+            <column name="tel" length="13" />
+        </property>
+        <property name="sucursal" type="string">
+            <column name="sucursal" length="45" />
+        </property>
+    </class>
+</hibernate-mapping>
