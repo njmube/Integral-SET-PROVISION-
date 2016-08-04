@@ -537,6 +537,12 @@
             </key>
             <one-to-many class="Hibernate.entidades.Destajo" />
         </set>
+        <set name="pagoAdicional" table="pago_adicional" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_orden" length="10" />
+            </key>
+            <one-to-many class="Hibernate.entidades.PagoAdicional" />
+        </set>
         <set name="inventarios" table="inventario" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="id_orden" />

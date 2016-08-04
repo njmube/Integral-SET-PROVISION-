@@ -136,5 +136,11 @@
             </key>
             <one-to-many class="Hibernate.entidades.Usuario" />
         </set>
+        <set name="pagoAdicional" table="pago_adicional" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_Empeado" />
+            </key>
+            <one-to-many class="Hibernate.entidades.PagoAdicional" />
+        </set>
     </class>
 </hibernate-mapping>

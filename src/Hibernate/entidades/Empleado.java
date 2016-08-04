@@ -33,6 +33,7 @@ public class Empleado  implements java.io.Serializable {
      private Set ordensForRHojalateria = new HashSet(0);
      private Set ordensForRValuacion = new HashSet(0);
      private Set ordensForRPintura = new HashSet(0);
+     private Set pagoAdicional = new HashSet(0);
      private Set pedidos = new HashSet(0);
      private Set ordensForRCotiza = new HashSet(0);
      private Set usuarios = new HashSet(0);
@@ -49,7 +50,7 @@ public class Empleado  implements java.io.Serializable {
         this.importe = importe;
         this.tls = tls;
     }
-    public Empleado(Puestos puestos, String nombre, String direccion, String telefono, String email, int fomaPago, Double importe, String password, String smtp, boolean tls, Integer puerto, Boolean autentificacion, Set ordensForRSuspension, Set ordensForRElectrico, Set ordensForRRefacciones, Set ordensForRExpediente, Set ordensForRLevantamiento, Set ordensForRMecanica, Set ordensForRHojalateria, Set ordensForRValuacion, Set pedidos, Set ordensForRCotiza, Set usuarios, Set ordensForRPintura) {
+    public Empleado(Puestos puestos, String nombre, String direccion, String telefono, String email, int fomaPago, Double importe, String password, String smtp, boolean tls, Integer puerto, Boolean autentificacion, Set ordensForRSuspension, Set ordensForRElectrico, Set ordensForRRefacciones, Set ordensForRExpediente, Set ordensForRLevantamiento, Set ordensForRMecanica, Set ordensForRHojalateria, Set ordensForRValuacion, Set pedidos, Set ordensForRCotiza, Set usuarios, Set ordensForRPintura, Set pagoAdicional) {
        this.puestos = puestos;
        this.nombre = nombre;
        this.direccion = direccion;
@@ -74,6 +75,7 @@ public class Empleado  implements java.io.Serializable {
        this.ordensForRCotiza = ordensForRCotiza;
        this.usuarios = usuarios;
        this.ordensForRPintura = ordensForRPintura;
+       this.pagoAdicional = pagoAdicional;
     }
    
     public Integer getIdEmpleado() {
@@ -252,7 +254,13 @@ public class Empleado  implements java.io.Serializable {
     public void setOrdensForRPintura(Set ordensForRPintura) {
         this.ordensForRPintura = ordensForRPintura;
     }
-
+    public Set getPagoAdicional() {
+        return this.pagoAdicional;
+    }
+    
+    public void setPagoAdicional(Set pagoAdicional) {
+        this.pagoAdicional = pagoAdicional;
+    }
 
 
 }

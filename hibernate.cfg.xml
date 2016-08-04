@@ -44,6 +44,7 @@
     <mapping resource="Hibernate/entidades/Perdidas.hbm.xml"/>
     <mapping resource="Hibernate/entidades/Ejemplar.hbm.xml"/>
     <mapping resource="Hibernate/entidades/Destajo.hbm.xml"/>
+    <mapping resource="Hibernate/entidades/PagoAdicional.hbm.xml"/>
     <mapping resource="Hibernate/entidades/Orden.hbm.xml"/>
     <mapping resource="Hibernate/entidades/Documentos.hbm.xml"/>
     <mapping resource="Hibernate/entidades/Cotizacion.hbm.xml"/>

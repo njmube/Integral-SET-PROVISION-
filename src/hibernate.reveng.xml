@@ -28,6 +28,7 @@
   <table-filter match-name="perdidas"/>
   <table-filter match-name="concepto"/>
   <table-filter match-name="destajo"/>
+  <table-filter match-name="pago_adicional"/>  
   <table-filter match-name="catalogo"/>
   <table-filter match-name="ciclo"/>
   <table-filter match-name="partida"/>
