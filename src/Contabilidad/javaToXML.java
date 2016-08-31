@@ -102,7 +102,7 @@ public class javaToXML
             }
             identificacion.addContent(new Element("LugarExpedicion", PREFIX, PREFIX_URI).setText(identif.getLugarExpedicion()));
             if(identif.getNumCtaPago()!=null)
-                identificacion.addContent(new Element("NumCtaPago", PREFIX, PREFIX_URI).setText(identif.getLugarExpedicion()));
+                identificacion.addContent(new Element("NumCtaPago", PREFIX, PREFIX_URI).setText(identif.getNumCtaPago()));
             if(identif.getTotalDeParcialidades()!=null)
             {
                 if(identif.getTotalDeParcialidades().getFolioFiscalOrigUuid()!=null)

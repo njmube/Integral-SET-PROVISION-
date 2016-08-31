@@ -112,6 +112,7 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
     MyModel model;
     MyModel model2;
     int menu;
+    int foto=0;
     boolean [] edita_columnas;
     String estado;
     Class[] types;
@@ -132,7 +133,7 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
             edita_columnas=new boolean[]{true/*horas mo*/,false/*costo c/u*/, false/*%*/, true/*cant aut*/, true/*$ autorizado*/, true/*autorizar partida*/,true/*r cot*/, true/*r com*/, true/*tipo de surtido*/};
             t_ok.setVisible(false);
             b_ok.setVisible(false);
-            bt.setVisible(false);
+            bt.setVisible(true);
             r_cerrar_cotizacion.setVisible(false);
             r_cerrar_valuacion.setVisible(true);
         }
@@ -416,6 +417,7 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
         bt = new javax.swing.JButton();
         t_vales = new javax.swing.JFormattedTextField();
         jLabel31 = new javax.swing.JLabel();
+        jButton6 = new javax.swing.JButton();
 
         numeros.setFont(new java.awt.Font("Dialog", 0, 9)); // NOI18N
         numeros.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -555,6 +557,11 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
         jLabel2.setText("Especialidad");
 
         cb_tipo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Todas", "Hojalateria", "Mecanica", "Suspension", "Electrico", "Pintura" }));
+        cb_tipo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cb_tipoActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -1071,6 +1078,13 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
         jLabel31.setForeground(new java.awt.Color(254, 254, 254));
         jLabel31.setText("Presupuesto:");
 
+        jButton6.setText("Imperia");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -1091,18 +1105,21 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
                 .addComponent(b_ac)
                 .addGap(133, 133, 133)
                 .addComponent(bt)
-                .addGap(34, 34, 34)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(t_ok, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(b_ok)
-                .addContainerGap(116, Short.MAX_VALUE))
+                .addContainerGap(69, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                 .addComponent(t_ok, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addComponent(b_ok)
-                .addComponent(bt))
+                .addComponent(bt)
+                .addComponent(jButton6))
             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                 .addComponent(jLabel31)
                 .addComponent(t_vales, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -3492,6 +3509,20 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
         t_busca.requestFocus();
     }//GEN-LAST:event_t_mo_directa1ActionPerformed
 
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        // TODO add your handling code here:s
+       cb_partidas.setSelectedIndex(0);
+       cb_tipo.setSelectedIndex(0);
+       cb_precio.setSelectedIndex(0);
+       foto=1;
+       this.jButton2ActionPerformed(null);
+       foto=0;
+    }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void cb_tipoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_tipoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cb_tipoActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton b_ac;
@@ -3512,6 +3543,7 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel13;
@@ -5916,7 +5948,11 @@ public class MyModel extends DefaultTableModel
             reporte.contenido.roundRectangle(30, 495, 210, 45, 5);
             reporte.contenido.roundRectangle(250, 495, 290, 45, 5);
             reporte.contenido.roundRectangle(550, 495, 210, 45, 5);
-            reporte.agregaObjeto(reporte.crearImagen("imagenes/grande300115.jpg", 30, -40, 60));
+            
+            if(foto==0)
+                reporte.agregaObjeto(reporte.crearImagen("imagenes/grande300115.jpg", 30, -40, 60));
+            else
+                reporte.agregaObjeto(reporte.crearImagen("imagenes/imperia1.jpg", 30, -40, 60));
 
             reporte.inicioTexto();
             reporte.contenido.setFontAndSize(bf, 8);

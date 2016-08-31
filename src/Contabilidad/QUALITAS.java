@@ -303,6 +303,7 @@ public class QUALITAS extends javax.swing.JDialog {
         t_electronico = new javax.swing.JTextField();
         jLabel64 = new javax.swing.JLabel();
         jLabel78 = new javax.swing.JLabel();
+        jLabel87 = new javax.swing.JLabel();
         jPanel14 = new javax.swing.JPanel();
         jLabel79 = new javax.swing.JLabel();
         jLabel80 = new javax.swing.JLabel();
@@ -1173,7 +1174,7 @@ public class QUALITAS extends javax.swing.JDialog {
                 .addComponent(t_numero, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel71)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 125, Short.MAX_VALUE)
                 .addComponent(jLabel67)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(t_inc, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1627,6 +1628,9 @@ public class QUALITAS extends javax.swing.JDialog {
 
         jLabel78.setText("*");
 
+        jLabel87.setForeground(new java.awt.Color(102, 0, 204));
+        jLabel87.setText("Nota: En caso de ingresar varios folios separarlos con el caracter \";\" eje 1234;5678");
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -1645,9 +1649,14 @@ public class QUALITAS extends javax.swing.JDialog {
                         .addGap(52, 52, 52)
                         .addComponent(jLabel64)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(t_electronico)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel78)))
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addComponent(jLabel87)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addComponent(t_electronico)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel78)))))
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
@@ -1670,7 +1679,9 @@ public class QUALITAS extends javax.swing.JDialog {
                     .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel63)
                         .addComponent(t_oficina, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel87)
+                .addContainerGap(50, Short.MAX_VALUE))
         );
 
         contenedor.addTab("Datos de addenda", jPanel5);
@@ -2939,6 +2950,7 @@ public class QUALITAS extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel84;
     private javax.swing.JLabel jLabel85;
     private javax.swing.JLabel jLabel86;
+    private javax.swing.JLabel jLabel87;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
@@ -3837,6 +3849,8 @@ public void consulta()
                     else
                         id.setLugarExpedicion("TOLUCA, ESTADO DE MEXICO");
                 }
+                if(t_cuenta_pago.getText().compareTo("")!=0)
+                    id.setNumCtaPago(t_cuenta_pago.getText());
             documento.setIdentificacion(id);
                 TDictionaries diccionarios = new TDictionaries();
                     TDictionary direccion = new TDictionary();

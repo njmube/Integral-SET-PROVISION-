@@ -2496,6 +2496,7 @@ public class AXA extends javax.swing.JDialog {
                 if(session!=null)
                     if(session.isConnected())
                         session.close();
+                e.printStackTrace();
                 JOptionPane.showMessageDialog(null, "Error al consultar la base de datos");
             }
             if(session!=null)
@@ -3787,6 +3788,8 @@ public void consulta()
                     else
                         id.setLugarExpedicion("TOLUCA, ESTADO DE MEXICO");
                 }
+                if(t_cuenta_pago.getText().compareTo("")!=0)
+                    id.setNumCtaPago(t_cuenta_pago.getText());
             documento.setIdentificacion(id);
                 TDictionaries diccionarios = new TDictionaries();
                     TDictionary direccion = new TDictionary();

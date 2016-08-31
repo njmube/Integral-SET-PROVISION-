@@ -108,6 +108,7 @@ public class formatos extends javax.swing.JPanel {
         b_encuenta1 = new javax.swing.JButton();
         b_salida1 = new javax.swing.JButton();
         b_hoja_unidad1 = new javax.swing.JButton();
+        b_salida2 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
@@ -267,6 +268,18 @@ public class formatos extends javax.swing.JPanel {
             }
         });
 
+        b_salida2.setBackground(new java.awt.Color(2, 135, 242));
+        b_salida2.setForeground(new java.awt.Color(255, 255, 255));
+        b_salida2.setIcon(new ImageIcon("imagenes/pdf_icon.png"));
+        b_salida2.setText("Orden de Servicio");
+        b_salida2.setToolTipText("Generar reporte");
+        b_salida2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        b_salida2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_salida2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -288,7 +301,8 @@ public class formatos extends javax.swing.JPanel {
                     .addComponent(b_fecha_promesa1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(b_encuenta1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(b_salida, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(b_salida1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(b_salida1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(b_salida2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(409, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -321,7 +335,9 @@ public class formatos extends javax.swing.JPanel {
                     .addComponent(b_encuesta_interna)
                     .addComponent(b_salida1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(b_hoja_unidad1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(b_hoja_unidad1)
+                    .addComponent(b_salida2))
                 .addContainerGap(32, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -1823,6 +1839,98 @@ public class formatos extends javax.swing.JPanel {
                 session.close();
     }//GEN-LAST:event_b_hoja_unidad1ActionPerformed
 
+    private void b_salida2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_salida2ActionPerformed
+        // TODO add your handling code here:
+        h=new Herramientas(usr, 0);
+        h.session(sessionPrograma);
+        
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try
+        {
+            Orden ord=(Orden)session.get(Orden.class, Integer.parseInt(orden));
+            Configuracion con = (Configuracion) session.get(Configuracion.class, 1);
+            Date fecha = new Date();
+            DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
+            String valor=dateFormat.format(fecha);
+            File folder = new File("reportes/"+ord.getIdOrden());
+            folder.mkdirs();
+            PdfReader reader = new PdfReader("imagenes/PlantillaOrdenServicio.pdf");
+            PdfStamper stamp = new PdfStamper(reader, new FileOutputStream("reportes/"+ ord.getIdOrden() +"/"+ valor +"-OrdenServicio.pdf"));
+            PdfContentByte cb = stamp.getUnderContent(1);
+            AcroFields fdfDoc = stamp.getAcroFields();
+            BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.EMBEDDED);
+            
+            cb.beginText();
+                //IMAGEN
+                try{
+                    Image img = Image.getInstance(con.getLogo());
+                    img.setAbsolutePosition(25, 695);
+                    img.scaleAbsoluteWidth(75);
+                    img.scaleAbsoluteHeight(45);
+                    cb.addImage(img, true);
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                try{
+                    Image img_1 = Image.getInstance(ord.getCompania().getFoto());
+                    img_1.setAbsolutePosition(400, 695);
+                    img_1.scaleAbsoluteWidth(75);
+                    img_1.scaleAbsoluteHeight(45);
+                    cb.addImage(img_1, true);
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                /*//SINIESTRO
+                if(ord.getSiniestro()!=null)
+                    fdfDoc.setField("Siniestro", ord.getSiniestro());
+                else
+                    fdfDoc.setField("Siniestro", "");
+                //FECHA SINIESTRO
+                if(ord.getFechaSiniestro()!=null)
+                    fdfDoc.setField("FechaSiniestro", ord.getFechaSiniestro().toString());
+                else
+                    fdfDoc.setField("FechaSiniestro", "");
+                //NOMBRE DEL TALLER
+                if(con.getEmpresa()!=null)
+                    fdfDoc.setField("NombreTaller", con.getEmpresa());
+                else
+                    fdfDoc.setField("NombreTaller", "");
+                //DIRECCION DEL TALLER 
+                String direccion="";
+                if(con.getDireccion()!=null)
+                    direccion+=con.getDireccion()+" ";
+                if(con.getNo()!=null)
+                    direccion+=con.getNo()+" ";
+                if(con.getColonia()!=null)
+                    direccion+=con.getColonia()+" ";
+                fdfDoc.setField("DireccionTaller", direccion);
+                //FECHA INGRESO
+                if(ord.getFecha()!=null)
+                    fdfDoc.setField("FechaIngreso", ord.getFecha().toString());
+                else
+                    fdfDoc.setField("FechaIngreso", "");
+                //FECHA PROMESA
+                if(ord.getFechaCliente()!=null)
+                    fdfDoc.setField("FechaPromesa", ord.getFechaCliente().toString());
+                else
+                    fdfDoc.setField("FechaPromesa", "");*/
+            
+            cb.endText();
+            stamp.close();
+            PDF reporte = new PDF();
+            reporte.cerrar();
+            reporte.visualizar("reportes/"+ord.getIdOrden()+"/"+valor+"-OrdenServicio.pdf");
+           
+        }catch(Exception e)
+        {
+            System.out.println(e);
+            JOptionPane.showMessageDialog(this, "No se pudo realizar el reporte si el archivo esta abierto");
+        }
+        if(session!=null)
+            if(session.isOpen())
+                session.close();
+    }//GEN-LAST:event_b_salida2ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton b_autorizacion;
@@ -1838,6 +1946,7 @@ public class formatos extends javax.swing.JPanel {
     private javax.swing.JButton b_inv_tracto;
     private javax.swing.JButton b_salida;
     private javax.swing.JButton b_salida1;
+    private javax.swing.JButton b_salida2;
     // End of variables declaration//GEN-END:variables
 
     public void visualiza(Boolean valor)

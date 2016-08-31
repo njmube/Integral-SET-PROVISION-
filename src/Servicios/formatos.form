@@ -40,6 +40,7 @@
                   <Component id="b_encuenta1" alignment="0" max="32767" attributes="0"/>
                   <Component id="b_salida" alignment="0" max="32767" attributes="0"/>
                   <Component id="b_salida1" alignment="0" max="32767" attributes="0"/>
+                  <Component id="b_salida2" alignment="0" max="32767" attributes="0"/>
               </Group>
               <EmptySpace pref="409" max="32767" attributes="0"/>
           </Group>
@@ -83,7 +84,10 @@
                   <Component id="b_salida1" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="b_hoja_unidad1" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="b_hoja_unidad1" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="b_salida2" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
               <EmptySpace pref="32" max="32767" attributes="0"/>
           </Group>
       </Group>
@@ -335,6 +339,25 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="b_hoja_unidad1ActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="b_salida2">
+      <Properties>
+        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="f2" green="87" red="2" type="rgb"/>
+        </Property>
+        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="ff" green="ff" red="ff" type="rgb"/>
+        </Property>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="new ImageIcon(&quot;imagenes/pdf_icon.png&quot;)" type="code"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Orden de Servicio"/>
+        <Property name="toolTipText" type="java.lang.String" value="Generar reporte"/>
+        <Property name="horizontalAlignment" type="int" value="2"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="b_salida2ActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

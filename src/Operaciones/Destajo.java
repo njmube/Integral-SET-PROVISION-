@@ -1707,7 +1707,7 @@ public class Destajo extends javax.swing.JPanel {
                         for(int x=0; x<renglones.length;x++)
                         {
                             session.beginTransaction().begin();
-                            Hibernate.entidades.Destajo elimina=(Hibernate.entidades.Destajo) session.get(Hibernate.entidades.Destajo.class, Integer.parseInt(t_datos.getValueAt(x, 0).toString()));
+                            Hibernate.entidades.Destajo elimina=(Hibernate.entidades.Destajo) session.get(Hibernate.entidades.Destajo.class, Integer.parseInt(t_datos.getValueAt(renglones[x], 0).toString()));
                             if(elimina!=null)
                             {
                                 session.delete(elimina);
@@ -2199,7 +2199,7 @@ public class Destajo extends javax.swing.JPanel {
                         for(int x=0; x<renglones.length;x++)
                         {
                             session.beginTransaction().begin();
-                            PagoAdicional elimina=(PagoAdicional) session.get(PagoAdicional.class, Integer.parseInt(t_adicionales.getValueAt(x, 0).toString()));
+                            PagoAdicional elimina=(PagoAdicional) session.get(PagoAdicional.class, Integer.parseInt(t_adicionales.getValueAt(renglones[x], 0).toString()));
                             if(elimina!=null)
                             {
                                 session.delete(elimina);
