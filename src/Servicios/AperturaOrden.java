@@ -23,7 +23,9 @@ import Hibernate.entidades.Foto;
 import Hibernate.Util.HibernateUtil;
 import Compania.buscaCompania;
 import Clientes.buscaCliente;
+import Empleados.buscaEmpleado;
 import Hibernate.entidades.Ciclo;
+import Hibernate.entidades.Empleado;
 import Hibernate.entidades.Reparacion;
 import Marca.buscaMarca;
 import Tipo.buscaTipo;
@@ -191,6 +193,10 @@ public class AperturaOrden extends javax.swing.JPanel {
         jLabel30 = new javax.swing.JLabel();
         t_color = new javax.swing.JTextField();
         jLabel31 = new javax.swing.JLabel();
+        jLabel32 = new javax.swing.JLabel();
+        t_tecnico = new javax.swing.JTextField();
+        b_buscarh = new javax.swing.JButton();
+        l_tecnico = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(90, 66, 126), 1, true), "Apertura de Ordenes", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 3, 12))); // NOI18N
@@ -1181,6 +1187,27 @@ public class AperturaOrden extends javax.swing.JPanel {
         jLabel31.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         jLabel31.setText("Color:");
 
+        jLabel32.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        jLabel32.setText("Tecnico:");
+
+        t_tecnico.setBackground(new java.awt.Color(204, 255, 255));
+        t_tecnico.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        t_tecnico.setEnabled(false);
+
+        b_buscarh.setBackground(new java.awt.Color(2, 135, 242));
+        b_buscarh.setIcon(new ImageIcon("imagenes/buscar.png"));
+        b_buscarh.setToolTipText("Consultar empleados");
+        b_buscarh.setMaximumSize(new java.awt.Dimension(32, 8));
+        b_buscarh.setMinimumSize(new java.awt.Dimension(32, 8));
+        b_buscarh.setPreferredSize(new java.awt.Dimension(32, 8));
+        b_buscarh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_buscarhActionPerformed(evt);
+            }
+        });
+
+        l_tecnico.setText("<Nombre del Responsable>");
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -1255,7 +1282,15 @@ public class AperturaOrden extends javax.swing.JPanel {
                         .addGap(61, 61, 61)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(b_guardar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(b_cancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(b_cancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabel32)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(t_tecnico, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(b_buscarh, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(l_tecnico, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -1308,13 +1343,13 @@ public class AperturaOrden extends javax.swing.JPanel {
                             .addComponent(t_serie, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel26)
                             .addComponent(t_modelo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel28)
                             .addComponent(t_economico, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(4, 4, 4)
                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1324,6 +1359,18 @@ public class AperturaOrden extends javax.swing.JPanel {
                             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(jLabel30)
                                 .addComponent(t_km, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel32)
+                                    .addComponent(b_buscarh, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(jPanel3Layout.createSequentialGroup()
+                                        .addGap(3, 3, 3)
+                                        .addComponent(t_tecnico, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                                .addGap(6, 6, 6)
+                                .addComponent(l_tecnico, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -2010,7 +2057,13 @@ public class AperturaOrden extends javax.swing.JPanel {
                                 registro.setContratante("ASEGURADO");
                                 registro.setCodigoAsegurado("0");
                                 registro.setVales(0.0d);
-
+                                
+                                if(t_tecnico.getText().compareTo("")!=0)
+                                {
+                                    Empleado emp=new Empleado();
+                                    emp.setIdEmpleado(Integer.parseInt(t_tecnico.getText()));
+                                    registro.setEmpleadoByRTecnico(emp);
+                                }
                                 Integer respuesta=guardarOrden(registro);
 
                                 if(respuesta!=null)
@@ -2628,10 +2681,31 @@ public class AperturaOrden extends javax.swing.JPanel {
             evt.consume();
     }//GEN-LAST:event_t_colorKeyTyped
 
+    private void b_buscarhActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_buscarhActionPerformed
+        h=new Herramientas(usr, 0);
+        h.session(sessionPrograma);
+        buscaEmpleado obj = new buscaEmpleado(new javax.swing.JFrame(), true, usr, this.sessionPrograma);
+        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+        obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
+        obj.setVisible(true);
+        Empleado actor=obj.getReturnStatus();
+        if(actor!=null)
+        {
+            t_tecnico.setText(""+actor.getIdEmpleado());
+            l_tecnico.setText(actor.getNombre());
+        }
+        else
+        {
+            t_tecnico.setText("");
+            l_tecnico.setText("");
+        }
+    }//GEN-LAST:event_b_buscarhActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton b_busca_cliente;
     private javax.swing.JButton b_buscar_aseguradora;
+    private javax.swing.JButton b_buscarh;
     private javax.swing.JButton b_cancelar;
     private javax.swing.JButton b_fecha_cliente;
     private javax.swing.JButton b_fecha_interna;
@@ -2672,6 +2746,7 @@ public class AperturaOrden extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel30;
     private javax.swing.JLabel jLabel31;
+    private javax.swing.JLabel jLabel32;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -2687,6 +2762,7 @@ public class AperturaOrden extends javax.swing.JPanel {
     private javax.swing.JLabel l_id_cliente;
     private javax.swing.JLabel l_nombre_aseguradora;
     private javax.swing.JLabel l_nombre_marca;
+    private javax.swing.JLabel l_tecnico;
     private javax.swing.JPanel p_foto;
     public javax.swing.JTextField t_aseguradora;
     private javax.swing.JTextField t_colonia_cliente;
@@ -2714,6 +2790,7 @@ public class AperturaOrden extends javax.swing.JPanel {
     private javax.swing.JTextField t_rfc_cliente;
     private javax.swing.JTextField t_serie;
     private javax.swing.JTextField t_siniestro;
+    private javax.swing.JTextField t_tecnico;
     private javax.swing.JFormattedTextField t_telefono_cliente;
     private javax.swing.JTextField t_tipo;
     // End of variables declaration//GEN-END:variables

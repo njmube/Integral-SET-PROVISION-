@@ -7,7 +7,6 @@
 package Servicios;
 
 import Hibernate.Util.HibernateUtil;
-import Hibernate.entidades.Compania;
 import Hibernate.entidades.Configuracion;
 import Hibernate.entidades.Cuenta;
 import Hibernate.entidades.Foto;
@@ -23,18 +22,10 @@ import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.GrayColor;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfPTable;
-import java.awt.Color;
-import java.util.Vector;
 import javax.swing.JOptionPane;
-import javax.swing.ListSelectionModel;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 import org.hibernate.Session;
 import Integral.Herramientas;
 import Integral.PDF;
-import Integral.Render1;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.pdf.AcroFields;
 import com.itextpdf.text.pdf.PdfReader;
@@ -1841,9 +1832,7 @@ public class formatos extends javax.swing.JPanel {
 
     private void b_salida2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_salida2ActionPerformed
         // TODO add your handling code here:
-        h=new Herramientas(usr, 0);
-        h.session(sessionPrograma);
-        
+       
         Session session = HibernateUtil.getSessionFactory().openSession();
         try
         {
@@ -1858,43 +1847,34 @@ public class formatos extends javax.swing.JPanel {
             PdfStamper stamp = new PdfStamper(reader, new FileOutputStream("reportes/"+ ord.getIdOrden() +"/"+ valor +"-OrdenServicio.pdf"));
             PdfContentByte cb = stamp.getUnderContent(1);
             AcroFields fdfDoc = stamp.getAcroFields();
-            BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.EMBEDDED);
             
             cb.beginText();
                 //IMAGEN
                 try{
-                    Image img = Image.getInstance(con.getLogo());
-                    img.setAbsolutePosition(25, 695);
+                    Image img = Image.getInstance("imagenes/"+con.getLogo());
+                    img.setAbsolutePosition(25, 710);
                     img.scaleAbsoluteWidth(75);
-                    img.scaleAbsoluteHeight(45);
+                    img.scaleAbsoluteHeight(50);
                     cb.addImage(img, true);
                 }catch(Exception e){
                     e.printStackTrace();
                 }
                 try{
                     Image img_1 = Image.getInstance(ord.getCompania().getFoto());
-                    img_1.setAbsolutePosition(400, 695);
-                    img_1.scaleAbsoluteWidth(75);
-                    img_1.scaleAbsoluteHeight(45);
+                    img_1.setAbsolutePosition(500, 735);
+                    img_1.scaleAbsoluteWidth(80);
+                    img_1.scaleAbsoluteHeight(50);
                     cb.addImage(img_1, true);
                 }catch(Exception e){
                     e.printStackTrace();
                 }
-                /*//SINIESTRO
-                if(ord.getSiniestro()!=null)
-                    fdfDoc.setField("Siniestro", ord.getSiniestro());
-                else
-                    fdfDoc.setField("Siniestro", "");
-                //FECHA SINIESTRO
-                if(ord.getFechaSiniestro()!=null)
-                    fdfDoc.setField("FechaSiniestro", ord.getFechaSiniestro().toString());
-                else
-                    fdfDoc.setField("FechaSiniestro", "");
+                
                 //NOMBRE DEL TALLER
                 if(con.getEmpresa()!=null)
-                    fdfDoc.setField("NombreTaller", con.getEmpresa());
+                    fdfDoc.setField("NombreEmpresa", con.getEmpresa());
                 else
-                    fdfDoc.setField("NombreTaller", "");
+                    fdfDoc.setField("NombreEmpresa", "");
+                
                 //DIRECCION DEL TALLER 
                 String direccion="";
                 if(con.getDireccion()!=null)
@@ -1902,28 +1882,181 @@ public class formatos extends javax.swing.JPanel {
                 if(con.getNo()!=null)
                     direccion+=con.getNo()+" ";
                 if(con.getColonia()!=null)
-                    direccion+=con.getColonia()+" ";
-                fdfDoc.setField("DireccionTaller", direccion);
+                    direccion+=con.getColonia();
+                direccion=direccion.toUpperCase();
+                fdfDoc.setField("DireccionEmpresa", direccion);
+                
+                //Municipio, Estado, CP
+                String municipio="";
+                if(con.getMunicipio()!=null)
+                    municipio+=con.getMunicipio()+" ";
+                if(con.getEstado()!=null)
+                    municipio+=con.getEstado()+" ";
+                if(con.getCp()!=null)
+                    municipio+=con.getCp();
+                municipio=municipio.toUpperCase();
+                fdfDoc.setField("ColoniaEmpresa", municipio);
+                
+                //Pagina Web y Telefonos
+                fdfDoc.setField("SitioEmpresa", "tracto.ddns.net");
+                fdfDoc.setField("TelefonoEmpresa", "(722) 199 24 04 / 275 19 45");
+                
+                //Datos de la compañia
+                fdfDoc.setField("Aseguradora1", ord.getCompania().getSocial());
+                if(ord.getCompania().getDireccion()!=null)
+                    fdfDoc.setField("Aseguradora2", ord.getCompania().getDireccion());
+                if(ord.getCompania().getColonia()!=null)
+                    fdfDoc.setField("Aseguradora3", ord.getCompania().getColonia());
+                if(ord.getCompania().getComentarios()!=null)
+                    fdfDoc.setField("Extra", ord.getCompania().getComentarios());
+                //Orden de trabajo
+                fdfDoc.setField("Orden", ""+ord.getIdOrden());
+                
                 //FECHA INGRESO
                 if(ord.getFecha()!=null)
-                    fdfDoc.setField("FechaIngreso", ord.getFecha().toString());
-                else
-                    fdfDoc.setField("FechaIngreso", "");
-                //FECHA PROMESA
-                if(ord.getFechaCliente()!=null)
-                    fdfDoc.setField("FechaPromesa", ord.getFechaCliente().toString());
-                else
-                    fdfDoc.setField("FechaPromesa", "");*/
-            
+                    fdfDoc.setField("FechaRecepcion", ord.getFecha().toString());
+                
+                //Marca
+                fdfDoc.setField("Marca", ord.getMarca().getMarcaNombre());
+                
+                //Año
+                fdfDoc.setField("Anio", ""+ord.getModelo());
+                
+                //Tipo
+                fdfDoc.setField("Modelo", ""+ord.getTipo().getTipoNombre());
+                
+                //Serie
+                if(ord.getNoSerie()!=null)
+                    fdfDoc.setField("Serie", ""+ord.getNoSerie());
+                
+                //No economico
+                if(ord.getNoEconomico()!=null)
+                    fdfDoc.setField("Economico", ""+ord.getNoEconomico());
+                
+                //Motor
+                if(ord.getNoMotor()!=null)
+                    fdfDoc.setField("Motor", ""+ord.getNoMotor());
+                
+                //Placas
+                if(ord.getNoPlacas()!=null)
+                    fdfDoc.setField("Placas", ""+ord.getNoPlacas());
+                
+                //Color
+                if(ord.getColor()!=null)
+                    fdfDoc.setField("Color", ""+ord.getColor());
+                
+                //Poliza
+                if(ord.getPoliza()!=null)
+                    fdfDoc.setField("Poliza", ""+ord.getPoliza());
+                
+                //Siniestro
+                if(ord.getSiniestro()!=null)
+                    fdfDoc.setField("Siniestro", ""+ord.getSiniestro());
+                
+                //Reporte
+                if(ord.getNoReporte()!=null)
+                    fdfDoc.setField("Reporte", ""+ord.getNoReporte());
+                
+                //Inciso
+                if(ord.getInciso()!=null)
+                    fdfDoc.setField("Inciso", ""+ord.getInciso());
+                
+                //FECHA SINIESTRO
+                if(ord.getFechaSiniestro()!=null)
+                    fdfDoc.setField("FechaReporte", ord.getFechaSiniestro().toString());
+                
+                
+                //Tipo de asegurado
+                switch(ord.getTipoCliente())
+                {
+                    case "1":
+                        fdfDoc.setField("TipoAsegurado", "Asegurado");
+                        break;
+                    case "2":
+                        fdfDoc.setField("TipoAsegurado", "Tercero");
+                        break;
+                    case "3":
+                        fdfDoc.setField("TipoAsegurado", "Tercero Asegurado");
+                        break;
+                    case "4":
+                        fdfDoc.setField("TipoAsegurado", "Particular");
+                        break;
+                    default:
+                        fdfDoc.setField("TipoAsegurado", "Particular");
+                        break;
+                }
+                
+                //Datos cliente
+                if(ord.getClientes()!=null)
+                {
+                    fdfDoc.setField("Nombre", ord.getClientes().getNombre());
+                    if(ord.getClientes().getRfc()!=null)
+                        fdfDoc.setField("RFC", ord.getClientes().getRfc());
+                    if(ord.getClientes().getDireccion()!=null)
+                        fdfDoc.setField("Direccion", ord.getClientes().getDireccion());
+                    if(ord.getClientes().getColonia()!=null)
+                        fdfDoc.setField("Colonia", ord.getClientes().getColonia());
+                    if(ord.getClientes().getRfc()!=null)
+                        fdfDoc.setField("Poblacion", ord.getClientes().getPoblacion());
+                    if(ord.getClientes().getContacto()!=null)
+                        fdfDoc.setField("Contacto", ord.getClientes().getContacto());
+                }
+                
+                //Datos de atencion a clientes
+                fdfDoc.setField("Tel1", "722 299 240 25");
+                fdfDoc.setField("Id1", "52*167862*13");
+                fdfDoc.setField("Email1", "atencionaclientes@tractoservicio.com");
+                fdfDoc.setField("Wat1", "722 299 240 25");
+                
+                
+                //datos del Tecnico Asignado
+                if(ord.getEmpleadoByRTecnico()!=null)
+                {
+                    fdfDoc.setField("Nombre2", ord.getEmpleadoByRTecnico().getNombre());
+                    fdfDoc.setField("Tel2", ord.getEmpleadoByRTecnico().getTelefono());
+                    fdfDoc.setField("Id2", ord.getEmpleadoByRTecnico().getEmail());
+                    fdfDoc.setField("Wat2", ord.getEmpleadoByRTecnico().getTelefono());
+                }
+                float tam[]=new float[]{160,80,130,170};
+                    Font font = new Font(Font.FontFamily.HELVETICA, 7, Font.BOLD);
+                    PDF reporte = new PDF();
+                    PdfPTable tabla=reporte.crearTabla(4, tam, 100, Element.ALIGN_LEFT);
+                    tabla.setTotalWidth(tam);
+                    
+                    BaseColor cabecera=BaseColor.GRAY;
+                    BaseColor contenido=BaseColor.WHITE;
+                    int centro=Element.ALIGN_CENTER;
+                    int izquierda=Element.ALIGN_LEFT;
+                    int derecha=Element.ALIGN_RIGHT;
+                    
+                    tabla.addCell(reporte.celda("BANCO", font, cabecera, centro, 0, 1,Rectangle.RECTANGLE));
+                    tabla.addCell(reporte.celda("NO° CONVENIO", font, cabecera, centro, 0,1, Rectangle.RECTANGLE));
+                    tabla.addCell(reporte.celda("N° DE CUENTA", font, cabecera, centro, 0,1, Rectangle.RECTANGLE));
+                    tabla.addCell(reporte.celda("NOMBRE DE LA COMPAÑIA", font, cabecera, centro, 0,1, Rectangle.RECTANGLE));
+                    
+                    Cuenta[] cuentas = (Cuenta[]) ord.getCompania().getCuentas().toArray(new Cuenta[0]);
+                    if(cuentas.length>0)
+                    {
+                        for(int i=0; i<cuentas.length; i++)
+                        {
+                            tabla.addCell(reporte.celda(cuentas[i].getBanco(), font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
+                            tabla.addCell(reporte.celda(cuentas[i].getConvenio().toString(), font, contenido, izquierda, 0,1, Rectangle.RECTANGLE));
+                            tabla.addCell(reporte.celda(cuentas[i].getTransferencia(), font, contenido, izquierda, 0,1, Rectangle.RECTANGLE));
+                            tabla.addCell(reporte.celda(cuentas[i].getNombre(), font, contenido, izquierda, 0,1, Rectangle.RECTANGLE));
+                        }
+                    }
+                    //reporte.agregaObjeto(tabla);                    
+            tabla.completeRow();
+            tabla.writeSelectedRows(0, -1, 40, 285, cb);
             cb.endText();
+            
             stamp.close();
-            PDF reporte = new PDF();
             reporte.cerrar();
             reporte.visualizar("reportes/"+ord.getIdOrden()+"/"+valor+"-OrdenServicio.pdf");
            
         }catch(Exception e)
         {
-            System.out.println(e);
+            e.printStackTrace();
             JOptionPane.showMessageDialog(this, "No se pudo realizar el reporte si el archivo esta abierto");
         }
         if(session!=null)

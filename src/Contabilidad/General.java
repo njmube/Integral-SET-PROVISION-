@@ -77,6 +77,8 @@ import java.io.BufferedReader;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import mysuite.TFactDocMX.Conceptos.Concepto.Opciones;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.apache.poi.hssf.record.crypto.Biff8EncryptionKey;
@@ -109,6 +111,7 @@ public class General extends javax.swing.JDialog {
         "RFC","UUID","SUCURSAL","SERIE","FOLIO","FECHA","MONTO","MONEDA"
     };
     Factura factura;
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-Ss");
     //public static final Factura RET_CANCEL =null;
     //private Factura returnStatus = RET_CANCEL;
     private Factura returnStatus = null;
@@ -2191,8 +2194,8 @@ public class General extends javax.swing.JDialog {
                     e.printStackTrace();
                 }
                 Configuracion config=(Configuracion)session.get(Configuracion.class, 1);
-                if(t_xml.getText().compareTo("")==0)
-                    t_xml.setText(config.getRfc()+"_"+t_serie_factura.getText()+"_"+t_folio_factura.getText()+"_"+t_rfc.getText()+".pdf");
+                if(t_pdf.getText().compareTo("")==0)
+                    t_pdf.setText(config.getRfc()+"_"+t_serie_factura.getText()+"_"+t_folio_factura.getText()+"_"+t_rfc.getText()+".pdf");
                 File xml=new File(ruta+"xml-timbrados/"+t_pdf.getText());
                 if(xml.exists())//existe en nuestro directorio
                     Desktop.getDesktop().open(xml);
@@ -3935,7 +3938,8 @@ public void consulta()
                                     try
                                     {
                                         String fecha=rtr.getRequestTransactionResult().getResponse().getTimeStamp().toXMLFormat();
-                                        File f = new File("errores/"+fecha+".txt");
+                                        Calendar calendario = Calendar.getInstance();
+                                        File f = new File("errores/"+sdf.format(calendario.getTime())+".txt");
                                         FileWriter w = new FileWriter(f);
                                         BufferedWriter bw = new BufferedWriter(w);
                                         PrintWriter wr = new PrintWriter(bw);  
@@ -4089,7 +4093,8 @@ public void consulta()
                                 try
                                 {
                                     String fecha=rtr.getRequestTransactionResult().getResponse().getTimeStamp().toXMLFormat();
-                                    File f = new File("errores/"+fecha+".txt");
+                                        Calendar calendario = Calendar.getInstance();
+                                        File f = new File("errores/"+sdf.format(calendario.getTime())+".txt");
                                     FileWriter w = new FileWriter(f);
                                     BufferedWriter bw = new BufferedWriter(w);
                                     PrintWriter wr = new PrintWriter(bw);  
@@ -4238,7 +4243,8 @@ public void consulta()
                                 try
                                 {
                                     String fecha=rtr.getRequestTransactionResult().getResponse().getTimeStamp().toXMLFormat();
-                                    File f = new File("errores/"+fecha+".txt");
+                                        Calendar calendario = Calendar.getInstance();
+                                        File f = new File("errores/"+sdf.format(calendario.getTime())+".txt");
                                     FileWriter w = new FileWriter(f);
                                     BufferedWriter bw = new BufferedWriter(w);
                                     PrintWriter wr = new PrintWriter(bw);  
@@ -4393,7 +4399,8 @@ public void consulta()
                                 try
                                 {
                                     String fecha=rtr.getRequestTransactionResult().getResponse().getTimeStamp().toXMLFormat();
-                                    File f = new File("errores/"+fecha+".txt");
+                                        Calendar calendario = Calendar.getInstance();
+                                        File f = new File("errores/"+sdf.format(calendario.getTime())+".txt");
                                     FileWriter w = new FileWriter(f);
                                     BufferedWriter bw = new BufferedWriter(w);
                                     PrintWriter wr = new PrintWriter(bw);  

@@ -60,6 +60,14 @@
             </key>
             <one-to-many class="Hibernate.entidades.Orden" />
         </set>
+        <set name="ordensForRTecnico" table="orden" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="r_tecnico">
+                    <comment>Tecnico responsable de atender al cliente</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Orden" />
+        </set>
         <set name="ordensForRRefacciones" table="orden" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="r_refacciones">

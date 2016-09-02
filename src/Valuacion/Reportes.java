@@ -67,6 +67,7 @@ import Integral.PanelPestanas;
 import Integral.Render1;
 import Integral.VerticalBarUI;
 import Servicios.ModificarOrden;
+import Servicios.buscaOrden;
 import java.math.BigDecimal;
 
 /**
@@ -154,6 +155,9 @@ public class Reportes extends javax.swing.JPanel {
         t_asegurado4 = new javax.swing.JCheckBox();
         c_estado_cliente = new javax.swing.JComboBox();
         jLabel14 = new javax.swing.JLabel();
+        jPanel7 = new javax.swing.JPanel();
+        t_orden = new javax.swing.JTextField();
+        b_busca_cliente1 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         cb_poliza = new javax.swing.JCheckBox();
         cb_siniestro = new javax.swing.JCheckBox();
@@ -513,7 +517,50 @@ public class Reportes extends javax.swing.JPanel {
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addGap(5, 5, 5)
                         .addComponent(jLabel14)))
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jPanel7.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "Orden", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Tahoma", 1, 11))); // NOI18N
+
+        t_orden.setEditable(false);
+        t_orden.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                t_ordenActionPerformed(evt);
+            }
+        });
+
+        b_busca_cliente1.setBackground(new java.awt.Color(2, 135, 242));
+        b_busca_cliente1.setIcon(new ImageIcon("imagenes/buscar.png"));
+        b_busca_cliente1.setToolTipText("Consultar clientes");
+        b_busca_cliente1.setMaximumSize(new java.awt.Dimension(32, 8));
+        b_busca_cliente1.setMinimumSize(new java.awt.Dimension(32, 8));
+        b_busca_cliente1.setPreferredSize(new java.awt.Dimension(32, 8));
+        b_busca_cliente1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_busca_cliente1ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(t_orden, javax.swing.GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(b_busca_cliente1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(42, 42, 42))
+        );
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(t_orden, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(b_busca_cliente1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
@@ -524,10 +571,12 @@ public class Reportes extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(470, 470, 470))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -536,7 +585,8 @@ public class Reportes extends javax.swing.JPanel {
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -675,7 +725,7 @@ public class Reportes extends javax.swing.JPanel {
                             .addComponent(cb_fecha_cliente)))
                     .addComponent(cb_tot_directa)
                     .addComponent(cb_compras))
-                .addGap(192, 337, Short.MAX_VALUE))
+                .addGap(192, 246, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -757,7 +807,7 @@ public class Reportes extends javax.swing.JPanel {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 916, Short.MAX_VALUE)
+                .addComponent(jTabbedPane1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE)
@@ -1339,6 +1389,16 @@ public class Reportes extends javax.swing.JPanel {
             entro=1;
         }
         
+        if(t_orden.getText().compareTo("")!=0)
+        {
+            if(entro==1)
+                consulta+="and ";
+            else
+                consulta+="where ";
+            consulta+="com.idOrden='" +t_orden.getText() +"' ";
+            entro=1;
+        }
+        
         /*if(entro==1)
             consulta+="and ";
         else
@@ -1537,8 +1597,8 @@ public class Reportes extends javax.swing.JPanel {
                 if(cb_compras.isSelected()==true)
                 {
                     tipos.add(java.lang.Double.class);
-                    col.add("Compras");
-                    tam.add(80);
+                    col.add("Compras sin IVA");
+                    tam.add(85);
                     tam_pdf.add(15);
                 }
 
@@ -1974,6 +2034,7 @@ public class Reportes extends javax.swing.JPanel {
         cb_factura.setSelected(false);
         cb_tipo.setSelected(false);
         cb_fecha_cliente.setSelected(false);
+        t_orden.setText("");
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void c_tipo_fechaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_c_tipo_fechaActionPerformed
@@ -2301,9 +2362,28 @@ public class Reportes extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_t_datosMouseClicked
 
+    private void t_ordenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_ordenActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_t_ordenActionPerformed
+
+    private void b_busca_cliente1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_busca_cliente1ActionPerformed
+        // TODO add your handling code here:
+        buscaOrden obj = new buscaOrden(new javax.swing.JFrame(), true, this.usr,0);
+        obj.t_busca.requestFocus();
+        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+        obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
+        obj.setVisible(true);
+        Orden orden_act=obj.getReturnStatus();
+        if (orden_act!=null)
+        this.t_orden.setText(""+orden_act.getIdOrden());
+        else
+        t_orden.setText("");
+    }//GEN-LAST:event_b_busca_cliente1ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton b_busca_cliente;
+    private javax.swing.JButton b_busca_cliente1;
     private javax.swing.JButton b_buscar_aseguradora;
     private javax.swing.JButton b_fecha_siniestro;
     private javax.swing.JButton b_fecha_siniestro1;
@@ -2358,6 +2438,7 @@ public class Reportes extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextField l_id_cliente;
     private javax.swing.JLabel l_nombre_aseguradora;
@@ -2370,6 +2451,7 @@ public class Reportes extends javax.swing.JPanel {
     private javax.swing.JTable t_datos;
     private javax.swing.JTextField t_fecha1;
     private javax.swing.JTextField t_fecha2;
+    private javax.swing.JTextField t_orden;
     // End of variables declaration//GEN-END:variables
 
     public class MyModel extends DefaultTableModel

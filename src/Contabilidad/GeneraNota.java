@@ -77,6 +77,8 @@ import java.io.BufferedReader;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.apache.poi.hssf.record.crypto.Biff8EncryptionKey;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -109,6 +111,7 @@ public class GeneraNota extends javax.swing.JDialog {
     Nota factura;
     boolean permiso=false;
     public static final Nota RET_CANCEL =null;
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-Ss");
     private Nota returnStatus = RET_CANCEL;
     /**
      * Creates new form QUALITAS
@@ -2137,6 +2140,7 @@ public class GeneraNota extends javax.swing.JDialog {
                 }
             }catch(Exception e)
             {
+                e.printStackTrace();
                 if(session!=null)
                     if(session.isConnected())
                         session.close();
@@ -2175,8 +2179,8 @@ public class GeneraNota extends javax.swing.JDialog {
                     e.printStackTrace();
                 }
                 Configuracion config=(Configuracion)session.get(Configuracion.class, 1);
-                if(t_xml.getText().compareTo("")==0)
-                    t_xml.setText(config.getRfc()+"_"+t_serie_factura.getText()+"_"+t_folio_factura.getText()+"_"+t_rfc.getText()+".pdf");
+                if(t_pdf.getText().compareTo("")==0)
+                    t_pdf.setText(config.getRfc()+"_"+t_serie_factura.getText()+"_"+t_folio_factura.getText()+"_"+t_rfc.getText()+".pdf");
                 File xml=new File(ruta+"xml-timbrados/"+t_pdf.getText());
                 if(xml.exists())//existe en nuestro directorio
                     Desktop.getDesktop().open(xml);
@@ -2198,6 +2202,7 @@ public class GeneraNota extends javax.swing.JDialog {
                 }
             }catch(Exception e)
             {
+                e.printStackTrace();
                 JOptionPane.showMessageDialog(null, "Error al consultar la base de datos");
             }
             finally
@@ -3919,7 +3924,8 @@ public void consulta()
                                     try
                                     {
                                         String fecha=rtr.getRequestTransactionResult().getResponse().getTimeStamp().toXMLFormat();
-                                        File f = new File("errores/"+fecha+".txt");
+                                        Calendar calendario = Calendar.getInstance();
+                                        File f = new File("errores/"+sdf.format(calendario.getTime())+".txt");
                                         FileWriter w = new FileWriter(f);
                                         BufferedWriter bw = new BufferedWriter(w);
                                         PrintWriter wr = new PrintWriter(bw);  
@@ -4074,7 +4080,8 @@ public void consulta()
                                 try
                                 {
                                     String fecha=rtr.getRequestTransactionResult().getResponse().getTimeStamp().toXMLFormat();
-                                    File f = new File("errores/"+fecha+".txt");
+                                        Calendar calendario = Calendar.getInstance();
+                                        File f = new File("errores/"+sdf.format(calendario.getTime())+".txt");
                                     FileWriter w = new FileWriter(f);
                                     BufferedWriter bw = new BufferedWriter(w);
                                     PrintWriter wr = new PrintWriter(bw);  
@@ -4224,7 +4231,8 @@ public void consulta()
                                 try
                                 {
                                     String fecha=rtr.getRequestTransactionResult().getResponse().getTimeStamp().toXMLFormat();
-                                    File f = new File("errores/"+fecha+".txt");
+                                        Calendar calendario = Calendar.getInstance();
+                                        File f = new File("errores/"+sdf.format(calendario.getTime())+".txt");
                                     FileWriter w = new FileWriter(f);
                                     BufferedWriter bw = new BufferedWriter(w);
                                     PrintWriter wr = new PrintWriter(bw);  
@@ -4377,7 +4385,8 @@ public void consulta()
                                 try
                                 {
                                     String fecha=rtr.getRequestTransactionResult().getResponse().getTimeStamp().toXMLFormat();
-                                    File f = new File("errores/"+fecha+".txt");
+                                        Calendar calendario = Calendar.getInstance();
+                                        File f = new File("errores/"+sdf.format(calendario.getTime())+".txt");
                                     FileWriter w = new FileWriter(f);
                                     BufferedWriter bw = new BufferedWriter(w);
                                     PrintWriter wr = new PrintWriter(bw);  

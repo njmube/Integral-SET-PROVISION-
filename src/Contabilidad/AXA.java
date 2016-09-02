@@ -2429,6 +2429,7 @@ public class AXA extends javax.swing.JDialog {
                 }
             }catch(Exception e)
             {
+                e.printStackTrace();
                 if(session!=null)
                     if(session.isConnected())
                         session.close();
@@ -2470,8 +2471,8 @@ public class AXA extends javax.swing.JDialog {
                     e.printStackTrace();
                 }
                 Configuracion config=(Configuracion)session.get(Configuracion.class, 1);
-                if(t_xml.getText().compareTo("")==0)
-                    t_xml.setText(config.getRfc()+"_"+t_serie_factura.getText()+"_"+t_folio_factura.getText()+"_"+t_rfc.getText()+".pdf");
+                if(t_pdf.getText().compareTo("")==0)
+                    t_pdf.setText(config.getRfc()+"_"+t_serie_factura.getText()+"_"+t_folio_factura.getText()+"_"+t_rfc.getText()+".pdf");
                 File xml=new File(ruta+"xml-timbrados/"+t_pdf.getText());
                 if(xml.exists())//existe en nuestro directorio
                     Desktop.getDesktop().open(xml);

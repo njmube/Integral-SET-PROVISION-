@@ -358,7 +358,7 @@ public class buscaPedido extends javax.swing.JDialog {
                     break;
                     
                 case "O. Taller":
-                    consulta+=" where id_orden like'"+t_busca.getText()+"%'";
+                    consulta+=" where (id_orden="+t_busca.getText()+" or id_pedido=(select id_pedido from partida where id_pedido=T1.id_pedido and id_orden="+t_busca.getText()+" limit 1) ) ";
                     if(tipoVentana==1)
                         consulta+=" and autorizo is not null and autorizo2 is not null";
                     //if(t_busca.getText().compareToIgnoreCase("")==0)
@@ -366,7 +366,7 @@ public class buscaPedido extends javax.swing.JDialog {
                     
                     if(tipoPedido.compareToIgnoreCase("")!=0)
                         consulta+=" and tipo_pedido='"+tipoPedido+"'";
-                    consulta+=" order by T1.id_pedido desc";
+                    //consulta+=" order by T1.id_pedido desc";
                     break;
                     
                 case "Nombre de Proveedor":
@@ -407,7 +407,6 @@ public class buscaPedido extends javax.swing.JDialog {
             //session.beginTransaction();
             if(cb_todos.isSelected()==false)
                 consulta+=" limit 70";
-            System.out.println(consulta);
             Query q = session.createSQLQuery(consulta);
             q.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
             List resultList = q.list();

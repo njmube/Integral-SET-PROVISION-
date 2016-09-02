@@ -53,6 +53,11 @@
                 <comment>1.- Usuario que realiza apertura</comment>
             </column>
         </many-to-one>
+        <many-to-one name="empleadoByRTecnico" class="Hibernate.entidades.Empleado" fetch="select">
+            <column name="r_tecnico">
+                <comment>12.1.- Responsable de atenter al cliente</comment>
+            </column>
+        </many-to-one>
         <many-to-one name="empleadoByRMecanica" class="Hibernate.entidades.Empleado" fetch="select">
             <column name="r_mecanica">
                 <comment>12.1.- Responsable de reparaci&#243;n de mec&#225;nica</comment>
