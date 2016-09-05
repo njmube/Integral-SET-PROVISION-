@@ -38,6 +38,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.ImageIcon;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 /**
  *
  * @author I.S.C Salvador
@@ -1868,12 +1870,20 @@ public class formatos extends javax.swing.JPanel {
                 }catch(Exception e){
                     e.printStackTrace();
                 }
+                Foto foto = (Foto)session.createCriteria(Foto.class).add(Restrictions.eq("orden.idOrden", Integer.parseInt(orden))).addOrder(Order.desc("fecha")).setMaxResults(1).uniqueResult();
+                if(foto!=null){
+                    try{
+                    Image img_2 = Image.getInstance("ordenes/"+ord.getIdOrden()+"/miniatura/"+foto.getDescripcion());
+                    img_2.setAbsolutePosition(480, 558);
+                    img_2.scaleAbsoluteWidth(90);
+                    img_2.scaleAbsoluteHeight(50);
+                    cb.addImage(img_2, true);
+                    }catch(Exception e){}
+                }
                 
                 //NOMBRE DEL TALLER
                 if(con.getEmpresa()!=null)
                     fdfDoc.setField("NombreEmpresa", con.getEmpresa());
-                else
-                    fdfDoc.setField("NombreEmpresa", "");
                 
                 //DIRECCION DEL TALLER 
                 String direccion="";
@@ -1909,95 +1919,51 @@ public class formatos extends javax.swing.JPanel {
                     fdfDoc.setField("Aseguradora3", ord.getCompania().getColonia());
                 if(ord.getCompania().getComentarios()!=null)
                     fdfDoc.setField("Extra", ord.getCompania().getComentarios());
+                
                 //Orden de trabajo
                 fdfDoc.setField("Orden", ""+ord.getIdOrden());
+                fdfDoc.setField("Orden1", ""+ord.getIdOrden());
                 
                 //FECHA INGRESO
                 if(ord.getFecha()!=null)
+                {
                     fdfDoc.setField("FechaRecepcion", ord.getFecha().toString());
+                    fdfDoc.setField("FechaRecepcio1", ord.getFecha().toString());
+                }
                 
                 //Marca
                 fdfDoc.setField("Marca", ord.getMarca().getMarcaNombre());
-                
-                //Año
-                fdfDoc.setField("Anio", ""+ord.getModelo());
+                fdfDoc.setField("Marca1", ord.getMarca().getMarcaNombre());
                 
                 //Tipo
                 fdfDoc.setField("Modelo", ""+ord.getTipo().getTipoNombre());
-                
-                //Serie
-                if(ord.getNoSerie()!=null)
-                    fdfDoc.setField("Serie", ""+ord.getNoSerie());
-                
-                //No economico
-                if(ord.getNoEconomico()!=null)
-                    fdfDoc.setField("Economico", ""+ord.getNoEconomico());
-                
-                //Motor
-                if(ord.getNoMotor()!=null)
-                    fdfDoc.setField("Motor", ""+ord.getNoMotor());
+                fdfDoc.setField("Modelo1", ""+ord.getTipo().getTipoNombre());
                 
                 //Placas
                 if(ord.getNoPlacas()!=null)
+                {
                     fdfDoc.setField("Placas", ""+ord.getNoPlacas());
-                
-                //Color
-                if(ord.getColor()!=null)
-                    fdfDoc.setField("Color", ""+ord.getColor());
+                    fdfDoc.setField("Placas1", ""+ord.getNoPlacas());
+                }
                 
                 //Poliza
                 if(ord.getPoliza()!=null)
+                {
                     fdfDoc.setField("Poliza", ""+ord.getPoliza());
+                    fdfDoc.setField("Poliza1", ""+ord.getPoliza());
+                }
                 
                 //Siniestro
                 if(ord.getSiniestro()!=null)
-                    fdfDoc.setField("Siniestro", ""+ord.getSiniestro());
-                
-                //Reporte
-                if(ord.getNoReporte()!=null)
-                    fdfDoc.setField("Reporte", ""+ord.getNoReporte());
-                
-                //Inciso
-                if(ord.getInciso()!=null)
-                    fdfDoc.setField("Inciso", ""+ord.getInciso());
-                
-                //FECHA SINIESTRO
-                if(ord.getFechaSiniestro()!=null)
-                    fdfDoc.setField("FechaReporte", ord.getFechaSiniestro().toString());
-                
-                
-                //Tipo de asegurado
-                switch(ord.getTipoCliente())
                 {
-                    case "1":
-                        fdfDoc.setField("TipoAsegurado", "Asegurado");
-                        break;
-                    case "2":
-                        fdfDoc.setField("TipoAsegurado", "Tercero");
-                        break;
-                    case "3":
-                        fdfDoc.setField("TipoAsegurado", "Tercero Asegurado");
-                        break;
-                    case "4":
-                        fdfDoc.setField("TipoAsegurado", "Particular");
-                        break;
-                    default:
-                        fdfDoc.setField("TipoAsegurado", "Particular");
-                        break;
+                    fdfDoc.setField("Siniestro", ""+ord.getSiniestro());
+                    fdfDoc.setField("Siniestro1", ""+ord.getSiniestro());
                 }
                 
                 //Datos cliente
                 if(ord.getClientes()!=null)
                 {
                     fdfDoc.setField("Nombre", ord.getClientes().getNombre());
-                    if(ord.getClientes().getRfc()!=null)
-                        fdfDoc.setField("RFC", ord.getClientes().getRfc());
-                    if(ord.getClientes().getDireccion()!=null)
-                        fdfDoc.setField("Direccion", ord.getClientes().getDireccion());
-                    if(ord.getClientes().getColonia()!=null)
-                        fdfDoc.setField("Colonia", ord.getClientes().getColonia());
-                    if(ord.getClientes().getRfc()!=null)
-                        fdfDoc.setField("Poblacion", ord.getClientes().getPoblacion());
                     if(ord.getClientes().getContacto()!=null)
                         fdfDoc.setField("Contacto", ord.getClientes().getContacto());
                 }
@@ -2014,9 +1980,11 @@ public class formatos extends javax.swing.JPanel {
                 {
                     fdfDoc.setField("Nombre2", ord.getEmpleadoByRTecnico().getNombre());
                     fdfDoc.setField("Tel2", ord.getEmpleadoByRTecnico().getTelefono());
-                    fdfDoc.setField("Id2", ord.getEmpleadoByRTecnico().getEmail());
+                    fdfDoc.setField("Id2", ord.getEmpleadoByRTecnico().getDireccion());
                     fdfDoc.setField("Wat2", ord.getEmpleadoByRTecnico().getTelefono());
+                    fdfDoc.setField("Email2", ord.getEmpleadoByRTecnico().getEmail());
                 }
+                
                 float tam[]=new float[]{160,80,130,170};
                     Font font = new Font(Font.FontFamily.HELVETICA, 7, Font.BOLD);
                     PDF reporte = new PDF();
@@ -2045,9 +2013,8 @@ public class formatos extends javax.swing.JPanel {
                             tabla.addCell(reporte.celda(cuentas[i].getNombre(), font, contenido, izquierda, 0,1, Rectangle.RECTANGLE));
                         }
                     }
-                    //reporte.agregaObjeto(tabla);                    
             tabla.completeRow();
-            tabla.writeSelectedRows(0, -1, 40, 285, cb);
+            tabla.writeSelectedRows(0, -1, 40, 474, cb);
             cb.endText();
             
             stamp.close();
