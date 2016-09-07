@@ -59,6 +59,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import javax.swing.DefaultCellEditor;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.hssf.util.CellRangeAddress;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
@@ -534,7 +535,9 @@ public class Conciliacion extends javax.swing.JPanel {
                     FileInputStream miPlantilla = new FileInputStream(archivoXLS);
                     POIFSFileSystem fsFileSystem = new POIFSFileSystem(miPlantilla);
                     HSSFWorkbook  libro = new HSSFWorkbook(fsFileSystem);
+                    HSSFDataFormat df = libro.createDataFormat();
                     libro.getSheet("Conciliacion").getRow(0).getCell(6).setCellValue("CONCILIACIÓN PARA FACTURACIÓN");
+                    
 
                     for (int i = 0; i < datos.size(); i++) {
                         java.util.HashMap map = (java.util.HashMap) datos.get(i);
@@ -644,7 +647,8 @@ public class Conciliacion extends javax.swing.JPanel {
                                     }
                                     
                                     //columna2
-                                    libro.getSheet("Conciliacion").getRow(miRenglon).createCell(2).setCellValue(t_datos.getValueAt(i,renglon).toString());
+                                    libro.getSheet("Conciliacion").getRow(miRenglon).createCell(2).setCellValue((Double)t_datos.getValueAt(i,renglon));
+                                    libro.getSheet("Conciliacion").getRow(miRenglon).getCell(2).getCellStyle().setDataFormat(df.getFormat("#,##0.00"));
                                     
                                     //columna3
                                     if(t_datos.getValueAt(i,14)==null){
@@ -679,20 +683,23 @@ public class Conciliacion extends javax.swing.JPanel {
                                     }
                                     
                                     //columna6
-                                    libro.getSheet("Conciliacion").getRow(miRenglon).createCell(6).setCellValue(formatoPorcentaje.format(t_datos.getValueAt(i,15)));
-                                    
+                                    //libro.getSheet("Conciliacion").getRow(miRenglon).createCell(6).setCellValue(formatoPorcentaje.format(t_datos.getValueAt(i,15)));
+                                    libro.getSheet("Conciliacion").getRow(miRenglon).createCell(6).setCellValue((Double)t_datos.getValueAt(i,15));
+                                    libro.getSheet("Conciliacion").getRow(miRenglon).getCell(6).getCellStyle().setDataFormat(df.getFormat("#,##0.00"));
                                     
                                     //columna7 $tot aut.
                                     double n;
                                     n= BigDecimal.valueOf(Double.parseDouble(t_datos.getValueAt(i,renglon).toString())*Double.parseDouble(t_datos.getValueAt(i,15).toString())).setScale(2, RoundingMode.UP).doubleValue();
-                                    libro.getSheet("Conciliacion").getRow(miRenglon).createCell(7).setCellValue(formatoPorcentaje.format(n));
+                                    libro.getSheet("Conciliacion").getRow(miRenglon).createCell(7).setCellValue(n);
+                                    libro.getSheet("Conciliacion").getRow(miRenglon).getCell(7).getCellStyle().setDataFormat(df.getFormat("#,##0.00"));
                                     
                                     //columna8
-                                    libro.getSheet("Conciliacion").getRow(miRenglon).createCell(8).setCellValue(formatoPorcentaje.format(t_datos.getValueAt(i,16)));
+                                    libro.getSheet("Conciliacion").getRow(miRenglon).createCell(8).setCellValue((double)t_datos.getValueAt(i,16));
+                                    libro.getSheet("Conciliacion").getRow(miRenglon).getCell(8).getCellStyle().setDataFormat(df.getFormat("#,##0.00"));
                                     
                                     //columna9 $tot com
                                     n= BigDecimal.valueOf(Double.parseDouble(t_datos.getValueAt(i,renglon).toString())*Double.parseDouble(t_datos.getValueAt(i,16).toString())).setScale(2, RoundingMode.UP).doubleValue();
-                                    libro.getSheet("Conciliacion").getRow(miRenglon).createCell(9).setCellValue(formatoPorcentaje.format(n));
+                                    libro.getSheet("Conciliacion").getRow(miRenglon).createCell(9).setCellValue(n);
                                     
                                     //columna10 11
                                     if(renglon==8 && t_datos.getValueAt(i,9).toString().compareTo("-")==0)
@@ -706,23 +713,23 @@ public class Conciliacion extends javax.swing.JPanel {
                                         {
                                             case 8:
                                                 n= BigDecimal.valueOf(Double.parseDouble(t_datos.getValueAt(i, 16).toString())/0.9d).setScale(2, RoundingMode.UP).doubleValue();
-                                                libro.getSheet("Conciliacion").getRow(miRenglon).createCell(11).setCellValue(formatoPorcentaje.format(n*Double.parseDouble(t_datos.getValueAt(i,renglon).toString())));
-                                                libro.getSheet("Conciliacion").getRow(miRenglon).createCell(10).setCellValue(formatoPorcentaje.format(n));
+                                                libro.getSheet("Conciliacion").getRow(miRenglon).createCell(11).setCellValue(n*Double.parseDouble(t_datos.getValueAt(i,renglon).toString()));
+                                                libro.getSheet("Conciliacion").getRow(miRenglon).createCell(10).setCellValue(n);
                                                 break;
                                             case 10:
                                                 n= BigDecimal.valueOf(Double.parseDouble(t_datos.getValueAt(i, 15).toString())*0.72d).setScale(2, RoundingMode.UP).doubleValue();
-                                                libro.getSheet("Conciliacion").getRow(miRenglon).createCell(11).setCellValue(formatoPorcentaje.format(n*Double.parseDouble(t_datos.getValueAt(i,renglon).toString())));
-                                                libro.getSheet("Conciliacion").getRow(miRenglon).createCell(10).setCellValue(formatoPorcentaje.format(n));
+                                                libro.getSheet("Conciliacion").getRow(miRenglon).createCell(11).setCellValue(n*Double.parseDouble(t_datos.getValueAt(i,renglon).toString()));
+                                                libro.getSheet("Conciliacion").getRow(miRenglon).createCell(10).setCellValue(n);
                                                 break;
                                             case 11:
                                                 n= BigDecimal.valueOf(Double.parseDouble(t_datos.getValueAt(i, 15).toString())*0.65d).setScale(2, RoundingMode.UP).doubleValue();
-                                                libro.getSheet("Conciliacion").getRow(miRenglon).createCell(11).setCellValue(formatoPorcentaje.format(n*Double.parseDouble(t_datos.getValueAt(i,renglon).toString())));
-                                                libro.getSheet("Conciliacion").getRow(miRenglon).createCell(10).setCellValue(formatoPorcentaje.format(n));
+                                                libro.getSheet("Conciliacion").getRow(miRenglon).createCell(11).setCellValue(n*Double.parseDouble(t_datos.getValueAt(i,renglon).toString()));
+                                                libro.getSheet("Conciliacion").getRow(miRenglon).createCell(10).setCellValue(n);
                                                 break;
                                             case 12:
                                                 n= BigDecimal.valueOf(Double.parseDouble(t_datos.getValueAt(i, 15).toString())*0.65d).setScale(2, RoundingMode.UP).doubleValue();
-                                                libro.getSheet("Conciliacion").getRow(miRenglon).createCell(11).setCellValue(formatoPorcentaje.format(n*Double.parseDouble(t_datos.getValueAt(i,renglon).toString())));
-                                                libro.getSheet("Conciliacion").getRow(miRenglon).createCell(10).setCellValue(formatoPorcentaje.format(n));
+                                                libro.getSheet("Conciliacion").getRow(miRenglon).createCell(11).setCellValue(n*Double.parseDouble(t_datos.getValueAt(i,renglon).toString()));
+                                                libro.getSheet("Conciliacion").getRow(miRenglon).createCell(10).setCellValue(n);
                                                 break;
                                         }
                                     }
@@ -834,7 +841,8 @@ public class Conciliacion extends javax.swing.JPanel {
                                     }
                                     
                                     //columna2
-                                    libro.getSheet("Conciliacion").getRow(miRenglon).createCell(2).setCellValue(t_datos.getValueAt(i,renglon).toString());
+                                    libro.getSheet("Conciliacion").getRow(miRenglon).createCell(2).setCellValue((double)t_datos.getValueAt(i,renglon));
+                                    libro.getSheet("Conciliacion").getRow(miRenglon).getCell(2).getCellStyle().setDataFormat(df.getFormat("#,##0.00"));
                                     
                                     //columna3
                                     if(t_datos.getValueAt(i,14)==null){
@@ -868,19 +876,23 @@ public class Conciliacion extends javax.swing.JPanel {
                                         }
                                     }
                                     //columna6
-                                    libro.getSheet("Conciliacion").getRow(miRenglon).createCell(6).setCellValue(formatoPorcentaje.format(t_datos.getValueAt(i,15)));
+                                    libro.getSheet("Conciliacion").getRow(miRenglon).createCell(6).setCellValue((double)t_datos.getValueAt(i,15));
+                                    libro.getSheet("Conciliacion").getRow(miRenglon).getCell(6).getCellStyle().setDataFormat(df.getFormat("#,##0.00"));
                                     
                                     //columna7 $tot aut.
                                     double n;
                                     n= BigDecimal.valueOf(Double.parseDouble(t_datos.getValueAt(i,renglon).toString())*Double.parseDouble(t_datos.getValueAt(i,15).toString())).setScale(2, RoundingMode.UP).doubleValue();
-                                    libro.getSheet("Conciliacion").getRow(miRenglon).createCell(7).setCellValue(formatoPorcentaje.format(n));
+                                    libro.getSheet("Conciliacion").getRow(miRenglon).createCell(7).setCellValue(n);
+                                    libro.getSheet("Conciliacion").getRow(miRenglon).getCell(7).getCellStyle().setDataFormat(df.getFormat("#,##0.00"));
                                     
                                     //columna8
-                                    libro.getSheet("Conciliacion").getRow(miRenglon).createCell(8).setCellValue(formatoPorcentaje.format(t_datos.getValueAt(i,16)));
+                                    libro.getSheet("Conciliacion").getRow(miRenglon).createCell(8).setCellValue((double)t_datos.getValueAt(i,16));
+                                    libro.getSheet("Conciliacion").getRow(miRenglon).getCell(8).getCellStyle().setDataFormat(df.getFormat("#,##0.00"));
                                     
                                     //columna9 $tot com
                                     n= BigDecimal.valueOf(Double.parseDouble(t_datos.getValueAt(i,renglon).toString())*Double.parseDouble(t_datos.getValueAt(i,16).toString())).setScale(2, RoundingMode.UP).doubleValue();
-                                    libro.getSheet("Conciliacion").getRow(miRenglon).createCell(9).setCellValue(formatoPorcentaje.format(n));
+                                    libro.getSheet("Conciliacion").getRow(miRenglon).createCell(9).setCellValue(n);
+                                    libro.getSheet("Conciliacion").getRow(miRenglon).getCell(9).getCellStyle().setDataFormat(df.getFormat("#,##0.00"));
                                     
                                     //columna10 11
                                     if(renglon==8 && t_datos.getValueAt(i,9).toString().compareTo("-")==0)
@@ -894,23 +906,24 @@ public class Conciliacion extends javax.swing.JPanel {
                                         {
                                             case 8:
                                                 n= BigDecimal.valueOf(Double.parseDouble(t_datos.getValueAt(i, 16).toString())/0.9d).setScale(2, RoundingMode.UP).doubleValue();
-                                                libro.getSheet("Conciliacion").getRow(miRenglon).createCell(10).setCellValue(formatoPorcentaje.format(n*Double.parseDouble(t_datos.getValueAt(i,renglon).toString())));
-                                                libro.getSheet("Conciliacion").getRow(miRenglon).createCell(11).setCellValue(formatoPorcentaje.format(n));
+                                                libro.getSheet("Conciliacion").getRow(miRenglon).createCell(10).setCellValue(n*Double.parseDouble(t_datos.getValueAt(i,renglon).toString()));
+                                                libro.getSheet("Conciliacion").getRow(miRenglon).createCell(11).setCellValue(n);
+                                                libro.getSheet("Conciliacion").getRow(miRenglon).getCell(7).getCellStyle().setDataFormat(df.getFormat("#,##0.00"));
                                                 break;
                                             case 10:
                                                 n= BigDecimal.valueOf(Double.parseDouble(t_datos.getValueAt(i, 15).toString())*0.72d).setScale(2, RoundingMode.UP).doubleValue();
-                                                libro.getSheet("Conciliacion").getRow(miRenglon).createCell(10).setCellValue(formatoPorcentaje.format(n*Double.parseDouble(t_datos.getValueAt(i,renglon).toString())));
-                                                libro.getSheet("Conciliacion").getRow(miRenglon).createCell(11).setCellValue(formatoPorcentaje.format(n));
+                                                libro.getSheet("Conciliacion").getRow(miRenglon).createCell(10).setCellValue(n*Double.parseDouble(t_datos.getValueAt(i,renglon).toString()));
+                                                libro.getSheet("Conciliacion").getRow(miRenglon).createCell(11).setCellValue(n);
                                                 break;
                                             case 11:
                                                 n= BigDecimal.valueOf(Double.parseDouble(t_datos.getValueAt(i, 15).toString())*0.65d).setScale(2, RoundingMode.UP).doubleValue();
-                                                libro.getSheet("Conciliacion").getRow(miRenglon).createCell(10).setCellValue(formatoPorcentaje.format(n*Double.parseDouble(t_datos.getValueAt(i,renglon).toString())));
-                                                libro.getSheet("Conciliacion").getRow(miRenglon).createCell(11).setCellValue(formatoPorcentaje.format(n));
+                                                libro.getSheet("Conciliacion").getRow(miRenglon).createCell(10).setCellValue(n*Double.parseDouble(t_datos.getValueAt(i,renglon).toString()));
+                                                libro.getSheet("Conciliacion").getRow(miRenglon).createCell(11).setCellValue(n);
                                                 break;
                                             case 12:
                                                 n= BigDecimal.valueOf(Double.parseDouble(t_datos.getValueAt(i, 15).toString())*0.65d).setScale(2, RoundingMode.UP).doubleValue();
-                                                libro.getSheet("Conciliacion").getRow(miRenglon).createCell(10).setCellValue(formatoPorcentaje.format(n*Double.parseDouble(t_datos.getValueAt(i,renglon).toString())));
-                                                libro.getSheet("Conciliacion").getRow(miRenglon).createCell(11).setCellValue(formatoPorcentaje.format(n));
+                                                libro.getSheet("Conciliacion").getRow(miRenglon).createCell(10).setCellValue(n*Double.parseDouble(t_datos.getValueAt(i,renglon).toString()));
+                                                libro.getSheet("Conciliacion").getRow(miRenglon).createCell(11).setCellValue(n);
                                                 break;
                                         }
                                     }
