@@ -36,8 +36,10 @@ import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 /**
  *
  * @author salvador
@@ -48,6 +50,7 @@ public class ResponsablesOP extends javax.swing.JPanel {
     public Orden orden_act=null;
     Herramientas h;
     String estado="";
+    String ruta="";
     String sessionPrograma="";
     /**
      * Creates new form Responsables
@@ -57,6 +60,15 @@ public class ResponsablesOP extends javax.swing.JPanel {
         usr=usuario;
         initComponents();
         jButton1.setIcon(new ImageIcon("imagenes/pdf.png"));
+        ruta="";
+        try
+        {
+            FileReader f = new FileReader("config.txt");
+            BufferedReader b = new BufferedReader(f);
+            if((ruta = b.readLine())==null)
+                ruta="";
+            b.close();
+        }catch(Exception e){e.printStackTrace();}
     }
 
     /**
@@ -1266,7 +1278,7 @@ public class ResponsablesOP extends javax.swing.JPanel {
             File folder = new File("reportes/"+ord.getIdOrden());
             folder.mkdirs();
             PdfReader reader = new PdfReader("imagenes/PlantillaHojaAsignacion.pdf");
-            PdfStamper stamp = new PdfStamper(reader, new FileOutputStream("reportes/"+ ord.getIdOrden() +"/"+ valor +"-HojaAsignacion.pdf"));
+            PdfStamper stamp = new PdfStamper(reader, new FileOutputStream(ruta+"reportes/"+ ord.getIdOrden() +"/"+ valor +"-HojaAsignacion.pdf"));
             PdfContentByte cb = stamp.getUnderContent(1);
             AcroFields fdfDoc = stamp.getAcroFields();
             BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.EMBEDDED);

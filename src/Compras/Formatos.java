@@ -938,8 +938,8 @@ public class Formatos {
 
         if(ord!=null)
         {
-            if(ord.getCompania()!=null)
-                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Aseg:"+ord.getCompania().getNombre(), 40, 705, 0);
+            /*if(ord.getCompania()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Aseg:"+ord.getCompania().getNombre(), 40, 705, 0);*/
             reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "O. Taller: "+ord.getIdOrden()+"    Modelo: "+ord.getModelo(), 40, 695, 0);
             reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Tipo: "+ord.getTipo().getTipoNombre(), 40, 685, 0);
             if(ord.getNoSerie()!=null)
@@ -952,8 +952,8 @@ public class Formatos {
                 reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Aseg: NA", 40, 705, 0);
                 reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Inventario", 40, 695, 0);
             }else{
-                if(ped.getOrdenExterna().getCompania()!=null)
-                    reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Aseg: NA"+ped.getOrdenExterna().getCompania().getNombre(), 40, 705, 0);
+                /*if(ped.getOrdenExterna().getCompania()!=null)
+                    reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Aseg: NA"+ped.getOrdenExterna().getCompania().getNombre(), 40, 705, 0);*/
                 reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Externo", 40, 695, 0);
             }
         }

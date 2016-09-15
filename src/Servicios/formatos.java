@@ -347,10 +347,10 @@ public class formatos extends javax.swing.JPanel {
             Date fecha = new Date();
             DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
             String valor=dateFormat.format(fecha);
-            File folder = new File("reportes/"+ord.getIdOrden());
+            File folder = new File(ruta+"reportes/"+ord.getIdOrden());
             folder.mkdirs();
             PdfReader reader = new PdfReader("imagenes/Plantillaunidad.pdf");
-            PdfStamper stamp = new PdfStamper(reader, new FileOutputStream("reportes/"+ ord.getIdOrden() +"/"+ valor +"-unidad.pdf"));
+            PdfStamper stamp = new PdfStamper(reader, new FileOutputStream(ruta+"reportes/"+ ord.getIdOrden() +"/"+ valor +"-unidad.pdf"));
             PdfContentByte cb = stamp.getUnderContent(1);
             AcroFields fdfDoc = stamp.getAcroFields();
             BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.EMBEDDED);
@@ -468,7 +468,7 @@ public class formatos extends javax.swing.JPanel {
             Date fecha = new Date();
             DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
             String valor=dateFormat.format(fecha);
-            File folder = new File("reportes/"+ord.getIdOrden());
+            File folder = new File(ruta+"reportes/"+ord.getIdOrden());
             folder.mkdirs();
             reporte.Abrir(PageSize.LETTER, "Inventario de Tractocamión", "reportes/"+ord.getIdOrden()+"/"+valor+"-invTRacto.pdf");
 
@@ -689,7 +689,7 @@ public class formatos extends javax.swing.JPanel {
             Date fecha = new Date();
             DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
             String valor=dateFormat.format(fecha);
-            File folder = new File("reportes/"+ord.getIdOrden());
+            File folder = new File(ruta+"reportes/"+ord.getIdOrden());
             folder.mkdirs();
             reporte.Abrir(PageSize.LETTER, "Inventario de Caja", "reportes/"+ord.getIdOrden()+"/"+valor+"-invCaja.pdf");
 
@@ -864,10 +864,10 @@ public class formatos extends javax.swing.JPanel {
             Date fecha = new Date();
             DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
             String valor=dateFormat.format(fecha);
-            File folder = new File("reportes/"+ord.getIdOrden());
+            File folder = new File(ruta+"reportes/"+ord.getIdOrden());
             folder.mkdirs();
             PdfReader reader = new PdfReader("imagenes/PlantillaAceptacion.pdf");
-            PdfStamper stamp = new PdfStamper(reader, new FileOutputStream("reportes/"+ ord.getIdOrden() +"/"+ valor +"-ACEPTACION.pdf"));
+            PdfStamper stamp = new PdfStamper(reader, new FileOutputStream(ruta+"reportes/"+ ord.getIdOrden() +"/"+ valor +"-ACEPTACION.pdf"));
             PdfContentByte cb = stamp.getUnderContent(1);
             AcroFields fdfDoc = stamp.getAcroFields();
             BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.EMBEDDED);
@@ -914,7 +914,7 @@ public class formatos extends javax.swing.JPanel {
                 if(fotos.length>0){
                     Image img1;
                     try{
-                    img1=Image.getInstance("ordenes/"+ord.getIdOrden()+"/miniatura/"+fotos[0].getDescripcion());
+                    img1=Image.getInstance(ruta+"ordenes/"+ord.getIdOrden()+"/miniatura/"+fotos[0].getDescripcion());
                     img1.setAbsolutePosition(50, 473);
                     img1.scaleToFit(110, 100);
                     cb.addImage(img1, true);
@@ -1001,10 +1001,10 @@ public class formatos extends javax.swing.JPanel {
             Date fecha = new Date();
             DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
             String valor=dateFormat.format(fecha);
-            File folder = new File("reportes/"+ord.getIdOrden());
+            File folder = new File(ruta+"reportes/"+ord.getIdOrden());
             folder.mkdirs();
             PdfReader reader = new PdfReader("imagenes/Plantillapromesa.pdf");
-            PdfStamper stamp = new PdfStamper(reader, new FileOutputStream("reportes/"+ ord.getIdOrden() +"/"+ valor +"-promesa.pdf"));
+            PdfStamper stamp = new PdfStamper(reader, new FileOutputStream(ruta+"reportes/"+ ord.getIdOrden() +"/"+ valor +"-promesa.pdf"));
             PdfContentByte cb = stamp.getUnderContent(1);
             AcroFields fdfDoc = stamp.getAcroFields();
             BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.EMBEDDED);
@@ -1090,10 +1090,10 @@ public class formatos extends javax.swing.JPanel {
             Date fecha = new Date();
             DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
             String valor=dateFormat.format(fecha);
-            File folder = new File("reportes/"+ord.getIdOrden());
+            File folder = new File(ruta+"reportes/"+ord.getIdOrden());
             folder.mkdirs();
             PdfReader reader = new PdfReader("imagenes/PlantillaEncuentas.pdf");
-            PdfStamper stamp = new PdfStamper(reader, new FileOutputStream("reportes/"+ ord.getIdOrden() +"/"+ valor +"-encuesta.pdf"));
+            PdfStamper stamp = new PdfStamper(reader, new FileOutputStream(ruta+"reportes/"+ ord.getIdOrden() +"/"+ valor +"-encuesta.pdf"));
             PdfContentByte cb = stamp.getUnderContent(1);
             AcroFields fdfDoc = stamp.getAcroFields();
             BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.EMBEDDED);
@@ -1153,7 +1153,7 @@ public class formatos extends javax.swing.JPanel {
             File folder = new File("reportes/"+ord.getIdOrden());
             folder.mkdirs();
             PdfReader reader = new PdfReader("imagenes/PlantillaSalidaVehiculos.pdf");
-            PdfStamper stamp = new PdfStamper(reader, new FileOutputStream("reportes/"+ ord.getIdOrden() +"/"+ valor +"-salida.pdf"));
+            PdfStamper stamp = new PdfStamper(reader, new FileOutputStream(ruta+"reportes/"+ ord.getIdOrden() +"/"+ valor +"-salida.pdf"));
             PdfContentByte cb = stamp.getUnderContent(1);
             AcroFields fdfDoc = stamp.getAcroFields();
             BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.EMBEDDED);
@@ -1245,10 +1245,10 @@ public class formatos extends javax.swing.JPanel {
             Date fecha = new Date();
             DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
             String valor=dateFormat.format(fecha);
-            File folder = new File("reportes/"+ord.getIdOrden());
+            File folder = new File(ruta+"reportes/"+ord.getIdOrden());
             folder.mkdirs();
             PdfReader reader = new PdfReader("imagenes/PlantillaEncuenta.pdf");
-            PdfStamper stamp = new PdfStamper(reader, new FileOutputStream("reportes/"+ ord.getIdOrden() +"/"+ valor +"-encuesta1.pdf"));
+            PdfStamper stamp = new PdfStamper(reader, new FileOutputStream(ruta+"reportes/"+ ord.getIdOrden() +"/"+ valor +"-encuesta1.pdf"));
             PdfContentByte cb = stamp.getUnderContent(1);
             AcroFields fdfDoc = stamp.getAcroFields();
             BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.EMBEDDED);
@@ -1302,7 +1302,7 @@ public class formatos extends javax.swing.JPanel {
             Date fecha = new Date();
             DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
             String valor=dateFormat.format(fecha);
-            File folder = new File("reportes/"+ord.getIdOrden());
+            File folder = new File(ruta+"reportes/"+ord.getIdOrden());
             folder.mkdirs();
             reporte.Abrir(PageSize.LETTER, "Etiqueta de Expediente", "reportes/"+ord.getIdOrden()+"/"+valor+"-Etiqueta.pdf");
             int op=39; 
@@ -1413,10 +1413,10 @@ public class formatos extends javax.swing.JPanel {
             Date fecha = new Date();
             DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
             String valor=dateFormat.format(fecha);
-            File folder = new File("reportes/"+ord.getIdOrden());
+            File folder = new File(ruta+"reportes/"+ord.getIdOrden());
             folder.mkdirs();
             PdfReader reader = new PdfReader("imagenes/PlantillaPromesaQualitas.pdf");
-            PdfStamper stamp = new PdfStamper(reader, new FileOutputStream("reportes/"+ ord.getIdOrden() +"/"+ valor +"-promesaQualitas.pdf"));
+            PdfStamper stamp = new PdfStamper(reader, new FileOutputStream(ruta+"reportes/"+ ord.getIdOrden() +"/"+ valor +"-promesaQualitas.pdf"));
             PdfContentByte cb = stamp.getUnderContent(1);
             AcroFields fdfDoc = stamp.getAcroFields();
             BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.EMBEDDED);
@@ -1538,7 +1538,7 @@ public class formatos extends javax.swing.JPanel {
             File folder = new File("reportes/"+ord.getIdOrden());
             folder.mkdirs();
             PdfReader reader = new PdfReader("imagenes/PlantillaEncueStaQualitas.pdf");
-            PdfStamper stamp = new PdfStamper(reader, new FileOutputStream("reportes/"+ ord.getIdOrden() +"/"+ valor +"-encuesta.pdf"));
+            PdfStamper stamp = new PdfStamper(reader, new FileOutputStream(ruta+"reportes/"+ ord.getIdOrden() +"/"+ valor +"-encuesta.pdf"));
             PdfContentByte cb = stamp.getUnderContent(1);
             AcroFields fdfDoc = stamp.getAcroFields();
             BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.EMBEDDED);
@@ -1615,7 +1615,7 @@ public class formatos extends javax.swing.JPanel {
             File folder = new File("reportes/"+ord.getIdOrden());
             folder.mkdirs();
             PdfReader reader = new PdfReader("imagenes/PlantillaPromesaAxa.pdf");
-            PdfStamper stamp = new PdfStamper(reader, new FileOutputStream("reportes/"+ ord.getIdOrden() +"/"+ valor +"-promesaAXA.pdf"));
+            PdfStamper stamp = new PdfStamper(reader, new FileOutputStream(ruta+"reportes/"+ ord.getIdOrden() +"/"+ valor +"-promesaAXA.pdf"));
             PdfContentByte cb = stamp.getUnderContent(1);
             AcroFields fdfDoc = stamp.getAcroFields();
             BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.EMBEDDED);
@@ -1696,7 +1696,7 @@ public class formatos extends javax.swing.JPanel {
             Date fecha = new Date();
             DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
             String valor=dateFormat.format(fecha);
-            File folder = new File("reportes/"+ord.getIdOrden());
+            File folder = new File(ruta+"reportes/"+ord.getIdOrden());
             folder.mkdirs();
             reporte.Abrir(PageSize.LETTER, "Hoja de Unidad", "reportes/"+ord.getIdOrden()+"/"+valor+"-unidad1.pdf");
 
@@ -1714,108 +1714,6 @@ public class formatos extends javax.swing.JPanel {
             reporte.inicioTexto();
                 reporte.texto("No° de Orden", bf, BaseColor.BLACK, 80, 40, 500);
                 reporte.texto(orden, bf, BaseColor.BLACK, 150, 30, 300);
-                /*
-                //********agregamos asegurado***********************************************************
-                reporte.texto("ASEGURADO:", bf, BaseColor.BLACK, 23, 40, 550);
-                try
-                {
-                    String var=ord.getClientes().getNombre();
-                    if(var.length()>31)
-                        var=var.substring(0, 31);
-                reporte.texto(var, bf, BaseColor.BLACK, 17, 210, 550);
-                }catch(Exception e)
-                {
-                    reporte.texto(" ", bf, BaseColor.BLACK, 17, 210, 550);
-                }
-                reporte.contenido.rectangle(207, 540, 350, 0);
-                //********agregamos placas***********************************************************
-                reporte.texto("PLACAS:", bf, BaseColor.BLACK, 23, 95, 500);
-                try
-                {
-                    reporte.texto(ord.getNoPlacas(), bf, BaseColor.BLACK, 23, 210, 500);
-                }catch(Exception e)
-                {
-                    reporte.texto(" ", bf, BaseColor.BLACK, 17, 210, 500);
-                }
-                reporte.contenido.rectangle(207, 490, 350, 0);
-                
-                //********agregamos marca*************************************************************
-                reporte.texto("MARCA:", bf, BaseColor.BLACK, 23, 100, 450);
-                reporte.texto(ord.getMarca().getMarcaNombre(), bf, BaseColor.BLACK, 23, 210, 450);
-                reporte.contenido.rectangle(207, 440, 350, 0);
-                
-                //********agregamos tipo***************************************************************
-                reporte.texto("TIPO:", bf, BaseColor.BLACK, 23, 130, 400);
-                reporte.texto(ord.getTipo().getTipoNombre(), bf, BaseColor.BLACK, 23, 210, 400);
-                reporte.contenido.rectangle(207, 390, 350, 0);
-                
-                //********agregamos responsable de hojalateria******************************************
-                reporte.texto("HOJALATERIA:", bf, BaseColor.BLACK, 23, 30, 350);
-                try
-                {
-                    reporte.texto(ord.getEmpleadoByRHojalateria().getNombre(), bf, BaseColor.BLACK, 17, 210, 350);
-                }catch(Exception e)
-                {
-                    reporte.texto(" ", bf, BaseColor.BLACK, 23, 210, 350);
-                }
-                reporte.contenido.rectangle(207, 340, 350, 0);
-                
-                //********agregamos responsable de pintura**********************************************
-                reporte.texto("MECANICA:", bf, BaseColor.BLACK, 23, 64, 300);
-                try
-                {
-                    reporte.texto(ord.getEmpleadoByRMecanica().getNombre(), bf, BaseColor.BLACK, 17, 210, 300);
-                }catch(Exception e)
-                {
-                    reporte.texto(" ", bf, BaseColor.BLACK, 23, 210, 300);
-                }
-                reporte.contenido.rectangle(207, 290, 350, 0);
-                
-                //********agregamos responsable de pintura**********************************************
-                reporte.texto("SUSPENSIÓN:", bf, BaseColor.BLACK, 23, 35, 250);
-                try
-                {
-                    reporte.texto(ord.getEmpleadoByRSuspension().getNombre(), bf, BaseColor.BLACK, 17, 210, 250);
-                }catch(Exception e)
-                {
-                    reporte.texto(" ", bf, BaseColor.BLACK, 23, 210, 250);
-                }
-                reporte.contenido.rectangle(207, 240, 350, 0);
-                
-                //********agregamos responsable de pintura**********************************************
-                reporte.texto("ELECTRICO:", bf, BaseColor.BLACK, 23, 52, 200);
-                try
-                {
-                    reporte.texto(ord.getEmpleadoByRElectrico().getNombre(), bf, BaseColor.BLACK, 17, 210, 200);
-                }catch(Exception e)
-                {
-                    reporte.texto(" ", bf, BaseColor.BLACK, 23, 210, 200);
-                }
-                reporte.contenido.rectangle(207, 190, 350, 0);
-                
-                //********agregamos fecha de ingreso*****************************************************
-                reporte.texto("INGRESO:", bf, BaseColor.BLACK, 23, 74, 150);               
-                try
-                {
-                    reporte.texto(ord.getFecha().toString(), bf, BaseColor.BLACK, 23, 210, 150);
-                }
-                catch(Exception e)
-                {
-                    reporte.texto(" ", bf, BaseColor.BLACK, 23, 210, 150);
-                }
-                reporte.contenido.rectangle(207, 140, 350, 0);
-                
-                //********agregamos fecha de entrega*******************************************************
-                reporte.texto("ENTREGA:", bf, BaseColor.BLACK, 23, 74, 100);
-                try
-                {
-                    reporte.texto(ord.getFechaTaller().toString(), bf, BaseColor.BLACK, 23, 210, 100);
-                }
-                catch(Exception e)
-                {
-                    reporte.texto(" ", bf, BaseColor.BLACK, 23, 210, 100);
-                }
-                reporte.contenido.rectangle(207, 90, 350, 0);*/
                 
             reporte.finTexto();
             
@@ -1846,7 +1744,7 @@ public class formatos extends javax.swing.JPanel {
             File folder = new File("reportes/"+ord.getIdOrden());
             folder.mkdirs();
             PdfReader reader = new PdfReader("imagenes/PlantillaOrdenServicio.pdf");
-            PdfStamper stamp = new PdfStamper(reader, new FileOutputStream("reportes/"+ ord.getIdOrden() +"/"+ valor +"-OrdenServicio.pdf"));
+            PdfStamper stamp = new PdfStamper(reader, new FileOutputStream(ruta+"reportes/"+ ord.getIdOrden() +"/"+ valor +"-OrdenServicio.pdf"));
             PdfContentByte cb = stamp.getUnderContent(1);
             AcroFields fdfDoc = stamp.getAcroFields();
             

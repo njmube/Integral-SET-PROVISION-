@@ -69,7 +69,7 @@ import org.hibernate.Session;
  */
 public class Reporte2 extends javax.swing.JPanel {
 
-    DefaultTableModel model, model1,model2;
+    DefaultTableModel model, model1,model2, model4;
     Usuario usr;
     int menu, x=0;
     String sessionPrograma="";
@@ -79,6 +79,8 @@ public class Reporte2 extends javax.swing.JPanel {
     String[] columnas1 = new String [] {"Partida", "Descripción", "Cant", "Recibió/Entrego", "Fecha", "Movimiento", "T.Movimiento"};
     String[] columnas2 = new String [] {"Pedido", "Proveedor", "Fecha De Mov.", "N° Mov.", "Tipo", "Operación", "Orden", "Monto", "Tipo Doc.", "N° Doc."};
     String[] columnas3 = new String [] {"Pedido", "Proveedor", "Fecha De Mov.", "N° Mov.", "Operación", "Tipo Doc.", "N° Doc."};
+    String[] columnas4 = new String [] {
+        "Id","No","#","Descripcion","Can","Med","Codigo","Cant C.","$C/U Comp","Alm.","Ope.","Pend."};
     FormatoTabla formato;
     String valor;
     /**
@@ -122,11 +124,32 @@ public class Reporte2 extends javax.swing.JPanel {
                 false, false, false, false, false, false, false, false, false, false
             };
         t_datos2.setModel(ModeloTablaReporte(0,columnas3, t2,e2,model2));
+        
+        Class[] t4 = new Class [] {
+                java.lang.String.class, 
+                java.lang.Integer.class, 
+                java.lang.Integer.class, 
+                java.lang.String.class, 
+                java.lang.Double.class,
+                java.lang.String.class,
+                java.lang.String.class,
+                java.lang.Double.class, 
+                java.lang.Double.class,
+                java.lang.Double.class,
+                java.lang.Double.class,
+                java.lang.Double.class
+            };
+        boolean[] e4 = new boolean [] {
+                false, false, false, false, false, false, false, false, false, false, false, false
+            };
+        t_datos4.setModel(ModeloTablaReporte(0,columnas4, t4,e4,model4));
+        
         formato = new FormatoTabla();
         
         formatoTabla();
         formatoTabla1();
         formatoTabla2();
+        formatoTabla4();
     }
     
     public void consultaOrden()
@@ -152,6 +175,118 @@ public class Reporte2 extends javax.swing.JPanel {
                 session.close();
             session=null;
         }
+    }
+    
+    private void buscaCuentas()
+    {
+        double imp=0.0;
+            Session session = HibernateUtil.getSessionFactory().openSession();
+            try
+            {   
+                session.beginTransaction().begin();
+                List partidas=new ArrayList();
+                Query query, query2;
+                ArrayList partidas1=new ArrayList();
+                
+                    query=session.createSQLQuery("select partida.id_partida as id, partida.id_evaluacion, partida.sub_partida, catalogo.nombre, \n" +
+"partida.cant, partida.med, partida.id_parte, \n" +
+"partida.cant_pcp, partida.pcp, \n" +
+"((select if( sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) as can \n" +
+"from movimiento inner join almacen on movimiento.id_almacen=almacen.id_almacen where id_partida=id and almacen.tipo_movimiento=1 and almacen.operacion in (1, 4)) \n" +
+"-\n" +
+"(select if( sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) as can \n" +
+"from movimiento inner join almacen on movimiento.id_almacen=almacen.id_almacen where id_partida=id and almacen.tipo_movimiento=2 and almacen.operacion in (1, 4))) as almacen, \n" +
+"\n" +
+"((select if( sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) as can \n" +
+"from movimiento inner join almacen on movimiento.id_almacen=almacen.id_almacen where id_partida=id and almacen.tipo_movimiento=2 and almacen.operacion=5) \n" +
+"-\n" +
+"(select if( sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) as can \n" +
+"from movimiento inner join almacen on movimiento.id_almacen=almacen.id_almacen where id_partida=id and almacen.tipo_movimiento=1 and almacen.operacion=5)) as operario \n" +
+"from partida inner join catalogo on partida.id_catalogo=catalogo.id_catalogo \n" +
+"inner join pedido on pedido.id_pedido=partida.id_pedido where partida.id_pedido="+t_pedido.getText()+" order by partida.id_partida asc");
+                    query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+                    partidas1=(ArrayList)query.list();
+                    query2 = session.createSQLQuery("select partida_externa.id_partida_externa as id, partida_externa.descripcion, partida_externa.cantidad, partida_externa.unidad, \n" +
+"partida_externa.noParte, partida_externa.costo, \n" +
+"(select if( sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) as can \n" +
+"from movimiento inner join almacen on movimiento.id_almacen=almacen.id_almacen where movimiento.id_externos=id and almacen.tipo_movimiento=1 and almacen.operacion = 3) \n" +
+"-\n" +
+"(select if( sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) as can \n" +
+"from movimiento inner join almacen on movimiento.id_almacen=almacen.id_almacen where movimiento.id_externos=id and almacen.tipo_movimiento=2 and almacen.operacion = 3) as almacen, \n" +
+"\n" +
+"(select if( sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) as can \n" +
+"from movimiento inner join almacen on movimiento.id_almacen=almacen.id_almacen where movimiento.id_externos=id and almacen.tipo_movimiento=2 and almacen.operacion=5) \n" +
+"-\n" +
+"((select if( sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) as can \n" +
+"from movimiento inner join almacen on movimiento.id_almacen=almacen.id_almacen where movimiento.id_externos=id and almacen.tipo_movimiento=1 and almacen.operacion=5)) as operario \n" +
+"from partida_externa inner join pedido on partida_externa.id_pedido=pedido.id_pedido where partida_externa.id_pedido="+t_pedido.getText()+" order by partida_externa.id_externos;");
+                    query2.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+                    partidas = (ArrayList)query2.list();
+                
+                int renglones=partidas1.size()+partidas.size();
+                model4=(DefaultTableModel)t_datos4.getModel();
+                model4.setRowCount(0);
+                if(partidas1.size()>0)
+                {                    
+                    //noPartida=new ArrayList();
+                    for(int i=0; i<partidas1.size(); i++)
+                    {
+                        java.util.HashMap map=(java.util.HashMap)partidas1.get(i);
+                        Object[] renglon=new Object[12];
+                        //noPartida.add(map.get("id"));
+                        renglon[0]=map.get("id");
+                        renglon[1]=map.get("id_evaluacion");
+                        renglon[2]=map.get("sub_partida");
+                        renglon[3]=map.get("nombre");
+                        renglon[4]=map.get("cant");
+                        renglon[5]=map.get("med");
+                        renglon[6]=map.get("id_parte");
+                        renglon[7]=map.get("cant_pcp");//cant c
+                        renglon[8]=map.get("pcp");//C/U Com
+                        renglon[9]=map.get("almacen");
+                        renglon[10]=map.get("operario");//pedido
+                        
+                        double pen=Double.parseDouble(map.get("cant_pcp").toString())-Double.parseDouble(map.get("almacen").toString());
+                        renglon[11]=pen;//pedido
+                        model4.addRow(renglon);
+                    }
+                }
+                                
+                if(partidas.size()>0)
+                {
+                    //PartidaExterna[] parext = (PartidaExterna[]) partidas.toArray(new PartidaExterna[0]);
+                    for(int i=0; i<partidas.size(); i++)
+                    {
+                        java.util.HashMap map1=(java.util.HashMap)partidas.get(i);
+                        Object[] renglon=new Object[12];
+                        
+                        renglon[0]=map1.get("id");
+                        renglon[1]=0;
+                        renglon[2]=0;
+                        renglon[3]=map1.get("descripcion");
+                        renglon[4]=map1.get("cantidad");
+                        renglon[5]=map1.get("unidad");
+                        renglon[6]=map1.get("noParte");
+                        renglon[7]=map1.get("cantidad");
+                        renglon[8]=map1.get("costo");
+                        renglon[9]=map1.get("almacen");
+                        renglon[10]=map1.get("operario");
+                        double pen=Double.parseDouble(map1.get("cantidad").toString())-Double.parseDouble(map1.get("almacen").toString());
+                        renglon[11]=pen;
+                        model4.addRow(renglon);
+                    }
+                }
+                session.beginTransaction().rollback();
+            }catch(Exception e)
+            {
+                e.printStackTrace();
+            }
+            finally
+            {
+                if(session.isOpen()==true)
+                    session.close();
+            }
+        formatoTabla4();
     }
 
     /**
@@ -232,6 +367,11 @@ public class Reporte2 extends javax.swing.JPanel {
         t_unidad = new javax.swing.JTable();
         jButton18 = new javax.swing.JButton();
         jButton19 = new javax.swing.JButton();
+        jPanel11 = new javax.swing.JPanel();
+        t_pedido = new javax.swing.JTextField();
+        jButton20 = new javax.swing.JButton();
+        jScrollPane7 = new javax.swing.JScrollPane();
+        t_datos4 = new javax.swing.JTable();
 
         muestra.setTitle("Consultar Movimiento");
         muestra.setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
@@ -1029,6 +1169,61 @@ public class Reporte2 extends javax.swing.JPanel {
         );
 
         jTabbedPane1.addTab("Consumible  x unidad", jPanel8);
+
+        jPanel11.setBackground(new java.awt.Color(255, 255, 255));
+
+        t_pedido.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                t_pedidoActionPerformed(evt);
+            }
+        });
+
+        jButton20.setText("No de Pedido:");
+        jButton20.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton20ActionPerformed(evt);
+            }
+        });
+
+        t_datos4.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4", "Title 5", "Title 6", "Title 7", "Title 8", "Title 9", "Title 10", "Title 11", "Title 12"
+            }
+        ));
+        t_datos4.getTableHeader().setReorderingAllowed(false);
+        jScrollPane7.setViewportView(t_datos4);
+
+        javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
+        jPanel11.setLayout(jPanel11Layout);
+        jPanel11Layout.setHorizontalGroup(
+            jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel11Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 985, Short.MAX_VALUE)
+                    .addGroup(jPanel11Layout.createSequentialGroup()
+                        .addComponent(jButton20)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(t_pedido, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel11Layout.setVerticalGroup(
+            jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel11Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(t_pedido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton20))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 442, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jTabbedPane1.addTab("Estado Pedido", jPanel11);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -2379,6 +2574,20 @@ public class Reporte2 extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_jButton19ActionPerformed
 
+    private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton20ActionPerformed
+        // TODO add your handling code here:
+        t_pedido.setText(t_pedido.getText().trim());
+        if(t_pedido.getText().compareTo("")!=0)
+            buscaCuentas();
+    }//GEN-LAST:event_jButton20ActionPerformed
+
+    private void t_pedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_pedidoActionPerformed
+        // TODO add your handling code here:
+        t_pedido.setText(t_pedido.getText().trim());
+        if(t_pedido.getText().compareTo("")!=0)
+            buscaCuentas();
+    }//GEN-LAST:event_t_pedidoActionPerformed
+
     DefaultTableModel ModeloTablaReporte(int renglones, String columnas[], final Class[] tipos, final boolean[] edo, DefaultTableModel modelo)
     {
         modelo = new DefaultTableModel(new Object [renglones][0], columnas)
@@ -2664,6 +2873,47 @@ public void cabecera1(PDF reporte, BaseFont bf, PdfPTable tabla, String titulo1,
         JTableHeader header = t_datos2.getTableHeader();
         header.setForeground(Color.black);
     }
+    
+    public void formatoTabla4()
+    {
+        Color c1 = new java.awt.Color(2, 135, 242);
+        for(int x=0; x<t_datos4.getColumnModel().getColumnCount(); x++)
+            t_datos4.getColumnModel().getColumn(x).setHeaderRenderer(new Render1(c1));
+        tabla_tamaños4();
+        t_datos4.setShowVerticalLines(true);
+        t_datos4.setShowHorizontalLines(true);
+            
+    }
+    
+    public void tabla_tamaños4()
+    {
+        TableColumnModel col_model = t_datos4.getColumnModel();
+        
+        for (int i=0; i<t_datos4.getColumnCount(); i++)
+        {
+            TableColumn column = col_model.getColumn(i);
+            switch(i)
+            {
+                case 0:
+                    column.setPreferredWidth(50);
+                    break;      
+                case 3:
+                    column.setPreferredWidth(200);
+                    break;  
+                case 6:
+                    column.setPreferredWidth(70);
+                    break; 
+                case 8:
+                    column.setPreferredWidth(50);
+                    break; 
+                default:
+                    column.setPreferredWidth(30);
+                    break; 
+            }
+        }
+        JTableHeader header = t_datos4.getTableHeader();
+        header.setForeground(Color.black);
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton b_busca;
     private javax.swing.JButton b_fecha_siniestro;
@@ -2684,6 +2934,7 @@ public void cabecera1(PDF reporte, BaseFont bf, PdfPTable tabla, String titulo1,
     private javax.swing.JButton jButton18;
     private javax.swing.JButton jButton19;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton20;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
@@ -2704,6 +2955,7 @@ public void cabecera1(PDF reporte, BaseFont bf, PdfPTable tabla, String titulo1,
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
+    private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -2718,6 +2970,7 @@ public void cabecera1(PDF reporte, BaseFont bf, PdfPTable tabla, String titulo1,
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
+    private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JDialog muestra;
     private javax.swing.JTextField orden;
@@ -2727,11 +2980,13 @@ public void cabecera1(PDF reporte, BaseFont bf, PdfPTable tabla, String titulo1,
     private javax.swing.JTable t_datos1;
     private javax.swing.JTable t_datos2;
     private javax.swing.JTable t_datos3;
+    private javax.swing.JTable t_datos4;
     private javax.swing.JTextField t_fecha1;
     private javax.swing.JTextField t_fecha2;
     private javax.swing.JTextField t_fecha5;
     private javax.swing.JTextField t_fecha6;
     private javax.swing.JTextField t_orden;
+    private javax.swing.JTextField t_pedido;
     private javax.swing.JTable t_surtir;
     private javax.swing.JTable t_unidad;
     // End of variables declaration//GEN-END:variables
