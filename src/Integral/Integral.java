@@ -74,7 +74,6 @@ import Tipo.editaTipo;
 import Usuarios.altaUsuario;
 import Usuarios.buscaUsuarios;
 import Usuarios.editaUsuario;
-import Almacen.buscaAlmacen;
 import Almacen.buscaEntrada;
 import Almacen.muestraAlmacen;
 import Almacen.nuevoAlmacen;
@@ -188,6 +187,17 @@ public class Integral extends javax.swing.JFrame {
     String ruta="";
     
     public Integral() {
+        
+        Version ver=new Version();
+        boolean respuesta=ver.version();
+        if(respuesta==true)
+        {
+            try{
+                Runtime runtime = Runtime.getRuntime();
+                Process child = runtime.exec("java -jar Descarga.jar");
+            }catch(Exception e){}
+            System.exit(0);
+        }
         ventana =new acceso(new javax.swing.JFrame(), true);
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         Dimension medida=ventana.getSize();
@@ -478,6 +488,7 @@ public class Integral extends javax.swing.JFrame {
         jMenuItem36 = new javax.swing.JMenuItem();
         jMenuItem43 = new javax.swing.JMenuItem();
         jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
+        jMenuItem55 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Integral Administración de Taller Automotriz v.3");
@@ -1437,6 +1448,14 @@ public class Integral extends javax.swing.JFrame {
             }
         });
         m_itilerias.add(jCheckBoxMenuItem1);
+
+        jMenuItem55.setText("Buscar Actualizaciones");
+        jMenuItem55.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem55ActionPerformed(evt);
+            }
+        });
+        m_itilerias.add(jMenuItem55);
 
         jMenuBar1.add(m_itilerias);
 
@@ -4666,7 +4685,7 @@ public class Integral extends javax.swing.JFrame {
                 {
                     Modificar_destajos = null;
                     Modificar_destajos = new ModificarOrden(actor, t_periodo.getText().toString(), 16, sessionPrograma, ruta);
-                    PanelPestanas btc=new PanelPestanas(P_pestana,3,actor);
+                    PanelPestanas btc=new PanelPestanas(P_pestana,16,actor);
                     P_pestana.addTab("Destajos", Modificar_destajos);
                     P_pestana.setSelectedComponent(Modificar_destajos);
                     P_pestana.setTabComponentAt(P_pestana.getSelectedIndex(), btc);
@@ -5209,6 +5228,24 @@ public class Integral extends javax.swing.JFrame {
         session.close();
     }//GEN-LAST:event_jMenuItem49ActionPerformed
 
+    private void jMenuItem55ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem55ActionPerformed
+        // TODO add your handling code here:
+        Version ver=new Version();
+        boolean respuesta=ver.version();
+        if(respuesta==true)
+        {
+            try{
+                Runtime runtime = Runtime.getRuntime();
+                Process child = runtime.exec("java -jar Descarga.jar");
+            }catch(Exception e){}
+            System.exit(0);
+        }
+        else
+        {
+            JOptionPane.showMessageDialog(this, "No existen Actualizaciones Disponibles");
+        }
+    }//GEN-LAST:event_jMenuItem55ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -5329,6 +5366,7 @@ public class Integral extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem52;
     private javax.swing.JMenuItem jMenuItem53;
     private javax.swing.JMenuItem jMenuItem54;
+    private javax.swing.JMenuItem jMenuItem55;
     private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JMenuItem jMenuItem8;

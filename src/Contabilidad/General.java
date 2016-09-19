@@ -115,12 +115,23 @@ public class General extends javax.swing.JDialog {
     //public static final Factura RET_CANCEL =null;
     //private Factura returnStatus = RET_CANCEL;
     private Factura returnStatus = null;
+    String ruta="";
     /**
      * Creates new form QUALITAS
      */
     public General(java.awt.Frame parent, boolean modal, Usuario u, String ses, Factura fac) {
         super(parent, modal);
         initComponents();
+        try{
+            FileReader fil = new FileReader("config.txt");
+            BufferedReader b = new BufferedReader(fil);
+            if((ruta = b.readLine())==null)
+                ruta="";
+            b.close();
+            fil.close();
+            fil=null;
+            b=null;
+        }catch(Exception e){};
         factura = fac;
         user=u;
         sessionPrograma=ses;
@@ -3939,7 +3950,7 @@ public void consulta()
                                     {
                                         String fecha=rtr.getRequestTransactionResult().getResponse().getTimeStamp().toXMLFormat();
                                         Calendar calendario = Calendar.getInstance();
-                                        File f = new File("errores/"+sdf.format(calendario.getTime())+".txt");
+                                        File f = new File(ruta+"errores/"+sdf.format(calendario.getTime())+".txt");
                                         FileWriter w = new FileWriter(f);
                                         BufferedWriter bw = new BufferedWriter(w);
                                         PrintWriter wr = new PrintWriter(bw);  
@@ -4094,7 +4105,7 @@ public void consulta()
                                 {
                                     String fecha=rtr.getRequestTransactionResult().getResponse().getTimeStamp().toXMLFormat();
                                         Calendar calendario = Calendar.getInstance();
-                                        File f = new File("errores/"+sdf.format(calendario.getTime())+".txt");
+                                        File f = new File(ruta+"errores/"+sdf.format(calendario.getTime())+".txt");
                                     FileWriter w = new FileWriter(f);
                                     BufferedWriter bw = new BufferedWriter(w);
                                     PrintWriter wr = new PrintWriter(bw);  
@@ -4244,7 +4255,7 @@ public void consulta()
                                 {
                                     String fecha=rtr.getRequestTransactionResult().getResponse().getTimeStamp().toXMLFormat();
                                         Calendar calendario = Calendar.getInstance();
-                                        File f = new File("errores/"+sdf.format(calendario.getTime())+".txt");
+                                        File f = new File(ruta+"errores/"+sdf.format(calendario.getTime())+".txt");
                                     FileWriter w = new FileWriter(f);
                                     BufferedWriter bw = new BufferedWriter(w);
                                     PrintWriter wr = new PrintWriter(bw);  
@@ -4355,13 +4366,13 @@ public void consulta()
                                         {
                                             rtr.getRequestTransactionResult().getResponse().getIdentifier();
                                             CodeBase64 codificador = new CodeBase64();
-                                            codificador.DecodeBase64(rtr.getRequestTransactionResult().getResponseData().getResponseData1(), "xml-timbrados/"+nombre+".xml");
+                                            codificador.DecodeBase64(rtr.getRequestTransactionResult().getResponseData().getResponseData1(), ruta+"xml-timbrados/"+nombre+".xml");
                                         }
                                         if(rtr.getRequestTransactionResult().getResponseData().getResponseData3().compareTo("")!=0)
                                         {
                                             rtr.getRequestTransactionResult().getResponse().getIdentifier();
                                             CodeBase64 codificador = new CodeBase64();
-                                            codificador.DecodeBase64(rtr.getRequestTransactionResult().getResponseData().getResponseData3(), "xml-timbrados/"+nombre+".pdf");
+                                            codificador.DecodeBase64(rtr.getRequestTransactionResult().getResponseData().getResponseData3(), ruta+"xml-timbrados/"+nombre+".pdf");
                                         }
                                         habilita(true, false);
                                         progreso.setString("Listo");
@@ -4400,7 +4411,7 @@ public void consulta()
                                 {
                                     String fecha=rtr.getRequestTransactionResult().getResponse().getTimeStamp().toXMLFormat();
                                         Calendar calendario = Calendar.getInstance();
-                                        File f = new File("errores/"+sdf.format(calendario.getTime())+".txt");
+                                        File f = new File(ruta+"errores/"+sdf.format(calendario.getTime())+".txt");
                                     FileWriter w = new FileWriter(f);
                                     BufferedWriter bw = new BufferedWriter(w);
                                     PrintWriter wr = new PrintWriter(bw);  
@@ -4497,7 +4508,7 @@ public void consulta()
                                     {
                                         try
                                         {
-                                            File fXmlFile = new File("xml-consulta/"+dig8+".xml"); 
+                                            File fXmlFile = new File(ruta+"xml-consulta/"+dig8+".xml"); 
                                             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
                                             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
                                             Document doc = dBuilder.parse(fXmlFile);
@@ -4599,7 +4610,7 @@ public void consulta()
                                     numeroID=factura.getOrden().getIdOrden();
                                 if(factura.getOrdenExterna()!=null)
                                     numeroID=factura.getOrdenExterna().getIdOrden();
-                                String cadenaCodificada=codificador.EncodeArchivo(new File("nativos/"+numeroID+"nativo.xml"));
+                                String cadenaCodificada=codificador.EncodeArchivo(new File(ruta+"nativos/"+numeroID+"nativo.xml"));
                                 if(cadenaCodificada.compareTo("")!=0)
                                 {
                                     //Configuracion config=(Configuracion)session.get(Configuracion.class, 1);
@@ -4701,7 +4712,7 @@ public void consulta()
                 numeroID=factura.getOrden().getIdOrden();
             if(factura.getOrdenExterna()!=null)
                 numeroID=factura.getOrdenExterna().getIdOrden();
-            if(generarXML(factura.getOrden(), "nativos/"+numeroID+"nativo.xml")==true)
+            if(generarXML(factura.getOrden(), ruta+"nativos/"+numeroID+"nativo.xml")==true)
             {
                 Configuracion config=(Configuracion)session.get(Configuracion.class, 1);
                 RequestTransaction rq=new RequestTransaction();

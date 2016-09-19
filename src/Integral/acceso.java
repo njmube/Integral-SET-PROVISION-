@@ -25,7 +25,6 @@ import Hibernate.entidades.Ciclo;
 import Hibernate.Util.HibernateUtil;
 import java.awt.HeadlessException;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.util.Calendar;
 import java.util.Formatter;
@@ -394,10 +393,9 @@ public class acceso extends javax.swing.JDialog {
             if((ruta = b.readLine())==null)
                 ruta="";
             b.close();
+            fil.close();
             fil=null;
             b=null;
-            //File folder = new File(ruta+"ordenes/");
-            //folder.mkdirs();
             
             progreso.setString("CONECTANDO");
             Session session = HibernateUtil.getSessionFactory().openSession();

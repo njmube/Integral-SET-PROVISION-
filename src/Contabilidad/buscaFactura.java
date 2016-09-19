@@ -663,7 +663,10 @@ public class buscaFactura extends javax.swing.JDialog {
                         Session session = HibernateUtil.getSessionFactory().openSession();
                         try
                         {
-                            idBuscar=t_datos.getValueAt(t_datos.getSelectedRow(), 4).toString();
+                            if(t_datos.getValueAt(t_datos.getSelectedRow(), 4)!=null)
+                                idBuscar=t_datos.getValueAt(t_datos.getSelectedRow(), 4).toString();
+                            else
+                                idBuscar="";
                             habilita(false);
                             progreso.setString("Conectando al servidor SAT Espere");
                             progreso.setIndeterminate(true);

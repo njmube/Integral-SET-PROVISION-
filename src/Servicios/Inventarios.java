@@ -14,7 +14,6 @@ import Hibernate.entidades.Conceptos;
 import java.awt.Color;
 import java.sql.CallableStatement;
 import java.sql.Connection;
-import java.util.List;
 import java.util.Vector;
 import javax.swing.DefaultCellEditor;
 import javax.swing.InputMap;
@@ -52,15 +51,15 @@ public class Inventarios extends javax.swing.JPanel {
         orden=id;
         Session session = HibernateUtil.getSessionFactory().openSession();
         try {            
-            session.beginTransaction().begin();
+            //session.beginTransaction().begin();
             Connection conn = (Connection) session.connection();
             CallableStatement call = conn.prepareCall("{ call actualiza() }");
             call.execute();
-            session.beginTransaction().commit();
+            //session.beginTransaction().commit();
         }catch(Exception e)
         {
             e.printStackTrace();
-            session.beginTransaction().rollback();
+            //session.beginTransaction().rollback();
         }
         finally{
             if(session.isOpen()==true)

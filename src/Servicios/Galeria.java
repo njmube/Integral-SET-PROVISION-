@@ -184,7 +184,7 @@ public final class Galeria extends javax.swing.JPanel {
         jLabel1.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         jLabel1.setText("Doble click en la miniatura para visualizar el archivo");
 
-        jButton1.setText("Carpeda");
+        jButton1.setText("Carpeta");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);

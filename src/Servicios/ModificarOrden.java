@@ -103,7 +103,6 @@ public class ModificarOrden extends javax.swing.JPanel {
         initComponents();
         p_responsables.getVerticalScrollBar().setUI(new VerticalBarUI());
         p_responsables.getHorizontalScrollBar().setUI(new HorizontalBarUI());
-        ruta="";
         ruta=carpeta;
         cargaEstatus();
         this.cargaSiniestro();
@@ -2103,9 +2102,9 @@ public class ModificarOrden extends javax.swing.JPanel {
                     {
                         ArchivoOrden r1;
                         if(cerrada==1)
-                            r1=new ArchivoOrden(t_orden.getText(), usr, "cerrada", this.sessionPrograma);
+                            r1=new ArchivoOrden(t_orden.getText(), usr, "cerrada", this.sessionPrograma, ruta);
                         else
-                            r1=new ArchivoOrden(t_orden.getText(), usr, estado, this.sessionPrograma);
+                            r1=new ArchivoOrden(t_orden.getText(), usr, estado, this.sessionPrograma, ruta);
 
                         p_documentos.removeAll();
                         p_documentos.add(r1);

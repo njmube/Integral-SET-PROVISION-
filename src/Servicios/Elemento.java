@@ -15,7 +15,6 @@ import javax.swing.JFileChooser;
 import org.hibernate.Session;
 import Integral.Herramientas;
 import Integral.Imagen;
-import Integral.PDF;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -44,15 +43,15 @@ public class Elemento extends javax.swing.JPanel {
         try
         {
             File f=new File(ruta+"ordenes/"+orden+"/archivos/"+arch.getNombreDocumento());
-            //sun.awt.shell.ShellFolder sf = sun.awt.shell.ShellFolder.getShellFolder(f);
             Imagen op;
-            //Icon icon = new ImageIcon(sf.getIcon(true));
             JFileChooser jf=new JFileChooser();
             jf.setSelectedFile(f);
             l_img.setIcon(jf.getFileSystemView().getSystemIcon(f));
-            //l_img.setIcon(icon);
             l_nombre.setText(f.getName());
             l_fecha.setText(""+arch.getFechaDocumento());
+            f=null;
+            op=null;
+            jf=null;
         }catch(Exception e)
         {
             e.printStackTrace();
@@ -177,6 +176,7 @@ public class Elemento extends javax.swing.JPanel {
                         else
                             javax.swing.JOptionPane.showMessageDialog(null, "El archivo no existe");
                     }
+                    archivo=null;
                 }catch(Exception e)
                 {
                     e.printStackTrace();
@@ -203,11 +203,7 @@ public class Elemento extends javax.swing.JPanel {
                 else
                     javax.swing.JOptionPane.showMessageDialog(null, "El archivo no existe");
             }
-            /*File archivo = new File(ruta+"ordenes/"+orden+"/archivos/"+arch.getNombreDocumento());
-            if(archivo.exists()==true)
-                Desktop.getDesktop().open(archivo.getAbsoluteFile());
-            else
-                javax.swing.JOptionPane.showMessageDialog(null, "El archivo no existe");*/
+            archivo=null;
         }catch(Exception e)
         {
             e.printStackTrace();

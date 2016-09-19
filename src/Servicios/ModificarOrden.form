@@ -123,7 +123,7 @@
                   <Component id="jPanel1" pref="157" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="p_ventanas" pref="278" max="32767" attributes="0"/>
+              <Component id="p_ventanas" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>

@@ -71,21 +71,21 @@ public class ArchivoOrden extends javax.swing.JPanel implements ScannerListener{
     String ruta;
     JFileChooser selector;
     
-    public ArchivoOrden(String id, Usuario usuario, String estado, String ses) {
+    public ArchivoOrden(String id, Usuario usuario, String estado, String ses, String carpeta) {
         usr=usuario;
         sessionPrograma=ses;
         orden=id;
         edo=estado;
         initComponents();
-        ruta="";
-        try
+        ruta=carpeta;
+        /*try
         {
             FileReader f = new FileReader("config.txt");
             BufferedReader b = new BufferedReader(f);
             if((ruta = b.readLine())==null)
                 ruta="";
             b.close();
-        }catch(Exception e){e.printStackTrace();}
+        }catch(Exception e){e.printStackTrace();}*/
         
         if(usr.getEditaDocumentos()==false)
         {
