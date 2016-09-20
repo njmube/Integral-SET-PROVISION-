@@ -77,7 +77,7 @@ public class reportePedidos extends javax.swing.JPanel {
     Herramientas h;
     FormatoTabla formato;
     //private Session session;
-    String[] columnas = new String [] {"Pedido", "Fecha", "O. Taller", "Usuario", "Proveedor", "Nombre de Proveedor", "Facturar a", "Observaciones", "Autorizo1", "Monto tot."};
+    String[] columnas = new String [] {"Pedido", "Fecha", "O. Taller", "Usuario", "Proveedor", "Nombre de Proveedor", "Facturar a", "Observaciones", "Autorizo", "Monto tot."};
     DefaultTableModel model;
     /**
      * Creates new form reportePedidos
@@ -773,8 +773,8 @@ public class reportePedidos extends javax.swing.JPanel {
                     model.setValueAt(actor.getProveedorByIdProveedor().getNombre(), i, 5);
                     model.setValueAt(actor.getProveedorByIdEmpresa().getNombre(), i, 6);
                     model.setValueAt(actor.getNotas(), i, 7);
-                    if(actor.getUsuarioByAutorizo()!=null)
-                        model.setValueAt(actor.getUsuarioByAutorizo().getIdUsuario(), i, 8);
+                    if(actor.getUsuarioByAutorizo2()!=null)
+                        model.setValueAt(actor.getUsuarioByAutorizo2().getIdUsuario(), i, 8);
                     else
                         model.setValueAt("Sin autorizar", i, 8);
                     double tot=0.0d;

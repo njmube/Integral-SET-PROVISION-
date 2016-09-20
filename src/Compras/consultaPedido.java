@@ -131,6 +131,7 @@ public class consultaPedido extends javax.swing.JPanel {
         t_id_aseguradora = new javax.swing.JTextField();
         t_proveedor = new javax.swing.JTextField();
         t_clave = new javax.swing.JTextField();
+        r_autorizar = new javax.swing.JRadioButton();
         jPanel4 = new javax.swing.JPanel();
         l_busca = new javax.swing.JLabel();
         b_busca = new javax.swing.JButton();
@@ -148,7 +149,6 @@ public class consultaPedido extends javax.swing.JPanel {
         t_notas = new javax.swing.JTextArea();
         l_notas = new javax.swing.JLabel();
         b_menos = new javax.swing.JButton();
-        r_autorizar = new javax.swing.JRadioButton();
         r_autorizar2 = new javax.swing.JRadioButton();
         scroll = new javax.swing.JScrollPane();
         t_datos = new javax.swing.JTable();
@@ -293,6 +293,15 @@ public class consultaPedido extends javax.swing.JPanel {
         t_clave.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
         t_clave.setDisabledTextColor(new java.awt.Color(2, 38, 253));
 
+        r_autorizar.setForeground(new java.awt.Color(0, 0, 204));
+        r_autorizar.setText("Autorizacion 1");
+        r_autorizar.setEnabled(false);
+        r_autorizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                r_autorizarActionPerformed(evt);
+            }
+        });
+
         setBackground(new java.awt.Color(255, 255, 255));
         setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "Autorización de Pedidos", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Arial", 1, 12))); // NOI18N
         setLayout(new java.awt.BorderLayout());
@@ -408,15 +417,6 @@ public class consultaPedido extends javax.swing.JPanel {
             }
         });
 
-        r_autorizar.setForeground(new java.awt.Color(0, 0, 204));
-        r_autorizar.setText("Autorizacion 1");
-        r_autorizar.setEnabled(false);
-        r_autorizar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                r_autorizarActionPerformed(evt);
-            }
-        });
-
         r_autorizar2.setForeground(new java.awt.Color(0, 0, 204));
         r_autorizar2.setText("Autorizacion 2");
         r_autorizar2.setEnabled(false);
@@ -445,13 +445,12 @@ public class consultaPedido extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(b_compra)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 216, Short.MAX_VALUE)
-                        .addComponent(l_notas))
+                        .addComponent(l_notas)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(r_autorizar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addContainerGap()
                         .addComponent(r_autorizar2)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -460,12 +459,12 @@ public class consultaPedido extends javax.swing.JPanel {
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-            .addComponent(jPanel6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                        .addComponent(b_menos, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(12, 12, 12))
+                    .addComponent(b_menos, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(l_notas, javax.swing.GroupLayout.Alignment.LEADING)
@@ -477,10 +476,10 @@ public class consultaPedido extends javax.swing.JPanel {
                                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(b_pedidos)
                                     .addComponent(b_compra))))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(r_autorizar)
-                    .addComponent(r_autorizar2)))
+                        .addGap(7, 7, 7)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(r_autorizar2)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         add(jPanel4, java.awt.BorderLayout.PAGE_END);
@@ -1273,8 +1272,8 @@ public class consultaPedido extends javax.swing.JPanel {
                 usr = (Usuario)session.get(Usuario.class, usr.getIdUsuario());
                 if(usr.getAutorizarPedidos()==true)
                 {
-                    if(pedido.getUsuarioByAutorizo()==null || pedido.getUsuarioByAutorizo().getIdUsuario().compareTo(usr.getIdUsuario())!=0)
-                    {
+                    //if(pedido.getUsuarioByAutorizo()==null || pedido.getUsuarioByAutorizo().getIdUsuario().compareTo(usr.getIdUsuario())!=0)
+                    //{
                         pedido.setUsuarioByAutorizo2(usr);
                         Date fecha_autorizo2 = new Date();
                         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
@@ -1298,12 +1297,12 @@ public class consultaPedido extends javax.swing.JPanel {
                         this.b_pedidos.setEnabled(true);
                         r_autorizar2.setText(usr.getEmpleado().getNombre());
                         JOptionPane.showMessageDialog(this, "El pedido fue autorizado con exito");
-                    }
+                    /*}
                     else
                     {
                         r_autorizar2.setSelected(false);
                         JOptionPane.showMessageDialog(this, "El mismo usuario no puede autorizar 2 veces");
-                    }
+                    }*/
                 }
                 else
                 {
@@ -1867,9 +1866,9 @@ public class consultaPedido extends javax.swing.JPanel {
                 t_total.setValue(tot+iva);
                 
                 //checar si la orden ya fue autorizada
-                if(pedido.getUsuarioByAutorizo()!=null || pedido.getUsuarioByAutorizo2()!=null)
+                if(/*pedido.getUsuarioByAutorizo()!=null ||*/ pedido.getUsuarioByAutorizo2()!=null)
                 {
-                    if(pedido.getUsuarioByAutorizo()!=null)
+                    /*if(pedido.getUsuarioByAutorizo()!=null)
                     {
                         r_autorizar.setSelected(true);
                         r_autorizar.setText(pedido.getUsuarioByAutorizo().getEmpleado().getNombre());
@@ -1878,17 +1877,17 @@ public class consultaPedido extends javax.swing.JPanel {
                     {
                         r_autorizar.setSelected(false);
                         r_autorizar.setText("Autorizacion 1");
-                    }
-                    if(pedido.getUsuarioByAutorizo2()!=null)
-                    {
+                    }*/
+                    //if(pedido.getUsuarioByAutorizo2()!=null)
+                    //{
                         r_autorizar2.setSelected(true);
                         r_autorizar2.setText(pedido.getUsuarioByAutorizo2().getEmpleado().getNombre());
-                    }
+                    /*}
                     else
                     {
                         r_autorizar2.setSelected(false);
                         r_autorizar2.setText("Autorizacion 2");
-                    }
+                    }*/
                     model.setColumnaEditable(0, false);
                     model.setColumnaEditable(1, false);
                     model.setColumnaEditable(2, false);
@@ -1900,9 +1899,9 @@ public class consultaPedido extends javax.swing.JPanel {
                 }
                 else
                 {
-                    r_autorizar.setSelected(false);
+                    //r_autorizar.setSelected(false);
                     r_autorizar2.setSelected(false);
-                    r_autorizar.setText("Autorizacion 1");
+                    //r_autorizar.setText("Autorizacion 1");
                     r_autorizar2.setText("Autorizacion 2");
                 }
                 
@@ -1972,8 +1971,8 @@ public class consultaPedido extends javax.swing.JPanel {
                 this.t_asegurado.setText("");
                 this.t_folio_externo.setText("");
                 this.b_menos.setEnabled(false);
-                r_autorizar.setEnabled(false);
-                r_autorizar.setText("Autorizacion 1");
+                //r_autorizar.setEnabled(false);
+                //r_autorizar.setText("Autorizacion 1");
                 r_autorizar2.setEnabled(false);
                 r_autorizar2.setText("Autorizacion 2");
                 model=new MyModel(0, columnas);
@@ -2016,8 +2015,8 @@ public class consultaPedido extends javax.swing.JPanel {
             this.b_menos.setEnabled(false);
             b_pedidos.setEnabled(false);
             b_compra.setEnabled(false);
-            r_autorizar.setEnabled(false);
-            r_autorizar.setText("Autorizacion 1");
+            //r_autorizar.setEnabled(false);
+            //r_autorizar.setText("Autorizacion 1");
             r_autorizar2.setEnabled(false);
             r_autorizar2.setText("Autorizacion 2");
             model=new MyModel(0, columnas);

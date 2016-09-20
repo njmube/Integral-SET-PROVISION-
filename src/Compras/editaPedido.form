@@ -341,6 +341,20 @@
         </Property>
       </Properties>
     </Component>
+    <Component class="javax.swing.JRadioButton" name="r_autorizar">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Arial" size="10" style="0"/>
+        </Property>
+        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="fd" green="26" red="2" type="rgb"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Autorizacion 1"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="r_autorizarActionPerformed"/>
+      </Events>
+    </Component>
   </NonVisualComponents>
   <Properties>
     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
@@ -383,9 +397,9 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
+                  <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
-                          <EmptySpace max="-2" attributes="0"/>
                           <Component id="b_mas" min="-2" pref="24" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="b_menos" min="-2" pref="24" max="-2" attributes="0"/>
@@ -396,11 +410,7 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="b_busca" min="-2" pref="23" max="-2" attributes="0"/>
                       </Group>
-                      <Group type="102" alignment="0" attributes="0">
-                          <Component id="r_autorizar" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Component id="r_autorizar2" min="-2" max="-2" attributes="0"/>
-                      </Group>
+                      <Component id="r_autorizar2" alignment="0" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
@@ -466,10 +476,7 @@
                                   <Component id="b_dcg" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="cb_tipo" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <Group type="103" alignment="0" groupAlignment="3" attributes="0">
-                                  <Component id="r_autorizar" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="r_autorizar2" alignment="3" min="-2" max="-2" attributes="0"/>
-                              </Group>
+                              <Component id="r_autorizar2" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <Group type="103" groupAlignment="1" max="-2" attributes="0">
@@ -824,20 +831,6 @@
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="r_autorizar2ActionPerformed"/>
-          </Events>
-        </Component>
-        <Component class="javax.swing.JRadioButton" name="r_autorizar">
-          <Properties>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Arial" size="10" style="0"/>
-            </Property>
-            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="fd" green="26" red="2" type="rgb"/>
-            </Property>
-            <Property name="text" type="java.lang.String" value="Autorizacion 1"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="r_autorizarActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>

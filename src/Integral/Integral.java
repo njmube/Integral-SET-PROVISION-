@@ -107,9 +107,14 @@ import javax.swing.plaf.basic.BasicMenuBarUI;
 import org.hibernate.Session;
 import Valuacion.Reportes;
 import java.awt.Desktop;
+import java.awt.DisplayMode;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import javax.swing.JFrame;
 
 /**
  *
@@ -117,6 +122,11 @@ import java.util.ArrayList;
  */
 public class Integral extends javax.swing.JFrame {
 
+    GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+    GraphicsDevice device = env.getScreenDevices()[0];
+    DisplayMode oldMode = device.getDisplayMode();
+    DisplayMode newMode = new DisplayMode(1024,768,oldMode.getBitDepth(),oldMode.getRefreshRate());
+    
     private ModificarOrden Modificar_Orden;
     private Reportes reporteVal;
     private RCuentas Rcuenta;
@@ -210,6 +220,8 @@ public class Integral extends javax.swing.JFrame {
         d=null;
         if(lista!=null)
         {
+            GraphicsConfiguration gc= this.getGraphicsConfiguration();
+            gc=device.getDefaultConfiguration();
             initComponents();
             eliminaBloqueos();
             jMenuBar1.setUI ( new BasicMenuBarUI ()
@@ -488,6 +500,7 @@ public class Integral extends javax.swing.JFrame {
         jMenuItem36 = new javax.swing.JMenuItem();
         jMenuItem43 = new javax.swing.JMenuItem();
         jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
+        jCheckBoxMenuItem2 = new javax.swing.JCheckBoxMenuItem();
         jMenuItem55 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -1449,6 +1462,14 @@ public class Integral extends javax.swing.JFrame {
         });
         m_itilerias.add(jCheckBoxMenuItem1);
 
+        jCheckBoxMenuItem2.setText("Cambiar Resolución");
+        jCheckBoxMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBoxMenuItem2ActionPerformed(evt);
+            }
+        });
+        m_itilerias.add(jCheckBoxMenuItem2);
+
         jMenuItem55.setText("Buscar Actualizaciones");
         jMenuItem55.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1564,6 +1585,7 @@ public class Integral extends javax.swing.JFrame {
         // TODO add your handling code here:
         h.menu=0;
         h.session(sessionPrograma); 
+        this.setExtendedState(this.MAXIMIZED_BOTH);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
@@ -5246,6 +5268,20 @@ public class Integral extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jMenuItem55ActionPerformed
 
+    private void jCheckBoxMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItem2ActionPerformed
+        // TODO add your handling code here:
+        if(jCheckBoxMenuItem2.isSelected()==true)
+        {
+            device.setFullScreenWindow(this);
+            device.setDisplayMode(newMode);
+            this.setExtendedState(this.MAXIMIZED_BOTH);
+        }
+        else
+        {
+            device.setDisplayMode(oldMode);
+        }
+    }//GEN-LAST:event_jCheckBoxMenuItem2ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -5287,6 +5323,7 @@ public class Integral extends javax.swing.JFrame {
     private javax.swing.JMenuItem busca_proveedor;
     private javax.swing.JMenuItem edita_proveedor;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
+    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JMenu jMenu1;

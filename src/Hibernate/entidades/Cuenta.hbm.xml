@@ -14,8 +14,8 @@
         <property name="banco" type="string">
             <column name="banco" length="45" />
         </property>
-        <property name="convenio" type="java.lang.Integer">
-            <column name="convenio" />
+        <property name="convenio" type="string">
+            <column name="convenio" length="20"/>
         </property>
         <property name="transferencia" type="string">
             <column name="transferencia" length="20" />

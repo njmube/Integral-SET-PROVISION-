@@ -138,7 +138,7 @@ public class buscaPedido extends javax.swing.JDialog {
                 .addGap(18, 18, 18)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(t_busca, javax.swing.GroupLayout.DEFAULT_SIZE, 490, Short.MAX_VALUE)
+                .addComponent(t_busca, javax.swing.GroupLayout.DEFAULT_SIZE, 383, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(cb_todos)
                 .addGap(81, 81, 81))
@@ -172,14 +172,14 @@ public class buscaPedido extends javax.swing.JDialog {
 
             },
             new String [] {
-                "Pedido", "Fecha", "O. Taller", "Usuario", "Nombre de Proveedor", "Autorizo 1", "Autorizo 2"
+                "Pedido", "Fecha", "O. Taller", "Usuario", "Nombre de Proveedor", "Autorizo"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
+                false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -210,18 +210,12 @@ public class buscaPedido extends javax.swing.JDialog {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton5))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(scroll, javax.swing.GroupLayout.PREFERRED_SIZE, 972, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jButton5)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(scroll, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -241,7 +235,7 @@ public class buscaPedido extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 2, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -341,7 +335,7 @@ public class buscaPedido extends javax.swing.JDialog {
     private void buscaDato()
     {
         
-        String consulta="select distinct id_pedido as id, fecha_pedido, id_usuario, T2.nombre, if(autorizo is null, '', autorizo) as a1, if(autorizo2 is null, '', autorizo2) as a2, tipo_pedido, if(tipo_pedido='Interno', (select id_orden from partida where id_pedido=id limit 1),if(tipo_pedido='Adicional',id_orden,'')) as ord " +
+        String consulta="select distinct id_pedido as id, fecha_pedido, id_usuario, "+/*T2.nombre, if(autorizo is null, '', autorizo) as a1,*/" if(autorizo2 is null, '', autorizo2) as a2, tipo_pedido, if(tipo_pedido='Interno', (select id_orden from partida where id_pedido=id limit 1),if(tipo_pedido='Adicional',id_orden,'')) as ord " +
                         "from pedido as T1 left join proveedor as T2 on T1.id_proveedor=T2.id_proveedor ";
         if(t_busca.getText().compareToIgnoreCase("")!=0)
         {
@@ -350,7 +344,7 @@ public class buscaPedido extends javax.swing.JDialog {
                 case "Pedido":
                     consulta+=" where T1.id_pedido =" + t_busca.getText();
                     if(tipoVentana==1)
-                        consulta+=" and autorizo is not null and autorizo2 is not null";
+                        consulta+=/*" and autorizo is not null*/" and autorizo2 is not null";
                     
                     if(tipoPedido.compareToIgnoreCase("")!=0)
                         consulta+=" and tipo_pedido='"+tipoPedido+"'";
@@ -360,7 +354,7 @@ public class buscaPedido extends javax.swing.JDialog {
                 case "O. Taller":
                     consulta+=" where (id_orden="+t_busca.getText()+" or id_pedido=(select id_pedido from partida where id_pedido=T1.id_pedido and id_orden="+t_busca.getText()+" limit 1) ) ";
                     if(tipoVentana==1)
-                        consulta+=" and autorizo is not null and autorizo2 is not null";
+                        consulta+=/*" and autorizo is not null*/" and autorizo2 is not null";
                     //if(t_busca.getText().compareToIgnoreCase("")==0)
                         //consulta+=" where autorizo is not null and autorizo2 is not null";
                     
@@ -372,7 +366,7 @@ public class buscaPedido extends javax.swing.JDialog {
                 case "Nombre de Proveedor":
                     consulta+="where T2.nombre like '%" + t_busca.getText() +"%'";
                     if(tipoVentana==1)
-                        consulta+=" and autorizo is not null and autorizo2 is not null";
+                        consulta+=/*" and autorizo is not null"*/" and autorizo2 is not null";
                     //if(t_busca.getText().compareTo("")==0)
                         //consulta+=" where autorizo is not null and autorizo2 is not null";
                     
@@ -387,14 +381,14 @@ public class buscaPedido extends javax.swing.JDialog {
             if(tipoPedido.compareTo("")!=0)
             {
                 if(tipoVentana==1)
-                    consulta+=" where autorizo is not null and autorizo2 is not null and tipo_pedido='"+tipoPedido+"' order by T1.id_pedido desc";
+                    consulta+=" where "/*autorizo is not null and*/+" autorizo2 is not null and tipo_pedido='"+tipoPedido+"' order by T1.id_pedido desc";
                 else
                     consulta+=" where tipo_pedido='"+tipoPedido+"' order by T1.id_pedido desc";
             }
             else
             {
                 if(tipoVentana==1)
-                    consulta+=" where autorizo is not null and autorizo2 is not null order by T1.id_pedido desc";
+                    consulta+=" where "/*autorizo is not null and */+"autorizo2 is not null order by T1.id_pedido desc";
                 else
                     consulta+=" order by T1.id_pedido desc";
                 
@@ -414,7 +408,7 @@ public class buscaPedido extends javax.swing.JDialog {
             for (Object o : resultList) 
             {
                 java.util.HashMap pedido=(java.util.HashMap)o;
-                Object[] renglon=new Object[]{pedido.get("id"),pedido.get("fecha_pedido"),pedido.get("ord"),pedido.get("id_usuario"),pedido.get("nombre"),pedido.get("a1"),pedido.get("a2")};
+                Object[] renglon=new Object[]{pedido.get("id"),pedido.get("fecha_pedido"),pedido.get("ord"),pedido.get("id_usuario"),pedido.get("nombre")/*,pedido.get("a1")*/,pedido.get("a2")};
                 model.addRow(renglon);
             }
             t_busca.requestFocus();
@@ -459,9 +453,9 @@ public void tabla_tamaños()
                 case 5:
                     column.setPreferredWidth(100);
                     break; 
-                case 6:
+                /*case 6:
                     column.setPreferredWidth(100);
-                    break; 
+                    break; */
                 default:
                     column.setPreferredWidth(90);
                     break; 

@@ -61,8 +61,6 @@ import Valuacion.Autorizacion;
 import Valuacion.PreFactura;
 import Valuacion.valuacion;
 import Valuacion.valuacionDirecta;
-import java.io.BufferedReader;
-import java.io.FileReader;
 
 /**
  *

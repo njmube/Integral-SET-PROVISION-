@@ -244,9 +244,9 @@ public class Formatos {
             PdfPTable tabla=reporte.crearTabla(10, tam, 100, Element.ALIGN_LEFT);
 
             Pedido ped = (Pedido)session.get(Pedido.class, Integer.parseInt(this.no_ped));
-            if(ped.getUsuarioByAutorizo()!=null && ped.getUsuarioByAutorizo2()!=null)
+            if(/*ped.getUsuarioByAutorizo()!=null &&*/ ped.getUsuarioByAutorizo2()!=null)
             {
-                reporte.estatusAutoriza(ped.getUsuarioByAutorizo().getEmpleado().getNombre(), ped.getUsuarioByAutorizo2().getEmpleado().getNombre());
+                reporte.estatusAutoriza(/*ped.getUsuarioByAutorizo().getEmpleado().getNombre()*/"", ped.getUsuarioByAutorizo2().getEmpleado().getNombre());
             }
             else
                 reporte.estatusAutoriza("","       NO AUTORIZADO");
@@ -365,9 +365,9 @@ public class Formatos {
                 float tam[]=new float[]{20,30,25,60,190,25,30,20,40,40};
                 PdfPTable tabla=reporte.crearTabla(10, tam, 100, Element.ALIGN_LEFT);
 
-                if(ped.getUsuarioByAutorizo()!=null && ped.getUsuarioByAutorizo2()!=null)
+                if(/*ped.getUsuarioByAutorizo()!=null &&*/ ped.getUsuarioByAutorizo2()!=null)
                 {
-                    reporte.estatusAutoriza(ped.getUsuarioByAutorizo().getEmpleado().getNombre(), ped.getUsuarioByAutorizo2().getEmpleado().getNombre());
+                    reporte.estatusAutoriza(/*ped.getUsuarioByAutorizo().getEmpleado().getNombre()*/"", ped.getUsuarioByAutorizo2().getEmpleado().getNombre());
                 }
                 else
                     reporte.estatusAutoriza("","       NO AUTORIZADO");
@@ -484,9 +484,9 @@ public class Formatos {
                 PdfPTable tabla=reporte.crearTabla(7, tam, 100, Element.ALIGN_LEFT);
 
                 Pedido ped = (Pedido)session.get(Pedido.class, Integer.parseInt(no_ped));
-                if(ped.getUsuarioByAutorizo()!=null && ped.getUsuarioByAutorizo2()!=null)
+                if(/*ped.getUsuarioByAutorizo()!=null &&*/ ped.getUsuarioByAutorizo2()!=null)
                 {
-                    reporte.estatusAutoriza(ped.getUsuarioByAutorizo().getEmpleado().getNombre(), ped.getUsuarioByAutorizo2().getEmpleado().getNombre());
+                    reporte.estatusAutoriza(/*ped.getUsuarioByAutorizo().getEmpleado().getNombre()*/"", ped.getUsuarioByAutorizo2().getEmpleado().getNombre());
                 }
                 else
                     reporte.estatusAutoriza("","       NO AUTORIZADO");
@@ -713,9 +713,9 @@ public class Formatos {
                 Pedido ped = (Pedido)session.get(Pedido.class, pedido);
                 
                 reporte.estatusAutoriza("","");
-                if(ped.getUsuarioByAutorizo()!=null && ped.getUsuarioByAutorizo2()!=null)
+                if(/*ped.getUsuarioByAutorizo()!=null &&*/ ped.getUsuarioByAutorizo2()!=null)
                 {
-                    reporte.estatusAutoriza(ped.getUsuarioByAutorizo().getEmpleado().getNombre(), ped.getUsuarioByAutorizo2().getEmpleado().getNombre());
+                    reporte.estatusAutoriza(/*ped.getUsuarioByAutorizo().getEmpleado().getNombre()*/"", ped.getUsuarioByAutorizo2().getEmpleado().getNombre());
                 }
                 else
                     reporte.estatusAutoriza("","       NO AUTORIZADO");
@@ -822,9 +822,9 @@ public class Formatos {
 
                 Pedido ped = (Pedido)session.get(Pedido.class, pedido);
                 
-                if(ped.getUsuarioByAutorizo()!=null && ped.getUsuarioByAutorizo2()!=null)
+                if(/*ped.getUsuarioByAutorizo()!=null &&*/ ped.getUsuarioByAutorizo2()!=null)
                 {
-                    reporte.estatusAutoriza(ped.getUsuarioByAutorizo().getEmpleado().getNombre(), ped.getUsuarioByAutorizo2().getEmpleado().getNombre());
+                    reporte.estatusAutoriza(/*ped.getUsuarioByAutorizo().getEmpleado().getNombre()*/"", ped.getUsuarioByAutorizo2().getEmpleado().getNombre());
                 }
                 else
                     reporte.estatusAutoriza("","       NO AUTORIZADO");

@@ -18,7 +18,6 @@ import Hibernate.entidades.Partida;
 import Hibernate.entidades.Tipo;
 import Hibernate.entidades.Usuario;
 import Integral.Herramientas;
-import Integral.Imagen;
 import Servicios.buscaOrden;
 import java.awt.Dimension;
 import java.awt.Toolkit;

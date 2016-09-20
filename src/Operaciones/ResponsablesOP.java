@@ -135,6 +135,8 @@ public class ResponsablesOP extends javax.swing.JPanel {
         p_fecha = new javax.swing.JButton();
         e_fecha = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
+        jLabel6 = new javax.swing.JLabel();
+        t_estatus = new javax.swing.JTextField();
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -554,6 +556,10 @@ public class ResponsablesOP extends javax.swing.JPanel {
             }
         });
 
+        jLabel6.setText("Estatus:");
+
+        t_estatus.setEditable(false);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -673,7 +679,12 @@ public class ResponsablesOP extends javax.swing.JPanel {
                             .addComponent(s_fecha, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(p_fecha, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(e_fecha, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(28, 28, 28))))
+                        .addGap(28, 28, 28))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(t_estatus, javax.swing.GroupLayout.PREFERRED_SIZE, 420, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -786,7 +797,11 @@ public class ResponsablesOP extends javax.swing.JPanel {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(p_fecha, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(2, 2, 2)))
-                .addContainerGap(222, Short.MAX_VALUE))
+                .addGap(27, 27, 27)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(t_estatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(175, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -972,6 +987,7 @@ public class ResponsablesOP extends javax.swing.JPanel {
         try{
             if(orden_act!=null)
             {
+                t_estatus.setText(orden_act.getEstatus().getEstatusNombre());
                 if(orden_act.getFechaCierre()==null)
                 {
                     //h= new Herramientas(usr, 0);
@@ -1014,6 +1030,7 @@ public class ResponsablesOP extends javax.swing.JPanel {
                 //h= new Herramientas(usr, 0);
                 //h.desbloqueaOrden();
                 b_buscaro.requestFocus();
+                t_estatus.setText("");
             }
         }catch(Exception e){}
     }//GEN-LAST:event_b_buscaroActionPerformed
@@ -1062,6 +1079,7 @@ public class ResponsablesOP extends javax.swing.JPanel {
             orden_act = (Orden)session.get(Orden.class, Integer.parseInt(t_orden.getText()));
             if(orden_act!=null)
             {
+                t_estatus.setText(orden_act.getEstatus().getEstatusNombre());
                 if(orden_act.getFechaCierre()==null)
                 {
                     t_orden.setText(""+orden_act.getIdOrden());
@@ -1090,6 +1108,7 @@ public class ResponsablesOP extends javax.swing.JPanel {
             }
             else
             {
+                t_estatus.setText("");
                 h= new Herramientas(usr, 0);
                 h.desbloqueaOrden();
                 b_buscaro.requestFocus();
@@ -1562,6 +1581,7 @@ public class ResponsablesOP extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel l_autorizoe;
@@ -1582,6 +1602,7 @@ public class ResponsablesOP extends javax.swing.JPanel {
     private javax.swing.JButton s_fecha;
     private javax.swing.JTextField s_limite;
     private javax.swing.JTextField t_electrico;
+    private javax.swing.JTextField t_estatus;
     private javax.swing.JTextField t_hojalateria;
     private javax.swing.JTextField t_mecanica;
     public javax.swing.JTextField t_orden;

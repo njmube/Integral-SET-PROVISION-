@@ -12,7 +12,7 @@ public class Cuenta  implements java.io.Serializable {
      private Integer idCuenta;
      private Compania compania;
      private String banco;
-     private Integer convenio;
+     private String convenio;
      private String transferencia;
      private String nombre;
 
@@ -23,7 +23,7 @@ public class Cuenta  implements java.io.Serializable {
     public Cuenta(Compania compania) {
         this.compania = compania;
     }
-    public Cuenta(Compania compania, String banco, Integer convenio, String transferencia, String nombre) {
+    public Cuenta(Compania compania, String banco, String convenio, String transferencia, String nombre) {
        this.compania = compania;
        this.banco = banco;
        this.convenio = convenio;
@@ -52,11 +52,11 @@ public class Cuenta  implements java.io.Serializable {
     public void setBanco(String banco) {
         this.banco = banco;
     }
-    public Integer getConvenio() {
+    public String getConvenio() {
         return this.convenio;
     }
     
-    public void setConvenio(Integer convenio) {
+    public void setConvenio(String convenio) {
         this.convenio = convenio;
     }
     public String getTransferencia() {

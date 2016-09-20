@@ -32,6 +32,8 @@ import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfPTable;
 import java.awt.Color;
 import java.awt.Desktop;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileOutputStream;

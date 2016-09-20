@@ -102,11 +102,11 @@ public class CuentasBancarias extends javax.swing.JDialog {
                                             if(t_datos.getValueAt(row, 0).toString().compareTo("")==0)
                                             {
                                                 String consulta="from Cuenta obj where obj.compania="+aseguradora.getIdCompania()+" and obj.banco='"+value.toString()+"'";
-                                                consulta+=" and obj.convenio=0 and obj.transferencia='' and obj.nombre=''";
+                                                consulta+=" and obj.convenio='' and obj.transferencia='' and obj.nombre=''";
                                                 resp=session.createQuery(consulta).uniqueResult();
                                                 if(resp==null)
                                                 {
-                                                        aux= new Cuenta(aseguradora, value.toString(), 0, "", "");
+                                                        aux= new Cuenta(aseguradora, value.toString(), "", "", "");
                                                         aseguradora.addCuenta(aux);
                                                         session.save(aux);
                                                         session.getTransaction().commit();
@@ -122,7 +122,7 @@ public class CuentasBancarias extends javax.swing.JDialog {
                                             else
                                             {
                                                 String consulta="from Cuenta obj where obj.compania="+aseguradora.getIdCompania()+" and obj.banco='"+value.toString()+"'";
-                                                consulta+=" and obj.convenio="+t_datos.getValueAt(row, 2).toString()+" and obj.transferencia='"+t_datos.getValueAt(row, 3).toString()+"' and obj.nombre='"+t_datos.getValueAt(row, 4).toString()+"'";
+                                                consulta+=" and obj.convenio='"+t_datos.getValueAt(row, 2).toString()+"' and obj.transferencia='"+t_datos.getValueAt(row, 3).toString()+"' and obj.nombre='"+t_datos.getValueAt(row, 4).toString()+"'";
                                                 resp=session.createQuery(consulta).uniqueResult();
                                                 if(resp==null)
                                                 {
@@ -179,8 +179,6 @@ public class CuentasBancarias extends javax.swing.JDialog {
                                     }
                                     else
                                     {
-                                        if(entero(value.toString())!=-1 && value.toString().compareTo("")!=0)
-                                        {
                                             session = HibernateUtil.getSessionFactory().openSession();
                                             try
                                             {
@@ -188,12 +186,11 @@ public class CuentasBancarias extends javax.swing.JDialog {
                                                 if(t_datos.getValueAt(row, 0).toString().compareTo("")==0)
                                                 {
                                                     String consulta="from Cuenta obj where obj.compania="+aseguradora.getIdCompania()+" and obj.banco=''";
-                                                    consulta+=" and obj.convenio="+value.toString()+" and obj.transferencia='' and obj.nombre=''";
+                                                    consulta+=" and obj.convenio='"+value.toString()+"' and obj.transferencia='' and obj.nombre=''";
                                                     resp=session.createQuery(consulta).uniqueResult();
                                                     if(resp==null)
                                                     {
-                                                            int ent=entero(value.toString());
-                                                            aux= new Cuenta(aseguradora, "", ent, "", "");
+                                                            aux= new Cuenta(aseguradora, "", value.toString(), "", "");
                                                             aseguradora.addCuenta(aux);
                                                             session.save(aux);
                                                             session.getTransaction().commit();
@@ -209,7 +206,7 @@ public class CuentasBancarias extends javax.swing.JDialog {
                                                 else
                                                 {
                                                     String consulta="from Cuenta obj where obj.compania="+aseguradora.getIdCompania()+" and obj.banco='"+t_datos.getValueAt(row, 1)+"'";
-                                                    consulta+=" and obj.convenio="+value.toString()+" and obj.transferencia='"+t_datos.getValueAt(row, 3).toString()+"' and obj.nombre='"+t_datos.getValueAt(row, 4).toString()+"'";
+                                                    consulta+=" and obj.convenio='"+value.toString()+"' and obj.transferencia='"+t_datos.getValueAt(row, 3).toString()+"' and obj.nombre='"+t_datos.getValueAt(row, 4).toString()+"'";
                                                     resp=session.createQuery(consulta).uniqueResult();
                                                     if(resp==null)
                                                     {
@@ -218,7 +215,7 @@ public class CuentasBancarias extends javax.swing.JDialog {
                                                         if(resp!=null)
                                                         {
                                                             aux=(Cuenta) resp;
-                                                            aux.setConvenio(entero(value.toString()));
+                                                            aux.setConvenio(value.toString());
                                                             session.update(aux);
                                                             session.getTransaction().commit();
                                                             vector.setElementAt(value, col);
@@ -254,9 +251,6 @@ public class CuentasBancarias extends javax.swing.JDialog {
                                                 if(session.isOpen()==true)
                                                     session.close();
                                             }
-                                        }
-                                        else
-                                            JOptionPane.showMessageDialog(null, "El campo solo admite numeros");
                                     }
                                     break;
                                 
@@ -276,11 +270,11 @@ public class CuentasBancarias extends javax.swing.JDialog {
                                                 if(t_datos.getValueAt(row, 0).toString().compareTo("")==0)
                                                 {
                                                     String consulta="from Cuenta obj where obj.compania="+aseguradora.getIdCompania()+" and obj.banco=''";
-                                                    consulta+=" and obj.convenio=0 and obj.transferencia='"+value.toString()+"' and obj.nombre=''";
+                                                    consulta+=" and obj.convenio='' and obj.transferencia='"+value.toString()+"' and obj.nombre=''";
                                                     resp=session.createQuery(consulta).uniqueResult();
                                                     if(resp==null)
                                                     {
-                                                            aux= new Cuenta(aseguradora, "", 0, value.toString(), "");
+                                                            aux= new Cuenta(aseguradora, "", "", value.toString(), "");
                                                             aseguradora.addCuenta(aux);
                                                             session.save(aux);
                                                             session.getTransaction().commit();
@@ -296,7 +290,7 @@ public class CuentasBancarias extends javax.swing.JDialog {
                                                 else
                                                 {
                                                     String consulta="from Cuenta obj where obj.compania="+aseguradora.getIdCompania()+" and obj.banco='"+t_datos.getValueAt(row, 1)+"'";
-                                                    consulta+=" and obj.convenio="+t_datos.getValueAt(row, 2).toString()+" and obj.transferencia='"+value.toString()+"' and obj.nombre='"+t_datos.getValueAt(row, 4).toString()+"'";
+                                                    consulta+=" and obj.convenio='"+t_datos.getValueAt(row, 2).toString()+"' and obj.transferencia='"+value.toString()+"' and obj.nombre='"+t_datos.getValueAt(row, 4).toString()+"'";
                                                     resp=session.createQuery(consulta).uniqueResult();
                                                     if(resp==null)
                                                     {
@@ -361,11 +355,11 @@ public class CuentasBancarias extends javax.swing.JDialog {
                                                 if(t_datos.getValueAt(row, 0).toString().compareTo("")==0)
                                                 {
                                                     String consulta="from Cuenta obj where obj.compania="+aseguradora.getIdCompania()+" and obj.banco=''";
-                                                    consulta+=" and obj.convenio=0 and obj.transferencia='' and obj.nombre='"+value.toString()+"'";
+                                                    consulta+=" and obj.convenio='' and obj.transferencia='' and obj.nombre='"+value.toString()+"'";
                                                     resp=session.createQuery(consulta).uniqueResult();
                                                     if(resp==null)
                                                     {
-                                                        aux= new Cuenta(aseguradora, "", 0, "", value.toString());
+                                                        aux= new Cuenta(aseguradora, "", "", "", value.toString());
                                                             aseguradora.addCuenta(aux);
                                                             session.save(aux);
                                                             session.getTransaction().commit();
@@ -381,7 +375,7 @@ public class CuentasBancarias extends javax.swing.JDialog {
                                                 else
                                                 {
                                                     String consulta="from Cuenta obj where obj.compania="+aseguradora.getIdCompania()+" and obj.banco='"+t_datos.getValueAt(row, 1)+"'";
-                                                    consulta+=" and obj.convenio="+t_datos.getValueAt(row, 2).toString()+" and obj.transferencia='"+t_datos.getValueAt(row, 3).toString()+"' and obj.nombre='"+value.toString()+"'";
+                                                    consulta+=" and obj.convenio='"+t_datos.getValueAt(row, 2).toString()+"' and obj.transferencia='"+t_datos.getValueAt(row, 3).toString()+"' and obj.nombre='"+value.toString()+"'";
                                                     resp=session.createQuery(consulta).uniqueResult();
                                                     if(resp==null)
                                                     {
