@@ -313,34 +313,39 @@ public class Integral extends javax.swing.JFrame {
         Session session = HibernateUtil.getSessionFactory().openSession();
         try
         {
-            session.beginTransaction().begin();
-            actor=(Usuario)session.get(Usuario.class, actor.getIdUsuario());
-            Orden[] bloqueadas = (Orden[]) actor.getOrdensForBloqueada().toArray(new Orden[0]);
-            for(int a=0; a<bloqueadas.length; a++)
+            if(session.connection().isValid(15))
             {
-                actor.eliminaOrdensForBloqueada(bloqueadas[a]);
-                bloqueadas[a].setUsuarioByBloqueada(null);
-                bloqueadas[a].setVentana(null);
-                session.update(bloqueadas[a]);
+                session.beginTransaction().begin();
+                actor=(Usuario)session.get(Usuario.class, actor.getIdUsuario());
+                Orden[] bloqueadas = (Orden[]) actor.getOrdensForBloqueada().toArray(new Orden[0]);
+                for(int a=0; a<bloqueadas.length; a++)
+                {
+                    actor.eliminaOrdensForBloqueada(bloqueadas[a]);
+                    bloqueadas[a].setUsuarioByBloqueada(null);
+                    bloqueadas[a].setVentana(null);
+                    session.update(bloqueadas[a]);
+                }
+                bloqueadas=null;
+                Pedido[] bloqueados = (Pedido[]) actor.getPedidosForBloqueado().toArray(new Pedido[0]);
+                for(int b=0; b<bloqueados.length; b++)
+                {
+                    System.out.println(bloqueados[b].getIdPedido());
+                    actor.getPedidosForBloqueado().remove(bloqueados[b]);
+                    bloqueados[b].setUsuarioByBloqueado(null);
+                    bloqueados[b].setVentana(null);
+                    session.update(bloqueados[b]);
+                }
+                bloqueados=null;
+                actor.setSession(sessionPrograma);
+                session.update(actor);
+                session.getTransaction().commit();
+                val=true;
             }
-            bloqueadas=null;
-            Pedido[] bloqueados = (Pedido[]) actor.getPedidosForBloqueado().toArray(new Pedido[0]);
-            for(int b=0; b<bloqueados.length; b++)
-            {
-                System.out.println(bloqueados[b].getIdPedido());
-                actor.getPedidosForBloqueado().remove(bloqueados[b]);
-                bloqueados[b].setUsuarioByBloqueado(null);
-                bloqueados[b].setVentana(null);
-                session.update(bloqueados[b]);
-            }
-            bloqueados=null;
-            actor.setSession(sessionPrograma);
-            session.update(actor);
-            session.getTransaction().commit();
-            val=true;
+            else
+                return false;
         }catch(Exception e)
         {
-            session.getTransaction().rollback();
+            //session.getTransaction().rollback();
             val = false;
         }
         if(session.isOpen())
@@ -1488,42 +1493,52 @@ public class Integral extends javax.swing.JFrame {
     private void m_consultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_m_consultarActionPerformed
         // TODO add your handling code here:
         h.menu=0;
-        h.session(sessionPrograma);
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session=null;
         try
         {
-            session.beginTransaction().begin();
-            actor = (Usuario)session.get(Usuario.class, actor.getIdUsuario());
-            if(actor.getEditarAperturaOrden()==true)
+            h.session(sessionPrograma);
+            session = HibernateUtil.getSessionFactory().openSession();
+            if(session.connection().isValid(15))
             {
-                pos=-1;
-                for(int a=0; a<P_pestana.getTabCount(); a++)
+                session.beginTransaction().begin();
+                actor = (Usuario)session.get(Usuario.class, actor.getIdUsuario());
+                if(actor.getEditarAperturaOrden()==true)
                 {
-                    if(P_pestana.getTitleAt(a)=="E. Orden")
-                        pos=a;
-                }
-                if(pos>=0)
-                {
-                    P_pestana.setSelectedIndex(pos);
+                    pos=-1;
+                    for(int a=0; a<P_pestana.getTabCount(); a++)
+                    {
+                        if(P_pestana.getTitleAt(a)=="E. Orden")
+                            pos=a;
+                    }
+                    if(pos>=0)
+                    {
+                        P_pestana.setSelectedIndex(pos);
+                    }
+                    else
+                    {
+                        Modificar_Orden = new ModificarOrden(actor, t_periodo.getText().toString(), 2, sessionPrograma, ruta);
+                        PanelPestanas btc=new PanelPestanas(P_pestana,2, actor);
+                        P_pestana.addTab("E. Orden", Modificar_Orden);
+                        P_pestana.setSelectedComponent(Modificar_Orden);
+                        P_pestana.setTabComponentAt(P_pestana.getSelectedIndex(), btc);
+                        Modificar_Orden.t_orden.requestFocus();
+                        btc=null;
+                    }
                 }
                 else
                 {
-                    Modificar_Orden = new ModificarOrden(actor, t_periodo.getText().toString(), 2, sessionPrograma, ruta);
-                    PanelPestanas btc=new PanelPestanas(P_pestana,2, actor);
-                    P_pestana.addTab("E. Orden", Modificar_Orden);
-                    P_pestana.setSelectedComponent(Modificar_Orden);
-                    P_pestana.setTabComponentAt(P_pestana.getSelectedIndex(), btc);
-                    Modificar_Orden.t_orden.requestFocus();
-                    btc=null;
+                    JOptionPane.showMessageDialog(null, "¡Acceso denegado!");
                 }
             }
             else
             {
-                JOptionPane.showMessageDialog(null, "¡Acceso denegado!");
+                JOptionPane.showMessageDialog(null, "¡Se perdió la conexion con el servidor intente nuevamente!");
+                HibernateUtil.reConnect();
             }
         }catch(Exception e)
         {
             System.out.println(e);
+            JOptionPane.showMessageDialog(null, "¡Se perdió la conexion con el servidor intente nuevamente!");
         }
         if(session!=null)
             if(session.isOpen())
@@ -1534,43 +1549,52 @@ public class Integral extends javax.swing.JFrame {
     private void m_aperturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_m_aperturaActionPerformed
         // TODO add your handling code here:
         h.menu=0;
-        h.session(sessionPrograma);
         Session session = HibernateUtil.getSessionFactory().openSession();
         try
         {
-            session.beginTransaction().begin();
-            actor = (Usuario)session.get(Usuario.class, actor.getIdUsuario());
-            if(actor.getAperturaOrden()==true)
+            if(session.connection().isValid(15))
             {
-                pos=-1;
-                for(int a=0; a<P_pestana.getTabCount(); a++)
+                h.session(sessionPrograma);
+                session.beginTransaction().begin();
+                actor = (Usuario)session.get(Usuario.class, actor.getIdUsuario());
+                if(actor.getAperturaOrden()==true)
                 {
-                    if(P_pestana.getTitleAt(a)=="Apertura")
-                        pos=a;
-                }
-                if(pos>=0)
-                {
-                    P_pestana.setSelectedIndex(pos);
+                    pos=-1;
+                    for(int a=0; a<P_pestana.getTabCount(); a++)
+                    {
+                        if(P_pestana.getTitleAt(a)=="Apertura")
+                            pos=a;
+                    }
+                    if(pos>=0)
+                    {
+                        P_pestana.setSelectedIndex(pos);
+                    }
+                    else
+                    {
+                        Apertura_Orden = new AperturaOrden(actor, t_periodo.getText().toString(), sessionPrograma);
+                        PanelPestanas btc=new PanelPestanas(P_pestana,1,actor);
+                        P_pestana.addTab("Apertura", Apertura_Orden);
+                        P_pestana.setSelectedComponent(Apertura_Orden);
+                        P_pestana.setTabComponentAt(P_pestana.getSelectedIndex(), btc);
+                        Apertura_Orden.t_aseguradora.requestFocus();
+                        Apertura_Orden=null;
+                        btc=null;
+                    }
                 }
                 else
                 {
-                    Apertura_Orden = new AperturaOrden(actor, t_periodo.getText().toString(), sessionPrograma);
-                    PanelPestanas btc=new PanelPestanas(P_pestana,1,actor);
-                    P_pestana.addTab("Apertura", Apertura_Orden);
-                    P_pestana.setSelectedComponent(Apertura_Orden);
-                    P_pestana.setTabComponentAt(P_pestana.getSelectedIndex(), btc);
-                    Apertura_Orden.t_aseguradora.requestFocus();
-                    Apertura_Orden=null;
-                    btc=null;
+                    JOptionPane.showMessageDialog(null, "¡Acceso denegado!");
                 }
             }
             else
             {
-                JOptionPane.showMessageDialog(null, "¡Acceso denegado!");
+                JOptionPane.showMessageDialog(null, "¡Se perdió la conexion con el servidor intente nuevamente!");
+                HibernateUtil.reConnect();
             }
         }catch(Exception e)
         {
             System.out.println(e);
+            JOptionPane.showMessageDialog(null, "¡Se perdió la conexion con el servidor intente nuevamente!");
         }
         finally
         {

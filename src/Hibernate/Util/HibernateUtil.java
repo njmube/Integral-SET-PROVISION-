@@ -54,4 +54,19 @@ public class HibernateUtil {
     public static SessionFactory getSessionFactory() {
         return sessionFactory;
     }
+    
+    public static void reConnect(){
+        try{
+    	sessionFactory.close();}catch(Exception e){}
+        try {
+            File f= new File("hibernate.cfg.xml");
+            xmlFileURL =f.toURL();
+            sessionFactory = new Configuration().configure(xmlFileURL).buildSessionFactory();
+        } catch (Exception ex) {
+            // Log the exception. 
+            System.err.println("Initial SessionFactory error en la creación." + ex);
+            throw new ExceptionInInitializerError(ex);
+        }
+ 
+    }
 }

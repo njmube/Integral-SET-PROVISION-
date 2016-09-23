@@ -1150,7 +1150,7 @@ public class formatos extends javax.swing.JPanel {
             Date fecha = new Date();
             DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
             String valor=dateFormat.format(fecha);
-            File folder = new File("reportes/"+ord.getIdOrden());
+            File folder = new File(ruta+"reportes/"+ord.getIdOrden());
             folder.mkdirs();
             PdfReader reader = new PdfReader("imagenes/PlantillaSalidaVehiculos.pdf");
             PdfStamper stamp = new PdfStamper(reader, new FileOutputStream(ruta+"reportes/"+ ord.getIdOrden() +"/"+ valor +"-salida.pdf"));
@@ -1535,7 +1535,7 @@ public class formatos extends javax.swing.JPanel {
             Date fecha = new Date();
             DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
             String valor=dateFormat.format(fecha);
-            File folder = new File("reportes/"+ord.getIdOrden());
+            File folder = new File(ruta+"reportes/"+ord.getIdOrden());
             folder.mkdirs();
             PdfReader reader = new PdfReader("imagenes/PlantillaEncueStaQualitas.pdf");
             PdfStamper stamp = new PdfStamper(reader, new FileOutputStream(ruta+"reportes/"+ ord.getIdOrden() +"/"+ valor +"-encuesta.pdf"));
@@ -1612,7 +1612,7 @@ public class formatos extends javax.swing.JPanel {
             Date fecha = new Date();
             DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
             String valor=dateFormat.format(fecha);
-            File folder = new File("reportes/"+ord.getIdOrden());
+            File folder = new File(ruta+"reportes/"+ord.getIdOrden());
             folder.mkdirs();
             PdfReader reader = new PdfReader("imagenes/PlantillaPromesaAxa.pdf");
             PdfStamper stamp = new PdfStamper(reader, new FileOutputStream(ruta+"reportes/"+ ord.getIdOrden() +"/"+ valor +"-promesaAXA.pdf"));
@@ -1741,7 +1741,7 @@ public class formatos extends javax.swing.JPanel {
             Date fecha = new Date();
             DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
             String valor=dateFormat.format(fecha);
-            File folder = new File("reportes/"+ord.getIdOrden());
+            File folder = new File(ruta+"reportes/"+ord.getIdOrden());
             folder.mkdirs();
             PdfReader reader = new PdfReader("imagenes/PlantillaOrdenServicio.pdf");
             PdfStamper stamp = new PdfStamper(reader, new FileOutputStream(ruta+"reportes/"+ ord.getIdOrden() +"/"+ valor +"-OrdenServicio.pdf"));
