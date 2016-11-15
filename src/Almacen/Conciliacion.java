@@ -76,16 +76,13 @@ public class Conciliacion extends javax.swing.JPanel {
      */
     private String orden;
     private Usuario user;
-    //DefaultTableModel model;
     String sessionPrograma="";
     Herramientas h;
-    private Usuario usrAut;
     int entro=0, x=0;
     
     String[] columnas = new String [] {
         "Id","Tipo","Descripcion","Aut","Val","N° SET","N° Ext.", "C.Aut","N","Ori","D","R","M","Med","Codigo","$C/U Aut",
         "N $C/U","Factura Tot","Prov","N° Fact."};
-    //private Session session;
     Orden ord;
     FormatoTabla formato;
     MyModel model;
@@ -133,7 +130,8 @@ public class Conciliacion extends javax.swing.JPanel {
     public void formatoTabla()
     {
         TableCellRenderer textNormal = new DefaultTableHeaderCellRenderer();        
-        for(int x=0; x<t_datos.getColumnModel().getColumnCount(); x++)
+        int no_ren=t_datos.getColumnModel().getColumnCount();
+        for(int x=0; x<no_ren; x++)
         {
             t_datos.getColumnModel().getColumn(x).setHeaderRenderer(textNormal);
         } 
@@ -154,8 +152,8 @@ public class Conciliacion extends javax.swing.JPanel {
         tcr.setHorizontalAlignment(SwingConstants.RIGHT);
         FormatoEditor fe=new FormatoEditor();
         t_datos.setDefaultEditor(Double.class, fe);
-
-        for (int i=0; i<t_datos.getColumnCount(); i++)
+        int num_row=t_datos.getColumnCount();
+        for (int i=0; i<num_row; i++)
         {
   	      TableColumn column = col_model.getColumn(i);
               switch(i)
@@ -273,7 +271,8 @@ public class Conciliacion extends javax.swing.JPanel {
                 if(cuentas.size()>0)
                 {                    
                     noPartida=new ArrayList();
-                    for(int i=0; i<cuentas.size(); i++)
+                    int num_c=cuentas.size();
+                    for(int i=0; i<num_c; i++)
                     {
                         java.util.HashMap map=(java.util.HashMap)cuentas.get(i);
                         noPartida.add(map.get("id_partida"));
@@ -340,10 +339,10 @@ public class Conciliacion extends javax.swing.JPanel {
                         t_datos.setEnabled(false);
                         
                 }
-                                
-                if(cuentas2.size()>0)
+                int num_c2=cuentas2.size();
+                if(num_c2>0)
                 {
-                    for(int i=0; i<cuentas2.size(); i++)
+                    for(int i=0; i<num_c2; i++)
                     {
                         java.util.HashMap map=(java.util.HashMap)cuentas2.get(i);
                         model.setValueAt(map.get("id_partida_externa"), i+cuentas.size(), 0);
@@ -490,11 +489,6 @@ public class Conciliacion extends javax.swing.JPanel {
         t_datos.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_LAST_COLUMN);
         t_datos.setGridColor(new java.awt.Color(102, 102, 102));
         t_datos.getTableHeader().setReorderingAllowed(false);
-        t_datos.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                t_datosKeyPressed(evt);
-            }
-        });
         scroll.setViewportView(t_datos);
 
         add(scroll, java.awt.BorderLayout.CENTER);
@@ -511,7 +505,6 @@ public class Conciliacion extends javax.swing.JPanel {
                 ruta = archivo.getSelectedFile().getAbsolutePath();
                 if (ruta != null) {
                     File archivoXLS = new File(ruta + ".xls");
-                    File plantilla = new File("imagenes/plantillaConciliacion.xls");
                     Session session = HibernateUtil.getSessionFactory().openSession();
                     ArrayList datos = new ArrayList();
                     Query query = session.createSQLQuery("select compania.nombre, orden.tipo_nombre, orden.modelo, orden.no_serie, clientes.nombre as nombres,orden.id_orden \n"
@@ -598,11 +591,11 @@ public class Conciliacion extends javax.swing.JPanel {
                     borde_cr.setFillBackgroundColor(HSSFColor.LIGHT_BLUE.index);
                     borde_cr.setFillForegroundColor(HSSFColor.YELLOW.index);
                     
-                    DecimalFormat formatoDecimal = new DecimalFormat("####0.0");
                     DecimalFormat formatoPorcentaje = new DecimalFormat("#,##0.00");
 
                     int miRenglon=9;
-                    for (int i = 0; i < t_datos.getRowCount(); i++) 
+                    int num_tab=t_datos.getRowCount();
+                    for (int i = 0; i < num_tab; i++) 
                     {
                         for(int j=0; j<4; j++)
                         {
@@ -792,7 +785,7 @@ public class Conciliacion extends javax.swing.JPanel {
                     libro.getSheet("Conciliacion").getRow(miRenglon).getCell(0).setCellStyle(borde_c);
                     miRenglon++;
                     
-                    for (int i = 0; i < t_datos.getRowCount(); i++) 
+                    for (int i = 0; i <num_tab ; i++) 
                     {  
                         for(int j=0; j<4; j++)
                         {
@@ -1038,15 +1031,12 @@ public class Conciliacion extends javax.swing.JPanel {
                     
                     for (int i = 0; i < datos.size(); i++) {
                         java.util.HashMap map = (java.util.HashMap) datos.get(i);
-
                         reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, map.get("nombre").toString(), 171, 540, 0);
                         reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, map.get("tipo_nombre").toString(), 171, 520, 0);
                         reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, map.get("modelo").toString(), 171, 500, 0);
                         reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, map.get("no_serie").toString(), 171, 480, 0);
                         reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, map.get("nombres").toString(), 171, 460, 0);
                         reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, map.get("id_orden").toString(), 657, 520, 0);
-                        //reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, " ", 645, 460, 0);
-
                     }
                     reporte.contenido.roundRectangle(640, 520, 80, 0, 0);
                     reporte.contenido.roundRectangle(640, 460, 80, 0, 0);
@@ -1065,11 +1055,10 @@ public class Conciliacion extends javax.swing.JPanel {
 
                     PdfPTable tabla = reporte.crearTabla(nuevos.length, nuevos, 100, Element.ALIGN_CENTER);
                     cabecera(reporte, bf, tabla, "", 2);
-                    //
-                    DecimalFormat formatoDecimal = new DecimalFormat("####0.0");
                     DecimalFormat formatoPorcentaje = new DecimalFormat("#,##0.00");
-
-                    for (int i = 0; i < t_datos.getRowCount(); i++) 
+                    
+                    int num_r=t_datos.getRowCount();
+                    for (int i = 0; i < num_r; i++) 
                     {
                         for(int j=0; j<4; j++)
                         {
@@ -1211,7 +1200,7 @@ public class Conciliacion extends javax.swing.JPanel {
                     font1.setColor(BaseColor.WHITE);
                     tabla.addCell(reporte.celda("Faltante en Vales",font1,contenido1,centro,15,1, Rectangle.RECTANGLE));
                     
-                    for (int i = 0; i < t_datos.getRowCount(); i++) 
+                    for (int i = 0; i < num_r; i++) 
                     {  
                         for(int j=0; j<4; j++)
                         {
@@ -1235,7 +1224,6 @@ public class Conciliacion extends javax.swing.JPanel {
                                     ((Double.parseDouble(t_datos.getValueAt(i,renglon).toString())>0 && renglon>=10)) ||
                                     (renglon==8 && Double.parseDouble(t_datos.getValueAt(i,10).toString())<=0 && Double.parseDouble(t_datos.getValueAt(i,11).toString())<=0 &&  Double.parseDouble(t_datos.getValueAt(i,12).toString())<=0) )
                             {
-                                System.out.println("entro");
                                 if(renglon==8 && t_datos.getValueAt(i,9).toString().compareTo("-")==0)
                                     contenido = BaseColor.WHITE;
                                 else
@@ -1367,30 +1355,7 @@ public class Conciliacion extends javax.swing.JPanel {
 
     private void t_buscaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_buscaActionPerformed
         // TODO add your handling code here:
-        h=new Herramientas(user, 0);
-        h.session(sessionPrograma);
-        if(this.t_busca.getText().compareToIgnoreCase("")!=0)
-        {
-            //buscaCuentas();
-            if(x>=t_datos.getRowCount())
-            {
-                x=0;
-                java.awt.Rectangle r = t_datos.getCellRect( x, 2, true);
-                t_datos.scrollRectToVisible(r);
-            }
-            for(; x<t_datos.getRowCount(); x++)
-            {
-                if(t_datos.getValueAt(x, 2).toString().indexOf(t_busca.getText()) != -1)
-                {
-                    t_datos.setRowSelectionInterval(x, x);
-                    t_datos.setColumnSelectionInterval(2, 2);
-                    java.awt.Rectangle r = t_datos.getCellRect( x, 2, true);
-                    t_datos.scrollRectToVisible(r);
-                    break;
-                }
-            }
-            x++;
-        }
+        busca();
     }//GEN-LAST:event_t_buscaActionPerformed
 
     private void t_buscaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_buscaKeyTyped
@@ -1401,55 +1366,27 @@ public class Conciliacion extends javax.swing.JPanel {
 
     private void b_busca1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_busca1ActionPerformed
         // TODO add your handling code here:
-        h=new Herramientas(user, 0);
-        h.session(sessionPrograma);
-        if(this.t_busca.getText().compareToIgnoreCase("")!=0)
-        {
-            //buscaCuentas();
-            if(x>=t_datos.getRowCount())
-            {
-                x=0;
-                java.awt.Rectangle r = t_datos.getCellRect( x, 2, true);
-                t_datos.scrollRectToVisible(r);
-            }
-            for(; x<t_datos.getRowCount(); x++)
-            {
-                if(t_datos.getValueAt(x, 2).toString().indexOf(t_busca.getText()) != -1)
-                {
-                    t_datos.setRowSelectionInterval(x, x);
-                    t_datos.setColumnSelectionInterval(2, 2);
-                    java.awt.Rectangle r = t_datos.getCellRect( x, 2, true);
-                    t_datos.scrollRectToVisible(r);
-                    break;
-                }
-            }
-            x++;
-        }
+        busca();
     }//GEN-LAST:event_b_busca1ActionPerformed
-
-    private void t_datosKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_datosKeyPressed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_t_datosKeyPressed
 
     private void suma()
     {
         double suma=0.00d;
-        for(int x=0; x<t_datos.getRowCount(); x++)
+        int num_r=t_datos.getRowCount();
+        for(int x=0; x<num_r; x++)
         {
             if( (t_datos.getValueAt(x, 1).toString().compareTo("AC")!=0 &&( ((boolean)t_datos.getValueAt(x, 3))==true ||  ((boolean)t_datos.getValueAt(x, 4))==true)) || (t_datos.getValueAt(x, 1).toString().compareTo("AC")==0 && (t_datos.getValueAt(x, 5)!=null)))
                 suma+=(double)t_datos.getValueAt(x, 17);
         }
         total.setValue(suma);
     }
+    
     private static void cabecera(PDF reporte, BaseFont bf, PdfPTable tabla, String titulo, int op) {
         
         com.itextpdf.text.Font font = new com.itextpdf.text.Font(com.itextpdf.text.Font.FontFamily.HELVETICA, 7, com.itextpdf.text.Font.BOLD);
         font.setColor(BaseColor.WHITE);
         BaseColor cabecera = BaseColor.DARK_GRAY;
-        BaseColor contenido = BaseColor.WHITE;
         int centro = com.itextpdf.text.Element.ALIGN_CENTER;
-        int izquierda = com.itextpdf.text.Element.ALIGN_LEFT;
-        int derecha = com.itextpdf.text.Element.ALIGN_RIGHT;
         tabla.addCell(reporte.celda("N°.SET", font, cabecera, centro, 0, 1, Rectangle.RECTANGLE));
         tabla.addCell(reporte.celda("N°.EXT", font, cabecera, centro, 0, 1, Rectangle.RECTANGLE));
         tabla.addCell(reporte.celda("CNT", font, cabecera, centro, 0, 1, Rectangle.RECTANGLE));
@@ -1494,7 +1431,8 @@ public class Conciliacion extends javax.swing.JPanel {
         ren=renglones;
         col=columnas.length;
         celdaEditable=new boolean[types.length][renglones];
-        for(int x=0; x<types.length; x++)
+        int num_t=types.length;
+        for(int x=0; x<num_t; x++)
         {
             for(int y=0; y<renglones; y++)
             {
@@ -1518,7 +1456,7 @@ public class Conciliacion extends javax.swing.JPanel {
         public void setValueAt(Object value, int row, int col)
                 {
                         Vector vector = (Vector) this.dataVector.elementAt(row);
-                        Object celda = ((Vector)this.dataVector.elementAt(row)).elementAt(col);
+                        //Object celda = ((Vector)this.dataVector.elementAt(row)).elementAt(col);
                         switch(col)
                         {
                             case 4:
@@ -1547,7 +1485,6 @@ public class Conciliacion extends javax.swing.JPanel {
                                         else
                                         {
                                             PartidaExterna par=(PartidaExterna)session.get(PartidaExterna.class, (Integer)t_datos.getValueAt(row, 0));
-                                            System.out.println(value);
                                             par.setFacturado((boolean)value);
                                             session.update(par);
                                             session.beginTransaction().commit();
@@ -1864,14 +1801,41 @@ public class Conciliacion extends javax.swing.JPanel {
                 }
 
     
-    public void setColumnaEditable(int columna, boolean editable)
-    {
-	int i = 0;
-	int cantidadFilas = this.getRowCount();
-	for(i=0; i<celdaEditable[columna].length; i++)
-            this.celdaEditable[ columna ][ i ] = editable;
-    }
+        public void setColumnaEditable(int columna, boolean editable)
+        {
+            int i = 0;
+            int ce=celdaEditable[columna].length;
+            for(i=0; i<ce; i++)
+                this.celdaEditable[ columna ][ i ] = editable;
+        }
     //not necessary
     }
     
+    public void busca()
+    {
+        h=new Herramientas(user, 0);
+        h.session(sessionPrograma);
+        if(this.t_busca.getText().compareToIgnoreCase("")!=0)
+        {
+            int num_r=t_datos.getRowCount();
+            if(x>=num_r)
+            {
+                x=0;
+                java.awt.Rectangle r = t_datos.getCellRect( x, 2, true);
+                t_datos.scrollRectToVisible(r);
+            }
+            for(; x<num_r; x++)
+            {
+                if(t_datos.getValueAt(x, 2).toString().indexOf(t_busca.getText()) != -1)
+                {
+                    t_datos.setRowSelectionInterval(x, x);
+                    t_datos.setColumnSelectionInterval(2, 2);
+                    java.awt.Rectangle r = t_datos.getCellRect( x, 2, true);
+                    t_datos.scrollRectToVisible(r);
+                    break;
+                }
+            }
+            x++;
+        }
+    }
 }

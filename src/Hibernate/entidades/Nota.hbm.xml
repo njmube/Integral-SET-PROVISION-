@@ -28,7 +28,7 @@
             </column>
         </property>
         <property name="rfcEmisor" type="string">
-            <column name="rfc_emisor" length="12">
+            <column name="rfc_emisor" length="13">
                 <comment>rfc del emisor</comment>
             </column>
         </property>
@@ -73,7 +73,7 @@
             </column>
         </property>
         <property name="rfcReceptor" type="string">
-            <column name="rfc_receptor" length="12">
+            <column name="rfc_receptor" length="13">
                 <comment>rfc del receptor</comment>
             </column>
         </property>

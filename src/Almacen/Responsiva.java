@@ -327,26 +327,16 @@ public class Responsiva extends javax.swing.JPanel {
     private void b_masActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_masActionPerformed
         h=new Herramientas(usr, 1);
         h.session(sessionPrograma);
-        Session session = HibernateUtil.getSessionFactory().openSession();
         
         t_id_herramienta.setText("");
         t_nombre_herramienta.setText("");
         t_ubicacion.setText("");
         t_cantidad.setText("1");
-        try
-        {
-            session.beginTransaction().begin();
-            Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-            v_nuevo.setSize(565, 160);
-            v_nuevo.setLocation((d.width/2)-(v_nuevo.getWidth()/2), (d.height/2)-(v_nuevo.getHeight()/2));
-            v_nuevo.setVisible(true);
-        }catch(Exception e)
-        {
-            e.printStackTrace();
-        }
-        if(session!=null)
-        if(session.isOpen())
-        session.close();
+
+        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+        v_nuevo.setSize(565, 160);
+        v_nuevo.setLocation((d.width/2)-(v_nuevo.getWidth()/2), (d.height/2)-(v_nuevo.getHeight()/2));
+        v_nuevo.setVisible(true);
     }//GEN-LAST:event_b_masActionPerformed
 
     private void b_empleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_empleadoActionPerformed
@@ -361,7 +351,6 @@ public class Responsiva extends javax.swing.JPanel {
             this.t_nombre_empleado.setText(emp.getNombre());
             this.t_id_empleado.setText(""+emp.getIdEmpleado());
             Session session = HibernateUtil.getSessionFactory().openSession();
-            session.beginTransaction().begin();
             try
             {
                 Query q = session.createSQLQuery("select responsiva.id_responsiva, herramienta.nombre, responsiva.cantidad, responsiva.ubicacion from responsiva \n" +

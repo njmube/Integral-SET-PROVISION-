@@ -14,6 +14,7 @@ import Hibernate.entidades.Partida;
 import Hibernate.entidades.PartidaExterna;
 import Hibernate.entidades.Pedido;
 import Hibernate.entidades.Usuario;
+import Hibernate.entidades.XCobrar;
 import Servicios.buscaOrden;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -43,6 +44,16 @@ import Integral.FormatoEditor;
 import Integral.FormatoTabla;
 import Integral.Herramientas;
 import Integral.Render1;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.util.Properties;
+import javax.mail.BodyPart;
+import javax.mail.Message;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 /**
  * @author ESPECIALIZADO TOLUCA
  */
@@ -59,11 +70,18 @@ public class nuevoAlmacen extends javax.swing.JPanel {
     public Pedido pedido=null;    
     Almacen miAlmacen;
     String miTitulo="ENTRADA DE MATERIAL DE PEDIDO";
+    int iva=0;
     /**
      * Creates new form nuevAlmacen
      */
     public nuevoAlmacen(Usuario usuario, String ses, int op) {
         initComponents();
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Configuracion con = (Configuracion)session.get(Configuracion.class, 1);
+        iva=con.getIva();
+        if(session.isOpen())
+            session.close();
+        
         buscar.setIcon(new ImageIcon("imagenes/buscar.png"));
         menu=op;
         usr=usuario;
@@ -1317,10 +1335,6 @@ public class nuevoAlmacen extends javax.swing.JPanel {
     }//GEN-LAST:event_b_masActionPerformed
 
     private void c_toperacionItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_c_toperacionItemStateChanged
-        h= new Herramientas(usr, menu);
-        h.session(sessionPrograma);
-        h.desbloqueaOrden();
-        h.desbloqueaPedido();
         switch (c_toperacion.getSelectedIndex()) 
         {
             case 0:
@@ -1438,10 +1452,42 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                                 t_asegurado.setText(""+orden_act.getClientes().getIdClientes());//nombre
                             break;
                     }
-                    t_pedido.setText(""+ped.getIdPedido());
-                    b_mas.setEnabled(true);
-                    b_menos.setEnabled(true);
-                    busca();
+                    if(t_pedido.getText().compareTo("")!=0){
+                        if(c_toperacion.getSelectedIndex()==0 || c_toperacion.getSelectedIndex()==4)
+                        {
+                            if(c_tmovimiento.getSelectedItem().toString().compareTo("Salida")==0)
+                            {
+                                XCobrar xp = (XCobrar)session.createCriteria(XCobrar.class).createAlias("reclamo", "rec").add(Restrictions.eq("idPedido", Integer.parseInt(t_pedido.getText()))).add(Restrictions.in("rec.estatus", new String[]{"a","P"})).setMaxResults(1).uniqueResult();
+                                if(xp==null)
+                                {
+                                    t_pedido.setText(""+ped.getIdPedido());
+                                    b_mas.setEnabled(true);
+                                    b_menos.setEnabled(true);
+                                    busca();
+                                }
+                                else
+                                {
+                                    JOptionPane.showMessageDialog(null, "El pedido "+t_pedido.getText()+" ya esta en proceso de cobro N° Reclamo:"+xp.getReclamo().getIdReclamo());
+                                    borra_cajas();
+
+                                }
+                            }
+                            else
+                            {
+                                t_pedido.setText(""+ped.getIdPedido());
+                                b_mas.setEnabled(true);
+                                b_menos.setEnabled(true);
+                                busca();
+                            }    
+                        }
+                        else
+                        {
+                            t_pedido.setText(""+ped.getIdPedido());
+                            b_mas.setEnabled(true);
+                            b_menos.setEnabled(true);
+                            busca();
+                        }
+                    }
                 }
                 else
                 {
@@ -1469,10 +1515,6 @@ public class nuevoAlmacen extends javax.swing.JPanel {
     }//GEN-LAST:event_b_buscapedidoActionPerformed
 
     private void c_tmovimientoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_c_tmovimientoItemStateChanged
-        h= new Herramientas(usr, menu);
-        h.session(sessionPrograma);
-        h.desbloqueaOrden();
-        h.desbloqueaPedido();
         t_datos.setModel(model);
         formatoTabla();
         borra_cajas();
@@ -2251,6 +2293,9 @@ public class nuevoAlmacen extends javax.swing.JPanel {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        h= new Herramientas(usr, menu);
+        h.desbloqueaOrden();
+        h.desbloqueaPedido();
         c_tmovimiento.setSelectedItem("Entrada");
         c_toperacion.setSelectedItem("Pedido");
         jButton1.setBackground(Color.RED);
@@ -2267,6 +2312,9 @@ public class nuevoAlmacen extends javax.swing.JPanel {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
+        h= new Herramientas(usr, menu);
+        h.desbloqueaOrden();
+        h.desbloqueaPedido();
         c_tmovimiento.setSelectedItem("Salida");
         c_toperacion.setSelectedItem("Pedido");
         jButton2.setBackground(Color.RED);
@@ -2283,6 +2331,9 @@ public class nuevoAlmacen extends javax.swing.JPanel {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
+        h= new Herramientas(usr, menu);
+        h.desbloqueaOrden();
+        h.desbloqueaPedido();
         c_tmovimiento.setSelectedItem("Entrada");
         c_toperacion.setSelectedItem("Compañía");
         jButton3.setBackground(Color.RED);
@@ -2299,6 +2350,9 @@ public class nuevoAlmacen extends javax.swing.JPanel {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
+        h= new Herramientas(usr, menu);
+        h.desbloqueaOrden();
+        h.desbloqueaPedido();
         c_tmovimiento.setSelectedItem("Salida");
         c_toperacion.setSelectedItem("Compañía");
         jButton4.setBackground(Color.RED);
@@ -2315,6 +2369,9 @@ public class nuevoAlmacen extends javax.swing.JPanel {
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         // TODO add your handling code here:
+        h= new Herramientas(usr, menu);
+        h.desbloqueaOrden();
+        h.desbloqueaPedido();
         c_tmovimiento.setSelectedItem("Salida");
         c_toperacion.setSelectedItem("Operarios");
         jButton5.setBackground(Color.RED);
@@ -2331,6 +2388,9 @@ public class nuevoAlmacen extends javax.swing.JPanel {
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         // TODO add your handling code here:
+        h= new Herramientas(usr, menu);
+        h.desbloqueaOrden();
+        h.desbloqueaPedido();
         c_tmovimiento.setSelectedItem("Entrada");
         c_toperacion.setSelectedItem("Operarios");
         jButton6.setBackground(Color.RED);
@@ -2347,6 +2407,9 @@ public class nuevoAlmacen extends javax.swing.JPanel {
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
         // TODO add your handling code here:
+        h= new Herramientas(usr, menu);
+        h.desbloqueaOrden();
+        h.desbloqueaPedido();
         c_tmovimiento.setSelectedItem("Salida");
         c_toperacion.setSelectedItem("Venta");
         jButton7.setBackground(Color.RED);
@@ -2363,6 +2426,9 @@ public class nuevoAlmacen extends javax.swing.JPanel {
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
         // TODO add your handling code here:
+        h= new Herramientas(usr, menu);
+        h.desbloqueaOrden();
+        h.desbloqueaPedido();
         c_tmovimiento.setSelectedItem("Entrada");
         c_toperacion.setSelectedItem("Venta");
         jButton8.setBackground(Color.RED);
@@ -2387,11 +2453,13 @@ public class nuevoAlmacen extends javax.swing.JPanel {
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
         // TODO add your handling code here:
+        h= new Herramientas(usr, menu);
+        h.desbloqueaOrden();
+        h.desbloqueaPedido();
         c_tmovimiento.setSelectedItem("Entrada");
         c_toperacion.setSelectedItem("Inventario");
         cb_sin_orden.setSelected(false);
         b_buscaorden.setEnabled(true);
-        //b_detalles.setEnabled(true);
         jButton10.setBackground(Color.RED);
         jButton2.setBackground(new java.awt.Color(51, 51, 255));
         jButton3.setBackground(new java.awt.Color(51, 51, 255));
@@ -2406,11 +2474,13 @@ public class nuevoAlmacen extends javax.swing.JPanel {
 
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
         // TODO add your handling code here:
+        h= new Herramientas(usr, menu);
+        h.desbloqueaOrden();
+        h.desbloqueaPedido();
         c_tmovimiento.setSelectedItem("Salida");
         c_toperacion.setSelectedItem("Inventario");
         cb_sin_orden.setSelected(false);
         b_buscaorden.setEnabled(true);
-        //b_detalles.setEnabled(true);
         jButton11.setBackground(Color.RED);
         jButton2.setBackground(new java.awt.Color(51, 51, 255));
         jButton3.setBackground(new java.awt.Color(51, 51, 255));
@@ -2678,7 +2748,10 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                                 model.setValueAt(par.getEjemplar().getIdParte(), a, 3);
                             else
                                 model.setValueAt("", a, 3);
-                            model.setValueAt(par.getCatalogo().getNombre(), a, 4);
+                            String anotacion="";
+                            if(par.getInstruccion()!=null)
+                                anotacion=par.getInstruccion();
+                            model.setValueAt(par.getCatalogo().getNombre()+" "+anotacion, a, 4);
                             model.setValueAt(par.getMed(), a, 5);
                             model.setValueAt(par.getCantPcp(), a, 6);
                             model.setValueAt(total, a, 7);
@@ -2743,7 +2816,10 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                                 model.setValueAt(par.getEjemplar().getIdParte(), a, 3);
                             else
                                 model.setValueAt("", a, 3);
-                            model.setValueAt(par.getCatalogo().getNombre(), a, 4);
+                            String anotacion="";
+                            if(par.getInstruccion()!=null)
+                                anotacion=par.getInstruccion();
+                            model.setValueAt(par.getCatalogo().getNombre()+" "+anotacion, a, 4);
                             model.setValueAt(par.getMed(), a, 5);
                             model.setValueAt(par.getCantPcp(), a, 6);
                             model.setValueAt(total, a, 7);
@@ -3192,7 +3268,10 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                                 model.setValueAt(par.getEjemplar().getIdParte(), a, 3);
                             else
                                 model.setValueAt("", a, 3);
-                            model.setValueAt(par.getCatalogo().getNombre(), a, 4);
+                            String anotacion="";
+                            if(par.getInstruccion()!=null)
+                                anotacion=par.getInstruccion();
+                            model.setValueAt(par.getCatalogo().getNombre()+" "+anotacion, a, 4);
                             model.setValueAt(par.getMed(), a, 5);
                             model.setValueAt(par.getCantidadAut(), a, 6);
                             model.setValueAt(total, a, 7);
@@ -3242,7 +3321,10 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                                 model.setValueAt(par.getEjemplar().getIdParte(), a, 3);
                             else
                                 model.setValueAt("", a, 3);
-                            model.setValueAt(par.getCatalogo().getNombre(), a, 4);
+                            String anotacion="";
+                            if(par.getInstruccion()!=null)
+                                anotacion=par.getInstruccion();
+                            model.setValueAt(par.getCatalogo().getNombre()+" "+anotacion, a, 4);
                             model.setValueAt(par.getMed(), a, 5);
                             model.setValueAt(par.getCantidadAut(), a, 6);
                             model.setValueAt(total, a, 7);
@@ -3344,7 +3426,10 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                                 model.setValueAt(par.getEjemplar().getIdParte(), a, 3);
                             else
                                 model.setValueAt("", a, 3);
-                            model.setValueAt(par.getCatalogo().getNombre(), a, 4);
+                            String anotacion="";
+                            if(par.getInstruccion()!=null)
+                                anotacion=par.getInstruccion();
+                            model.setValueAt(par.getCatalogo().getNombre()+" "+anotacion, a, 4);
                             model.setValueAt(par.getMed(), a, 5);
                             model.setValueAt(total, a, 6);
                             model.setValueAt(0.0d, a, 7);
@@ -3470,7 +3555,10 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                                 model.setValueAt(par.getEjemplar().getIdParte(), a, 3);
                             else
                                 model.setValueAt("", a, 3);
-                            model.setValueAt(par.getCatalogo().getNombre(), a, 4);
+                            String anotacion="";
+                            if(par.getInstruccion()!=null)
+                                anotacion=par.getInstruccion();
+                            model.setValueAt(par.getCatalogo().getNombre()+" "+anotacion, a, 4);
                             model.setValueAt(par.getMed(), a, 5);
                             model.setValueAt(total, a, 6);
                             model.setValueAt(total_operario, a, 7);
@@ -4514,57 +4602,154 @@ public class nuevoAlmacen extends javax.swing.JPanel {
         try 
         {
             session.beginTransaction().begin();
-            pedido =(Pedido)session.get(Pedido.class, Integer.parseInt(t_pedido.getText()));
-            obj.setPedido(pedido);
-            obj.setMovimientos(new HashSet(0));
-            IdAlmacen=(Integer) session.save(obj);
-            Almacen alm = (Almacen)session.get(Almacen.class, IdAlmacen);
-            for(int ren=0; ren<t_datos.getRowCount(); ren++)
+            
+            if(obj.getTipoMovimiento()==2 && (obj.getOperacion()==1 || obj.getOperacion()==2 || obj.getOperacion()==3|| obj.getOperacion()==7))
             {
-                Movimiento mov = new Movimiento();
-                mov.setAlmacen(alm);
-                if(c_toperacion.getSelectedItem().toString().compareTo("Pedido")==0)
+                XCobrar xp = (XCobrar)session.createCriteria(XCobrar.class).createAlias("reclamo", "rec").add(Restrictions.eq("idPedido", Integer.parseInt(t_pedido.getText()))).add(Restrictions.in("rec.estatus", new String[]{"a","P"})).setMaxResults(1).uniqueResult();
+                if(xp==null)
                 {
-                    if(l_tipo_pedido.getText().compareTo("Interno")==0 || l_tipo_pedido.getText().compareTo("Adicional")==0)
-                        mov.setCantidad((double)t_datos.getValueAt(ren, 8));
-                    else
-                        mov.setCantidad((double)t_datos.getValueAt(ren, 6));
-                }
-                if(c_toperacion.getSelectedItem().toString().compareTo("Venta")==0)
-                {
-                    if(c_tmovimiento.getSelectedItem().toString().compareTo("Entrada")==0)
-                        mov.setCantidad((double)t_datos.getValueAt(ren, 5));
-                    else
-                        mov.setCantidad((double)t_datos.getValueAt(ren, 7));
-                }
-                if(l_tipo_pedido.getText().compareTo("Interno")==0)// || l_tipo_pedido.getText().compareTo("Adicional")==0)
-                {
-                    Partida part=(Partida)session.get(Partida.class, (Integer)t_datos.getValueAt(ren, 0));
-                    mov.setPartida(part);
+                    pedido =(Pedido)session.get(Pedido.class, Integer.parseInt(t_pedido.getText()));
+                    obj.setPedido(pedido);
+                    obj.setMovimientos(new HashSet(0));
+                    IdAlmacen=(Integer) session.save(obj);
+                    Almacen alm = (Almacen)session.get(Almacen.class, IdAlmacen);
+                    for(int ren=0; ren<t_datos.getRowCount(); ren++)
+                    {
+                        Movimiento mov = new Movimiento();
+                        mov.setAlmacen(alm);
+                        if(c_toperacion.getSelectedItem().toString().compareTo("Pedido")==0)
+                        {
+                            if(l_tipo_pedido.getText().compareTo("Interno")==0 || l_tipo_pedido.getText().compareTo("Adicional")==0)
+                                mov.setCantidad((double)t_datos.getValueAt(ren, 8));
+                            else
+                                mov.setCantidad((double)t_datos.getValueAt(ren, 6));
+                        }
+                        if(c_toperacion.getSelectedItem().toString().compareTo("Venta")==0)
+                        {
+                            if(c_tmovimiento.getSelectedItem().toString().compareTo("Entrada")==0)
+                                mov.setCantidad((double)t_datos.getValueAt(ren, 5));
+                            else
+                                mov.setCantidad((double)t_datos.getValueAt(ren, 7));
+                        }
+                        if(l_tipo_pedido.getText().compareTo("Interno")==0)// || l_tipo_pedido.getText().compareTo("Adicional")==0)
+                        {
+                            Partida part=(Partida)session.get(Partida.class, (Integer)t_datos.getValueAt(ren, 0));
+                            mov.setPartida(part);
+                        }
+                        else
+                        {
+                            PartidaExterna part=(PartidaExterna)session.get(PartidaExterna.class, (Integer)t_datos.getValueAt(ren, 0));
+                            if(l_tipo_pedido.getText().compareTo("Inventario")==0)
+                            {
+                                Ejemplar ejemplar=part.getEjemplar();
+                                if(c_tmovimiento.getSelectedItem().toString().compareToIgnoreCase("Entrada")==0)
+                                    ejemplar.setExistencias(ejemplar.getExistencias()+mov.getCantidad());
+                                if(c_tmovimiento.getSelectedItem().toString().compareToIgnoreCase("Salida")==0)
+                                    ejemplar.setExistencias(ejemplar.getExistencias()-mov.getCantidad());
+                                session.update(ejemplar);
+                            }
+                            mov.setPartidaExterna(part);
+                        }
+
+                        alm.addMovimiento(mov);
+                    }
+                    session.update(alm);
+                    session.beginTransaction().commit();
+                    t_nmovimiento.setText(alm.getIdAlmacen().toString());
+                    t_fecha.setText(alm.getFecha().toLocaleString());
+                    t_notas.setText(alm.getNotas());
+                    t_pedido.setText(alm.getPedido().getIdPedido().toString());
                 }
                 else
                 {
-                    PartidaExterna part=(PartidaExterna)session.get(PartidaExterna.class, (Integer)t_datos.getValueAt(ren, 0));
-                    if(l_tipo_pedido.getText().compareTo("Inventario")==0)
-                    {
-                        Ejemplar ejemplar=part.getEjemplar();
-                        if(c_tmovimiento.getSelectedItem().toString().compareToIgnoreCase("Entrada")==0)
-                            ejemplar.setExistencias(ejemplar.getExistencias()+mov.getCantidad());
-                        if(c_tmovimiento.getSelectedItem().toString().compareToIgnoreCase("Salida")==0)
-                            ejemplar.setExistencias(ejemplar.getExistencias()-mov.getCantidad());
-                        session.update(ejemplar);
-                    }
-                    mov.setPartidaExterna(part);
+                    IdAlmacen = null;
+                    session.beginTransaction().rollback();
+                    JOptionPane.showMessageDialog(null, "El pedido "+t_pedido.getText()+" ya esta en proceso de cobro N° Reclamo:"+xp.getReclamo().getIdReclamo());
                 }
-                
-                alm.addMovimiento(mov);
             }
-            session.update(alm);
-            session.beginTransaction().commit();
-            t_nmovimiento.setText(alm.getIdAlmacen().toString());
-            t_fecha.setText(alm.getFecha().toLocaleString());
-            t_notas.setText(alm.getNotas());
-            t_pedido.setText(alm.getPedido().getIdPedido().toString());
+            else
+            {
+                pedido =(Pedido)session.get(Pedido.class, Integer.parseInt(t_pedido.getText()));
+                obj.setPedido(pedido);
+                obj.setMovimientos(new HashSet(0));
+                IdAlmacen=(Integer) session.save(obj);
+                Almacen alm = (Almacen)session.get(Almacen.class, IdAlmacen);
+                for(int ren=0; ren<t_datos.getRowCount(); ren++)
+                {
+                    Movimiento mov = new Movimiento();
+                    mov.setAlmacen(alm);
+                    if(c_toperacion.getSelectedItem().toString().compareTo("Pedido")==0)
+                    {
+                        if(l_tipo_pedido.getText().compareTo("Interno")==0 || l_tipo_pedido.getText().compareTo("Adicional")==0)
+                            mov.setCantidad((double)t_datos.getValueAt(ren, 8));
+                        else
+                            mov.setCantidad((double)t_datos.getValueAt(ren, 6));
+                    }
+                    if(c_toperacion.getSelectedItem().toString().compareTo("Venta")==0)
+                    {
+                        if(c_tmovimiento.getSelectedItem().toString().compareTo("Entrada")==0)
+                            mov.setCantidad((double)t_datos.getValueAt(ren, 5));
+                        else
+                            mov.setCantidad((double)t_datos.getValueAt(ren, 7));
+                    }
+                    if(l_tipo_pedido.getText().compareTo("Interno")==0)// || l_tipo_pedido.getText().compareTo("Adicional")==0)
+                    {
+                        Partida part=(Partida)session.get(Partida.class, (Integer)t_datos.getValueAt(ren, 0));
+                        mov.setPartida(part);
+                    }
+                    else
+                    {
+                        PartidaExterna part=(PartidaExterna)session.get(PartidaExterna.class, (Integer)t_datos.getValueAt(ren, 0));
+                        if(l_tipo_pedido.getText().compareTo("Inventario")==0)
+                        {
+                            Ejemplar ejemplar=part.getEjemplar();
+                            if(c_tmovimiento.getSelectedItem().toString().compareToIgnoreCase("Entrada")==0)
+                                ejemplar.setExistencias(ejemplar.getExistencias()+mov.getCantidad());
+                            if(c_tmovimiento.getSelectedItem().toString().compareToIgnoreCase("Salida")==0)
+                                ejemplar.setExistencias(ejemplar.getExistencias()-mov.getCantidad());
+                            session.update(ejemplar);
+                        }
+                        mov.setPartidaExterna(part);
+                    }
+
+                    alm.addMovimiento(mov);
+                }
+                session.update(alm);
+                session.beginTransaction().commit();
+                int tipo=alm.getTipoMovimiento();
+                int operacion= alm.getOperacion();
+                if( (operacion==1 || operacion==3 || operacion==4) && tipo==1)
+                {
+                    String mensaje="<p>Confirmaci&oacute;n de material recibido en almacen <strong>No de pedido "+t_pedido.getText()+"</strong></p>"+
+                                    "<p>Lista de material</p>"+
+                                    "<table width='100%' border='1' cellspacing='0' cellpadding='0'>"+
+                                      "<tr>"+
+                                        "<td width='7%'>No</td>"+
+                                        "<td width='8%'>#</td>"+
+                                        "<td width='21%'>No&deg; Parte </td>"+
+                                        "<td width='45%'>Descripcion</td>"+
+                                        "<td width='7%'>Medida</td>"+
+                                        "<td width='12%'>Cantidad</td>"+
+                                      "</tr>";
+                    for(int x=0; x<t_datos.getRowCount(); x++)
+                    {
+                        mensaje+="<tr>"+
+                                        "<td>"+t_datos.getValueAt(x, 1).toString()+"</td>"+
+                                        "<td>"+t_datos.getValueAt(x, 2).toString()+"</td>"+
+                                        "<td>"+t_datos.getValueAt(x, 3).toString()+"</td>"+
+                                        "<td>"+t_datos.getValueAt(x, 4).toString()+"</td>"+
+                                        "<td>"+t_datos.getValueAt(x, 5).toString()+"</td>"+
+                                        "<td>"+t_datos.getValueAt(x, 8).toString()+"</td>"+
+                                      "</tr>";
+                    }
+                    mensaje+="</table><p>"+t_notas.getText()+"</p> <p>Saludos. </p>";
+                    enviaCorreo("Recepción de material OT("+t_orden.getText()+")", mensaje, "hectorolivares@tractoservicio.com;alejandroflores@tractoservicio.com"); 
+                }
+                t_nmovimiento.setText(alm.getIdAlmacen().toString());
+                t_fecha.setText(alm.getFecha().toLocaleString());
+                t_notas.setText(alm.getNotas());
+                t_pedido.setText(alm.getPedido().getIdPedido().toString());
+            }
         } 
         catch (HibernateException he) 
         {
@@ -4667,7 +4852,7 @@ public class nuevoAlmacen extends javax.swing.JPanel {
     
     public void sumaTotales()
     {
-        double subtotal=0.0d, iva;        
+        double subtotal=0.0d, iva1;        
         if(c_toperacion.getSelectedItem().toString().compareTo("Pedido")==0)
         {
             if(l_tipo_pedido.getText().compareTo("Interno")==0 || l_tipo_pedido.getText().compareTo("Adicional")==0)
@@ -4691,12 +4876,8 @@ public class nuevoAlmacen extends javax.swing.JPanel {
             
         }
         t_subtotal.setValue(subtotal);
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Configuracion con = (Configuracion)session.get(Configuracion.class, 1);
-        t_IVA.setValue(iva=subtotal*con.getIva()/100);
-        t_total.setValue(subtotal+iva);
-        if(session.isOpen())
-            session.close();
+        t_IVA.setValue(iva1=subtotal*iva/100);
+        t_total.setValue(subtotal+iva1);
     }
     
     public void estado(boolean guardar, boolean mas, boolean menos, boolean notas, boolean datos, boolean tmovimiento, boolean toperacion, boolean er, boolean buscao, boolean buscap, boolean recargar)
@@ -4788,5 +4969,103 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                 miTitulo="SALIDA DE CONSUMIBLES";
         }
         jPanelMalmacen.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), miTitulo, javax.swing.border.TitledBorder.RIGHT, javax.swing.border.TitledBorder.TOP));
+    }
+    
+    public void enviaCorreo(String asunto, String mensaje, String from)
+    {
+        String smtp="";
+        boolean ttl=false;
+        String puerto="";
+        String envia="";
+        String clave="";
+        //String from="";
+        String cc="";
+        String texto = null;
+        
+        try
+        {
+            FileReader f = new FileReader("correo.ml");
+            BufferedReader b = new BufferedReader(f);
+            int renglon=0;
+            while((texto = b.readLine())!=null)
+            {
+                switch(renglon)
+                {
+                    case 1://smtp
+                        smtp=texto.trim();
+                        break;
+                    case 2://ttl
+                        if(texto.compareToIgnoreCase("true")==0)
+                            ttl=true;
+                        else
+                            ttl=false;
+                        break;
+                    case 3://puerto
+                        puerto=texto.trim();
+                        break;
+                    case 4://cuenta
+                        envia=texto.trim();
+                        break;
+                    case 5://contraseña
+                        clave=texto.trim();
+                        break;
+                }
+                renglon+=1;
+            }
+            b.close();
+        }catch(Exception e){e.printStackTrace();}
+        
+        try
+        {
+            // se obtiene el objeto Session.
+            Properties props = new Properties();
+            props.put("mail.smtp.host", smtp);
+            props.setProperty("mail.smtp.starttls.enable", ""+ttl);
+            props.setProperty("mail.smtp.port", puerto);
+            props.setProperty("mail.smtp.user", envia);
+            props.setProperty("mail.smtp.auth", "true");
+
+            javax.mail.Session session = javax.mail.Session.getDefaultInstance(props, null);
+            // session.setDebug(true);
+
+            // Se compone la parte del texto
+            BodyPart texto_mensaje = new MimeBodyPart();
+            texto_mensaje.setContent(mensaje, "text/html");
+            //texto_mensaje.setText(mensaje);
+
+            // Una MultiParte para agrupar texto e imagen.
+            MimeMultipart multiParte = new MimeMultipart();
+            multiParte.addBodyPart(texto_mensaje);
+
+            // Se compone el correo, dando to, from, subject y el contenido.
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(envia));
+
+            String [] direcciones=from.split(";");
+            for(int x=0; x<direcciones.length; x++)
+            {
+                if(direcciones[x].compareTo("")!=0)
+                    message.addRecipient(Message.RecipientType.TO, new InternetAddress(direcciones[x].replace(" ","")));
+            }
+
+            String [] dirCC=cc.split(";");
+            for(int y=0; y<dirCC.length; y++)
+            {
+                if(dirCC[y].compareTo("")!=0)
+                    message.addRecipient(Message.RecipientType.CC, new InternetAddress(dirCC[y].replace(" ","")));
+            }
+
+            message.setSubject(asunto);
+            message.setContent(multiParte);
+
+            Transport t = session.getTransport("smtp");
+            t.connect(envia, clave);
+            t.sendMessage(message, message.getAllRecipients());
+            t.close();
+        }
+        catch (Exception e)
+        {
+            JOptionPane.showMessageDialog(null, "¡No se pudo enviar el correo error de red!"); 
+        }
     }
 }

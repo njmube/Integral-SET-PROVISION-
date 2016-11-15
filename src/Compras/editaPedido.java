@@ -1842,7 +1842,10 @@ public class editaPedido extends javax.swing.JPanel {
                                     costo=part_act[x].getPcp();
 
                                 //DefaultTableModel model = (DefaultTableModel) t_datos.getModel();
-                                Object[] vector=new Object[]{""+part_act[x].getIdPartida(),""+part_act[x].getIdEvaluacion()/*#*/,""+part_act[x].getSubPartida()/*R_valua*/,codigo/*codigo*/,""+part_act[x].getCatalogo().getIdCatalogo()/*folio*/,""+part_act[x].getCatalogo().getNombre()/*descripción*/,""+part_act[x].getMed()/*medida*/,plazo/*plazo*/,cantidad/*cantidad*/,costo/*costo c/u*/,cantidad*costo/*total*/};
+                                String anotacion="";
+                                if(part_act[x].getInstruccion()!=null)
+                                    anotacion=part_act[x].getInstruccion();
+                                Object[] vector=new Object[]{""+part_act[x].getIdPartida(),""+part_act[x].getIdEvaluacion()/*#*/,""+part_act[x].getSubPartida()/*R_valua*/,codigo/*codigo*/,""+part_act[x].getCatalogo().getIdCatalogo()/*folio*/,""+part_act[x].getCatalogo().getNombre()+" "+anotacion/*descripción*/,""+part_act[x].getMed()/*medida*/,plazo/*plazo*/,cantidad/*cantidad*/,costo/*costo c/u*/,cantidad*costo/*total*/};
                                 model.addRow(vector);
                                 model.setCeldaEditable(t_datos.getRowCount()-1, 3, true);
                             }
@@ -2656,7 +2659,10 @@ public class editaPedido extends javax.swing.JPanel {
                         else
                             model.setValueAt("", r, 3);
                         model.setValueAt(part[r].getCatalogo().getIdCatalogo(), r, 4);
-                        model.setValueAt(part[r].getCatalogo().getNombre(), r, 5);
+                        String anotacion="";
+                        if(part[r].getInstruccion()!=null)
+                            anotacion=part[r].getInstruccion();
+                        model.setValueAt(part[r].getCatalogo().getNombre()+" "+anotacion, r, 5);
                         model.setValueAt(part[r].getMed(), r, 6);
                         if(part[r].getPlazo()!=null)
                         {

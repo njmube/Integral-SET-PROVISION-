@@ -91,7 +91,7 @@ public class formatosOrden {
                 complemento="/"+ord.getIdOrden();
             File folder = new File("reportes"+complemento);
             folder.mkdirs();
-            reporte.Abrir(PageSize.LETTER, "Almacen", "reportes"+complemento+"/"+valor+"-"+miAlmacen.getIdAlmacen()+"-almacen.pdf");
+            reporte.Abrir2(PageSize.LETTER, "Almacen", "reportes"+complemento+"/"+valor+"-"+miAlmacen.getIdAlmacen()+"-almacen.pdf");
             Font font = new Font(Font.FontFamily.HELVETICA, 6, Font.BOLD);
             BaseColor contenido=BaseColor.WHITE;
             int centro=Element.ALIGN_CENTER;
@@ -117,7 +117,10 @@ public class formatosOrden {
                             tabla.addCell(reporte.celda(""+mov[i].getPartida().getEjemplar().getIdParte(), font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
                         else
                             tabla.addCell(reporte.celda(" ", font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
-                        tabla.addCell(reporte.celda(mov[i].getPartida().getCatalogo().getNombre(), font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
+                        String anotacion="";
+                        if(mov[i].getPartida().getInstruccion()!=null)
+                            anotacion=mov[i].getPartida().getInstruccion();
+                        tabla.addCell(reporte.celda(mov[i].getPartida().getCatalogo().getNombre()+" "+anotacion, font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
                         tabla.addCell(reporte.celda(mov[i].getPartida().getMed(), font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
                         tabla.addCell(reporte.celda(formatoPorcentaje.format(mov[i].getCantidad()), font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
                     }
@@ -175,7 +178,7 @@ public class formatosOrden {
             reporte.agregaObjeto(new Paragraph(" "));
             reporte.agregaObjeto(tabla);
             reporte.cerrar();
-            reporte.visualizar("reportes"+complemento+"/"+valor+"-"+miAlmacen.getIdAlmacen()+"-almacen.pdf");
+            reporte.visualizar2("reportes"+complemento+"/"+valor+"-"+miAlmacen.getIdAlmacen()+"-almacen.pdf");
         }catch(Exception e)
         {
             System.out.println(e);

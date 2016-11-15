@@ -1434,7 +1434,10 @@ public class EliminaPedido extends javax.swing.JPanel {
                         else
                             model.setValueAt("", r, 3);
                         model.setValueAt(part[r].getCatalogo().getIdCatalogo(), r, 4);
-                        model.setValueAt(part[r].getCatalogo().getNombre(), r, 5);
+                        String anotacion="";
+                            if(part[r].getInstruccion()!=null)
+                                anotacion=part[r].getInstruccion();
+                        model.setValueAt(part[r].getCatalogo().getNombre()+" "+anotacion, r, 5);
                         model.setValueAt(part[r].getMed(), r, 6);
                         if(part[r].getPlazo()!=null)
                         {

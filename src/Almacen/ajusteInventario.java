@@ -37,7 +37,6 @@ public class ajusteInventario extends javax.swing.JPanel {
     Usuario actor;
     String sessionPrograma="";
     Herramientas h;
-    private int pos=-1;
     editaEjemplar eEjemplar;
     public ajusteInventario(Usuario usuario, String ses) {
         initComponents();
@@ -406,7 +405,6 @@ public class ajusteInventario extends javax.swing.JPanel {
         h.session(sessionPrograma);
         Session session = HibernateUtil.getSessionFactory().openSession();
         try{
-            session.beginTransaction().begin();
             actor = (Usuario)session.get(Usuario.class, actor.getIdUsuario());
             if(actor.getConsultarEjemplar()==true)
              {
@@ -420,56 +418,20 @@ public class ajusteInventario extends javax.swing.JPanel {
                 if (orden_act!=null)
                 {
                     orden_act=(Ejemplar)session.get(Ejemplar.class, orden_act.getIdParte());
-                    //parte
-                    try{
-                        jTextField1.setText(orden_act.getIdParte());
-                    }catch(Exception e){
-                        jTextField1.setText("");
-                    }
-                    //marca
-                    try{
+                    jTextField1.setText(orden_act.getIdParte());
+                    if(orden_act.getMarca()!=null)
                         jTextField7.setText(orden_act.getMarca().getMarcaNombre());
-                    }catch(Exception e){
-                        jTextField7.setText("");
-                    }
-                    //tipo
-                    try{
+                    if(orden_act.getTipo()!=null)
                         jTextField8.setText(orden_act.getTipo().getTipoNombre());
-                    }catch(Exception e){
-                        jTextField8.setText("");
-                    }
-                    //modelo
-                    try{
+                    if(orden_act.getModelo()!=null)
                         jTextField5.setText(orden_act.getModelo().toString());
-                    }catch(Exception e){
-                        jTextField5.setText("");
-                    }                    
-                    //medida
-                    try{
-                        jTextField9.setText(orden_act.getMedida());
-                    }catch(Exception e){
-                        jTextField9.setText("");
-                    }
-                    //catalogo
-                    try{
-                        jTextField6.setText(orden_act.getCatalogo());
-                    }catch(Exception e){
-                        jTextField6.setText("");
-                    }
-                    //existencias
-                    try{
-                        jTextField3.setText(orden_act.getExistencias().toString());
-                    }catch(Exception e){
-                        jTextField3.setText("");
-                    }
-                    //comentario
-                    try{
-                        if(orden_act.getComentario().toString().compareTo("")!=0){
-                            t_comentario.setText(orden_act.getComentario());
-                        }else{
-                            t_comentario.setText("Sin Comentarios...");
-                        }
-                    }catch(Exception e){
+                    jTextField9.setText(orden_act.getMedida());
+                    jTextField6.setText(orden_act.getCatalogo());
+                    if(orden_act.getExistencias()!=null)
+                    jTextField3.setText(orden_act.getExistencias().toString());
+                    if(orden_act.getComentario().toString().compareTo("")!=0){
+                        t_comentario.setText(orden_act.getComentario());
+                    }else{
                         t_comentario.setText("Sin Comentarios...");
                     }
                     
@@ -495,9 +457,7 @@ public class ajusteInventario extends javax.swing.JPanel {
         // TODO add your handling code here:
          h=new Herramientas(actor, 0);
         h.session(sessionPrograma);
-        //Session session = HibernateUtil.getSessionFactory().openSession();
         try{
-            //actor = (Usuario)session.get(Usuario.class, actor.getIdUsuario());
             if(jTextField4.getText().compareTo("")!=0){
                 if(jTextArea1.getText().compareTo("")!=0){
                     if(Double.parseDouble(jTextField4.getText())>0.0){
@@ -555,7 +515,6 @@ public class ajusteInventario extends javax.swing.JPanel {
                             if(Double.parseDouble(jTextField4.getText())> Double.parseDouble(jTextField3.getText())){
                                 JOptionPane.showMessageDialog(this, "El Número Máximo para Realizar el Ajuste es "+jTextField3.getText());
                             }else{
-                                //hacemos algo
                                 try{
                                     Almacen almacen = new Almacen();
                                     almacen.setUsuario(actor);
@@ -580,7 +539,6 @@ public class ajusteInventario extends javax.swing.JPanel {
                                 almacen.setNotas(jTextArea1.getText());
                                 Integer respuesta = guardaAlmacen(almacen);
                                     if(respuesta!=null){
-                                        //session.close();
                                         JOptionPane.showMessageDialog(null, "Ajuste Almacenado con la Clave "+respuesta);
                                         Almacen actual=new Almacen();
                                         actual.setIdAlmacen(respuesta);

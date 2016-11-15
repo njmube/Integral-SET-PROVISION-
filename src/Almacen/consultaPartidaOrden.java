@@ -77,7 +77,8 @@ public class consultaPartidaOrden extends javax.swing.JDialog {
     public void formatoTabla()
     {
         Color c1 = new java.awt.Color(2, 135, 242);   
-        for(int x=0; x<t_datos.getColumnModel().getColumnCount(); x++)
+        int num_c=t_datos.getColumnModel().getColumnCount();
+        for(int x=0; x<num_c; x++)
         {
             t_datos.getColumnModel().getColumn(x).setHeaderRenderer(new Render1(c1));
         }
@@ -292,7 +293,10 @@ public class consultaPartidaOrden extends javax.swing.JDialog {
                                 model.setValueAt(par.getEjemplar().getIdParte(), a, 3);
                             else
                                 model.setValueAt("", a, 3);
-                            model.setValueAt(par.getCatalogo().getNombre(), a, 4);
+                            String anotacion="";
+                            if(par.getInstruccion()!=null)
+                                anotacion=par.getInstruccion();
+                            model.setValueAt(par.getCatalogo().getNombre()+" "+anotacion, a, 4);
                             model.setValueAt(par.getMed(), a, 5);
                             model.setValueAt(par.getCantidadAut(), a, 6);
                             model.setValueAt(total, a, 7);
@@ -313,7 +317,7 @@ public class consultaPartidaOrden extends javax.swing.JDialog {
                         {
                             Partida par = (Partida) partidas.get(a);
                             Movimiento[] mov = (Movimiento[])session.createCriteria(Movimiento.class).add(Restrictions.eq("partida.idPartida", par.getIdPartida())).list().toArray(new Movimiento[0]);
-                            double entradas=0, devoluciones=0, entregadas=0, devueltas=0;;
+                            double entradas=0, devoluciones=0, entregadas=0, devueltas=0;
                             for(int b=0; b<mov.length; b++)
                             {
                                 Almacen alm=mov[b].getAlmacen();
@@ -336,6 +340,9 @@ public class consultaPartidaOrden extends javax.swing.JDialog {
                                 model.setValueAt(par.getEjemplar().getIdParte(), a, 3);
                             else
                                 model.setValueAt("", a, 3);
+                            String anotacion="";
+                            if(par.getInstruccion()!=null)
+                                anotacion=par.getInstruccion();
                             model.setValueAt(par.getCatalogo().getNombre(), a, 4);
                             model.setValueAt(par.getMed(), a, 5);
                             model.setValueAt(par.getCantidadAut(), a, 6);
@@ -416,7 +423,10 @@ public class consultaPartidaOrden extends javax.swing.JDialog {
                                 model.setValueAt(par.getEjemplar().getIdParte(), a, 3);
                             else
                                 model.setValueAt("", a, 3);
-                            model.setValueAt(par.getCatalogo().getNombre(), a, 4);
+                            String anotacion="";
+                            if(par.getInstruccion()!=null)
+                                anotacion=par.getInstruccion();
+                            model.setValueAt(par.getCatalogo().getNombre()+" "+anotacion, a, 4);
                             model.setValueAt(par.getMed(), a, 5);
                             model.setValueAt(total, a, 6);
                             model.setValueAt(0.0d, a, 7);
@@ -532,7 +542,10 @@ public class consultaPartidaOrden extends javax.swing.JDialog {
                                 model.setValueAt(par.getEjemplar().getIdParte(), a, 3);
                             else
                                 model.setValueAt("", a, 3);
-                            model.setValueAt(par.getCatalogo().getNombre(), a, 4);
+                            String anotacion="";
+                            if(par.getInstruccion()!=null)
+                                anotacion=par.getInstruccion();
+                            model.setValueAt(par.getCatalogo().getNombre()+" "+anotacion, a, 4);
                             model.setValueAt(par.getMed(), a, 5);
                             model.setValueAt(total, a, 6);
                             model.setValueAt(total_operario, a, 7);
@@ -597,7 +610,8 @@ public class consultaPartidaOrden extends javax.swing.JDialog {
         tcr.setHorizontalAlignment(SwingConstants.RIGHT);
         FormatoEditor fe=new FormatoEditor();
         t_datos.setDefaultEditor(Double.class, fe);
-        for (int i=0; i<t_datos.getColumnCount(); i++)
+        int num_c=t_datos.getColumnCount();
+        for (int i=0; i<num_c; i++)
         {
             TableColumn column = col_model.getColumn(i);
             switch(i)

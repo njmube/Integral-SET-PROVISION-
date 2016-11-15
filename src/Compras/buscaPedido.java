@@ -335,7 +335,7 @@ public class buscaPedido extends javax.swing.JDialog {
     private void buscaDato()
     {
         
-        String consulta="select distinct id_pedido as id, fecha_pedido, id_usuario, "+/*T2.nombre, if(autorizo is null, '', autorizo) as a1,*/" if(autorizo2 is null, '', autorizo2) as a2, tipo_pedido, if(tipo_pedido='Interno', (select id_orden from partida where id_pedido=id limit 1),if(tipo_pedido='Adicional',id_orden,'')) as ord " +
+        String consulta="select distinct id_pedido as id, fecha_pedido, id_usuario, T2.nombre,"+/* if(autorizo is null, '', autorizo) as a1,*/" if(autorizo2 is null, '', autorizo2) as a2, tipo_pedido, if(tipo_pedido='Interno', (select id_orden from partida where id_pedido=id limit 1),if(tipo_pedido='Adicional',id_orden,'')) as ord " +
                         "from pedido as T1 left join proveedor as T2 on T1.id_proveedor=T2.id_proveedor ";
         if(t_busca.getText().compareToIgnoreCase("")!=0)
         {

@@ -9,11 +9,7 @@ package Almacen;
 import Hibernate.Util.HibernateUtil;
 import Hibernate.entidades.Almacen;
 import Hibernate.entidades.Configuracion;
-import Hibernate.entidades.Ejemplar;
-import Hibernate.entidades.Movimiento;
 import Hibernate.entidades.Orden;
-import Hibernate.entidades.Partida;
-import Hibernate.entidades.PartidaExterna;
 import Hibernate.entidades.Usuario;
 import Integral.ExtensionFileFilter;
 import Integral.FormatoTabla;
@@ -38,8 +34,6 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -75,7 +69,7 @@ public class Reporte2 extends javax.swing.JPanel {
     String sessionPrograma="";
     Herramientas h;
     muestraAlmacen muestra_almacen;
-    String[] columnas = new String [] {"Pedido", "Proveedor", "Fecha De Mov.", "N° Mov.", "Tipo", "Operación", "Orden", "Monto", "Tipo Doc.", "N° Doc."};
+    String[] columnas = new String [] {"Pedido", "Proveedor", "Fecha De Mov.", "N° Mov.", "Tipo", "Operación", "Orden", "Tipo Doc.", "N° Doc."};
     String[] columnas1 = new String [] {"Partida", "Descripción", "Cant", "Recibió/Entrego", "Fecha", "Movimiento", "T.Movimiento"};
     String[] columnas2 = new String [] {"Pedido", "Proveedor", "Fecha De Mov.", "N° Mov.", "Tipo", "Operación", "Orden", "Monto", "Tipo Doc.", "N° Doc."};
     String[] columnas3 = new String [] {"Pedido", "Proveedor", "Fecha De Mov.", "N° Mov.", "Operación", "Tipo Doc.", "N° Doc."};
@@ -99,12 +93,11 @@ public class Reporte2 extends javax.swing.JPanel {
                 java.lang.String.class,
                 java.lang.String.class,
                 java.lang.String.class,
-                java.lang.Double.class, 
                 java.lang.String.class,
                 java.lang.String.class
             };
         boolean[] e1 = new boolean [] {
-                false, false, false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false
             };
         t_datos.setModel(ModeloTablaReporte(0, columnas, t1, e1, model));
         
@@ -146,10 +139,15 @@ public class Reporte2 extends javax.swing.JPanel {
         
         formato = new FormatoTabla();
         
-        formatoTabla();
-        formatoTabla1();
-        formatoTabla2();
-        formatoTabla4();
+        formatoTabla(t_datos);
+        formatoTabla(t_datos1);
+        formatoTabla(t_datos2);
+        formatoTabla(t_datos4);
+        
+        tabla_tamaños();
+        tabla_tamaños1();
+        tabla_tamaños2();
+        tabla_tamaños4();
     }
     
     public void consultaOrden()
@@ -161,12 +159,12 @@ public class Reporte2 extends javax.swing.JPanel {
         {
             ArrayList datos = new ArrayList();
             Session session = HibernateUtil.getSessionFactory().openSession();
-            session.beginTransaction().begin();
             Query query = session.createSQLQuery("select if(almacen.tipo_movimiento=1, 'DEVOLUCION', 'SALIDA')as tipo, DATE_FORMAT(almacen.fecha, '%Y-%d-%m')as fecha, almacen.entrego, movimiento.id_Parte, ejemplar.id_catalogo, movimiento.cantidad, ejemplar.medida, movimiento.valor, (movimiento.cantidad*movimiento.valor) as total " +
             "from movimiento left join ejemplar on ejemplar.id_Parte=movimiento.id_Parte left join almacen on almacen.id_almacen=movimiento.id_almacen where almacen.id_orden="+valor+" and almacen.operacion=8");
             query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
             datos = (ArrayList) query.list();
-            for(int c=0; c<datos.size(); c++)
+            int num_d=datos.size();
+            for(int c=0; c<num_d; c++)
             {
                 java.util.HashMap map = (java.util.HashMap) datos.get(c);
                 modelo.addRow(new Object[]{map.get("tipo"),map.get("fecha"),map.get("entrego"),map.get("id_Parte"),map.get("id_catalogo"),map.get("cantidad"),map.get("medida"),map.get("valor"),map.get("total")});
@@ -183,12 +181,11 @@ public class Reporte2 extends javax.swing.JPanel {
             Session session = HibernateUtil.getSessionFactory().openSession();
             try
             {   
-                session.beginTransaction().begin();
                 List partidas=new ArrayList();
                 Query query, query2;
                 ArrayList partidas1=new ArrayList();
                 
-                    query=session.createSQLQuery("select partida.id_partida as id, partida.id_evaluacion, partida.sub_partida, catalogo.nombre, \n" +
+                    query=session.createSQLQuery("select partida.id_partida as id, partida.id_evaluacion, partida.sub_partida, if(partida.Instruccion is not null, concat(catalogo.nombre, ' ', partida.Instruccion), catalogo.nombre) as nombre, \n" +
 "partida.cant, partida.med, partida.id_parte, \n" +
 "partida.cant_pcp, partida.pcp, \n" +
 "((select if( sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) as can \n" +
@@ -223,17 +220,15 @@ public class Reporte2 extends javax.swing.JPanel {
                     query2.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
                     partidas = (ArrayList)query2.list();
                 
-                int renglones=partidas1.size()+partidas.size();
                 model4=(DefaultTableModel)t_datos4.getModel();
                 model4.setRowCount(0);
                 if(partidas1.size()>0)
                 {                    
-                    //noPartida=new ArrayList();
-                    for(int i=0; i<partidas1.size(); i++)
+                    int num_par=partidas1.size();
+                    for(int i=0; i<num_par; i++)
                     {
                         java.util.HashMap map=(java.util.HashMap)partidas1.get(i);
                         Object[] renglon=new Object[12];
-                        //noPartida.add(map.get("id"));
                         renglon[0]=map.get("id");
                         renglon[1]=map.get("id_evaluacion");
                         renglon[2]=map.get("sub_partida");
@@ -255,7 +250,8 @@ public class Reporte2 extends javax.swing.JPanel {
                 if(partidas.size()>0)
                 {
                     //PartidaExterna[] parext = (PartidaExterna[]) partidas.toArray(new PartidaExterna[0]);
-                    for(int i=0; i<partidas.size(); i++)
+                    int num_par2=partidas.size();
+                    for(int i=0; i<num_par2; i++)
                     {
                         java.util.HashMap map1=(java.util.HashMap)partidas.get(i);
                         Object[] renglon=new Object[12];
@@ -276,7 +272,6 @@ public class Reporte2 extends javax.swing.JPanel {
                         model4.addRow(renglon);
                     }
                 }
-                session.beginTransaction().rollback();
             }catch(Exception e)
             {
                 e.printStackTrace();
@@ -286,7 +281,6 @@ public class Reporte2 extends javax.swing.JPanel {
                 if(session.isOpen()==true)
                     session.close();
             }
-        formatoTabla4();
     }
 
     /**
@@ -300,20 +294,6 @@ public class Reporte2 extends javax.swing.JPanel {
 
         muestra = new javax.swing.JDialog();
         centro = new javax.swing.JPanel();
-        jPanel9 = new javax.swing.JPanel();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        t_datos3 = new javax.swing.JTable();
-        jButton10 = new javax.swing.JButton();
-        jButton11 = new javax.swing.JButton();
-        jButton12 = new javax.swing.JButton();
-        jPanel10 = new javax.swing.JPanel();
-        jLabel9 = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
-        t_fecha5 = new javax.swing.JTextField();
-        b_fecha_siniestro4 = new javax.swing.JButton();
-        t_fecha6 = new javax.swing.JTextField();
-        b_fecha_siniestro5 = new javax.swing.JButton();
-        jLabel11 = new javax.swing.JLabel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -378,165 +358,6 @@ public class Reporte2 extends javax.swing.JPanel {
 
         centro.setLayout(new java.awt.BorderLayout());
         muestra.getContentPane().add(centro, java.awt.BorderLayout.CENTER);
-
-        jPanel9.setBackground(new java.awt.Color(254, 254, 254));
-
-        t_datos3.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Pedido", "Proveedor", "Fecha De Mov.", "N° Mov.", "Tipo", "Operación", "Orden", "Monto", "Tipo Doc.", "N° doc."
-            }
-        ));
-        t_datos3.getTableHeader().setReorderingAllowed(false);
-        jScrollPane4.setViewportView(t_datos3);
-
-        jButton10.setBackground(new java.awt.Color(2, 135, 242));
-        jButton10.setIcon(new ImageIcon("imagenes/exel.png"));
-        jButton10.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton10ActionPerformed(evt);
-            }
-        });
-
-        jButton11.setBackground(new java.awt.Color(2, 135, 242));
-        jButton11.setIcon(new ImageIcon("imagenes/pdf.png"));
-        jButton11.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton11ActionPerformed(evt);
-            }
-        });
-
-        jButton12.setText("Buscar");
-        jButton12.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton12ActionPerformed(evt);
-            }
-        });
-
-        jPanel10.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel10.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "Fecha", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Arial", 1, 11))); // NOI18N
-
-        jLabel9.setText("Inicio:");
-
-        jLabel10.setText("Fin:");
-
-        t_fecha5.setEditable(false);
-        t_fecha5.setBackground(new java.awt.Color(204, 255, 255));
-        t_fecha5.setText("AAAA-MM-DD");
-        t_fecha5.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_fecha5.setEnabled(false);
-
-        b_fecha_siniestro4.setBackground(new java.awt.Color(2, 135, 242));
-        b_fecha_siniestro4.setIcon(new ImageIcon("imagenes/calendario.png"));
-        b_fecha_siniestro4.setToolTipText("Calendario");
-        b_fecha_siniestro4.setMaximumSize(new java.awt.Dimension(32, 8));
-        b_fecha_siniestro4.setMinimumSize(new java.awt.Dimension(32, 8));
-        b_fecha_siniestro4.setPreferredSize(new java.awt.Dimension(32, 8));
-        b_fecha_siniestro4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                b_fecha_siniestro4ActionPerformed(evt);
-            }
-        });
-
-        t_fecha6.setEditable(false);
-        t_fecha6.setBackground(new java.awt.Color(204, 255, 255));
-        t_fecha6.setText("AAAA-MM-DD");
-        t_fecha6.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_fecha6.setEnabled(false);
-        t_fecha6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                t_fecha6ActionPerformed(evt);
-            }
-        });
-
-        b_fecha_siniestro5.setBackground(new java.awt.Color(2, 135, 242));
-        b_fecha_siniestro5.setIcon(new ImageIcon("imagenes/calendario.png"));
-        b_fecha_siniestro5.setToolTipText("Calendario");
-        b_fecha_siniestro5.setMaximumSize(new java.awt.Dimension(32, 8));
-        b_fecha_siniestro5.setMinimumSize(new java.awt.Dimension(32, 8));
-        b_fecha_siniestro5.setPreferredSize(new java.awt.Dimension(32, 8));
-        b_fecha_siniestro5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                b_fecha_siniestro5ActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
-        jPanel10.setLayout(jPanel10Layout);
-        jPanel10Layout.setHorizontalGroup(
-            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel10Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel9)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(t_fecha5, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(1, 1, 1)
-                .addComponent(b_fecha_siniestro4, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel10)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(t_fecha6, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(1, 1, 1)
-                .addComponent(b_fecha_siniestro5, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel10Layout.setVerticalGroup(
-            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel9)
-            .addGroup(jPanel10Layout.createSequentialGroup()
-                .addGap(3, 3, 3)
-                .addComponent(t_fecha5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addComponent(b_fecha_siniestro4, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addGroup(jPanel10Layout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addComponent(jLabel10))
-            .addGroup(jPanel10Layout.createSequentialGroup()
-                .addGap(3, 3, 3)
-                .addComponent(t_fecha6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addComponent(b_fecha_siniestro5, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
-
-        jLabel11.setText("Notas: P.INTERNO=PEDIDO INTERNO,   P.ADICIONAL= PEDIDOD ADICIONAL P.EXTERNO=PEDIDO EXTERNO");
-
-        javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
-        jPanel9.setLayout(jPanel9Layout);
-        jPanel9Layout.setHorizontalGroup(
-            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel9Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane4)
-                    .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel9Layout.createSequentialGroup()
-                                .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jButton12)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jButton11, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton10, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel11))
-                        .addGap(0, 453, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        jPanel9Layout.setVerticalGroup(
-            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton12, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton11, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton10, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 366, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel11)
-                .addContainerGap())
-        );
 
         setBackground(new java.awt.Color(254, 254, 254));
         setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "Reportes de Almacen", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP));
@@ -742,7 +563,15 @@ public class Reporte2 extends javax.swing.JPanel {
             new String [] {
                 "Partida", "Descripción", "Cant", "Recibió/Entrego", "Fecha", "No Mov", "T. Movimiento"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         t_datos1.getTableHeader().setReorderingAllowed(false);
         t_datos1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -1239,28 +1068,7 @@ public class Reporte2 extends javax.swing.JPanel {
 
     private void b_buscaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_buscaActionPerformed
         // TODO add your handling code here:
-        if(this.t_busca1.getText().compareToIgnoreCase("")!=0)
-        {
-            //buscaCuentas();
-            if(x>=t_datos1.getRowCount())
-            {
-                x=0;
-                java.awt.Rectangle r = t_datos1.getCellRect( x, 1, true);
-                t_datos1.scrollRectToVisible(r);
-            }
-            for(; x<t_datos1.getRowCount(); x++)
-            {
-                if(t_datos1.getValueAt(x, 1).toString().indexOf(t_busca1.getText()) != -1)
-                {
-                    t_datos1.setRowSelectionInterval(x, x);
-                    t_datos1.setColumnSelectionInterval(3, 3);
-                    java.awt.Rectangle r = t_datos1.getCellRect( x, 1, true);
-                    t_datos1.scrollRectToVisible(r);
-                    break;
-                }
-            }
-            x++;
-        }
+        busca();
     }//GEN-LAST:event_b_buscaActionPerformed
 
     private void t_busca1KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_busca1KeyTyped
@@ -1271,28 +1079,7 @@ public class Reporte2 extends javax.swing.JPanel {
 
     private void t_busca1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_busca1ActionPerformed
         // TODO add your handling code here:
-        if(this.t_busca1.getText().compareToIgnoreCase("")!=0)
-        {
-            //buscaCuentas();
-            if(x>=t_datos1.getRowCount())
-            {
-                x=0;
-                java.awt.Rectangle r = t_datos1.getCellRect( x, 1, true);
-                t_datos1.scrollRectToVisible(r);
-            }
-            for(; x<t_datos1.getRowCount(); x++)
-            {
-                if(t_datos1.getValueAt(x, 1).toString().indexOf(t_busca1.getText()) != -1)
-                {
-                    t_datos1.setRowSelectionInterval(x, x);
-                    t_datos1.setColumnSelectionInterval(3, 3);
-                    java.awt.Rectangle r = t_datos1.getCellRect( x, 1, true);
-                    t_datos1.scrollRectToVisible(r);
-                    break;
-                }
-            }
-            x++;
-        }
+        busca();
     }//GEN-LAST:event_t_busca1ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
@@ -1352,8 +1139,6 @@ public class Reporte2 extends javax.swing.JPanel {
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         // TODO add your handling code here:
-        h=new Herramientas(usr, 0);
-        h.session(sessionPrograma);
         if(t_datos1.getRowCount()>0)
         {
             javax.swing.JFileChooser jF1= new javax.swing.JFileChooser();
@@ -1364,27 +1149,17 @@ public class Reporte2 extends javax.swing.JPanel {
                 ruta = jF1.getSelectedFile().getAbsolutePath();
                 if(ruta!=null)
                 {
-                    Session session = HibernateUtil.getSessionFactory().openSession();
                     try
                     {
                         DecimalFormat formatoPorcentaje = new DecimalFormat("#,##0.00");
                         formatoPorcentaje.setMinimumFractionDigits(2);
-                        session.beginTransaction().begin();
                         BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.WINANSI, BaseFont.NOT_EMBEDDED);
-                        //Orden ord=buscaApertura();
                         PDF reporte = new PDF();
-                        Date fecha = new Date();
-                        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
-                        String valor=dateFormat.format(fecha);
-
                         reporte.Abrir2(PageSize.LETTER, "reporte almacen", ruta+".pdf");
                         Font font = new Font(Font.FontFamily.HELVETICA, 7, Font.NORMAL);
                         BaseColor contenido=BaseColor.WHITE;
-                        int centro=Element.ALIGN_CENTER;
                         int izquierda=Element.ALIGN_LEFT;
-                        int derecha=Element.ALIGN_RIGHT;
                         float[] nuevos=new float[]{20,150,20,100,70,20,60};
-
                         PdfPTable tabla=reporte.crearTabla(nuevos.length, nuevos, 100, Element.ALIGN_LEFT);
 
                         cabecera(reporte, bf, tabla,"Reporte de material a "+cb_tipo.getSelectedItem().toString()+" orden: "+t_busca.getText(),2);
@@ -1411,9 +1186,6 @@ public class Reporte2 extends javax.swing.JPanel {
                         e.printStackTrace();
                         JOptionPane.showMessageDialog(this, "No se pudo realizar el reporte si el archivo esta abierto.");
                     }
-                    if(session!=null)
-                    if(session.isOpen())
-                    session.close();
                 }
             }
         }
@@ -1421,137 +1193,103 @@ public class Reporte2 extends javax.swing.JPanel {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-        Class[] t1 = new Class [] {
-            java.lang.String.class,
-            java.lang.String.class,
-            java.lang.String.class,
-            java.lang.String.class,
-            java.lang.String.class,
-            java.lang.String.class,
-            java.lang.String.class
-        };
-        boolean[] e1 = new boolean [] {
-            false, false, false, false, false, false, false
-        };
         if(t_busca.getText().compareTo("")!=0)
         {
-            String consulta="SELECT mov from Movimiento mov LEFT JOIN mov.partida par LEFT JOIN par.ordenByIdOrden ord "
-                    + " where ord.idOrden='"+t_busca.getText();
-            
-            String consultaEx="SELECT mov from Movimiento mov LEFT JOIN mov.partidaExterna pex LEFT JOIN pex.pedido ped LEFT JOIN ped.orden ord "
-            + "where (ord.idOrden='"+t_busca.getText()+"' OR mov.almacen.orden.idOrden='"+t_busca.getText()+"')";
+            String consulta="select concat(partida.id_evaluacion,'-',partida.sub_partida)as id, if( partida.instruccion is not null, concat(catalogo.nombre, ' ', partida.instruccion), catalogo.nombre) as nombre, movimiento.cantidad,  almacen.entrego, almacen.fecha, almacen.id_almacen, almacen.tipo_movimiento, almacen.operacion  \n" +
+                            "from movimiento left join partida on movimiento.id_partida=partida.id_partida left join catalogo on partida.id_catalogo=catalogo.id_catalogo left join almacen on movimiento.id_almacen=almacen.id_almacen where partida.id_orden='"+t_busca.getText()+"' ";
+
+            String consultaEx="";
             
             if(cb_tipo.getSelectedItem().toString().compareTo("PROVEEDORES")==0)
             {
-                consulta+="' and mov.almacen.operacion in (1,3) order By mov.partida.idEvaluacion, mov.partida.subPartida asc";
-                consultaEx+=" and mov.almacen.operacion in (1,3)";
+                consultaEx="select movimiento.id_Parte as np, '-' as id, if(partida_externa.descripcion is null, (select id_catalogo from ejemplar where id_parte=np), partida_externa.descripcion)as descripcion, movimiento.cantidad,  almacen.entrego, almacen.fecha, almacen.id_almacen, almacen.tipo_movimiento, almacen.operacion " +
+                            "from movimiento left join partida_externa on movimiento.id_externos=partida_externa.id_partida_externa left join almacen on movimiento.id_almacen=almacen.id_almacen left join pedido on almacen.id_pedido=pedido.id_pedido where(pedido.id_orden='"+t_busca.getText()+"' and almacen.operacion=3) or (almacen.id_orden='"+t_busca.getText()+"' and almacen.operacion=7) ";
+                consulta+="and almacen.operacion in(1,3) order by partida.id_evaluacion, partida.sub_partida asc;";
             }
             else
             {
-                consulta+="' and mov.almacen.operacion=5 order By mov.partida.idEvaluacion, mov.partida.subPartida asc";
-                consultaEx+=" and mov.almacen.operacion in (5,8)";
+                consultaEx="select movimiento.id_Parte as np, '-' as id, if(partida_externa.descripcion is null, (select id_catalogo from ejemplar where id_parte=np), partida_externa.descripcion)as descripcion, movimiento.cantidad,  almacen.entrego, almacen.fecha, almacen.id_almacen, almacen.tipo_movimiento, almacen.operacion " +
+                            "from movimiento left join partida_externa on movimiento.id_externos=partida_externa.id_partida_externa left join pedido on partida_externa.id_pedido=pedido.id_pedido left join almacen on movimiento.id_almacen=almacen.id_almacen where(pedido.id_orden='"+t_busca.getText()+"' and almacen.operacion=5) or (almacen.id_orden='"+t_busca.getText()+"' and almacen.operacion=8) ";                
+                consulta+="and almacen.operacion=5 order by partida.id_evaluacion, partida.sub_partida asc;";
             }
 
 
             Session session = HibernateUtil.getSessionFactory().openSession();
             try
             {
-                session.beginTransaction();
-                Query q = session.createQuery(consulta);
-                Query qEx = session.createQuery(consultaEx);
-                List resultList = q.list();
-                List resultListEx = qEx.list();
-
-                if(resultList.size()>0 || resultListEx.size()>0)
+                Query q = session.createSQLQuery(consulta);
+                Query qEx = session.createSQLQuery(consultaEx);
+                q.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+                qEx.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+                ArrayList resultList = (ArrayList) q.list();
+                ArrayList resultListEx = (ArrayList) qEx.list();
+                int num_d=resultList.size();
+                int num_d1=resultListEx.size();
+                model1=(DefaultTableModel)t_datos1.getModel();
+                model1.setNumRows(0);
+                if(num_d>0 || num_d1>0)
                 {
-                    t_datos1.setModel(ModeloTablaReporte(resultList.size()+resultListEx.size(), columnas1, t1, e1, model1));
-                    model1=(DefaultTableModel)t_datos1.getModel();
                     int i=0;
-                    for (int a=0; a<resultList.size(); a++)
+                    for (int a=0; a<num_d; a++)
                     {
-                        Movimiento mov = (Movimiento)resultList.get(a);
-                        Almacen alm =mov.getAlmacen();
-                        Partida par=mov.getPartida();
-                        model1.setValueAt(""+par.getIdEvaluacion()+"-"+par.getSubPartida(), i, 0);
-                        model1.setValueAt(par.getCatalogo().getNombre(), i, 1);
-                        model1.setValueAt(mov.getCantidad(), i, 2);
-                        model1.setValueAt(alm.getEntrego(), i, 3);
-                        model1.setValueAt(alm.getFecha().toString(), i, 4);
-                        model1.setValueAt(""+alm.getIdAlmacen(), i, 5);
-                        //model1.setValueAt(""+alm.getTipoMovimiento(), i, 6);
-                        if(alm.getOperacion()==5)
+                        java.util.HashMap map = (java.util.HashMap) resultList.get(a);
+                        Object[] renglon=new Object[7];
+                        renglon[0]=map.get("id");
+                        renglon[1]=map.get("nombre");
+                        renglon[2]=map.get("cantidad");
+                        renglon[3]=map.get("entrego");
+                        renglon[4]=""+map.get("fecha");
+                        renglon[5]=map.get("id_almacen");
+                        int tipo=(int)map.get("tipo_movimiento");
+                        int operacion=(int)map.get("operacion");
+                        
+                        if(operacion==5)
                         {
-                            if(alm.getTipoMovimiento()==1)
-                            {
-                                model1.setValueAt("D.Operarios", i, 6);
-                            }
+                            if(tipo==1)
+                                renglon[6]="D.Operarios";
                             else
-                            {
-                                model1.setValueAt("S.Operarios", i, 6);
-                            }
+                                renglon[6]="S.Operarios";
                         }
                         else
                         {
-                            if(alm.getTipoMovimiento()==1)
-                            {
-                                model1.setValueAt("E.Proveedor", i, 6);
-                            }
+                            if(tipo==1)
+                                renglon[6]="E.Proveedor";
                             else
-                            {
-                                model1.setValueAt("S.Proveedor", i, 6);
-                            }
+                                renglon[6]="S.Proveedor";
                         }
-                        i++;
+                        model1.addRow(renglon);
                     }
 
-                    for (int b=0; b<resultListEx.size(); b++)
+                    for (int b=0; b<num_d1; b++)
                     {
-                        Movimiento mov = (Movimiento)resultListEx.get(b);
-                        Almacen alm =mov.getAlmacen();
-                        model1.setValueAt("-", i, 0);
-                        if(mov.getPartidaExterna()!=null)
+                        java.util.HashMap map1 = (java.util.HashMap) resultListEx.get(b);
+                        Object[] renglon1=new Object[7];
+                        renglon1[0]=map1.get("id");
+                        renglon1[1]=map1.get("descripcion");
+                        renglon1[2]=map1.get("cantidad");
+                        renglon1[3]=map1.get("entrego");
+                        renglon1[4]=""+map1.get("fecha");
+                        renglon1[5]=map1.get("id_almacen");
+                        int tipo1=(int)map1.get("tipo_movimiento");
+                        int operacion1=(int)map1.get("operacion");
+                        
+                        
+                        if(operacion1==5 || operacion1==8)
                         {
-                            PartidaExterna par=mov.getPartidaExterna();
-                            model1.setValueAt(par.getDescripcion(), i, 1);
+                            if(tipo1==1)
+                                renglon1[6]="D.Operarios";
+                            else
+                                renglon1[6]="S.Operarios";
                         }
                         else
                         {
-                            Ejemplar par=mov.getEjemplar();
-                            model1.setValueAt(par.getCatalogo(), i, 1);
-                        }
-                        model1.setValueAt(mov.getCantidad(), i, 2);
-                        model1.setValueAt(alm.getEntrego(), i, 3);
-                        model1.setValueAt(alm.getFecha().toString(), i, 4);
-                        model1.setValueAt(""+alm.getIdAlmacen(), i, 5);
-                        //model.setValueAt(""+alm.getTipoMovimiento(), i, 6);
-                        if(alm.getOperacion()==5 || alm.getOperacion()==8)
-                        {
-                            if(alm.getTipoMovimiento()==1)
-                            {
-                                model1.setValueAt("D.Operarios", i, 6);
-                            }
+                            if(tipo1==1)
+                                renglon1[6]="E.Proveedor";
                             else
-                            {
-                                model1.setValueAt("S.Operarios", i, 6);
-                            }
+                                renglon1[6]="S.Proveedor";
                         }
-                        else
-                        {
-                            if(alm.getTipoMovimiento()==1)
-                            {
-                                model1.setValueAt("E.Proveedor", i, 6);
-                            }
-                            else
-                            {
-                                model1.setValueAt("S.Proveedor", i, 6);
-                            }
-                        }
-                        i++;
+                        model1.addRow(renglon1);
                     }
-                }
-                else
-                {
-                    t_datos1.setModel(ModeloTablaReporte(0, columnas1, t1, e1, model1));
                 }
                 t_busca.requestFocus();
             }catch(Exception e)
@@ -1559,21 +1297,13 @@ public class Reporte2 extends javax.swing.JPanel {
                 e.printStackTrace();
             }
             if(session!=null)
-            if(session.isOpen())
-            session.close();
+                if(session.isOpen())
+                session.close();
         }
-        else
-        {
-            t_datos1.setModel(ModeloTablaReporte(0, columnas1, t1, e1, model1));
-        }
-        formatoTabla1();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void b_fecha_siniestro1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_fecha_siniestro1ActionPerformed
         // TODO add your handling code here:
-        h=new Herramientas(usr, 0);
-        h.session(sessionPrograma);
-
         calendario cal =new calendario(new javax.swing.JFrame(), true);
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         cal.setLocation((d.width/2)-(cal.getWidth()/2), (d.height/2)-(cal.getHeight()/2));
@@ -1602,9 +1332,6 @@ public class Reporte2 extends javax.swing.JPanel {
 
     private void b_fecha_siniestroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_fecha_siniestroActionPerformed
         // TODO add your handling code here:
-        h=new Herramientas(usr, 0);
-        h.session(sessionPrograma);
-
         calendario cal =new calendario(new javax.swing.JFrame(), true);
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         cal.setLocation((d.width/2)-(cal.getWidth()/2), (d.height/2)-(cal.getHeight()/2));
@@ -1617,7 +1344,6 @@ public class Reporte2 extends javax.swing.JPanel {
             String mes = Integer.toString(miCalendario.get(Calendar.MONTH)+1);
             String anio = Integer.toString(miCalendario.get(Calendar.YEAR));
             t_fecha1.setText(anio+"-"+mes+"-"+dia);
-            //b_busca_cliente.requestFocus();
         }
         else
         {
@@ -1630,211 +1356,115 @@ public class Reporte2 extends javax.swing.JPanel {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        String consulta="SELECT DISTINCT obj from Almacen obj where obj.operacion in(1,2,3,4,7) ";
+        String consulta="select almacen.id_pedido as id_ped, proveedor.nombre as nombre, almacen.fecha as fecha, almacen.id_almacen as id, almacen.tipo_movimiento as tipo, almacen.operacion as operacion, (select partida.id_orden from movimiento inner join partida on movimiento.id_partida=partida.id_partida where id_almacen=id limit 1) as orden, almacen.tipo_documento as tipoDocumento, almacen.documento as documento from almacen inner join pedido on pedido.id_pedido=almacen.id_pedido \n" +
+                        "inner join proveedor on pedido.id_proveedor=proveedor.id_proveedor \n" +
+                        "where almacen.operacion in(1,2,3,4,7) ";
         if(t_fecha1.getText().compareTo("AAAA-MM-DD")!=0)
-        consulta+="and DATE(obj.fecha) >= '"+t_fecha1.getText()+"' ";
+            consulta+="and fecha >= '"+t_fecha1.getText()+"' ";
         if(t_fecha2.getText().compareTo("AAAA-MM-DD")!=0)
-        consulta+="and DATE(obj.fecha) <= '"+t_fecha2.getText()+"'";
-
+            consulta+="and fecha <= '"+t_fecha2.getText()+"'";
+        
         Session session = HibernateUtil.getSessionFactory().openSession();
         try
         {
-            session.beginTransaction();
-            Query q = session.createQuery(consulta);
-            List resultList = q.list();
             model=(DefaultTableModel)t_datos.getModel();
-            if(resultList.size()>0)
+            Query q = session.createSQLQuery(consulta);
+            q.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+            ArrayList datos = (ArrayList) q.list();
+            int num_d=datos.size();
+            if(num_d>0)
             {
-                model.getDataVector().removeAllElements();
-                for (Object o : resultList)
+                model.setNumRows(0);
+                for (int x=0; x<num_d; x++)
                 {
-                    Almacen actor = (Almacen) o;
+                    java.util.HashMap map = (java.util.HashMap) datos.get(x);
                     Object[] renglon=new Object[10];
-
-                    if(actor.getPedido()!=null)
+                    renglon[0]=map.get("id_ped");
+                    renglon[1]=map.get("nombre");
+                    renglon[2]=map.get("fecha").toString();
+                    renglon[3]=map.get("id");
+                        
+                    int tipo=(int)map.get("tipo");
+                    int operacion=(int)map.get("operacion");
+                    String tipoDocumento=""+((int)map.get("operacion"));
+                    
+                    if(tipo==1)
                     {
-                        renglon[0]=""+actor.getPedido().getIdPedido();
-                        renglon[1]=""+actor.getPedido().getProveedorByIdProveedor().getNombre();
-                    }
-                    else
-                    {
-                        renglon[0]="-";
-                        renglon[1]=""+actor.getEntrego();
-                    }
-                    renglon[2]=actor.getFecha().toString();
-                    renglon[3]=actor.getIdAlmacen();
-                    if(actor.getTipoMovimiento()==1)
-                    {
-                        if(actor.getOperacion()==1)
+                        if(operacion==1)
                         {
                             renglon[4]="Entrada";
                             renglon[5]="P.Interno";
-                            Movimiento [] mov=(Movimiento[])actor.getMovimientos().toArray(new Movimiento[0]);
-                            if(mov.length>0)
-                            {
-                                renglon[6]=""+mov[0].getPartida().getOrdenByIdOrden().getIdOrden();
-                                double tot=0.0d;
-                                for(int x=0; x<mov.length; x++)
-                                {
-                                    tot+=mov[x].getPartida().getCantPcp()*mov[x].getPartida().getPcp();
-                                }
-                                renglon[7]=BigDecimal.valueOf(tot).setScale(2, RoundingMode.HALF_UP).doubleValue();
-                            }
+                            renglon[6]=map.get("orden");
                         }
-                        if(actor.getOperacion()==2)
+                        if(operacion==2)
                         {
                             renglon[4]="Entrada";
                             renglon[5]="P.Externo";
-                            //renglon[5]=actor.getPedido().getOrden().getIdOrden();
                             renglon[6]="Ext";
-                            Movimiento [] mov=(Movimiento[])actor.getMovimientos().toArray(new Movimiento[0]);
-                            if(mov.length>0)
-                            {
-                                double tot=0.0d;
-                                for(int x=0; x<mov.length; x++)
-                                {
-                                    tot+=mov[x].getPartidaExterna().getCantidad()*mov[x].getPartidaExterna().getCosto();
-                                }
-                                renglon[7]=BigDecimal.valueOf(tot).setScale(2, RoundingMode.HALF_UP).doubleValue();
-                            }
                         }
-                        if(actor.getOperacion()==3)
+                        if(operacion==3)
                         {
                             renglon[4]="Entrada";
                             renglon[5]="P.Adicional";
-                            renglon[6]=""+actor.getPedido().getOrden().getIdOrden();
-                            Movimiento [] mov=(Movimiento[])actor.getMovimientos().toArray(new Movimiento[0]);
-                            if(mov.length>0)
-                            {
-                                double tot=0.0d;
-                                for(int x=0; x<mov.length; x++)
-                                {
-                                    tot+=mov[x].getPartidaExterna().getCantidad()*mov[x].getPartidaExterna().getCosto();
-                                }
-                                renglon[7]=BigDecimal.valueOf(tot).setScale(2, RoundingMode.HALF_UP).doubleValue();
-                            }
+                            renglon[6]=map.get("orden");   
                         }
-                        if(actor.getOperacion()==4)
+                        if(operacion==4)
                         {
                             renglon[4]="Entrada";
                             renglon[5]="Compañia";
-                            Movimiento [] mov=(Movimiento[])actor.getMovimientos().toArray(new Movimiento[0]);
-                            if(mov.length>0)
-                            {
-                                renglon[6]=""+mov[0].getPartida().getOrdenByIdOrden().getIdOrden();
-                                double tot=0.0d;
-                                renglon[7]=BigDecimal.valueOf(tot).setScale(2, RoundingMode.HALF_UP).doubleValue();
-                            }
                         }
-                        if(actor.getOperacion()==7)
+                        if(operacion==7)
                         {
                             renglon[4]="Entrada";
                             renglon[5]="P.Inventario";
                             renglon[6]="INV";
-                            Movimiento [] mov=(Movimiento[])actor.getMovimientos().toArray(new Movimiento[0]);
-                            if(mov.length>0)
-                            {
-                                double tot=0.0d;
-                                for(int x=0; x<mov.length; x++)
-                                {
-                                    tot+=mov[x].getPartidaExterna().getCantidad()*mov[x].getPartidaExterna().getCosto();
-                                }
-                                renglon[7]=BigDecimal.valueOf(tot).setScale(2, RoundingMode.HALF_UP).doubleValue();
-                            }
                         }
                     }
                     else
                     {
 
-                        if(actor.getOperacion()==1)
+                        if(operacion==1)
                         {
                             renglon[4]="Devolución";
                             renglon[5]="P.Interno";
-                            Movimiento [] mov=(Movimiento[])actor.getMovimientos().toArray(new Movimiento[0]);
-                            if(mov.length>0)
-                            {
-                                renglon[6]=""+mov[0].getPartida().getOrdenByIdOrden().getIdOrden();
-                                double tot=0.0d;
-                                for(int x=0; x<mov.length; x++)
-                                {
-                                    tot+=mov[x].getPartida().getCantPcp()*mov[x].getPartida().getPcp();
-                                }
-                                renglon[7]=BigDecimal.valueOf(tot).setScale(2, RoundingMode.HALF_UP).doubleValue();
-                            }
+                            renglon[6]=map.get("orden");
                         }
-                        if(actor.getOperacion()==2)
+                        if(operacion==2)
                         {
                             renglon[4]="Devolución";
                             renglon[5]="P.Externo";
                             renglon[6]="Ext";
-                            Movimiento [] mov=(Movimiento[])actor.getMovimientos().toArray(new Movimiento[0]);
-                            if(mov.length>0)
-                            {
-                                double tot=0.0d;
-                                for(int x=0; x<mov.length; x++)
-                                {
-                                    tot+=mov[x].getPartidaExterna().getCantidad()*mov[x].getPartidaExterna().getCosto();
-                                }
-                                renglon[7]=BigDecimal.valueOf(tot).setScale(2, RoundingMode.HALF_UP).doubleValue();
-                            }
                         }
-                        if(actor.getOperacion()==3)
+                        if(operacion==3)
                         {
                             renglon[4]="Devolución";
                             renglon[5]="P.Adicional";
-                            renglon[6]=""+actor.getPedido().getOrden().getIdOrden();
-                            Movimiento [] mov=(Movimiento[])actor.getMovimientos().toArray(new Movimiento[0]);
-                            if(mov.length>0)
-                            {
-                                double tot=0.0d;
-                                for(int x=0; x<mov.length; x++)
-                                {
-                                    tot+=mov[x].getPartidaExterna().getCantidad()*mov[x].getPartidaExterna().getCosto();
-                                }
-                                renglon[7]=BigDecimal.valueOf(tot).setScale(2, RoundingMode.HALF_UP).doubleValue();
-                            }
+                            renglon[6]=map.get("orden");
                         }
-                        if(actor.getOperacion()==4)
+                        if(operacion==4)
                         {
                             renglon[4]="Devolución";
                             renglon[5]="Compañia";
-                            Movimiento [] mov=(Movimiento[])actor.getMovimientos().toArray(new Movimiento[0]);
-                            if(mov.length>0)
-                            {
-                                renglon[6]=""+mov[0].getPartida().getOrdenByIdOrden().getIdOrden();
-                                double tot=0.0d;
-                                renglon[7]=BigDecimal.valueOf(tot).setScale(2, RoundingMode.HALF_UP).doubleValue();
-                            }
                         }
-                        if(actor.getOperacion()==7)
+                        if(operacion==7)
                         {
                             renglon[4]="Devolución";
                             renglon[5]="P.Inventario";
                             renglon[6]="INV";
-                            Movimiento [] mov=(Movimiento[])actor.getMovimientos().toArray(new Movimiento[0]);
-                            if(mov.length>0)
-                            {
-                                double tot=0.0d;
-                                for(int x=0; x<mov.length; x++)
-                                {
-                                    tot+=mov[x].getPartidaExterna().getCantidad()*mov[x].getPartidaExterna().getCosto();
-                                }
-                                renglon[7]=BigDecimal.valueOf(tot).setScale(2, RoundingMode.HALF_UP).doubleValue();
-                            }
                         }
                     }
-                    if(actor.getDocumento()!=null)
+                    if(tipoDocumento!=null)
                     {
-                        if(actor.getTipoDocumento().compareTo("R")==0)
-                        renglon[8]="Remisión";
+                        if(tipoDocumento.compareTo("R")==0)
+                            renglon[7]="Remisión";
                         else
-                        renglon[8]="Factura";
-                        renglon[9]=actor.getDocumento();
+                            renglon[7]="Factura";
+                        renglon[8]=map.get("documento");
                     }
                     else
                     {
+                        renglon[7]="";
                         renglon[8]="";
-                        renglon[9]="";
                     }
                     model.addRow(renglon);
                 }
@@ -1853,8 +1483,6 @@ public class Reporte2 extends javax.swing.JPanel {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-        h=new Herramientas(usr, 0);
-        h.session(sessionPrograma);
         if(t_datos.getRowCount()>0)
         {
             javax.swing.JFileChooser jF1= new javax.swing.JFileChooser();
@@ -1865,26 +1493,18 @@ public class Reporte2 extends javax.swing.JPanel {
                 ruta = jF1.getSelectedFile().getAbsolutePath();
                 if(ruta!=null)
                 {
-                    Session session = HibernateUtil.getSessionFactory().openSession();
                     try
                     {
                         DecimalFormat formatoPorcentaje = new DecimalFormat("#,##0.00");
                         formatoPorcentaje.setMinimumFractionDigits(2);
-                        session.beginTransaction().begin();
                         BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.WINANSI, BaseFont.NOT_EMBEDDED);
-                        //Orden ord=buscaApertura();
                         PDF reporte = new PDF();
-                        Date fecha = new Date();
-                        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
-                        String valor=dateFormat.format(fecha);
 
                         reporte.Abrir2(PageSize.LETTER, "reporte almacen", ruta+".pdf");
                         Font font = new Font(Font.FontFamily.HELVETICA, 7, Font.NORMAL);
                         BaseColor contenido=BaseColor.WHITE;
-                        int centro=Element.ALIGN_CENTER;
                         int izquierda=Element.ALIGN_LEFT;
-                        int derecha=Element.ALIGN_RIGHT;
-                        float[] nuevos=new float[]{36,140,86,36,40,45,37,50,42,60};
+                        float[] nuevos=new float[]{36,140,86,36,40,45,37,42,60};
 
                         PdfPTable tabla=reporte.crearTabla(nuevos.length, nuevos, 100, Element.ALIGN_LEFT);
 
@@ -1895,9 +1515,6 @@ public class Reporte2 extends javax.swing.JPanel {
                             {
                                 try
                                 {
-                                    if(col==7)
-                                    tabla.addCell(reporte.celda(formatoPorcentaje.format(t_datos.getValueAt(ren, col)), font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
-                                    else
                                     tabla.addCell(reporte.celda(t_datos.getValueAt(ren, col).toString(), font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
                                 }catch(Exception e)
                                 {
@@ -1915,9 +1532,6 @@ public class Reporte2 extends javax.swing.JPanel {
                         e.printStackTrace();
                         JOptionPane.showMessageDialog(this, "No se pudo realizar el reporte si el archivo esta abierto.");
                     }
-                    if(session!=null)
-                    if(session.isOpen())
-                    session.close();
                 }
             }
         }
@@ -1925,8 +1539,6 @@ public class Reporte2 extends javax.swing.JPanel {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
-        h=new Herramientas(this.usr, 0);
-        h.session(sessionPrograma);
         javax.swing.JFileChooser jF1= new javax.swing.JFileChooser();
         jF1.setFileFilter(new ExtensionFileFilter("Excel document (*.xls)", new String[] { "xls" }));
         String ruta = null;
@@ -1999,34 +1611,8 @@ public class Reporte2 extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_t_datos1MouseClicked
 
-    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton10ActionPerformed
-
-    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton11ActionPerformed
-
-    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton12ActionPerformed
-
-    private void b_fecha_siniestro4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_fecha_siniestro4ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_b_fecha_siniestro4ActionPerformed
-
-    private void t_fecha6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_fecha6ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_t_fecha6ActionPerformed
-
-    private void b_fecha_siniestro5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_fecha_siniestro5ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_b_fecha_siniestro5ActionPerformed
-
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
         // TODO add your handling code here:
-        h=new Herramientas(this.usr, 0);
-        h.session(sessionPrograma);
         javax.swing.JFileChooser jF1= new javax.swing.JFileChooser();
         jF1.setFileFilter(new ExtensionFileFilter("Excel document (*.xls)", new String[] { "xls" }));
         String ruta = null;
@@ -2080,8 +1666,6 @@ public class Reporte2 extends javax.swing.JPanel {
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
         // TODO add your handling code here:
-        h=new Herramientas(usr, 0);
-        h.session(sessionPrograma);
         if(t_datos2.getRowCount()>0)
         {
             javax.swing.JFileChooser jF1= new javax.swing.JFileChooser();
@@ -2092,22 +1676,14 @@ public class Reporte2 extends javax.swing.JPanel {
                 ruta = jF1.getSelectedFile().getAbsolutePath();
                 if(ruta!=null)
                 {
-                    Session session = HibernateUtil.getSessionFactory().openSession();
                     try
                     {
-                        session.beginTransaction().begin();
                         BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.WINANSI, BaseFont.NOT_EMBEDDED);
-                        
                         PDF reporte = new PDF();
-                        Date fecha = new Date();
-                        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
-                        String valor=dateFormat.format(fecha);
-
                         reporte.Abrir2(PageSize.LETTER, "reporte pedidos", ruta+".pdf");
                         Font font = new Font(Font.FontFamily.HELVETICA, 7, Font.NORMAL);
                         BaseColor contenido=BaseColor.WHITE;
                         int centro=Element.ALIGN_CENTER;
-                        int izquierda=Element.ALIGN_LEFT;
                         int derecha=Element.ALIGN_RIGHT;
                         float[] nuevos=new float[]{60,340,170,60,90,90,90};
 
@@ -2136,9 +1712,6 @@ public class Reporte2 extends javax.swing.JPanel {
                         e.printStackTrace();
                         JOptionPane.showMessageDialog(this, "No se pudo realizar el reporte si el archivo esta abierto.");
                     }
-                    if(session!=null)
-                    if(session.isOpen())
-                    session.close();
                 }
             }
         }
@@ -2169,7 +1742,7 @@ public class Reporte2 extends javax.swing.JPanel {
              datos = (ArrayList) query.list();
               if(datos.size()>0)
                     {
-                      model2.getDataVector().removeAllElements();
+                      model2.setNumRows(0);
                     
                       Object[] objeto = new Object[7];
 
@@ -2283,7 +1856,6 @@ public class Reporte2 extends javax.swing.JPanel {
         // TODO add your handling code here:
         ArrayList datos = new ArrayList();
         Session session = HibernateUtil.getSessionFactory().openSession();
-        session.beginTransaction().begin();
         Query query = session.createSQLQuery("select id_Parte, id_catalogo, maximo, minimo, existencias, (maximo-existencias)surtir, medida  from ejemplar where existencias<=minimo and minimo>0");
         query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
         datos = (ArrayList) query.list();
@@ -2301,8 +1873,6 @@ public class Reporte2 extends javax.swing.JPanel {
 
     private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
         // TODO add your handling code here:
-        h=new Herramientas(this.usr, 0);
-        h.session(sessionPrograma);
         javax.swing.JFileChooser jF1= new javax.swing.JFileChooser();
         jF1.setFileFilter(new ExtensionFileFilter("Excel document (*.xls)", new String[] { "xls" }));
         String ruta = null;
@@ -2356,8 +1926,6 @@ public class Reporte2 extends javax.swing.JPanel {
 
     private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
         // TODO add your handling code here:
-        h=new Herramientas(usr, 0);
-        h.session(sessionPrograma);
         if(t_surtir.getRowCount()>0)
         {
             javax.swing.JFileChooser jF1= new javax.swing.JFileChooser();
@@ -2368,22 +1936,17 @@ public class Reporte2 extends javax.swing.JPanel {
                 ruta = jF1.getSelectedFile().getAbsolutePath();
                 if(ruta!=null)
                 {
-                    Session session = HibernateUtil.getSessionFactory().openSession();
                     try
                     {
-                        session.beginTransaction().begin();
                         BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.WINANSI, BaseFont.NOT_EMBEDDED);
                         
                         PDF reporte = new PDF();
                         Date fecha = new Date();
                         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
-                        String valor=dateFormat.format(fecha);
-
                         reporte.Abrir2(PageSize.LETTER, "Reporte Pedidos Consumibles", ruta+".pdf");
                         Font font = new Font(Font.FontFamily.HELVETICA, 7, Font.NORMAL);
                         BaseColor contenido=BaseColor.WHITE;
                         int centro=Element.ALIGN_CENTER;
-                        int izquierda=Element.ALIGN_LEFT;
                         int derecha=Element.ALIGN_RIGHT;
                         float[] nuevos=new float[]{100,310,80,80,80,50,80};
 
@@ -2412,9 +1975,6 @@ public class Reporte2 extends javax.swing.JPanel {
                         e.printStackTrace();
                         JOptionPane.showMessageDialog(this, "No se pudo realizar el reporte si el archivo esta abierto.");
                     }
-                    if(session!=null)
-                    if(session.isOpen())
-                    session.close();
                 }
             }
         }
@@ -2422,8 +1982,6 @@ public class Reporte2 extends javax.swing.JPanel {
 
     private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton17ActionPerformed
         // TODO add your handling code here:
-        h=new Herramientas(usr, menu);
-        h.session(sessionPrograma);
         buscaOrden obj = new buscaOrden(new javax.swing.JFrame(), true, this.usr,0);
         obj.t_busca.requestFocus();
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
@@ -2455,8 +2013,6 @@ public class Reporte2 extends javax.swing.JPanel {
 
     private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
         // TODO add your handling code here:
-        h=new Herramientas(usr, 0);
-        h.session(sessionPrograma);
         if(t_unidad.getRowCount()>0)
         {
             javax.swing.JFileChooser jF1= new javax.swing.JFileChooser();
@@ -2467,10 +2023,8 @@ public class Reporte2 extends javax.swing.JPanel {
                 ruta = jF1.getSelectedFile().getAbsolutePath();
                 if(ruta!=null)
                 {
-                    Session session = HibernateUtil.getSessionFactory().openSession();
                     try
                     {
-                        session.beginTransaction().begin();
                         BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.WINANSI, BaseFont.NOT_EMBEDDED);
                         
                         PDF reporte = new PDF();
@@ -2511,9 +2065,6 @@ public class Reporte2 extends javax.swing.JPanel {
                         e.printStackTrace();
                         JOptionPane.showMessageDialog(this, "No se pudo realizar el reporte si el archivo esta abierto.");
                     }
-                    if(session!=null)
-                    if(session.isOpen())
-                    session.close();
                 }
             }
         }
@@ -2521,8 +2072,6 @@ public class Reporte2 extends javax.swing.JPanel {
 
     private void jButton19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton19ActionPerformed
         // TODO add your handling code here:
-        h=new Herramientas(this.usr, 0);
-        h.session(sessionPrograma);
         javax.swing.JFileChooser jF1= new javax.swing.JFileChooser();
         jF1.setFileFilter(new ExtensionFileFilter("Excel document (*.xls)", new String[] { "xls" }));
         String ruta = null;
@@ -2645,14 +2194,9 @@ public class Reporte2 extends javax.swing.JPanel {
             reporte.finTexto();
             //agregamos renglones vacios para dejar un espacio
             reporte.agregaObjeto(new Paragraph(" "));
-            
             Font font = new Font(Font.FontFamily.HELVETICA, 6, Font.BOLD);
-            
             BaseColor cabecera=BaseColor.GRAY;
-            BaseColor contenido=BaseColor.WHITE;
             int centro=Element.ALIGN_CENTER;
-            int izquierda=Element.ALIGN_LEFT;
-            int derecha=Element.ALIGN_RIGHT;
             if(op==1)
             {
                 for(int a=0; a<tabla.getNumberOfColumns(); a++)
@@ -2723,17 +2267,16 @@ public void cabecera1(PDF reporte, BaseFont bf, PdfPTable tabla, String titulo1,
             if(session.isOpen())
                 session.close();
     }
-    public void formatoTabla()
+    public void formatoTabla(javax.swing.JTable datos)
     {
         Color c1 = new java.awt.Color(2, 135, 242);
-        for(int x=0; x<t_datos.getColumnModel().getColumnCount(); x++)
-            t_datos.getColumnModel().getColumn(x).setHeaderRenderer(new Render1(c1));
-        tabla_tamaños();
-        t_datos.setShowVerticalLines(true);
-        t_datos.setShowHorizontalLines(true);
+        for(int x=0; x<datos.getColumnModel().getColumnCount(); x++)
+            datos.getColumnModel().getColumn(x).setHeaderRenderer(new Render1(c1));
+        datos.setShowVerticalLines(true);
+        datos.setShowHorizontalLines(true);
         
-        t_datos.setDefaultRenderer(Double.class, formato); 
-        t_datos.setDefaultRenderer(String.class, formato); 
+        datos.setDefaultRenderer(Double.class, formato); 
+        datos.setDefaultRenderer(String.class, formato); 
     }
     
     public void tabla_tamaños()
@@ -2766,9 +2309,6 @@ public void cabecera1(PDF reporte, BaseFont bf, PdfPTable tabla, String titulo1,
                     column.setPreferredWidth(40);
                     break; 
                 case 7:
-                    column.setPreferredWidth(50);
-                    break; 
-                case 8:
                     column.setPreferredWidth(40);
                     break; 
                 default:
@@ -2778,19 +2318,6 @@ public void cabecera1(PDF reporte, BaseFont bf, PdfPTable tabla, String titulo1,
         }
         JTableHeader header = t_datos.getTableHeader();
         header.setForeground(Color.white);
-    }
-    
-    public void formatoTabla1()
-    {
-        Color c1 = new java.awt.Color(2, 135, 242);
-        for(int x=0; x<t_datos1.getColumnModel().getColumnCount(); x++)
-            t_datos1.getColumnModel().getColumn(x).setHeaderRenderer(new Render1(c1));
-        tabla_tamaños1();
-        t_datos1.setShowVerticalLines(true);
-        t_datos1.setShowHorizontalLines(true);
-        
-        t_datos1.setDefaultRenderer(Double.class, formato); 
-        t_datos1.setDefaultRenderer(String.class, formato); 
     }
     
     public void tabla_tamaños1()
@@ -2826,16 +2353,6 @@ public void cabecera1(PDF reporte, BaseFont bf, PdfPTable tabla, String titulo1,
         }
         JTableHeader header = t_datos1.getTableHeader();
         header.setForeground(Color.white);
-    }
-    public void formatoTabla2()
-    {
-        Color c1 = new java.awt.Color(2, 135, 242);
-        for(int x=0; x<t_datos2.getColumnModel().getColumnCount(); x++)
-            t_datos.getColumnModel().getColumn(x).setHeaderRenderer(new Render1(c1));
-        tabla_tamaños2();
-        t_datos2.setShowVerticalLines(true);
-        t_datos2.setShowHorizontalLines(true);
-            
     }
     
     public void tabla_tamaños2()
@@ -2874,17 +2391,6 @@ public void cabecera1(PDF reporte, BaseFont bf, PdfPTable tabla, String titulo1,
         header.setForeground(Color.black);
     }
     
-    public void formatoTabla4()
-    {
-        Color c1 = new java.awt.Color(2, 135, 242);
-        for(int x=0; x<t_datos4.getColumnModel().getColumnCount(); x++)
-            t_datos4.getColumnModel().getColumn(x).setHeaderRenderer(new Render1(c1));
-        tabla_tamaños4();
-        t_datos4.setShowVerticalLines(true);
-        t_datos4.setShowHorizontalLines(true);
-            
-    }
-    
     public void tabla_tamaños4()
     {
         TableColumnModel col_model = t_datos4.getColumnModel();
@@ -2918,14 +2424,9 @@ public void cabecera1(PDF reporte, BaseFont bf, PdfPTable tabla, String titulo1,
     private javax.swing.JButton b_busca;
     private javax.swing.JButton b_fecha_siniestro;
     private javax.swing.JButton b_fecha_siniestro1;
-    private javax.swing.JButton b_fecha_siniestro4;
-    private javax.swing.JButton b_fecha_siniestro5;
     private javax.swing.JComboBox cb_tipo;
     private javax.swing.JPanel centro;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton10;
-    private javax.swing.JButton jButton11;
-    private javax.swing.JButton jButton12;
     private javax.swing.JButton jButton13;
     private javax.swing.JButton jButton14;
     private javax.swing.JButton jButton15;
@@ -2944,17 +2445,13 @@ public void cabecera1(PDF reporte, BaseFont bf, PdfPTable tabla, String titulo1,
     private javax.swing.JButton jButton9;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -2963,11 +2460,9 @@ public void cabecera1(PDF reporte, BaseFont bf, PdfPTable tabla, String titulo1,
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
-    private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane7;
@@ -2979,15 +2474,38 @@ public void cabecera1(PDF reporte, BaseFont bf, PdfPTable tabla, String titulo1,
     private javax.swing.JTable t_datos;
     private javax.swing.JTable t_datos1;
     private javax.swing.JTable t_datos2;
-    private javax.swing.JTable t_datos3;
     private javax.swing.JTable t_datos4;
     private javax.swing.JTextField t_fecha1;
     private javax.swing.JTextField t_fecha2;
-    private javax.swing.JTextField t_fecha5;
-    private javax.swing.JTextField t_fecha6;
     private javax.swing.JTextField t_orden;
     private javax.swing.JTextField t_pedido;
     private javax.swing.JTable t_surtir;
     private javax.swing.JTable t_unidad;
     // End of variables declaration//GEN-END:variables
+
+    void busca()
+    {
+        if(this.t_busca1.getText().compareToIgnoreCase("")!=0)
+        {
+            int num_d=t_datos1.getRowCount();
+            if(x>=num_d)
+            {
+                x=0;
+                java.awt.Rectangle r = t_datos1.getCellRect( x, 1, true);
+                t_datos1.scrollRectToVisible(r);
+            }
+            for(; x<num_d; x++)
+            {
+                if(t_datos1.getValueAt(x, 1).toString().indexOf(t_busca1.getText()) != -1)
+                {
+                    t_datos1.setRowSelectionInterval(x, x);
+                    t_datos1.setColumnSelectionInterval(3, 3);
+                    java.awt.Rectangle r = t_datos1.getCellRect( x, 1, true);
+                    t_datos1.scrollRectToVisible(r);
+                    break;
+                }
+            }
+            x++;
+        }
+    }
 }

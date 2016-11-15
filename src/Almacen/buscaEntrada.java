@@ -17,7 +17,6 @@ import Hibernate.entidades.Almacen;
 import Hibernate.entidades.Movimiento;
 import Hibernate.entidades.Pedido;
 import Hibernate.entidades.Usuario;
-import java.util.Vector;
 import javax.swing.InputMap;
 import javax.swing.JOptionPane;
 import java.awt.Color;
@@ -46,7 +45,6 @@ public class buscaEntrada extends javax.swing.JDialog {
     Usuario usr;
     String sessionPrograma="";
     Herramientas h;
-    String[] columnas = new String [] {"Pedido", "Usuario", "Fecha", "Tipo", "Existencia"};
     FormatoTabla formato;
     private Movimiento actor;
     
@@ -60,46 +58,6 @@ public class buscaEntrada extends javax.swing.JDialog {
         titulos();
         buscaDato();
     }    
-   DefaultTableModel ModeloTablaReporte(int renglones, String columnas[])
-        {
-            model = new DefaultTableModel(new Object [renglones][10], columnas)
-            {
-                Class[] types = new Class [] {
-                    java.lang.Integer.class, 
-                    java.lang.String.class, 
-                    java.lang.String.class, 
-                    java.lang.String.class,
-                    java.lang.Double.class
-                };
-                boolean[] canEdit = new boolean [] {
-                    false, false, false, false, false, false, false, false
-                };
-
-                public void setValueAt(Object value, int row, int col)
-                 {
-                        Vector vector = (Vector)this.dataVector.elementAt(row);
-                        Object celda = ((Vector)this.dataVector.elementAt(row)).elementAt(col);
-                        switch(col)
-                        {
-                            default:
-                                    vector.setElementAt(value, col);
-                                    this.dataVector.setElementAt(vector, row);
-                                    fireTableCellUpdated(row, col);
-                                    break;
-                        }
-                    }
-                
-                public Class getColumnClass(int columnIndex) {
-                    return types [columnIndex];
-                }
-
-                public boolean isCellEditable(int rowIndex, int columnIndex) {
-                    return canEdit [columnIndex];
-                }
-            };
-            return model;
-        }
-
     
     private void doClose(Almacen o) {
         returnStatus = o;
@@ -150,7 +108,7 @@ public class buscaEntrada extends javax.swing.JDialog {
 
         jLabel1.setText("Contiene:");
 
-        c_filtro.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccione un filtro", "Pedido" }));
+        c_filtro.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Pedido" }));
         c_filtro.setNextFocusableComponent(t_busca);
         c_filtro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -186,15 +144,22 @@ public class buscaEntrada extends javax.swing.JDialog {
 
             },
             new String [] {
-                "Pedido", "Usuario", "Fecha", "Orden", "Tipo", "Entradas", "Salidas", "Existencia"
+                "Pedido", "Usuario", "Fecha", "Tipo", "Existencia"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
             }
         });
         t_datos.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -298,17 +263,14 @@ public class buscaEntrada extends javax.swing.JDialog {
                     }
                     session.getTransaction().commit();              
                     JOptionPane.showMessageDialog(null, "¡Registro eliminado!");
-                    model.setValueAt(0.0d, t_datos.getSelectedRow(), 5);
-                    model.setValueAt(0.0d, t_datos.getSelectedRow(), 6);
-                    model.setValueAt(0.0d, t_datos.getSelectedRow(), 7);
                 }
             }
             else
                 JOptionPane.showMessageDialog(null, "¡No es posible eliminar los movimientos, ya que contiene existencias!");
-            }catch(Exception e)
-            {
-                session.getTransaction().rollback();
-            }
+        }catch(Exception e)
+        {
+            session.getTransaction().rollback();
+        }
         if(session!=null)
             if(session.isOpen())
                 session.close();
@@ -346,9 +308,6 @@ public class buscaEntrada extends javax.swing.JDialog {
                         }
                         session.getTransaction().commit();              
                         JOptionPane.showMessageDialog(null, "¡Registro eliminado!");
-                        model.setValueAt(0.0d, t_datos.getSelectedRow(), 5);
-                        model.setValueAt(0.0d, t_datos.getSelectedRow(), 6);
-                        model.setValueAt(0.0d, t_datos.getSelectedRow(), 7);
                     }
                 }
                 else
@@ -391,25 +350,18 @@ public class buscaEntrada extends javax.swing.JDialog {
 "from pedido inner join empleado on pedido.comprador=empleado.id_empleado";
             
             if(c_filtro.getSelectedItem().toString().compareTo("Pedido")==0)
-                consulta+=" where pedido.id_pedido like '%"+t_busca.getText()+"%'";
+                consulta+=" where pedido.id_pedido ="+t_busca.getText();
             Query query = session.createSQLQuery(consulta);
             query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
             ArrayList pedidos=(ArrayList)query.list();
-            //Query query = session.createQuery("FROM Pedido");
-            //List pedidos = query.list();
-            t_datos.setModel(ModeloTablaReporte(pedidos.size(), columnas));
-            t_datos.setModel(model);
-
-            for(int a=0; a<pedidos.size(); a++)
+            model=(DefaultTableModel)t_datos.getModel();
+            model.setRowCount(0);
+            int num_r=pedidos.size();
+            for(int a=0; a<num_r; a++)
             {
                 java.util.HashMap map=(java.util.HashMap)pedidos.get(a);
-                model.setValueAt(map.get("id"), a, 0);
-                model.setValueAt(map.get("nombre"), a, 1);
-                model.setValueAt(map.get("fecha_pedido"), a, 2);
-                model.setValueAt(map.get("tipo_pedido"), a, 3);
-                model.setValueAt(map.get("almacen2"), a, 4);
+                model.addRow(new Object[]{map.get("id"), map.get("nombre"), map.get("fecha_pedido"), map.get("tipo_pedido"), map.get("almacen2")});
             }
-            titulos();
         }catch(Exception e)
         {
             System.out.println(e);
@@ -443,14 +395,6 @@ public void tabla_tamaños()
                     break; 
                 case 4:
                     column.setPreferredWidth(100);
-                    break; 
-                case 5:
-                    column.setPreferredWidth(40);
-                    break; 
-                case 6:
-                    column.setPreferredWidth(40);
-                case 7:
-                    column.setPreferredWidth(40);
                     break; 
             }
         }

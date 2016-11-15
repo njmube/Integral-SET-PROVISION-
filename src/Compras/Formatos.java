@@ -88,7 +88,7 @@ public class Formatos {
             String valor=dateFormat.format(fecha);
             File folder = new File("reportes/"+ord.getIdOrden());
             folder.mkdirs();
-            reporte.Abrir(PageSize.LETTER, "Pedido", "reportes/"+ord.getIdOrden()+"/"+valor+"-preFac.pdf");
+            reporte.Abrir2(PageSize.LETTER, "Pedido", "reportes/"+ord.getIdOrden()+"/"+valor+"-preFac.pdf");
             Font font = new Font(Font.FontFamily.HELVETICA, 6, Font.BOLD);
             BaseColor contenido=BaseColor.WHITE;
             int centro=Element.ALIGN_CENTER;
@@ -203,7 +203,7 @@ public class Formatos {
             reporte.agregaObjeto(tabla1);
             reporte.agregaObjeto(tabla2);
             reporte.cerrar();
-            reporte.visualizar("reportes/"+ord.getIdOrden()+"/"+valor+"-preFac.pdf");
+            reporte.visualizar2("reportes/"+ord.getIdOrden()+"/"+valor+"-preFac.pdf");
 
         }catch(Exception e)
         {
@@ -233,7 +233,7 @@ public class Formatos {
             String valor=dateFormat.format(fecha);
             File folder = new File("reportes/"+ord.getIdOrden());
             folder.mkdirs();
-            reporte.Abrir(PageSize.LETTER, "cabecera", "reportes/"+ord.getIdOrden()+"/"+valor+"-pedido.pdf");
+            reporte.Abrir2(PageSize.LETTER, "cabecera", "reportes/"+ord.getIdOrden()+"/"+valor+"-pedido.pdf");
             
             Font font = new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD);
             BaseColor contenido=BaseColor.WHITE;
@@ -278,7 +278,10 @@ public class Formatos {
                         tabla.addCell(reporte.celda(" ", font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
 
                     //Descripcion
-                    tabla.addCell(reporte.celda(cuentas[i].getCatalogo().getNombre(), font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
+                    String anotacion="";
+                    if(cuentas[i].getInstruccion()!=null)
+                        anotacion=cuentas[i].getInstruccion();
+                    tabla.addCell(reporte.celda(cuentas[i].getCatalogo().getNombre()+" "+anotacion, font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
 
                     //Medida
                     tabla.addCell(reporte.celda(cuentas[i].getMed(), font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
@@ -326,7 +329,7 @@ public class Formatos {
 
             reporte.agregaObjeto(tabla);
             reporte.cerrar();
-            reporte.visualizar("reportes/"+ord.getIdOrden()+"/"+valor+"-pedido.pdf");
+            reporte.visualizar2("reportes/"+ord.getIdOrden()+"/"+valor+"-pedido.pdf");
 
         }catch(Exception e)
         {
@@ -356,7 +359,7 @@ public class Formatos {
                 String valor=dateFormat.format(fecha);
                 File folder = new File("reportes/externos");
                 folder.mkdirs();
-                reporte.Abrir(PageSize.LETTER, "cabecera", "reportes/externos/"+valor+"-pedido.pdf");
+                reporte.Abrir2(PageSize.LETTER, "cabecera", "reportes/externos/"+valor+"-pedido.pdf");
                 Font font = new Font(Font.FontFamily.HELVETICA, 8, Font.NORMAL);
                 BaseColor contenido=null;
                 int centro=Element.ALIGN_CENTER;
@@ -444,7 +447,7 @@ public class Formatos {
                 reporte.agregaObjeto(tabla);
                 
                 reporte.cerrar();
-                reporte.visualizar("reportes/externos/"+valor+"-pedido.pdf");
+                reporte.visualizar2("reportes/externos/"+valor+"-pedido.pdf");
 
             }catch(Exception e)
             {
@@ -474,7 +477,7 @@ public class Formatos {
                 String valor=dateFormat.format(fecha);
                 File folder = new File("reportes/"+ord.getIdOrden());
                 folder.mkdirs();
-                reporte.Abrir(PageSize.LETTER, "cabecera", "reportes/"+ord.getIdOrden()+"/"+valor+"-orden.pdf");
+                reporte.Abrir2(PageSize.LETTER, "cabecera", "reportes/"+ord.getIdOrden()+"/"+valor+"-orden.pdf");
                 Font font = new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD);
                 BaseColor contenido=BaseColor.WHITE;
                 int centro=Element.ALIGN_CENTER;
@@ -510,7 +513,10 @@ public class Formatos {
                             tabla.addCell(reporte.celda("0", font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
 
                         //Descripcion
-                        tabla.addCell(reporte.celda(cuentas[i].getCatalogo().getNombre(), font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
+                        String anotacion="";
+                        if(cuentas[i].getInstruccion()!=null)
+                            anotacion=cuentas[i].getInstruccion();
+                        tabla.addCell(reporte.celda(cuentas[i].getCatalogo().getNombre()+" "+anotacion, font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
 
                         //folio del articulo-partida-subpartida
                         tabla.addCell(reporte.celda(""+cuentas[i].getCatalogo().getIdCatalogo()+"-"+cuentas[i].getIdEvaluacion()+ "-"+cuentas[i].getSubPartida(), font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
@@ -560,7 +566,7 @@ public class Formatos {
                 reporte.agregaObjeto(tabla);
                 
                 reporte.cerrar();
-                reporte.visualizar("reportes/"+ord.getIdOrden()+"/"+valor+"-orden.pdf");
+                reporte.visualizar2("reportes/"+ord.getIdOrden()+"/"+valor+"-orden.pdf");
 
             }catch(Exception e)
             {
@@ -590,7 +596,7 @@ public class Formatos {
                 String valor=dateFormat.format(fecha);
                 File folder = new File("reportes/"+ord.getIdOrden());
                 folder.mkdirs();
-                reporte.Abrir(PageSize.LETTER, "cabecera", "reportes/"+ord.getIdOrden()+"/"+valor+"-ordenDCG.pdf");
+                reporte.Abrir2(PageSize.LETTER, "cabecera", "reportes/"+ord.getIdOrden()+"/"+valor+"-ordenDCG.pdf");
                 Font font = new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD);
                 BaseColor contenido=BaseColor.WHITE;
                 int centro=Element.ALIGN_CENTER;
@@ -626,7 +632,10 @@ public class Formatos {
                             tabla.addCell(reporte.celda(" ", font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
                         
                         //Descripcion
-                        tabla.addCell(reporte.celda(cuentas[i].getCatalogo().getNombre(), font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
+                        String anotacion="";
+                        if(cuentas[i].getInstruccion()!=null)
+                            anotacion=cuentas[i].getInstruccion();
+                        tabla.addCell(reporte.celda(cuentas[i].getCatalogo().getNombre()+" "+anotacion, font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
 
                         if(cuentas[i].getEjemplar()!=null)
                         {
@@ -672,7 +681,7 @@ public class Formatos {
                 reporte.agregaObjeto(tabla);
                 
                 reporte.cerrar();
-                reporte.visualizar("reportes/"+ord.getIdOrden()+"/"+valor+"-ordenDCG.pdf");
+                reporte.visualizar2("reportes/"+ord.getIdOrden()+"/"+valor+"-ordenDCG.pdf");
 
             }catch(Exception e)
             {
@@ -701,7 +710,7 @@ public class Formatos {
                 String valor=dateFormat.format(fecha);
                 File folder = new File("reportes/externos");
                 folder.mkdirs();
-                reporte.Abrir(PageSize.LETTER, "cabecera", "reportes/externos/"+valor+"-ordenDCG.pdf");
+                reporte.Abrir2(PageSize.LETTER, "cabecera", "reportes/externos/"+valor+"-ordenDCG.pdf");
                 Font font = new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD);
                 BaseColor contenido=BaseColor.WHITE;
                 int centro=Element.ALIGN_CENTER;
@@ -782,7 +791,7 @@ public class Formatos {
                 reporte.agregaObjeto(tabla);
                 
                 reporte.cerrar();
-                reporte.visualizar("reportes/externos/"+valor+"-ordenDCG.pdf");
+                reporte.visualizar2("reportes/externos/"+valor+"-ordenDCG.pdf");
 
             }catch(Exception e)
             {
@@ -811,7 +820,7 @@ public class Formatos {
                 String valor=dateFormat.format(fecha);
                 File folder = new File("reportes/externos");
                 folder.mkdirs();
-                reporte.Abrir(PageSize.LETTER, "cabecera", "reportes/externos/"+valor+"-orden.pdf");
+                reporte.Abrir2(PageSize.LETTER, "cabecera", "reportes/externos/"+valor+"-orden.pdf");
                 Font font = new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD);
                 BaseColor contenido=BaseColor.WHITE;
                 int centro=Element.ALIGN_CENTER;
@@ -893,7 +902,7 @@ public class Formatos {
                 reporte.agregaObjeto(tabla);
                 
                 reporte.cerrar();
-                reporte.visualizar("reportes/externos/"+valor+"-orden.pdf");
+                reporte.visualizar2("reportes/externos/"+valor+"-orden.pdf");
 
             }catch(Exception e)
             {

@@ -929,7 +929,10 @@ public class muestraAlmacen extends javax.swing.JPanel {
                         model.setValueAt(par.getEjemplar().getIdParte(), r, 2);
                     else
                         model.setValueAt("", r, 2);
-                    model.setValueAt(par.getCatalogo().getNombre(), r, 3);
+                    String anotacion="";
+                    if(par.getInstruccion()!=null)
+                        anotacion=par.getInstruccion();
+                    model.setValueAt(par.getCatalogo().getNombre()+" "+anotacion, r, 3);
                     model.setValueAt(par.getMed(), r, 4);
                     model.setValueAt(mov[r].getCantidad(), r, 5);
                 }

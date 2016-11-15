@@ -215,7 +215,6 @@ public class Integral extends javax.swing.JFrame {
         ventana.setVisible(true);
         lista=ventana.getReturnStatus();
         ruta=ventana.ruta;
-        //ventana=null;
         medida=null;
         d=null;
         if(lista!=null)

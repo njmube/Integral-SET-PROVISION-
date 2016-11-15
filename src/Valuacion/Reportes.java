@@ -187,6 +187,7 @@ public class Reportes extends javax.swing.JPanel {
         cb_tipo = new javax.swing.JCheckBox();
         cb_tot1 = new javax.swing.JCheckBox();
         cb_fecha_cliente = new javax.swing.JCheckBox();
+        cb_comprador = new javax.swing.JCheckBox();
         jButton4 = new javax.swing.JButton();
         scroll = new javax.swing.JScrollPane();
         t_datos = new javax.swing.JTable();
@@ -679,6 +680,9 @@ public class Reportes extends javax.swing.JPanel {
         cb_fecha_cliente.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         cb_fecha_cliente.setText("F. Cliente");
 
+        cb_comprador.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        cb_comprador.setText("Comprador Refacciones");
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -711,21 +715,22 @@ public class Reportes extends javax.swing.JPanel {
                     .addComponent(cb_estatus))
                 .addGap(28, 28, 28)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cb_compras)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(cb_autorizado)
                             .addComponent(cb_tot)
                             .addComponent(cb_tot1)
-                            .addComponent(cb_autorizado_directo))
+                            .addComponent(cb_autorizado_directo)
+                            .addComponent(cb_tot_directa))
                         .addGap(55, 55, 55)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cb_comprador)
                             .addComponent(cb_factura)
                             .addComponent(cb_fecha_entrada)
                             .addComponent(cb_tipo)
-                            .addComponent(cb_fecha_cliente)))
-                    .addComponent(cb_tot_directa)
-                    .addComponent(cb_compras))
-                .addGap(192, 246, Short.MAX_VALUE))
+                            .addComponent(cb_fecha_cliente))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -779,7 +784,8 @@ public class Reportes extends javax.swing.JPanel {
                             .addComponent(cb_motor)
                             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(cb_presupuestado)
-                                .addComponent(cb_tot_directa)))
+                                .addComponent(cb_tot_directa))
+                            .addComponent(cb_comprador))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -1644,7 +1650,7 @@ public class Reportes extends javax.swing.JPanel {
                     tam.add(80);
                     tam_pdf.add(15);
                 }
-                if(cb_interna.isSelected()==true)
+                if(cb_fecha_cliente.isSelected()==true)
                 {
                     tipos.add(java.lang.String.class);
                     col.add("F.Cliente");
@@ -1652,6 +1658,13 @@ public class Reportes extends javax.swing.JPanel {
                     tam_pdf.add(15);
                 }
 
+                if(cb_comprador.isSelected()==true)
+                {
+                    tipos.add(java.lang.String.class);
+                    col.add("Comprador");
+                    tam.add(150);
+                    tam_pdf.add(25);
+                }
                 model=new MyModel(resultList.size(), (String[])col.toArray(new String[0]), (Class[])tipos.toArray(new Class[0]));
                 t_datos.setModel(model);
                 t_datos.setDefaultRenderer(String.class, formato);
@@ -1947,6 +1960,14 @@ public class Reportes extends javax.swing.JPanel {
                     {
                         if(orden.getFechaCliente()!=null)
                             t_datos.setValueAt(orden.getFechaCliente().toString(), ren, columna);
+                        else
+                            t_datos.setValueAt("", ren, columna);
+                        columna++;
+                    }
+                    if(cb_comprador.isSelected()==true)
+                    {
+                        if(orden.getEmpleadoByRRefacciones()!=null)
+                            t_datos.setValueAt(orden.getEmpleadoByRRefacciones().getNombre(), ren, columna);
                         else
                             t_datos.setValueAt("", ren, columna);
                         columna++;
@@ -2397,6 +2418,7 @@ public class Reportes extends javax.swing.JPanel {
     private javax.swing.JCheckBox cb_autorizado_directo;
     private javax.swing.JCheckBox cb_cia;
     private javax.swing.JCheckBox cb_cliente;
+    private javax.swing.JCheckBox cb_comprador;
     private javax.swing.JCheckBox cb_compras;
     private javax.swing.JCheckBox cb_economico;
     private javax.swing.JCheckBox cb_email;

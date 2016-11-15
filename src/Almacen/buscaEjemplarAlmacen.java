@@ -9,7 +9,6 @@ import javax.swing.JOptionPane;
 import Hibernate.entidades.Usuario;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
-import java.util.Vector;
 import javax.swing.ImageIcon;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
@@ -26,7 +25,6 @@ public class buscaEjemplarAlmacen extends javax.swing.JDialog {
     public static final Object[] RET_CANCEL =null;
     InputMap map = new InputMap();
     DefaultTableModel model;
-    String[] columnas = new String [] {"No Parte","Modelo","Marca","Tipo","Catalogo","Medida","Existencia","Operario","-"};
     String sessionPrograma="";
     Herramientas h;
     Usuario usr;
@@ -40,46 +38,9 @@ public class buscaEjemplarAlmacen extends javax.swing.JDialog {
         initComponents();
         getRootPane().setDefaultButton(jButton1);
         t_datos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        t_datos.setModel(ModeloTablaReporte(0, columnas));
         formatoTabla();
         executeHQLQuery();
     }
-    
-    DefaultTableModel ModeloTablaReporte(int renglones, String columnas[])
-        {
-            model = new DefaultTableModel(new Object [renglones][columnas.length], columnas)
-            {
-                Class[] types = new Class [] {
-                    java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, 
-                    java.lang.String.class, java.lang.String.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class
-                };
-                boolean[] canEdit = new boolean [] {
-                    false, false, false, false, false, false, false, false, false
-                };
-
-                @Override
-                public void setValueAt(Object value, int row, int col)
-                {
-                        Vector vector = (Vector)this.dataVector.elementAt(row);
-                        Object celda = ((Vector)this.dataVector.elementAt(row)).elementAt(col);
-                        vector.setElementAt(value, col);
-                        this.dataVector.setElementAt(vector, row);
-                        fireTableCellUpdated(row, col);
-                }
-                
-                @Override
-                public Class getColumnClass(int columnIndex) {
-                    return types [columnIndex];
-                }
-
-                @Override
-                public boolean isCellEditable(int rowIndex, int columnIndex) {
-                    return canEdit [columnIndex];
-                }
-            };
-            return model;
-        }
-
     
     private void doClose(Object[] o) {
         returnStatus = o;
@@ -162,14 +123,14 @@ public class buscaEjemplarAlmacen extends javax.swing.JDialog {
 
             },
             new String [] {
-                "Clave", "Modelo", "Marca", "Tipo", "Catálogo", "Medida"
+                "No Parte", "Modelo", "Marca", "Tipo", "Catálogo", "Medida", "Existencia", "Operario", "-"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, true, true, true, true
+                false, false, false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -342,7 +303,6 @@ public class buscaEjemplarAlmacen extends javax.swing.JDialog {
     private void executeHQLQuery() {
         Session session = HibernateUtil.getSessionFactory().openSession();
         try {
-            session.beginTransaction();
             Query q;
             String texto="";
             if(orden.compareTo("")==0)
@@ -366,6 +326,7 @@ public class buscaEjemplarAlmacen extends javax.swing.JDialog {
             q = session.createSQLQuery(texto);
             q.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
             List resultList = q.list();
+            model=(DefaultTableModel)t_datos.getModel();
             model.setRowCount(0);
             int i=0;
             for (Object o : resultList) 
@@ -374,13 +335,10 @@ public class buscaEjemplarAlmacen extends javax.swing.JDialog {
                 Object[] vector=new Object[]{actor.get("id"), actor.get("modelo"),actor.get("marca"),actor.get("tipo"), actor.get("id_catalogo"),actor.get("medida"),actor.get("existencias"),actor.get("operario"),actor.get("cero")};
                 model.addRow(vector);
             }
-            session.getTransaction().commit();
             session.disconnect();
-            //return resultList;
         } catch (Exception he) {
             he.printStackTrace();
             List lista= null;
-            //return lista;
         }
         finally
         {

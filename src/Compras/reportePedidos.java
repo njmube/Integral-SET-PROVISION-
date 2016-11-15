@@ -1027,10 +1027,13 @@ public class reportePedidos extends javax.swing.JPanel {
                                     {
                                         Partida ren1=par[b];
                                         Renglon nuevo;
+                                        String anotacion="";
+                                        if(ren1.getInstruccion() != null)
+                                            anotacion = ren1.getInstruccion();
                                         if(ren1.getEjemplar()!=null)
-                                            nuevo=new Renglon(""+aux.getIdPedido(), ren1.getEjemplar().getIdParte(), ren1.getCatalogo().getNombre(), ren1.getCantPcp(),  ren1.getMed(),  ren1.getPcp(), ""+ren1.getOrdenByIdOrden().getIdOrden(), ""+ren1.getIdEvaluacion()+"-"+ren1.getSubPartida());
+                                            nuevo=new Renglon(""+aux.getIdPedido(), ren1.getEjemplar().getIdParte(), ren1.getCatalogo().getNombre()+" "+anotacion, ren1.getCantPcp(),  ren1.getMed(),  ren1.getPcp(), ""+ren1.getOrdenByIdOrden().getIdOrden(), ""+ren1.getIdEvaluacion()+"-"+ren1.getSubPartida());
                                         else
-                                            nuevo=new Renglon(""+aux.getIdPedido(), "", ren1.getCatalogo().getNombre(), ren1.getCantPcp(),  ren1.getMed(),  ren1.getPcp(), ""+ren1.getOrdenByIdOrden().getIdOrden(), ""+ren1.getIdEvaluacion()+"-"+ren1.getSubPartida());
+                                            nuevo=new Renglon(""+aux.getIdPedido(), "", ren1.getCatalogo().getNombre()+" "+anotacion, ren1.getCantPcp(),  ren1.getMed(),  ren1.getPcp(), ""+ren1.getOrdenByIdOrden().getIdOrden(), ""+ren1.getIdEvaluacion()+"-"+ren1.getSubPartida());
                                         ordena.add(nuevo);
                                     }
                                 }

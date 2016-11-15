@@ -2694,7 +2694,8 @@ public class Destajo extends javax.swing.JPanel {
         {
             String consulta="select id_adicional, id_orden, fecha_destajo, importe, notas from pago_adicional where id_empleado="+emp.getIdEmpleado();
             if(cb.isSelected()==false)
-                consulta+=" limit 20;";
+                consulta+=" limit 20";
+            consulta+=" order by fecha_destajo desc;";
             Session session = HibernateUtil.getSessionFactory().openSession();
             try
             {

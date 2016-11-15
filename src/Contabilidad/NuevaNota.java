@@ -952,7 +952,7 @@ public class NuevaNota extends javax.swing.JPanel {
     private void t_rfcKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_rfcKeyTyped
         // TODO add your handling code here:
         evt.setKeyChar(Character.toUpperCase(evt.getKeyChar()));
-        if(t_rfc.getText().length()>=13)
+        if(t_rfc.getText().length()>=14)
             evt.consume();
     }//GEN-LAST:event_t_rfcKeyTyped
 

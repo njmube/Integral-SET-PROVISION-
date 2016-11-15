@@ -136,9 +136,8 @@
             <Component class="javax.swing.JComboBox" name="c_filtro">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="2">
-                    <StringItem index="0" value="Seleccione un filtro"/>
-                    <StringItem index="1" value="Pedido"/>
+                  <StringArray count="1">
+                    <StringItem index="0" value="Pedido"/>
                   </StringArray>
                 </Property>
                 <Property name="nextFocusableComponent" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
@@ -161,15 +160,12 @@
             <Component class="javax.swing.JTable" name="t_datos">
               <Properties>
                 <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                  <Table columnCount="8" rowCount="0">
-                    <Column editable="true" title="Pedido" type="java.lang.String"/>
-                    <Column editable="true" title="Usuario" type="java.lang.String"/>
-                    <Column editable="true" title="Fecha" type="java.lang.String"/>
-                    <Column editable="true" title="Orden" type="java.lang.String"/>
-                    <Column editable="true" title="Tipo" type="java.lang.String"/>
-                    <Column editable="true" title="Entradas" type="java.lang.String"/>
-                    <Column editable="true" title="Salidas" type="java.lang.Object"/>
-                    <Column editable="true" title="Existencia" type="java.lang.Object"/>
+                  <Table columnCount="5" rowCount="0">
+                    <Column editable="false" title="Pedido" type="java.lang.String"/>
+                    <Column editable="false" title="Usuario" type="java.lang.String"/>
+                    <Column editable="false" title="Fecha" type="java.lang.String"/>
+                    <Column editable="false" title="Tipo" type="java.lang.String"/>
+                    <Column editable="false" title="Existencia" type="java.lang.Object"/>
                   </Table>
                 </Property>
                 <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">

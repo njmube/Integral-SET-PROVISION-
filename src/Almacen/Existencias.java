@@ -39,7 +39,6 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.criterion.CriteriaSpecification;
 
 /**
  *
@@ -55,7 +54,6 @@ public class Existencias extends javax.swing.JPanel {
     Herramientas h;
     DefaultTableModel model;
     int aux=0;
-    private Usuario user;
     public Existencias(Usuario usuario, String ses) {
         initComponents();
         usr=usuario;
@@ -65,24 +63,19 @@ public class Existencias extends javax.swing.JPanel {
         cargaDatos();
     }
 
-    public String[] getColumnas() {
-        String columnas[] = new String[]{"ID PARTE", "MARCA", "TIPO", "MODELO", "CATALOGO", "MEDIDA", "EXISTENCIAS", "COMENTARIOS"};
-        return columnas;
-    }
     public void cargaDatos(){
         Session session = HibernateUtil.getSessionFactory().openSession();
         try{
-            model = new DefaultTableModel(null, getColumnas());
-            t_datos.setModel(model);
-            tabla_tamaños();
-            formatotabla();
+            model = (DefaultTableModel)t_datos.getModel();
+            model.setNumRows(0);
             ArrayList datos = new ArrayList();
             Query query = session.createSQLQuery("select ejemplar.id_Parte, id_marca as mar, if(id_marca is not null, (select marca_nombre from marca where id_marca=mar),'')as marca_nombre, ejemplar.tipo_nombre, ejemplar.modelo, ejemplar.id_catalogo, ejemplar.comentario, ejemplar.medida, ejemplar.existencias from ejemplar \n" +
                             "where ejemplar.inventario=1");
             query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
             datos = (ArrayList)query.list();
              Object[] objeto = new Object[t_datos.getColumnCount()];
-            for(int i=0; i<datos.size();i++){
+             int num_d=datos.size();
+            for(int i=0; i<num_d;i++){
                 java.util.HashMap map = (java.util.HashMap)datos.get(i);
                 if(map.get("id_Parte")!=null){
                     objeto[0]=(map.get("id_Parte"));
@@ -133,7 +126,8 @@ public class Existencias extends javax.swing.JPanel {
     }
     public void formatotabla(){
         Color c1 = new java.awt.Color(2, 135, 242);
-        for(int x=0; x<t_datos.getColumnModel().getColumnCount(); x++)
+        int num_c=t_datos.getColumnModel().getColumnCount();
+        for(int x=0; x<num_c; x++)
             t_datos.getColumnModel().getColumn(x).setHeaderRenderer(new Render1(c1));
         tabla_tamaños();
         t_datos.setShowVerticalLines(true);
@@ -366,9 +360,6 @@ public class Existencias extends javax.swing.JPanel {
                         Font font = new Font(Font.FontFamily.HELVETICA, 9, Font.NORMAL);
                         BaseColor contenido = BaseColor.WHITE;
                         int centro = com.itextpdf.text.Element.ALIGN_CENTER;
-                        int izquierda = com.itextpdf.text.Element.ALIGN_LEFT;
-                        int derecha = com.itextpdf.text.Element.ALIGN_RIGHT;
-                        
                         PdfPTable tabla = reporte.crearTabla(tamanio.length, tamanio, 100, Element.ALIGN_CENTER);
                         cabecera(reporte, bf, tabla, "EXISTENCIAS DE ARTICULOS.", 2);
                         
@@ -386,7 +377,7 @@ public class Existencias extends javax.swing.JPanel {
                         reporte.cerrar();
                         reporte.visualizar2(ruta + ".pdf");
                      }catch(Exception e){
-                         JOptionPane.showMessageDialog(this, "No se pudo realizar el reporte si el archivo esta abierto.");
+                         JOptionPane.showMessageDialog(this, "No se pudo realizar el reporte");
                      }
                 }
              }
@@ -416,10 +407,12 @@ public class Existencias extends javax.swing.JPanel {
                     Workbook libro = new HSSFWorkbook();
                     FileOutputStream archivo = new FileOutputStream(archivoXLS);
                     Sheet hoja = libro.createSheet("Existencias Articulos");
-                    for(int ren=0;ren<(t_datos.getRowCount()+1);ren++)
+                    int num_row=t_datos.getRowCount();
+                    int num_col=t_datos.getColumnCount();
+                    for(int ren=0;ren<(num_row+1);ren++)
                     {
                         Row fila = hoja.createRow(ren);
-                        for(int col=0; col<t_datos.getColumnCount(); col++)
+                        for(int col=0; col<num_col; col++)
                         {
                             Cell celda = fila.createCell(col);
                             if(ren==0)
@@ -468,13 +461,10 @@ public class Existencias extends javax.swing.JPanel {
                         Font font = new Font(Font.FontFamily.HELVETICA, 9, Font.NORMAL);
                         BaseColor contenido = BaseColor.WHITE;
                         int centro = com.itextpdf.text.Element.ALIGN_CENTER;
-                        int izquierda = com.itextpdf.text.Element.ALIGN_LEFT;
-                        int derecha = com.itextpdf.text.Element.ALIGN_RIGHT;
-                        
                         PdfPTable tabla = reporte.crearTabla(tamanio.length, tamanio, 100, Element.ALIGN_CENTER);
                         cabecera(reporte, bf, tabla, "EXISTENCIAS DE ARTICULOS.", 2);
-                        
-                        for(int i=0; i<t_datos.getRowCount(); i++){
+                        int num_r =t_datos.getRowCount();
+                        for(int i=0; i<num_r; i++){
                             tabla.addCell(reporte.celda(t_datos.getValueAt(i, 0).toString(),font, contenido, centro, 0, 1, Rectangle.RECTANGLE));
                             tabla.addCell(reporte.celda(t_datos.getValueAt(i, 1).toString(),font, contenido, centro, 0, 1, Rectangle.RECTANGLE));
                             tabla.addCell(reporte.celda(t_datos.getValueAt(i, 2).toString(),font, contenido, centro, 0, 1, Rectangle.RECTANGLE));
@@ -514,12 +504,8 @@ public void cabecera(PDF reporte, BaseFont bf, PdfPTable tabla, String titulo, i
         reporte.agregaObjeto(new Paragraph(" "));
         reporte.agregaObjeto(new Paragraph(" "));
         Font font = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD);
-
         BaseColor cabecera = BaseColor.GRAY;
-        BaseColor contenido = BaseColor.WHITE;
         int centro = com.itextpdf.text.Element.ALIGN_CENTER;
-        int izquierda = com.itextpdf.text.Element.ALIGN_LEFT;
-        int derecha = com.itextpdf.text.Element.ALIGN_RIGHT;
         tabla.addCell(reporte.celda("ID PARTE", font, cabecera, centro, 0, 1, Rectangle.RECTANGLE));
         tabla.addCell(reporte.celda("MARCA", font, cabecera, centro, 0, 1, Rectangle.RECTANGLE));
         tabla.addCell(reporte.celda("TIPO", font, cabecera, centro, 0, 1, Rectangle.RECTANGLE));

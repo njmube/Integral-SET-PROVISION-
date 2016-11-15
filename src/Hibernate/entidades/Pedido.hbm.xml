@@ -68,7 +68,7 @@
             </column>
         </property>
         <property name="notas" type="string">
-            <column name="notas" length="200">
+            <column name="notas" length="1000">
                 <comment>notas del pedido</comment>
             </column>
         </property>

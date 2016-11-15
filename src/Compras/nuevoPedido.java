@@ -1381,7 +1381,7 @@ public class nuevoPedido extends javax.swing.JPanel {
                         {
                             for(int x=0; x<part_act.length; x++)
                             {
-                                int r=busca(part_act[x].getIdPartida());
+                                int r=buscaInterno(part_act[x].getIdEvaluacion(), part_act[x].getSubPartida());
                                 if(r==-1)
                                 {
                                     int plazo= 0;
@@ -1401,7 +1401,10 @@ public class nuevoPedido extends javax.swing.JPanel {
                                         costo=part_act[x].getPcp();
                                     Partida parid=part_act[x];
                                     parid = (Partida)session.get(Partida.class, parid.getIdPartida());
-                                    Object[] vector=new Object[]{""+part_act[x].getIdEvaluacion()/*#*/,""+part_act[x].getSubPartida()/*R_valua*/,codigo/*codigo*/,""+parid.getCatalogo().getIdCatalogo()/*folio*/,""+parid.getCatalogo().getNombre()/*descripción*/,""+part_act[x].getMed()/*medida*/,plazo/*plazo*/,cantidad/*cantidad*/,costo/*costo c/u*/,cantidad*costo/*total*/};
+                                    String anotacion="";
+                                    if(part_act[x].getInstruccion()!=null)
+                                        anotacion=part_act[x].getInstruccion();
+                                    Object[] vector=new Object[]{""+part_act[x].getIdEvaluacion()/*#*/,""+part_act[x].getSubPartida()/*R_valua*/,codigo/*codigo*/,""+parid.getCatalogo().getIdCatalogo()/*folio*/,""+parid.getCatalogo().getNombre()+" "+anotacion/*descripción*/,""+part_act[x].getMed()/*medida*/,plazo/*plazo*/,cantidad/*cantidad*/,costo/*costo c/u*/,cantidad*costo/*total*/};
                                     this.model.addRow(vector);
                                     model.setCeldaEditable(t_datos.getRowCount()-1, 2, true);
                                 }
@@ -3058,6 +3061,19 @@ public class nuevoPedido extends javax.swing.JPanel {
         for(int ren=0; ren<t_datos.getRowCount(); ren++)
         {
             if(Integer.parseInt(t_datos.getValueAt(ren, 0).toString())==partida)
+            {
+                x=ren;
+                ren=t_datos.getRowCount();
+            }
+        }
+        return x;
+    }
+    private int buscaInterno(int partida, int sub)
+    {
+        int x=-1;
+        for(int ren=0; ren<t_datos.getRowCount(); ren++)
+        {
+            if(Integer.parseInt(t_datos.getValueAt(ren, 0).toString())==partida && Integer.parseInt(t_datos.getValueAt(ren, 1).toString())==sub)
             {
                 x=ren;
                 ren=t_datos.getRowCount();

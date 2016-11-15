@@ -21,7 +21,6 @@ import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.GrayColor;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfPTable;
-import java.io.File;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -31,6 +30,7 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import Integral.Herramientas;
 import Integral.PDF;
+import java.io.File;
 
 /**
  *
@@ -59,10 +59,7 @@ public class formatosAlmacen {
                 miAlmacen=(Almacen)session.get(Almacen.class, miAlmacen.getIdAlmacen());
                 DecimalFormat formatoPorcentaje = new DecimalFormat("#,##0.00");
                 formatoPorcentaje.setMinimumFractionDigits(2);
-
-                session.beginTransaction().begin();
                 BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.WINANSI, BaseFont.NOT_EMBEDDED);
-
                 PDF reporte = new PDF();
                 Date fecha = new Date();
                 DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
@@ -71,17 +68,15 @@ public class formatosAlmacen {
                 Orden ord=null;
                 if(mov.length>0)
                     ord=mov[0].getPartida().getOrdenByIdOrden();
-                //File folder = new File("reportes/"+ord.getIdOrden());
-                //folder.mkdirs();
-                reporte.Abrir(PageSize.LETTER, "Almacen", "reportes/"+ord.getIdOrden()+"/"+valor+"-"+miAlmacen.getIdAlmacen()+"-almacen.pdf");
+                File folder = new File("reportes/"+ord.getIdOrden());
+                folder.mkdirs();
+                reporte.Abrir2(PageSize.LETTER, "Almacen", "reportes/"+ord.getIdOrden()+"/"+valor+"-"+miAlmacen.getIdAlmacen()+"-almacen.pdf");
                 Font font = new Font(Font.FontFamily.HELVETICA, 6, Font.BOLD);
                 BaseColor contenido=BaseColor.WHITE;
-                int centro=Element.ALIGN_CENTER;
                 int izquierda=Element.ALIGN_LEFT;
                 int derecha=Element.ALIGN_RIGHT;
                 float tam[]=new float[]{20,20,80,190,20,30,50,50};
                 PdfPTable tabla=reporte.crearTabla(8, tam, 100, Element.ALIGN_LEFT);
-
                 cabeceraCompra(reporte, bf, tabla, miAlmacen, ord);
 
                 int ren=0;
@@ -103,7 +98,7 @@ public class formatosAlmacen {
                             tabla.addCell(reporte.celda(""+mov[i].getPartida().getEjemplar().getIdParte(), font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
                         }
                         else
-                        tabla.addCell(reporte.celda(" ", font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
+                         tabla.addCell(reporte.celda(" ", font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
                         
                         //Descripcion
                         tabla.addCell(reporte.celda(mov[i].getPartida().getCatalogo().getNombre(), font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
@@ -145,15 +140,12 @@ public class formatosAlmacen {
                 tabla.addCell(reporte.celda("Total:", font, contenido, derecha, 7,1,Rectangle.NO_BORDER));
                 total+=iva;
                 tabla.addCell(reporte.celda(formatoPorcentaje.format(total), font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
-                session.beginTransaction().rollback();
-
                 reporte.agregaObjeto(tabla);
                 reporte.cerrar();
-                reporte.visualizar("reportes/"+ord.getIdOrden()+"/"+valor+"-"+miAlmacen.getIdAlmacen()+"-almacen.pdf");
+                reporte.visualizar2("reportes/"+ord.getIdOrden()+"/"+valor+"-"+miAlmacen.getIdAlmacen()+"-almacen.pdf");
 
             }catch(Exception e)
             {
-                System.out.println(e);
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(null, "No se pudo realizar el reporte si el archivo esta abierto.");
             }
@@ -199,33 +191,25 @@ public class formatosAlmacen {
             //************************datos del proveedor****************************
             if(almacen.getPedido()!=null)
             {
-                DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");//YYYY-MM-DD HH:MM:SS
                 reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "DATOS DEL PROVEEDOR", 73, 697, 0);
-
                 reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, almacen.getPedido().getProveedorByIdProveedor().getNombre(), 40, 687, 0);
-
                 if(almacen.getPedido().getProveedorByIdProveedor().getDireccion()!=null)
                     reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, almacen.getPedido().getProveedorByIdProveedor().getDireccion(), 40, 677, 0);
                 else
                     reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Dir:", 40, 677, 0);
-
                 if(almacen.getPedido().getProveedorByIdProveedor().getColonia()!=null)
                     reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Col: "+almacen.getPedido().getProveedorByIdProveedor().getColonia(), 40, 667, 0);
                 else
                     reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Col:", 40, 667, 0);
-
                 reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Edo: "+almacen.getPedido().getProveedorByIdProveedor().getEstado(), 40, 657, 0);
-
                 if(almacen.getPedido().getProveedorByIdProveedor().getTel1()!=null)
                     reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Tel: "+almacen.getPedido().getProveedorByIdProveedor().getTel1(), 40, 647, 0);
                 else
                     reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Tel:", 40, 647, 0);
-
                 if(almacen.getPedido().getProveedorByIdProveedor().getTel1()!=null)
                     reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Cto: "+almacen.getPedido().getProveedorByIdProveedor().getRepresentante(), 40, 637, 0);
                 else
                     reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Cto:", 40, 637, 0);
-
                 if(almacen.getPedido().getProveedorByIdProveedor().getEmail()!=null)
                     reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Email: "+almacen.getPedido().getProveedorByIdProveedor().getEmail(), 40, 627, 0);
                 else

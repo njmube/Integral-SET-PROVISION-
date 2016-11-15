@@ -121,6 +121,36 @@ public class FormatoTabla implements TableCellRenderer{
                 else  
                     campoTexto.setBackground(new java.awt.Color(255,255,255));
             }
+            if(table.getColumnCount()==30){
+                if(String.valueOf(table.getValueAt(row,26)).compareToIgnoreCase("")!=0)
+                {
+                    campoTexto.setBackground(new java.awt.Color(12,191,10));
+                    campoTexto.setForeground(new java.awt.Color(0,0,0));
+                    campoTexto.setBorder(BorderFactory.createLineBorder(new java.awt.Color(12,191,10)));
+                }
+                else
+                    campoTexto.setBackground(new java.awt.Color(255,255,255));
+            }
+            if(table.getColumnCount()==24){
+                if(Double.parseDouble(String.valueOf(table.getValueAt(row,21)))==0.0d)
+                {
+                    if(Double.parseDouble(String.valueOf(table.getValueAt(row,20)))!=Double.parseDouble(String.valueOf(table.getValueAt(row,19))))
+                        campoTexto.setBackground(new java.awt.Color(255,255,0));
+                    else
+                    {
+                        campoTexto.setBackground(new java.awt.Color(12,191,10));
+                        campoTexto.setForeground(new java.awt.Color(0,0,0));
+                        campoTexto.setBorder(BorderFactory.createLineBorder(new java.awt.Color(12,191,10)));
+                    }
+                }
+                else
+                {
+                    if(Double.parseDouble(String.valueOf(table.getValueAt(row,20)))!=Double.parseDouble(String.valueOf(table.getValueAt(row,19))))
+                        campoTexto.setBackground(new java.awt.Color(255,255,0));
+                    else
+                        campoTexto.setBackground(new java.awt.Color(255,255,255));
+                }
+            }
         }
         
         if(hasFocus){

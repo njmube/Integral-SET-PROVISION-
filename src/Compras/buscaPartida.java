@@ -385,7 +385,10 @@ public class buscaPartida extends javax.swing.JDialog {
                 model.setValueAt(""+par[i].getIdEvaluacion(), i, 0);//n°
                 model.setValueAt(par[i].getSubPartida(), i, 1);//#
                 model.setValueAt(par[i].getCatalogo().getEspecialidad().getDescripcion(), i, 2);//grupo
-                model.setValueAt(par[i].getCatalogo().getNombre(), i, 3);//descrip
+                String anotacion="";
+                if(par[i].getInstruccion()!=null)
+                    anotacion=par[i].getInstruccion();
+                model.setValueAt(par[i].getCatalogo().getNombre()+" "+anotacion, i, 3);//descrip
                 model.setValueAt(par[i].getCatalogo().getIdCatalogo(), i, 4);//fol
                 if(par[i].getEjemplar()!=null)
                     model.setValueAt(par[i].getEjemplar().getIdParte(), i, 5);//código

@@ -3,11 +3,6 @@
  * and open the template in the editor.
  */
 
-/*
- * acceso.java
- *
- * Created on 19/01/2012, 02:01:25 PM
- */
 package Almacen;
 
 import Integral.FormatoTabla;
@@ -16,12 +11,11 @@ import Integral.DefaultTableHeaderCellRenderer;
 import Hibernate.Util.HibernateUtil;
 import Hibernate.entidades.Almacen;
 import Hibernate.entidades.Usuario;
-import java.util.List;
-import java.util.Vector;
 import javax.swing.InputMap;
 import javax.swing.JOptionPane;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
@@ -30,6 +24,7 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 /**
@@ -44,7 +39,6 @@ public class buscaAlmacen extends javax.swing.JDialog {
     Usuario usr;
     String sessionPrograma="";
     Herramientas h;
-    String[] columnas = new String [] {"N° Entrada", "Usuario", "Fecha", "Pedido", "Notas", "Tipo", "Operación"};
     FormatoTabla formato;
     
     /** Creates new form acceso */
@@ -57,49 +51,7 @@ public class buscaAlmacen extends javax.swing.JDialog {
         titulos();
         buscaDato();
     }    
-   DefaultTableModel ModeloTablaReporte(int renglones, String columnas[])
-        {
-            model = new DefaultTableModel(new Object [renglones][10], columnas)
-            {
-                Class[] types = new Class [] {
-                    java.lang.Integer.class, 
-                    java.lang.String.class, 
-                    java.lang.String.class, 
-                    java.lang.Integer.class, 
-                    java.lang.String.class,
-                    java.lang.String.class,
-                    java.lang.String.class
-                };
-                boolean[] canEdit = new boolean [] {
-                    false, false, false, false, false, false, false
-                };
 
-                public void setValueAt(Object value, int row, int col)
-                 {
-                        Vector vector = (Vector)this.dataVector.elementAt(row);
-                        Object celda = ((Vector)this.dataVector.elementAt(row)).elementAt(col);
-                        switch(col)
-                        {
-                            default:
-                                    vector.setElementAt(value, col);
-                                    this.dataVector.setElementAt(vector, row);
-                                    fireTableCellUpdated(row, col);
-                                    break;
-                        }
-                    }
-                
-                public Class getColumnClass(int columnIndex) {
-                    return types [columnIndex];
-                }
-
-                public boolean isCellEditable(int rowIndex, int columnIndex) {
-                    return canEdit [columnIndex];
-                }
-            };
-            return model;
-        }
-
-    
     private void doClose(Almacen o) {
         returnStatus = o;
         setVisible(false);
@@ -149,7 +101,7 @@ public class buscaAlmacen extends javax.swing.JDialog {
 
         jLabel1.setText("Contiene:");
 
-        c_filtro.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccione un filtro", "N° Entrada", "Pedido", "O. Taller", "No Proveedor (pedido)", "Nombre de Proveedor (pedido)", "Entrego/recibió", "No Proveedor (s. compañía)", "Nombre de Proveedor (s. compañía)" }));
+        c_filtro.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "N° Entrada", "Pedido", "O. Taller", "No Proveedor (pedido)", "Nombre de Proveedor (pedido)", "Entrego/recibió" }));
         c_filtro.setNextFocusableComponent(t_busca);
         c_filtro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -204,9 +156,16 @@ public class buscaAlmacen extends javax.swing.JDialog {
             Class[] types = new Class [] {
                 java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class
             };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false
+            };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
             }
         });
         t_datos.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -279,8 +238,6 @@ public class buscaAlmacen extends javax.swing.JDialog {
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         // TODO add your handling code here:
         t_busca.requestFocus();
-//        h=new Herramientas(usr, 0);
-//        h.session(sessionPrograma);
         Session session = HibernateUtil.getSessionFactory().openSession();
         try
         {
@@ -321,8 +278,6 @@ public class buscaAlmacen extends javax.swing.JDialog {
         // TODO add your handling code here:
         if (evt.getClickCount() == 2) {
             t_busca.requestFocus();
-//        h=new Herramientas(usr, 0);
-//        h.session(sessionPrograma);
         Session session = HibernateUtil.getSessionFactory().openSession();
         try
         {
@@ -363,196 +318,172 @@ public class buscaAlmacen extends javax.swing.JDialog {
 
     private void buscaDato()
     {
-        String consulta="SELECT DISTINCT obj from Almacen obj ";
+        String consulta="select distinct almacen.id_almacen, empleado.nombre, almacen.fecha, almacen.id_pedido, almacen.notas, almacen.tipo_movimiento, almacen.operacion from almacen left join usuario on almacen.usuario=usuario.id_usuario left join empleado on empleado.id_empleado=usuario.id_empleado ";
         String aux="";
         if(c_filtro.getSelectedItem().toString().compareTo("N° Entrada")==0)
             if(t_busca.getText().compareTo("")!=0)
-                consulta+=" where obj.idAlmacen =" + t_busca.getText();
+                consulta+=" where almacen.id_almacen=" + t_busca.getText();
 
         if(c_filtro.getSelectedItem().toString().compareTo("Pedido")==0)
         {
             if(t_busca.getText().compareTo("")!=0)
-            consulta+="LEFT JOIN obj.pedido ped "
-                + "where ped.idPedido like'%"+t_busca.getText()+"%'";
+            consulta+="left join pedido on pedido.id_pedido=almacen.id_pedido where almacen.id_pedido="+t_busca.getText();
         }
 
         if(c_filtro.getSelectedItem().toString().compareTo("O. Taller")==0)
         {
             if(t_busca.getText().compareTo("")!=0)
             {
-                aux="SELECT DISTINCT obj from Almacen obj "
-                  + "WHERE obj.pedido.partida.ordenByIdOrden.idOrden like '%"+t_busca.getText()+"%'";
-                consulta+="LEFT JOIN FETCH obj.movimientos objM "
-                    + "LEFT JOIN objM.partida part "
-                    + "LEFT JOIN part.ordenByIdOrden ord "
-                    + "where ord.idOrden like'%"+t_busca.getText()+"%' OR obj.orden.idOrden like'%"+t_busca.getText()+"%'";
+                aux="select distinct almacen.id_almacen, empleado.nombre, almacen.fecha, almacen.id_pedido, almacen.notas, almacen.tipo_movimiento, almacen.operacion from almacen left join usuario on almacen.usuario=usuario.id_usuario left join empleado on empleado.id_empleado=usuario.id_empleado \n" +
+                    "left join pedido on almacen.id_pedido=pedido.id_pedido left join partida on pedido.id_pedido=partida.id_partida where partida.id_orden="+t_busca.getText()+";";
+                consulta+="left join movimiento on almacen.id_almacen=movimiento.id_almacen join partida on movimiento.id_partida=partida.id_partida where partida.id_orden="+t_busca.getText()+" or almacen.id_orden="+t_busca.getText();
             }
         }
 
         if(c_filtro.getSelectedItem().toString().compareTo("No Proveedor (pedido)")==0)
             if(t_busca.getText().compareTo("")!=0)
-                consulta+="LEFT JOIN obj.pedido ped "
-                + "LEFT JOIN ped.proveedorByIdProveedor prov "
-                + "where prov.idProveedor like'%"+t_busca.getText()+"%'";
+                consulta+="left join pedido on almacen.id_pedido=pedido.id_pedido left join proveedor on pedido.id_proveedor=proveedor.id_proveedor where proveedor.id_proveedor like '%"+t_busca.getText()+"%'";
 
         if(c_filtro.getSelectedItem().toString().compareTo("Nombre de Proveedor (pedido)")==0)
-            consulta+="LEFT JOIN obj.pedido ped "
-                + "LEFT JOIN ped.proveedorByIdProveedor prov "
-                + "where prov.nombre like'%"+t_busca.getText()+"%'";
+            consulta+="left join pedido on almacen.id_pedido=pedido.id_pedido left join proveedor on pedido.id_proveedor=proveedor.id_proveedor where proveedor.nombre like'%"+t_busca.getText()+"%'";
 
         if(c_filtro.getSelectedItem().toString().compareTo("Entrego/recibió")==0)
-            consulta+="LEFT JOIN obj.pedido ped "
-                + "where obj.entrego like'%"+t_busca.getText()+"%'";
-
-        if(c_filtro.getSelectedItem().toString().compareTo("No Proveedor (s. compañía)")==0)
-        {
-            if(t_busca.getText().compareTo("")!=0)
-            consulta+="LEFT JOIN FETCH obj.movimientos objM "
-                + "LEFT JOIN objM.partida part "
-                + "LEFT JOIN part.proveedor prov "
-                + "where prov.idProveedor like'%"+t_busca.getText()+"%'";
-        }
-        if(c_filtro.getSelectedItem().toString().compareTo("Nombre de Proveedor (s. compañía)")==0)
-        {
-            if(t_busca.getText().compareTo("")!=0)
-            consulta+="LEFT JOIN FETCH obj.movimientos objM "
-                + "LEFT JOIN objM.partida part "
-                + "LEFT JOIN part.proveedor prov "
-                + "where prov.nombre like'%"+t_busca.getText()+"%'";
-        }
-
+            consulta+="where almacen.entrego like'%"+t_busca.getText()+"%'";
 
         Session session = HibernateUtil.getSessionFactory().openSession();
         try
         {
             session.beginTransaction();
-            Query q = session.createQuery(consulta);
-            List resultList = q.list();
+            Query q = session.createSQLQuery(consulta);
+            q.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+            ArrayList resultList = (ArrayList)q.list();
 
             if(aux.compareTo("")!=0)
             {
-                Query q1 = session.createQuery(aux);
-                resultList.addAll(q1.list());
+                Query q1 = session.createSQLQuery(aux);
+                q1.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+                resultList.addAll((ArrayList)q1.list());
             }
+            int l1=resultList.size();
 
-            if(resultList.size()>0)
+            model=(DefaultTableModel)t_datos.getModel();
+            model.setNumRows(0);
+            if(l1>0)
             {
-                t_datos.setModel(ModeloTablaReporte(resultList.size(), columnas));
-                int i=0;
-                for (Object o : resultList) 
+                for (int x=0; x<l1; x++) 
                 {
-                    Almacen actor = (Almacen) o;
-                    model.setValueAt(actor.getIdAlmacen(), i, 0);
-                    model.setValueAt(actor.getUsuario().getEmpleado().getNombre(), i, 1);
-                    model.setValueAt(actor.getFecha(), i, 2);
-                    if(actor.getPedido()!=null)
-                        model.setValueAt(actor.getPedido().getIdPedido(), i, 3);
-                    else
-                        model.setValueAt("", i, 3);
-                    model.setValueAt(actor.getNotas(), i, 4);
-                    if(actor.getTipoMovimiento()==1)
+                    java.util.HashMap map = (java.util.HashMap) resultList.get(x);
+                    Object[] objeto = new Object[7];
+                    objeto[0]=map.get("id_almacen");
+                    objeto[1]=map.get("nombre");
+                    objeto[2]=map.get("fecha");
+                    objeto[3]=map.get("id_pedido");
+                    objeto[4]=map.get("notas");
+                    
+                    int operacion=(int)map.get("operacion");
+                    int tipo_movimiento=(int)map.get("tipo_movimiento");
+                    if(tipo_movimiento==1)
                     {
-                        if(actor.getOperacion()==1)
+                        switch(operacion)
                         {
-                            model.setValueAt("Entrada", i, 5);
-                            model.setValueAt("P. Interno", i, 6);
-                        }
-                        if(actor.getOperacion()==2)
-                        {
-                            model.setValueAt("Entrada", i, 5);
-                            model.setValueAt("P. Externo", i, 6);
-                        }
-                        if(actor.getOperacion()==3)
-                        {
-                            model.setValueAt("Entrada", i, 5);
-                            model.setValueAt("P. Adicional", i, 6);
-                        }
-                        if(actor.getOperacion()==4)
-                        {
-                            model.setValueAt("Entregada", i, 5);
-                            model.setValueAt("Compañía", i, 6);
-                        }
+                            case 1:
+                                objeto[5]="Entrada";
+                                objeto[6]="P. Interno";
+                                break;
+                            
+                            case 2:
+                                objeto[5]="Entrada";
+                                objeto[6]="P. Externo";
+                                break;
+                                
+                            case 3:
+                                objeto[5]="Entrada";
+                                objeto[6]="P. Adicional";
+                                break;
+                                
+                            case 4:
+                                objeto[5]="Entregada";
+                                objeto[6]="Compañía";
+                                break;
 
-                        if(actor.getOperacion()==5)
-                        {
-                            model.setValueAt("Devolución", i, 5);
-                            model.setValueAt("Operarios", i, 6);
-                        }
-                        if(actor.getOperacion()==6)
-                        {
-                            model.setValueAt("Devolución", i, 5);
-                            model.setValueAt("Venta", i, 6);
-                        }
-                        if(actor.getOperacion()==7)
-                        {
-                            model.setValueAt("Entrada", i, 5);
-                            model.setValueAt("P.Consumibles", i, 6);
-                        }
-                        if(actor.getOperacion()==8)
-                        {
-                            model.setValueAt("Devolucion", i, 5);
-                            model.setValueAt("Consumibles", i, 6);
-                        }
-                        if(actor.getOperacion()==9)
-                        {
-                            model.setValueAt("Entrada", i, 5);
-                            model.setValueAt("Ajuste", i, 6);
+                            case 5:
+                                objeto[5]="Devolución";
+                                objeto[6]="Operarios";
+                                break;
+                            case 6:
+                                objeto[5]="Devolución";
+                                objeto[6]="Venta";
+                                break;
+                            
+                            case 7:
+                                objeto[5]="Entrada";
+                                objeto[6]="P.Consumibles";
+                                break;
+                            
+                            case 8:
+                                objeto[5]="Devolucion";
+                                objeto[6]="Consumibles";
+                                break;
+                                
+                            case 9:
+                                objeto[5]="Entrada";
+                                objeto[6]="Ajuste";
+                                break;
                         }
                     }
                     else
                     {
+                        switch(operacion)
+                        {
+                            case 1:
+                                objeto[5]="Devolución";
+                                objeto[6]="P. Interno";
+                                break;
 
-                        if(actor.getOperacion()==1)
-                        {
-                            model.setValueAt("Devolución", i, 5);
-                            model.setValueAt("P. Interno", i, 6);
-                        }
-                        if(actor.getOperacion()==2)
-                        {
-                            model.setValueAt("Devolución", i, 5);
-                            model.setValueAt("P. Externo", i, 6);
-                        }
-                        if(actor.getOperacion()==3)
-                        {
-                            model.setValueAt("Devolución", i, 5);
-                            model.setValueAt("P. Adicional", i, 6);
-                        }
-                        if(actor.getOperacion()==4)
-                        {
-                            model.setValueAt("Devolución", i, 5);
-                            model.setValueAt("Compañía", i, 6);
-                        }
-                        if(actor.getOperacion()==5)
-                        {
-                            model.setValueAt("Salida", i, 5);
-                            model.setValueAt("Operarios", i, 6);
-                        }
-                        if(actor.getOperacion()==6)
-                        {
-                            model.setValueAt("Salida", i, 5);
-                            model.setValueAt("Venta", i, 6);
-                        }
-                        if(actor.getOperacion()==7)
-                        {
-                            model.setValueAt("Devolución", i, 5);
-                            model.setValueAt("P.Consumibles", i, 6);
-                        }
-                        if(actor.getOperacion()==8)
-                        {
-                            model.setValueAt("Salida", i, 5);
-                            model.setValueAt("Consumibles", i, 6);
-                        }
-                        if(actor.getOperacion()==9)
-                        {
-                            model.setValueAt("Salida", i, 5);
-                            model.setValueAt("Ajuste", i, 6);
+                            case 2:
+                                objeto[5]="Devolución";
+                                objeto[6]="P. Externo";
+                                break;
+                            
+                            case 3:
+                                objeto[5]="Devolución";
+                                objeto[6]="P. Adicional";
+                                break;
+                            
+                            case 4:
+                                objeto[5]="Devolución";
+                                objeto[6]="Compañía";
+                                break;
+                        
+                            case 5:
+                                objeto[5]="Salida";
+                                objeto[6]="Operarios";
+                                break;
+                            
+                            case 6:
+                                objeto[5]="Salida";
+                                objeto[6]="Venta";
+                                break;
+                            
+                            case 7:
+                                objeto[5]="Devolución";
+                                objeto[6]="P.Consumibles";
+                                break;
+                        
+                            case 8:
+                                objeto[5]="Salida";
+                                objeto[6]="Consumibles";
+                                break;
+                            
+                            case 9:
+                                objeto[5]="Salida";
+                                objeto[6]="Ajuste";
+                                break;
                         }
                     }
-                    i++;
+                    model.addRow(objeto);
                 }
             }
-            else
-                t_datos.setModel(ModeloTablaReporte(0, columnas));
             t_busca.requestFocus();
         }catch(Exception e)
         {

@@ -298,7 +298,10 @@ public class buscaEjemplar extends javax.swing.JDialog {
                 Ejemplar op= new Ejemplar();
                 op.setIdParte(t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString());
                 op.setCatalogo(t_datos.getValueAt(t_datos.getSelectedRow(), 4).toString());
-                op.setMedida(t_datos.getValueAt(t_datos.getSelectedRow(), 5).toString());
+                if(t_datos.getValueAt(t_datos.getSelectedRow(), 5)!=null)
+                    op.setMedida(t_datos.getValueAt(t_datos.getSelectedRow(), 5).toString());
+                else
+                    op.setMedida("");
                 if(t_datos.getValueAt(t_datos.getSelectedRow(), 1)!=null)
                     op.setModelo(Integer.parseInt(t_datos.getValueAt(t_datos.getSelectedRow(), 1).toString()));
                 doClose(op);
@@ -355,8 +358,7 @@ public class buscaEjemplar extends javax.swing.JDialog {
                 {
                     Ejemplar actor = (Ejemplar) o;
                     model.setValueAt(actor.getIdParte(), i, 0);
-                    if(actor.getModelo()!=null)
-                        model.setValueAt(actor.getModelo(), i, 1);
+                    model.setValueAt(actor.getModelo(), i, 1);
                     if(actor.getMarca()!=null)
                         model.setValueAt(actor.getMarca().getIdMarca(), i, 2);
                     if(actor.getTipo()!=null)

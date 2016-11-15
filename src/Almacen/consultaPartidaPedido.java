@@ -46,7 +46,6 @@ public class consultaPartidaPedido extends javax.swing.JDialog {
     Usuario usr;
     consultaPartidaPedido.MyModel model;
     FormatoTabla formato;
-    private String orden="";
     String[] columnas = new String [] {"Id","N°","#","N° Parte","Descripción","Medida","Pedido","Costo c/u"};// , "OK"};//para antes de entrada
     /**
      * Creates new form consultaPartidaPedido
@@ -78,7 +77,8 @@ public class consultaPartidaPedido extends javax.swing.JDialog {
     public void formatoTabla(String tipo, String valor, String movimiento)
     {
         Color c1 = new java.awt.Color(2, 135, 242);   
-        for(int x=0; x<t_datos.getColumnModel().getColumnCount(); x++)
+        int num_c=t_datos.getColumnModel().getColumnCount();
+        for(int x=0; x<num_c; x++)
         {
             t_datos.getColumnModel().getColumn(x).setHeaderRenderer(new Render1(c1));
         }
@@ -208,10 +208,12 @@ public class consultaPartidaPedido extends javax.swing.JDialog {
         {
             List datos = new ArrayList();
             int renglones[]=t_datos.getSelectedRows();
-            for(int x=0; x<renglones.length; x++)
+            int r=renglones.length;
+            int num_c=t_datos.getColumnCount();
+            for(int x=0; x<r; x++)
             {
                 List aux = new ArrayList();
-                for(int c=0; c<t_datos.getColumnCount(); c++)
+                for(int c=0; c<num_c; c++)
                 {
                     aux.add(t_datos.getValueAt(renglones[x], c));
                 }
@@ -254,7 +256,7 @@ public class consultaPartidaPedido extends javax.swing.JDialog {
             session.beginTransaction().begin();
             if(tipo.compareTo("Pedido")==0)
             {
-                Pedido pedido=(Pedido)session.get(Pedido.class, Integer.parseInt(t_pedido.getText()));
+                //Pedido pedido=(Pedido)session.get(Pedido.class, Integer.parseInt(t_pedido.getText()));
                 if(valor.compareTo("Interno")==0)
                 {
                     session.beginTransaction().begin();
@@ -300,7 +302,10 @@ public class consultaPartidaPedido extends javax.swing.JDialog {
                                 model.setValueAt(par.getEjemplar().getIdParte(), a, 3);
                             else
                                 model.setValueAt("", a, 3);
-                            model.setValueAt(par.getCatalogo().getNombre(), a, 4);
+                            String anotacion="";
+                            if(par.getInstruccion()!=null)
+                                anotacion=par.getInstruccion();
+                            model.setValueAt(par.getCatalogo().getNombre()+" "+anotacion, a, 4);
                             model.setValueAt(par.getMed(), a, 5);
                             model.setValueAt(par.getCantPcp(), a, 6);
                             model.setValueAt(total, a, 7);
@@ -359,7 +364,10 @@ public class consultaPartidaPedido extends javax.swing.JDialog {
                                 model.setValueAt(par.getEjemplar().getIdParte(), a, 3);
                             else
                                 model.setValueAt("", a, 3);
-                            model.setValueAt(par.getCatalogo().getNombre(), a, 4);
+                            String anotacion="";
+                            if(par.getInstruccion()!=null)
+                                anotacion=par.getInstruccion();
+                            model.setValueAt(par.getCatalogo().getNombre()+" "+anotacion, a, 4);
                             model.setValueAt(par.getMed(), a, 5);
                             model.setValueAt(par.getCantPcp(), a, 6);
                             model.setValueAt(total, a, 7);
@@ -848,7 +856,8 @@ public class consultaPartidaPedido extends javax.swing.JDialog {
         tcr.setHorizontalAlignment(SwingConstants.RIGHT);
         FormatoEditor fe=new FormatoEditor();
         t_datos.setDefaultEditor(Double.class, fe);
-        for (int i=0; i<t_datos.getColumnCount(); i++)
+        int num_c=t_datos.getColumnCount();
+        for (int i=0; i<num_c; i++)
         {
             TableColumn column = col_model.getColumn(i);
             switch(i)

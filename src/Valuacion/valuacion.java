@@ -5524,22 +5524,27 @@ public class MyModel extends DefaultTableModel
                                                     Partida part=(Partida) session.createCriteria(Partida.class).add(Restrictions.eq("ordenByIdOrden.idOrden", Integer.parseInt(orden))).add(Restrictions.eq("idEvaluacion", Integer.parseInt(t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString()))).add(Restrictions.eq("subPartida", Integer.parseInt(t_datos.getValueAt(t_datos.getSelectedRow(), 1).toString()))).setMaxResults(1).uniqueResult();
                                                     if(part!=null)
                                                     {
-                                                        if((boolean)value==true)
-                                                            part.setSo(true);
-                                                        else
-                                                            part.setSo(false);
-                                                        session.update(part);
-                                                        session.getTransaction().commit();
-                                                        vector.setElementAt(value, col);
-                                                        this.dataVector.setElementAt(vector, row);
-                                                        fireTableCellUpdated(row, col);
-                                                        if(session.isOpen()==true)
+                                                        if(part.getPedido()==null)
                                                         {
-                                                            session.flush();
-                                                            session.clear();
-                                                            session.close();
+                                                            if((boolean)value==true)
+                                                                part.setSo(true);
+                                                            else
+                                                                part.setSo(false);
+                                                            session.update(part);
+                                                            session.getTransaction().commit();
+                                                            vector.setElementAt(value, col);
+                                                            this.dataVector.setElementAt(vector, row);
+                                                            fireTableCellUpdated(row, col);
+                                                            if(session.isOpen()==true)
+                                                            {
+                                                                session.flush();
+                                                                session.clear();
+                                                                session.close();
+                                                            }
+                                                            verEstado();
                                                         }
-                                                        verEstado();
+                                                        else
+                                                            JOptionPane.showMessageDialog(null, "La partida ya tiene un pedido y se surtiria 2 veces");
                                                     }
                                                     else
                                                     {
