@@ -558,9 +558,9 @@
                             <StringItem index="9" value="Envio a compa&#xf1;ia"/>
                             <StringItem index="10" value="Autoriza Compa&#xf1;ia"/>
                             <StringItem index="11" value="Autoriza Valuacion"/>
-                            <StringItem index="12" value="Fecturacion"/>
+                            <StringItem index="12" value="Facturacion"/>
                             <StringItem index="13" value="Cierre"/>
-                            <StringItem index="14" value=""/>
+                            <StringItem index="14" value=" "/>
                           </StringArray>
                         </Property>
                       </Properties>

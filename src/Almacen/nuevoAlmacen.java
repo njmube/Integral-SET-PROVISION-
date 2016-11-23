@@ -4743,7 +4743,7 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                                       "</tr>";
                     }
                     mensaje+="</table><p>"+t_notas.getText()+"</p> <p>Saludos. </p>";
-                    enviaCorreo("Recepción de material OT("+t_orden.getText()+")", mensaje, "hectorolivares@tractoservicio.com;alejandroflores@tractoservicio.com"); 
+                    enviaCorreo("Recepción de material OT("+t_orden.getText()+")", mensaje, "hectorolivares@tractoservicio.com;alejandroflores@tractoservicio.com;jorgerios@tractoservicio.com"); 
                 }
                 t_nmovimiento.setText(alm.getIdAlmacen().toString());
                 t_fecha.setText(alm.getFecha().toLocaleString());

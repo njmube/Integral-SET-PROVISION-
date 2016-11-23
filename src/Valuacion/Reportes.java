@@ -376,7 +376,7 @@ public class Reportes extends javax.swing.JPanel {
             }
         });
 
-        c_tipo_fecha.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccione", "Ingreso", "Siniestro", "Promesa Interna", "Levantamiento", "Inicio Cotizacion", "Autorizacion del cliente", "Autorizacion interna", "Inicio de valuación", "Envio a compañia", "Autoriza Compañia", "Autoriza Valuacion", "Fecturacion", "Cierre", "" }));
+        c_tipo_fecha.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccione", "Ingreso", "Siniestro", "Promesa Interna", "Levantamiento", "Inicio Cotizacion", "Autorizacion del cliente", "Autorizacion interna", "Inicio de valuación", "Envio a compañia", "Autoriza Compañia", "Autoriza Valuacion", "Facturacion", "Cierre", " " }));
         c_tipo_fecha.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 c_tipo_fechaActionPerformed(evt);
@@ -1211,7 +1211,7 @@ public class Reportes extends javax.swing.JPanel {
                 }
                 break;
                 
-            case "Fecturacion":
+            case "Facturacion":
                 if(t_fecha1.getText().compareTo("AAAA-MM-DD")!=0)
                 {
                     if(entro==1)

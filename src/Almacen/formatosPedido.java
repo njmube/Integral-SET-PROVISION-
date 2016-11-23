@@ -382,7 +382,7 @@ public class formatosPedido {
                 reporte.contenido.roundRectangle(45, 450, 130, 1, 0);
                 reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "ENTREGA: "+almacen.getEntrego(), 45, 440, 0);
                 reporte.contenido.roundRectangle(250, 450, 130, 1, 0);
-                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "AUTORIZA: ", 250, 440, 0);
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "REVISO: ", 250, 440, 0);
                 reporte.contenido.roundRectangle(440, 450, 130, 1, 0);
                 reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "RECIBE: "+almacen.getUsuario().getEmpleado().getNombre(), 440, 440, 0);
             }
@@ -391,7 +391,7 @@ public class formatosPedido {
                 reporte.contenido.roundRectangle(45, 450, 130, 1, 0);
                 reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "ENTREGA: "+almacen.getUsuario().getEmpleado().getNombre(), 45, 440, 0);
                 reporte.contenido.roundRectangle(250, 450, 130, 1, 0);
-                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "AUTORIZA: ", 250, 440, 0);
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "REVISO: ", 250, 440, 0);
                 reporte.contenido.roundRectangle(440, 450, 130, 1, 0);
                 reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "RECIBE: "+almacen.getEntrego(), 440, 440, 0);
             }
@@ -402,7 +402,7 @@ public class formatosPedido {
                 reporte.contenido.roundRectangle(45, 30, 130, 1, 0);
                 reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "ENTREGA: "+almacen.getEntrego(), 45, 20, 0);
                 reporte.contenido.roundRectangle(250, 30, 130, 1, 0);
-                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "AUTORIZA: ", 250, 20, 0);
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "REVISO: ", 250, 20, 0);
                 reporte.contenido.roundRectangle(440, 30, 130, 1, 0);
                 reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "RECIBE: "+almacen.getUsuario().getEmpleado().getNombre(), 440, 20, 0);
             }
@@ -411,7 +411,7 @@ public class formatosPedido {
                 reporte.contenido.roundRectangle(45, 30, 130, 1, 0);
                 reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "ENTREGA: "+almacen.getUsuario().getEmpleado().getNombre(), 45, 20, 0);
                 reporte.contenido.roundRectangle(250, 30, 130, 1, 0);
-                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "AUTORIZA: ", 250, 20, 0);
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "REVISO: ", 250, 20, 0);
                 reporte.contenido.roundRectangle(440, 30, 130, 1, 0);
                 reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "RECIBE: "+almacen.getEntrego(), 440, 20, 0);
             }
