@@ -150,5 +150,11 @@
             </key>
             <one-to-many class="Hibernate.entidades.PagoAdicional" />
         </set>
+        <set name="almacens" table="almacen" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_empleado" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Almacen" />
+        </set>
     </class>
 </hibernate-mapping>

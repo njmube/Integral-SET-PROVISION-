@@ -46,6 +46,9 @@ public class altaUsuario extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        cb_consulta_muestra = new javax.swing.JCheckBox();
+        cb_cancela_muestra = new javax.swing.JCheckBox();
+        cb_movimiento_muestra = new javax.swing.JCheckBox();
         panel_top = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         t_usuario = new javax.swing.JTextField();
@@ -110,6 +113,8 @@ public class altaUsuario extends javax.swing.JPanel {
         cb_reportes = new javax.swing.JCheckBox();
         cb_consulta_valuacion = new javax.swing.JCheckBox();
         cb_dd = new javax.swing.JCheckBox();
+        cb_consulta_consumible = new javax.swing.JCheckBox();
+        cb_edita_consumible = new javax.swing.JCheckBox();
         panel_cotizacion = new javax.swing.JPanel();
         cb_edita_cotizacion = new javax.swing.JCheckBox();
         cb_cerrar_cotizacion = new javax.swing.JCheckBox();
@@ -153,6 +158,8 @@ public class altaUsuario extends javax.swing.JPanel {
         cb_editar_ejemplar = new javax.swing.JCheckBox();
         cb_consultar_proveedores = new javax.swing.JCheckBox();
         cb_editar_proveedores = new javax.swing.JCheckBox();
+        cb_generar_ciclo = new javax.swing.JCheckBox();
+        cb_editar_ciclo = new javax.swing.JCheckBox();
         panel_administracion = new javax.swing.JPanel();
         cb_usuarios = new javax.swing.JCheckBox();
         cb_periodos = new javax.swing.JCheckBox();
@@ -164,18 +171,24 @@ public class altaUsuario extends javax.swing.JPanel {
         cb_movimiento_almacen = new javax.swing.JCheckBox();
         cb_consulta_almacen = new javax.swing.JCheckBox();
         cb_cancela_movimiento = new javax.swing.JCheckBox();
-        cb_movimiento_muestra = new javax.swing.JCheckBox();
-        cb_consulta_muestra = new javax.swing.JCheckBox();
         cb_autoriza_entregas = new javax.swing.JCheckBox();
-        cb_cancela_muestra = new javax.swing.JCheckBox();
         cb_herramienta = new javax.swing.JCheckBox();
         cb_responsiva = new javax.swing.JCheckBox();
         jPanel2 = new javax.swing.JPanel();
-        cb_generar_ciclo = new javax.swing.JCheckBox();
-        cb_editar_ciclo = new javax.swing.JCheckBox();
+        cb_consultar_sm = new javax.swing.JCheckBox();
+        cb_editar_sm = new javax.swing.JCheckBox();
         jPanel3 = new javax.swing.JPanel();
         cb_s_consultar = new javax.swing.JCheckBox();
         cb_s_editar = new javax.swing.JCheckBox();
+
+        cb_consulta_muestra.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        cb_consulta_muestra.setText("Consulta muestras");
+
+        cb_cancela_muestra.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        cb_cancela_muestra.setText("Cancela muestras");
+
+        cb_movimiento_muestra.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        cb_movimiento_muestra.setText("Movimientos muestras");
 
         setBackground(new java.awt.Color(255, 255, 255));
         setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(90, 66, 126), 1, true), "Registro de Usuarios Nuevos", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Arial", 1, 12))); // NOI18N
@@ -358,7 +371,7 @@ public class altaUsuario extends javax.swing.JPanel {
                     .addComponent(cb_establecer_metas)
                     .addComponent(cb_consultar_agenda)
                     .addComponent(cb_editar_agenda))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(44, Short.MAX_VALUE))
         );
         panel_serviciosLayout.setVerticalGroup(
             panel_serviciosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -517,7 +530,7 @@ public class altaUsuario extends javax.swing.JPanel {
                     .addComponent(cb_partidas_complementarias)
                     .addComponent(cb_partidas_adicionales)
                     .addComponent(cb_edita_levantamiento))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(23, Short.MAX_VALUE))
         );
         panel_levantamientoLayout.setVerticalGroup(
             panel_levantamientoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -599,6 +612,17 @@ public class altaUsuario extends javax.swing.JPanel {
         cb_dd.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         cb_dd.setText("Deducible y D.");
 
+        cb_consulta_consumible.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        cb_consulta_consumible.setText("Consulta PresupuestoConsumible");
+
+        cb_edita_consumible.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        cb_edita_consumible.setText("Edita Presupuesto Consumible");
+        cb_edita_consumible.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cb_edita_consumibleActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panel_valuacionLayout = new javax.swing.GroupLayout(panel_valuacion);
         panel_valuacion.setLayout(panel_valuacionLayout);
         panel_valuacionLayout.setHorizontalGroup(
@@ -613,8 +637,9 @@ public class altaUsuario extends javax.swing.JPanel {
                     .addComponent(cb_edita_cantidad_autorizada)
                     .addComponent(cb_edita_cosoto_autorizado)
                     .addComponent(cb_edita_autorizar_partida)
-                    .addComponent(cb_consulta_valuacion))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(cb_consulta_valuacion)
+                    .addComponent(cb_consulta_consumible))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 2, Short.MAX_VALUE)
                 .addGroup(panel_valuacionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(cb_edita_autorizar_compra)
                     .addComponent(cb_edita_tipo_surtido)
@@ -629,7 +654,8 @@ public class altaUsuario extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(panel_valuacionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(cb_edita_abrir_val)
-                            .addComponent(cb_dd))))
+                            .addComponent(cb_dd)))
+                    .addComponent(cb_edita_consumible))
                 .addContainerGap())
         );
         panel_valuacionLayout.setVerticalGroup(
@@ -672,6 +698,10 @@ public class altaUsuario extends javax.swing.JPanel {
                         .addComponent(cb_edita_cosoto_autorizado)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cb_edita_autorizar_partida)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panel_valuacionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cb_consulta_consumible)
+                    .addComponent(cb_edita_consumible))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -806,7 +836,7 @@ public class altaUsuario extends javax.swing.JPanel {
                     .addComponent(cb_cerrar_compras)
                     .addComponent(cb_autorizar_costos)
                     .addComponent(cb_edita_costo))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(41, Short.MAX_VALUE))
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -900,6 +930,17 @@ public class altaUsuario extends javax.swing.JPanel {
         cb_editar_proveedores.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         cb_editar_proveedores.setText("Editar Proveedores");
 
+        cb_generar_ciclo.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        cb_generar_ciclo.setText("Generar Ciclos");
+
+        cb_editar_ciclo.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        cb_editar_ciclo.setText("Editar Ciclos");
+        cb_editar_ciclo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cb_editar_cicloActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panel_catalogosLayout = new javax.swing.GroupLayout(panel_catalogos);
         panel_catalogos.setLayout(panel_catalogosLayout);
         panel_catalogosLayout.setHorizontalGroup(
@@ -917,28 +958,25 @@ public class altaUsuario extends javax.swing.JPanel {
                     .addComponent(cb_editar_empleados))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panel_catalogosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panel_catalogosLayout.createSequentialGroup()
-                        .addGroup(panel_catalogosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cb_editar_reparacion)
-                            .addComponent(cb_consultar_reparacion))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(panel_catalogosLayout.createSequentialGroup()
-                        .addGroup(panel_catalogosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cb_consultar_estatus)
-                            .addComponent(cb_editar_estatus)
-                            .addComponent(cb_consultar_marcas)
-                            .addComponent(cb_editar_marcas)
-                            .addComponent(cb_editar_puestos)
-                            .addComponent(cb_consultar_puestos))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(panel_catalogosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cb_editar_ejemplar)
-                            .addComponent(cb_consultar_ejemplar)
-                            .addComponent(cb_editar_unidades)
-                            .addComponent(cb_consultar_unidades)
-                            .addComponent(cb_editar_proveedores)
-                            .addComponent(cb_consultar_proveedores))
-                        .addGap(47, 47, 47))))
+                    .addComponent(cb_consultar_estatus)
+                    .addComponent(cb_editar_estatus)
+                    .addComponent(cb_consultar_marcas)
+                    .addComponent(cb_editar_marcas)
+                    .addComponent(cb_editar_puestos)
+                    .addComponent(cb_consultar_puestos)
+                    .addComponent(cb_editar_reparacion)
+                    .addComponent(cb_consultar_reparacion))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(panel_catalogosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cb_editar_ejemplar)
+                    .addComponent(cb_consultar_ejemplar)
+                    .addComponent(cb_editar_unidades)
+                    .addComponent(cb_consultar_unidades)
+                    .addComponent(cb_editar_proveedores)
+                    .addComponent(cb_consultar_proveedores)
+                    .addComponent(cb_generar_ciclo)
+                    .addComponent(cb_editar_ciclo))
+                .addGap(47, 47, 47))
         );
         panel_catalogosLayout.setVerticalGroup(
             panel_catalogosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -991,7 +1029,11 @@ public class altaUsuario extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cb_consultar_proveedores)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cb_editar_proveedores)))
+                        .addComponent(cb_editar_proveedores)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(cb_generar_ciclo)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cb_editar_ciclo)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -1061,17 +1103,8 @@ public class altaUsuario extends javax.swing.JPanel {
         cb_cancela_movimiento.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         cb_cancela_movimiento.setText("Cancela Movimientos");
 
-        cb_movimiento_muestra.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
-        cb_movimiento_muestra.setText("Movimientos muestras");
-
-        cb_consulta_muestra.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
-        cb_consulta_muestra.setText("Consulta muestras");
-
         cb_autoriza_entregas.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         cb_autoriza_entregas.setText("Autoriza Entrega");
-
-        cb_cancela_muestra.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
-        cb_cancela_muestra.setText("Cancela muestras");
 
         cb_herramienta.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         cb_herramienta.setText("Herramienta");
@@ -1086,59 +1119,47 @@ public class altaUsuario extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cb_movimiento_almacen)
-                    .addComponent(cb_consulta_almacen)
-                    .addComponent(cb_cancela_movimiento))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cb_movimiento_muestra)
-                    .addComponent(cb_consulta_muestra)
-                    .addComponent(cb_cancela_muestra))
-                .addGap(18, 18, 18)
+                    .addComponent(cb_cancela_movimiento)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(cb_movimiento_almacen)
+                        .addComponent(cb_consulta_almacen)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(cb_autoriza_entregas)
                     .addComponent(cb_responsiva)
                     .addComponent(cb_herramienta))
-                .addContainerGap(60, Short.MAX_VALUE))
+                .addGap(53, 53, 53))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(cb_movimiento_almacen)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(cb_consulta_almacen))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(cb_herramienta)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(cb_responsiva)))
+                        .addComponent(cb_movimiento_almacen)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(cb_cancela_movimiento)
-                                .addComponent(cb_cancela_muestra))
-                            .addComponent(cb_autoriza_entregas)))
+                        .addComponent(cb_consulta_almacen))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(cb_movimiento_muestra)
+                        .addComponent(cb_herramienta)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cb_consulta_muestra)))
+                        .addComponent(cb_responsiva)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cb_cancela_movimiento)
+                    .addComponent(cb_autoriza_entregas))
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
         jPanel2.setBackground(new java.awt.Color(254, 254, 254));
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "Ciclos", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial", 1, 11))); // NOI18N
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "SM Logistics", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial", 1, 11))); // NOI18N
 
-        cb_generar_ciclo.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
-        cb_generar_ciclo.setText("Generar ");
+        cb_consultar_sm.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        cb_consultar_sm.setText("Consultar");
 
-        cb_editar_ciclo.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
-        cb_editar_ciclo.setText("Editar");
-        cb_editar_ciclo.addActionListener(new java.awt.event.ActionListener() {
+        cb_editar_sm.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        cb_editar_sm.setText("Editar");
+        cb_editar_sm.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cb_editar_cicloActionPerformed(evt);
+                cb_editar_smActionPerformed(evt);
             }
         });
 
@@ -1147,17 +1168,18 @@ public class altaUsuario extends javax.swing.JPanel {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cb_generar_ciclo)
-                    .addComponent(cb_editar_ciclo)))
+                    .addComponent(cb_consultar_sm)
+                    .addComponent(cb_editar_sm))
+                .addContainerGap(73, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(cb_generar_ciclo)
+                .addComponent(cb_consultar_sm)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cb_editar_ciclo)
+                .addComponent(cb_editar_sm)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -1184,7 +1206,7 @@ public class altaUsuario extends javax.swing.JPanel {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(cb_s_consultar)
                     .addComponent(cb_s_editar))
-                .addContainerGap(94, Short.MAX_VALUE))
+                .addContainerGap(61, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1211,18 +1233,16 @@ public class altaUsuario extends javax.swing.JPanel {
                             .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(panel_inventarios, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(panel_multimedia, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGap(6, 6, 6)
+                        .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(contenedorLayout.createSequentialGroup()
-                                .addGap(6, 6, 6)
                                 .addComponent(panel_levantamiento, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(panel_valuacion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(contenedorLayout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(panel_catalogos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(panel_catalogos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(contenedorLayout.createSequentialGroup()
                         .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1272,7 +1292,7 @@ public class altaUsuario extends javax.swing.JPanel {
         h=new Herramientas(usr, 0);
         h.session(sessionPrograma);
 
-        buscaEmpleado obj = new buscaEmpleado(new javax.swing.JFrame(), true, usr, sessionPrograma);
+        buscaEmpleado obj = new buscaEmpleado(new javax.swing.JFrame(), true, usr, sessionPrograma, false);
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
         obj.setVisible(true);
@@ -1423,6 +1443,10 @@ public class altaUsuario extends javax.swing.JPanel {
                                     this.cb_s_editar.isSelected(),
                                     this.cb_herramienta.isSelected(),
                                     this.cb_responsiva.isSelected(),
+                                    this.cb_consultar_sm.isSelected(),
+                                    this.cb_editar_sm.isSelected(),
+                                    this.cb_consulta_consumible.isSelected(),
+                                    this.cb_edita_consumible.isSelected(),
             /*aqui van los HashSet*/null,
                                     null,
                                     null,
@@ -1527,6 +1551,14 @@ public class altaUsuario extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_cb_s_editarActionPerformed
 
+    private void cb_editar_smActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_editar_smActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cb_editar_smActionPerformed
+
+    private void cb_edita_consumibleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_edita_consumibleActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cb_edita_consumibleActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton b_buscar_empleado;
@@ -1553,6 +1585,7 @@ public class altaUsuario extends javax.swing.JPanel {
     private javax.swing.JCheckBox cb_configuracion;
     private javax.swing.JCheckBox cb_consulta_almacen;
     private javax.swing.JCheckBox cb_consulta_comentarios;
+    private javax.swing.JCheckBox cb_consulta_consumible;
     private javax.swing.JCheckBox cb_consulta_documentos;
     private javax.swing.JCheckBox cb_consulta_formatos;
     private javax.swing.JCheckBox cb_consulta_galeria;
@@ -1573,6 +1606,7 @@ public class altaUsuario extends javax.swing.JPanel {
     private javax.swing.JCheckBox cb_consultar_proveedores;
     private javax.swing.JCheckBox cb_consultar_puestos;
     private javax.swing.JCheckBox cb_consultar_reparacion;
+    private javax.swing.JCheckBox cb_consultar_sm;
     private javax.swing.JCheckBox cb_consultar_unidades;
     private javax.swing.JCheckBox cb_dd;
     private javax.swing.JCheckBox cb_edita_abrir_val;
@@ -1583,6 +1617,7 @@ public class altaUsuario extends javax.swing.JPanel {
     private javax.swing.JCheckBox cb_edita_cliente;
     private javax.swing.JCheckBox cb_edita_codigo;
     private javax.swing.JCheckBox cb_edita_comentarios;
+    private javax.swing.JCheckBox cb_edita_consumible;
     private javax.swing.JCheckBox cb_edita_cosoto_autorizado;
     private javax.swing.JCheckBox cb_edita_costo;
     private javax.swing.JCheckBox cb_edita_cotizacion;
@@ -1611,6 +1646,7 @@ public class altaUsuario extends javax.swing.JPanel {
     private javax.swing.JCheckBox cb_editar_proveedores;
     private javax.swing.JCheckBox cb_editar_puestos;
     private javax.swing.JCheckBox cb_editar_reparacion;
+    private javax.swing.JCheckBox cb_editar_sm;
     private javax.swing.JCheckBox cb_editar_unidades;
     private javax.swing.JCheckBox cb_elimina_pedido;
     private javax.swing.JCheckBox cb_enviar_contabilidad;

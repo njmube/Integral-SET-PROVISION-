@@ -819,7 +819,7 @@ public class ResponsablesOP extends javax.swing.JPanel {
     private void b_buscarhActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_buscarhActionPerformed
         h=new Herramientas(usr, 0);
         h.session(sessionPrograma);
-        buscaEmpleado obj = new buscaEmpleado(new javax.swing.JFrame(), true, usr, this.sessionPrograma);
+        buscaEmpleado obj = new buscaEmpleado(new javax.swing.JFrame(), true, usr, this.sessionPrograma, false);
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
         obj.setVisible(true);
@@ -852,7 +852,7 @@ public class ResponsablesOP extends javax.swing.JPanel {
     private void b_buscarmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_buscarmActionPerformed
         h=new Herramientas(usr, 0);
         h.session(sessionPrograma);
-        buscaEmpleado obj = new buscaEmpleado(new javax.swing.JFrame(), true, usr, this.sessionPrograma);
+        buscaEmpleado obj = new buscaEmpleado(new javax.swing.JFrame(), true, usr, this.sessionPrograma, false);
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
         obj.setVisible(true);
@@ -899,7 +899,7 @@ public class ResponsablesOP extends javax.swing.JPanel {
     private void b_buscarsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_buscarsActionPerformed
         h=new Herramientas(usr, 0);
         h.session(sessionPrograma);
-        buscaEmpleado obj = new buscaEmpleado(new javax.swing.JFrame(), true, usr, this.sessionPrograma);
+        buscaEmpleado obj = new buscaEmpleado(new javax.swing.JFrame(), true, usr, this.sessionPrograma, false);
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
         obj.setVisible(true);
@@ -918,7 +918,7 @@ public class ResponsablesOP extends javax.swing.JPanel {
     private void b_buscareActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_buscareActionPerformed
         h=new Herramientas(usr, 0);
         h.session(sessionPrograma);
-        buscaEmpleado obj = new buscaEmpleado(new javax.swing.JFrame(), true, usr, this.sessionPrograma);
+        buscaEmpleado obj = new buscaEmpleado(new javax.swing.JFrame(), true, usr, this.sessionPrograma, false);
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
         obj.setVisible(true);
@@ -1039,7 +1039,7 @@ public class ResponsablesOP extends javax.swing.JPanel {
         // TODO add your handling code here:
         h=new Herramientas(usr, 0);
         h.session(sessionPrograma);
-        buscaEmpleado obj = new buscaEmpleado(new javax.swing.JFrame(), true, usr, this.sessionPrograma);
+        buscaEmpleado obj = new buscaEmpleado(new javax.swing.JFrame(), true, usr, this.sessionPrograma, false);
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
         obj.setVisible(true);

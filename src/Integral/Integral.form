@@ -853,6 +853,52 @@
                     </Menu>
                   </SubComponents>
                 </Menu>
+                <Menu class="javax.swing.JMenu" name="m_edita_ciclo1">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Ajustador"/>
+                  </Properties>
+                  <SubComponents>
+                    <MenuItem class="javax.swing.JMenuItem" name="jMenuItem56">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Consulta"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem56ActionPerformed"/>
+                      </Events>
+                    </MenuItem>
+                    <MenuItem class="javax.swing.JMenuItem" name="jMenuItem57">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Edita"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem57ActionPerformed"/>
+                      </Events>
+                    </MenuItem>
+                  </SubComponents>
+                </Menu>
+                <Menu class="javax.swing.JMenu" name="m_edita_ciclo2">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Agente"/>
+                  </Properties>
+                  <SubComponents>
+                    <MenuItem class="javax.swing.JMenuItem" name="jMenuItem58">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Consulta"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem58ActionPerformed"/>
+                      </Events>
+                    </MenuItem>
+                    <MenuItem class="javax.swing.JMenuItem" name="jMenuItem59">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Edita"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem59ActionPerformed"/>
+                      </Events>
+                    </MenuItem>
+                  </SubComponents>
+                </Menu>
               </SubComponents>
             </Menu>
             <Menu class="javax.swing.JMenu" name="jMenu9">

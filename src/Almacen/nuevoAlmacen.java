@@ -1530,6 +1530,7 @@ public class nuevoAlmacen extends javax.swing.JPanel {
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
         obj.setVisible(true);
+        t_er.setText("");
         orden_act=obj.getReturnStatus();
         try
         {
@@ -1712,7 +1713,7 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                         }
                         else
                         {
-                            JOptionPane.showMessageDialog(null, "Ingresa el nombre del que entrego/recibio");
+                            JOptionPane.showMessageDialog(null, "Ingresa el nombre de quien "+l_er);
                             t_er.requestFocus();
                         }
                     }
@@ -2296,6 +2297,7 @@ public class nuevoAlmacen extends javax.swing.JPanel {
         h= new Herramientas(usr, menu);
         h.desbloqueaOrden();
         h.desbloqueaPedido();
+        t_er.setEnabled(true);
         c_tmovimiento.setSelectedItem("Entrada");
         c_toperacion.setSelectedItem("Pedido");
         jButton1.setBackground(Color.RED);
@@ -2315,6 +2317,7 @@ public class nuevoAlmacen extends javax.swing.JPanel {
         h= new Herramientas(usr, menu);
         h.desbloqueaOrden();
         h.desbloqueaPedido();
+        t_er.setEnabled(true);
         c_tmovimiento.setSelectedItem("Salida");
         c_toperacion.setSelectedItem("Pedido");
         jButton2.setBackground(Color.RED);
@@ -2334,6 +2337,7 @@ public class nuevoAlmacen extends javax.swing.JPanel {
         h= new Herramientas(usr, menu);
         h.desbloqueaOrden();
         h.desbloqueaPedido();
+        t_er.setEnabled(true);
         c_tmovimiento.setSelectedItem("Entrada");
         c_toperacion.setSelectedItem("Compañía");
         jButton3.setBackground(Color.RED);
@@ -2353,6 +2357,8 @@ public class nuevoAlmacen extends javax.swing.JPanel {
         h= new Herramientas(usr, menu);
         h.desbloqueaOrden();
         h.desbloqueaPedido();
+        t_er.setEnabled(true);
+        t_er.setEnabled(true);
         c_tmovimiento.setSelectedItem("Salida");
         c_toperacion.setSelectedItem("Compañía");
         jButton4.setBackground(Color.RED);
@@ -2372,6 +2378,7 @@ public class nuevoAlmacen extends javax.swing.JPanel {
         h= new Herramientas(usr, menu);
         h.desbloqueaOrden();
         h.desbloqueaPedido();
+        t_er.setEnabled(true);
         c_tmovimiento.setSelectedItem("Salida");
         c_toperacion.setSelectedItem("Operarios");
         jButton5.setBackground(Color.RED);
@@ -2391,6 +2398,7 @@ public class nuevoAlmacen extends javax.swing.JPanel {
         h= new Herramientas(usr, menu);
         h.desbloqueaOrden();
         h.desbloqueaPedido();
+        t_er.setEnabled(true);
         c_tmovimiento.setSelectedItem("Entrada");
         c_toperacion.setSelectedItem("Operarios");
         jButton6.setBackground(Color.RED);
@@ -2410,6 +2418,7 @@ public class nuevoAlmacen extends javax.swing.JPanel {
         h= new Herramientas(usr, menu);
         h.desbloqueaOrden();
         h.desbloqueaPedido();
+        t_er.setEnabled(true);
         c_tmovimiento.setSelectedItem("Salida");
         c_toperacion.setSelectedItem("Venta");
         jButton7.setBackground(Color.RED);
@@ -2429,6 +2438,7 @@ public class nuevoAlmacen extends javax.swing.JPanel {
         h= new Herramientas(usr, menu);
         h.desbloqueaOrden();
         h.desbloqueaPedido();
+        t_er.setEnabled(true);
         c_tmovimiento.setSelectedItem("Entrada");
         c_toperacion.setSelectedItem("Venta");
         jButton8.setBackground(Color.RED);
@@ -2456,6 +2466,7 @@ public class nuevoAlmacen extends javax.swing.JPanel {
         h= new Herramientas(usr, menu);
         h.desbloqueaOrden();
         h.desbloqueaPedido();
+        t_er.setEnabled(false);
         c_tmovimiento.setSelectedItem("Entrada");
         c_toperacion.setSelectedItem("Inventario");
         cb_sin_orden.setSelected(false);
@@ -2477,6 +2488,7 @@ public class nuevoAlmacen extends javax.swing.JPanel {
         h= new Herramientas(usr, menu);
         h.desbloqueaOrden();
         h.desbloqueaPedido();
+        t_er.setEnabled(false);
         c_tmovimiento.setSelectedItem("Salida");
         c_toperacion.setSelectedItem("Inventario");
         cb_sin_orden.setSelected(false);
@@ -2495,6 +2507,7 @@ public class nuevoAlmacen extends javax.swing.JPanel {
 
     private void cb_sin_ordenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_sin_ordenActionPerformed
         // TODO add your handling code here:
+        t_er.setText("");
         orden_act=null;
         t_orden.setText("");
         t_tipo.setText("");
@@ -2553,7 +2566,7 @@ public class nuevoAlmacen extends javax.swing.JPanel {
             usr = (Usuario)session.get(Usuario.class, usr.getIdUsuario());
             if(usr.getConsultaEmpleados()==true || usr.getEditaEmpleados()==true)
             {
-                buscaEmpleado obj = new buscaEmpleado(new javax.swing.JFrame(), true, usr, this.sessionPrograma);
+                buscaEmpleado obj = new buscaEmpleado(new javax.swing.JFrame(), true, usr, this.sessionPrograma, false);
                 Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
                 obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
                 obj.setVisible(true);
@@ -4743,7 +4756,7 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                                       "</tr>";
                     }
                     mensaje+="</table><p>"+t_notas.getText()+"</p> <p>Saludos. </p>";
-                    enviaCorreo("Recepción de material OT("+t_orden.getText()+")", mensaje, "hectorolivares@tractoservicio.com;alejandroflores@tractoservicio.com;jorgerios@tractoservicio.com"); 
+                    enviaCorreo("Recepción de material OT("+t_orden.getText()+")", mensaje, "hectorolivares@tractoservicio.com;alejandroflores@tractoservicio.com;jorgerios@tractoservicio.com;r.sanchez@imperia.mx;servicio.especializado.toluca@gmail.com"); 
                 }
                 t_nmovimiento.setText(alm.getIdAlmacen().toString());
                 t_fecha.setText(alm.getFecha().toLocaleString());

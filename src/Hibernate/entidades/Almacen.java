@@ -14,8 +14,10 @@ public class Almacen  implements java.io.Serializable {
 
      private Integer idAlmacen;
      private Usuario usuario;
+     private Destajo destajo;
      private Pedido pedido;
      private Orden orden;
+     private Empleado empleado;
      private String entrego;
      private Date fecha;
      private int tipoMovimiento;
@@ -24,6 +26,7 @@ public class Almacen  implements java.io.Serializable {
      private String notas;
      private String autorizo;
      private String tipoDocumento;
+     private String especialidad;
      private Set movimientos = new HashSet(0);
 
     public Almacen() {
@@ -37,8 +40,10 @@ public class Almacen  implements java.io.Serializable {
         this.tipoMovimiento = tipoMovimiento;
         this.operacion = operacion;
     }
-    public Almacen(Usuario usuario, Pedido pedido, String entrego, Date fecha, int tipoMovimiento, int operacion, String documento, String notas, String autorizo, String tipoDocumento, Orden orden, Set movimientos) {
+    //public Almacen(Usuario usuario, Pedido pedido, String entrego, Date fecha, int tipoMovimiento, int operacion, String documento, String notas, String autorizo, String tipoDocumento, Orden orden, Set movimientos) {
+    public Almacen(Usuario usuario, Destajo destajo, Pedido pedido, Orden orden, Empleado empleado, String entrego, Date fecha, int tipoMovimiento, int operacion, String documento, String notas, String autorizo, String tipoDocumento, String especialidad, Set movimientos) {
        this.usuario = usuario;
+       this.destajo = destajo;
        this.pedido = pedido;
        this.entrego = entrego;
        this.fecha = fecha;
@@ -48,7 +53,9 @@ public class Almacen  implements java.io.Serializable {
        this.notas = notas;
        this.autorizo = autorizo;
        this.orden = orden;
+       this.empleado = empleado;
        this.tipoDocumento = tipoDocumento;
+       this.especialidad = especialidad;
        this.movimientos = movimientos;
     }
    
@@ -66,6 +73,13 @@ public class Almacen  implements java.io.Serializable {
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
+    public Destajo getDestajo() {
+        return this.destajo;
+    }
+    
+    public void setDestajo(Destajo destajo) {
+        this.destajo = destajo;
+    }
     public Pedido getPedido() {
         return this.pedido;
     }
@@ -81,7 +95,13 @@ public class Almacen  implements java.io.Serializable {
     public void setOrden(Orden orden) {
         this.orden = orden;
     }
+    public Empleado getEmpleado() {
+        return this.empleado;
+    }
     
+    public void setEmpleado(Empleado empleado) {
+        this.empleado = empleado;
+    }
     public String getEntrego() {
         return this.entrego;
     }
@@ -140,6 +160,13 @@ public class Almacen  implements java.io.Serializable {
         this.tipoDocumento = tipoDocumento;
     }
     
+    public String getEspecialidad() {
+        return this.especialidad;
+    }
+    
+    public void setEspecialidad(String especialidad) {
+        this.especialidad = especialidad;
+    }
     public Set getMovimientos() {
         return this.movimientos;
     }

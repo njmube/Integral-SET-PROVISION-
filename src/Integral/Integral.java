@@ -6,6 +6,10 @@
 
 package Integral;
 
+import Agente.buscaAgentes;
+import Agente.editaAgente;
+import Ajustador.buscaAjustadores;
+import Ajustador.editaAjustador;
 import Almacen.Existencias;
 import Almacen.Reporte2;
 import Almacen.Responsiva;
@@ -20,7 +24,6 @@ import Compania.NuevaCompania;
 import Compania.buscaCompania;
 import Compania.editaCompania;
 import Compras.EliminaPedido;
-import Compras.agregaFactura;
 import Compras.buscaPedido;
 import Compras.consultaPedido;
 import Compras.editaPedido;
@@ -195,6 +198,9 @@ public class Integral extends javax.swing.JFrame {
     static Tiempo tiempo=new Tiempo();
     private String periodo;
     String ruta="";
+    
+    private editaAjustador eAjustador;
+    private editaAgente eAgente;
     
     public Integral() {
         
@@ -492,6 +498,12 @@ public class Integral extends javax.swing.JFrame {
         jMenu12 = new javax.swing.JMenu();
         m_consultar_concepto = new javax.swing.JMenuItem();
         m_editar_concepto = new javax.swing.JMenuItem();
+        m_edita_ciclo1 = new javax.swing.JMenu();
+        jMenuItem56 = new javax.swing.JMenuItem();
+        jMenuItem57 = new javax.swing.JMenuItem();
+        m_edita_ciclo2 = new javax.swing.JMenu();
+        jMenuItem58 = new javax.swing.JMenuItem();
+        jMenuItem59 = new javax.swing.JMenuItem();
         jMenu9 = new javax.swing.JMenu();
         jMenuItem5 = new javax.swing.JMenuItem();
         jMenuItem12 = new javax.swing.JMenuItem();
@@ -1374,6 +1386,46 @@ public class Integral extends javax.swing.JFrame {
 
         m_catalogos.add(jMenu15);
 
+        m_edita_ciclo1.setText("Ajustador");
+
+        jMenuItem56.setText("Consulta");
+        jMenuItem56.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem56ActionPerformed(evt);
+            }
+        });
+        m_edita_ciclo1.add(jMenuItem56);
+
+        jMenuItem57.setText("Edita");
+        jMenuItem57.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem57ActionPerformed(evt);
+            }
+        });
+        m_edita_ciclo1.add(jMenuItem57);
+
+        m_catalogos.add(m_edita_ciclo1);
+
+        m_edita_ciclo2.setText("Agente");
+
+        jMenuItem58.setText("Consulta");
+        jMenuItem58.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem58ActionPerformed(evt);
+            }
+        });
+        m_edita_ciclo2.add(jMenuItem58);
+
+        jMenuItem59.setText("Edita");
+        jMenuItem59.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem59ActionPerformed(evt);
+            }
+        });
+        m_edita_ciclo2.add(jMenuItem59);
+
+        m_catalogos.add(m_edita_ciclo2);
+
         m_administracion.add(m_catalogos);
 
         jMenu9.setText("Usuarios");
@@ -1687,7 +1739,7 @@ public class Integral extends javax.swing.JFrame {
             actor = (Usuario)session.get(Usuario.class, actor.getIdUsuario());
             if(actor.getConsultaEmpleados()==true || actor.getEditaEmpleados()==true)
             {
-                buscaEmpleado obj = new buscaEmpleado(new javax.swing.JFrame(), true, actor, this.sessionPrograma);
+                buscaEmpleado obj = new buscaEmpleado(new javax.swing.JFrame(), true, actor, this.sessionPrograma, true);
                 Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
                 obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
                 obj.setVisible(true);
@@ -5305,6 +5357,201 @@ public class Integral extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jCheckBoxMenuItem2ActionPerformed
 
+    private void jMenuItem56ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem56ActionPerformed
+        // TODO add your handling code here:
+        h.menu=0;
+        h.session(sessionPrograma);
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try
+        {
+            session.beginTransaction().begin();
+            actor = (Usuario)session.get(Usuario.class, actor.getIdUsuario());
+                buscaAjustadores obj = new buscaAjustadores(new javax.swing.JFrame(), true, sessionPrograma, actor);
+                obj.t_busca.requestFocus();
+                Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+                obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
+                obj.setVisible(true);
+                List orden_act=obj.getReturnStatus();
+
+                if (orden_act!=null)
+                {
+                    pos=-1;
+                    for(int a=0; a<P_pestana.getTabCount(); a++)
+                    {
+                        if(P_pestana.getTitleAt(a)=="Edita Ajustador")
+                        pos=a;
+                    }
+                    if(pos>=0)
+                    {
+                        P_pestana.setSelectedIndex(pos);
+                    }
+                    else
+                    {
+                        eAjustador = new editaAjustador(actor, sessionPrograma);
+                        PanelPestanas btc=new PanelPestanas(P_pestana,-1, actor);
+                        P_pestana.addTab("Edita Ajustador", eAjustador);
+                        P_pestana.setSelectedComponent(eAjustador);
+                        P_pestana.setTabComponentAt(P_pestana.getSelectedIndex(), btc);
+                        eAjustador.t_ajustador.requestFocus();
+                    }
+                    eAjustador.borra_cajas();
+                    eAjustador.cajas(true, true, true, true);
+                    eAjustador.t_ajustador.setText(""+orden_act.get(0));
+                    eAjustador.t_descripcion.setText(""+orden_act.get(1));
+                }
+        }catch(Exception e)
+        {
+            System.out.println(e);
+        }
+        if(session!=null)
+        if(session.isOpen())
+        session.close();
+
+    }//GEN-LAST:event_jMenuItem56ActionPerformed
+
+    private void jMenuItem57ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem57ActionPerformed
+        // TODO add your handling code here:
+        h.menu=0;
+        h.session(sessionPrograma);
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try
+        {
+            session.beginTransaction().begin();
+            actor = (Usuario)session.get(Usuario.class, actor.getIdUsuario());
+            if(actor.getEditaEmpleados()==true)
+            {
+                pos=-1;
+                for(int a=0; a<P_pestana.getTabCount(); a++)
+                {
+                    if(P_pestana.getTitleAt(a)=="E. Ajustador")
+                    pos=a;
+                }
+                if(pos>=0)
+                {
+                    P_pestana.setSelectedIndex(pos);
+                    eAjustador.t_ajustador.requestFocus();
+                }
+                else
+                {
+                    eAjustador = new editaAjustador(actor,sessionPrograma);
+                    PanelPestanas btc=new PanelPestanas(P_pestana,-1, actor);
+                    P_pestana.addTab("E. Ajustador", eAjustador);
+                    P_pestana.setSelectedComponent(eAjustador);
+                    P_pestana.setTabComponentAt(P_pestana.getSelectedIndex(), btc);
+                    eAjustador.t_ajustador.requestFocus();
+                    eAjustador.cajas(false, false, false, false);
+                }
+            }
+            else
+            {
+                JOptionPane.showMessageDialog(null, "¡Acceso denegado!");
+            }
+        }catch(Exception e)
+        {
+            System.out.println(e);
+        }
+        if(session!=null)
+        if(session.isOpen())
+        session.close();
+    }//GEN-LAST:event_jMenuItem57ActionPerformed
+
+    private void jMenuItem58ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem58ActionPerformed
+        // TODO add your handling code here:
+        h.menu=0;
+        h.session(sessionPrograma);
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try
+        {
+            session.beginTransaction().begin();
+            actor = (Usuario)session.get(Usuario.class, actor.getIdUsuario());
+                buscaAgentes obj = new buscaAgentes(new javax.swing.JFrame(), true, sessionPrograma, actor);
+                obj.t_busca.requestFocus();
+                Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+                obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
+                obj.setVisible(true);
+                List orden_act=obj.getReturnStatus();
+
+                if (orden_act!=null)
+                {
+                    pos=-1;
+                    for(int a=0; a<P_pestana.getTabCount(); a++)
+                    {
+                        if(P_pestana.getTitleAt(a)=="Edita Agente")
+                        pos=a;
+                    }
+                    if(pos>=0)
+                    {
+                        P_pestana.setSelectedIndex(pos);
+                    }
+                    else
+                    {
+                        eAgente = new editaAgente(actor, sessionPrograma);
+                        PanelPestanas btc=new PanelPestanas(P_pestana,-1, actor);
+                        P_pestana.addTab("Edita Agente", eAgente);
+                        P_pestana.setSelectedComponent(eAgente);
+                        P_pestana.setTabComponentAt(P_pestana.getSelectedIndex(), btc);
+                        eAgente.t_agente.requestFocus();
+                    }
+                    eAjustador.borra_cajas();
+                    eAjustador.cajas(true, true, true, true);
+                    eAjustador.t_ajustador.setText(""+orden_act.get(0));
+                    eAjustador.t_descripcion.setText(""+orden_act.get(1));
+                }
+        }catch(Exception e)
+        {
+            System.out.println(e);
+        }
+        if(session!=null)
+        if(session.isOpen())
+        session.close();
+    }//GEN-LAST:event_jMenuItem58ActionPerformed
+
+    private void jMenuItem59ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem59ActionPerformed
+        // TODO add your handling code here:
+        h.menu=0;
+        h.session(sessionPrograma);
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try
+        {
+            session.beginTransaction().begin();
+            actor = (Usuario)session.get(Usuario.class, actor.getIdUsuario());
+            if(actor.getEditaEmpleados()==true)
+            {
+                pos=-1;
+                for(int a=0; a<P_pestana.getTabCount(); a++)
+                {
+                    if(P_pestana.getTitleAt(a)=="E. Agente")
+                    pos=a;
+                }
+                if(pos>=0)
+                {
+                    P_pestana.setSelectedIndex(pos);
+                    eAjustador.t_ajustador.requestFocus();
+                }
+                else
+                {
+                    eAgente = new editaAgente(actor,sessionPrograma);
+                    PanelPestanas btc=new PanelPestanas(P_pestana,-1, actor);
+                    P_pestana.addTab("E. Agente", eAgente);
+                    P_pestana.setSelectedComponent(eAgente);
+                    P_pestana.setTabComponentAt(P_pestana.getSelectedIndex(), btc);
+                    eAgente.t_agente.requestFocus();
+                    eAjustador.cajas(false, false, false, false);
+                }
+            }
+            else
+            {
+                JOptionPane.showMessageDialog(null, "¡Acceso denegado!");
+            }
+        }catch(Exception e)
+        {
+            System.out.println(e);
+        }
+        if(session!=null)
+        if(session.isOpen())
+        session.close();
+    }//GEN-LAST:event_jMenuItem59ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -5427,6 +5674,10 @@ public class Integral extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem53;
     private javax.swing.JMenuItem jMenuItem54;
     private javax.swing.JMenuItem jMenuItem55;
+    private javax.swing.JMenuItem jMenuItem56;
+    private javax.swing.JMenuItem jMenuItem57;
+    private javax.swing.JMenuItem jMenuItem58;
+    private javax.swing.JMenuItem jMenuItem59;
     private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JMenuItem jMenuItem8;
@@ -5450,6 +5701,8 @@ public class Integral extends javax.swing.JFrame {
     private javax.swing.JMenuItem m_consultar_reparacion;
     private javax.swing.JMenuItem m_consultar_tipo;
     private javax.swing.JMenu m_edita_ciclo;
+    private javax.swing.JMenu m_edita_ciclo1;
+    private javax.swing.JMenu m_edita_ciclo2;
     private javax.swing.JMenuItem m_edita_clientes;
     private javax.swing.JMenuItem m_editar_articulo;
     private javax.swing.JMenuItem m_editar_articulo1;

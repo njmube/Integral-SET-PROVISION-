@@ -119,6 +119,10 @@ public class Usuario  implements java.io.Serializable {
      private Boolean consultaTaller;
      private Boolean herramienta;
      private Boolean responsiva;
+     private Boolean consultaSm;
+     private Boolean editaSm;
+     private Boolean consultaConsumible;
+     private Boolean editaConsumible;
      private Set pedidosForAutorizo = new HashSet(0);
      private Set ordensForREntregarAsigno = new HashSet(0);
      private Set ordensForRLevantamientoAsigno = new HashSet(0);
@@ -163,7 +167,7 @@ public class Usuario  implements java.io.Serializable {
     public Usuario(String idUsuario) {
         this.idUsuario = idUsuario;
     }
-    public Usuario(String idUsuario, Empleado empleado, String clave, String session, Boolean aperturaOrden, Boolean editarAperturaOrden, Boolean crearClientes, Boolean modificarClientes, Boolean consultarSeguimiento, Boolean altaSeguimiento, Boolean verFechaCliente, Boolean altaMetas, Boolean consultaGaleria, Boolean editaGaleria, Boolean consultaDocumentos, Boolean editaDocumentos, Boolean consultaFormatos, Boolean consultaObservaciones, Boolean editaObservaciones, Boolean consultaAgenda, Boolean editaAgenda, Boolean consultaLevantamiento, Boolean ordinariaLevantamiento, Boolean enlazadaLevantamiento, Boolean carrarLevantamiento, Boolean abrirLevantamiento, Boolean editarLevantamiento, Boolean complementariaLevantamiento, Boolean adicionalLevantamiento, Boolean AValuacionLevantamiento, Boolean consultaEmpleados, Boolean editaEmpleados, Boolean consultaCompania, Boolean editaCompania, Boolean consultaCatalogo, Boolean editaCatalogo, Boolean consultaMecanico, Boolean editaMecanico, Boolean consultaEstatus, Boolean editaEstatus, Boolean consultaMarca, Boolean editaMarca, Boolean consultaPuestos, Boolean editaPuestos, Boolean consultaReparacion, Boolean editaReparacion, Boolean consultaTipo, Boolean editaTipo, Boolean consultaInventario, Boolean editaInventario, Boolean editaPeriodo, Boolean editaUsuario, Boolean editaCierre, Boolean respaldar, Boolean restaurar, Boolean editaHoras, Boolean editaCodigo, Boolean editaPrecioCu, Boolean editaPorcentaje, Boolean editaCantAut, Boolean editaCostoAut, Boolean editaAutorizaPartida, Boolean editaAutorizaCompra, Boolean editaTipoSustido, Boolean editaRefPresupuesto, Boolean editaRefAutorizadoDirecto, Boolean editaMoPresupuestada, Boolean editaMoDirecta, Boolean cerrarValuacion, Boolean abrirValuacion, Boolean editarCotizaciones, Boolean cerrarCotizaciones, Boolean abrirCotizaciones, Boolean reportes, Boolean generaPedidos, Boolean editaPedidos, Boolean reportesPedidos, Boolean consultaPedidos, Boolean eliminaPedidos, Boolean autorizarPedidos, Boolean cerrarCompras, Boolean autorizarSobrecosto, Boolean consultaValuacion, Boolean editaDd, Boolean consultarEjemplar, Boolean editarEjemplar, Boolean consultarProveedores, Boolean editarProveedores, Boolean configuracion, Boolean enviarConta, Boolean cancelarEnvio, Boolean generarFactura, Boolean autorizarFactura, Boolean cancelarFactura, Boolean autorizaEntregas, Boolean movimientoAlmacen, Boolean consultaMovimientoAlmacen, Boolean cancelaMovimientoAlmacen, Boolean mivimientoMuestra, Boolean consultaMuestra, Boolean cancelaMuestra, Boolean generarCiclo, Boolean editarCiclo, Boolean editaPrecioAutorizado, Boolean editaTaller, Boolean consultaTaller, Boolean herramienta, Boolean responsiva, Set pedidosForAutorizo, Set ordensForREntregarAsigno, Set ordensForRLevantamientoAsigno, Set ordensForAutorizaClienteAsigno, Set cotizacionsForIdUsuario, Set ordensForRValuacionCierreAsigno, Set mensajes, Set cotizacionsForAutorizo, Set destajos, Set pedidosForIdUsuario, Set almacens, Set notasForGenero, Set ordensForRCotizaAsigno, Set pedidosForAutorizo2, Set ordensForRExpedienteAsigno, Set ordensForBloqueada, Set ordensForAutorizaCompaniaAsigno, Set partidas, Set ordensForIdModificado, Set ordensForRRefaccionesAsigno, Set pedidosForBloqueado, Set correos, Set ordensForRFactura, Set facturasForAutorizo, Set perdidases, Set ordensForIdUserApertura, Set facturasForGenero, Set ordensForEnvioCompaniaAsigno, Set configuracions, Set ordensForRCierre, Set notasForAutorizo, Set ordensForRAutorizacionInternaAsigno, Set ordensForRValuacionAsigno, Set ordensForRReparacionInicioAsigno, Set partidasForMecanico, Set partidaExternasForMecanico) {
+    public Usuario(String idUsuario, Empleado empleado, String clave, String session, Boolean aperturaOrden, Boolean editarAperturaOrden, Boolean crearClientes, Boolean modificarClientes, Boolean consultarSeguimiento, Boolean altaSeguimiento, Boolean verFechaCliente, Boolean altaMetas, Boolean consultaGaleria, Boolean editaGaleria, Boolean consultaDocumentos, Boolean editaDocumentos, Boolean consultaFormatos, Boolean consultaObservaciones, Boolean editaObservaciones, Boolean consultaAgenda, Boolean editaAgenda, Boolean consultaLevantamiento, Boolean ordinariaLevantamiento, Boolean enlazadaLevantamiento, Boolean carrarLevantamiento, Boolean abrirLevantamiento, Boolean editarLevantamiento, Boolean complementariaLevantamiento, Boolean adicionalLevantamiento, Boolean AValuacionLevantamiento, Boolean consultaEmpleados, Boolean editaEmpleados, Boolean consultaCompania, Boolean editaCompania, Boolean consultaCatalogo, Boolean editaCatalogo, Boolean consultaMecanico, Boolean editaMecanico, Boolean consultaEstatus, Boolean editaEstatus, Boolean consultaMarca, Boolean editaMarca, Boolean consultaPuestos, Boolean editaPuestos, Boolean consultaReparacion, Boolean editaReparacion, Boolean consultaTipo, Boolean editaTipo, Boolean consultaInventario, Boolean editaInventario, Boolean editaPeriodo, Boolean editaUsuario, Boolean editaCierre, Boolean respaldar, Boolean restaurar, Boolean editaHoras, Boolean editaCodigo, Boolean editaPrecioCu, Boolean editaPorcentaje, Boolean editaCantAut, Boolean editaCostoAut, Boolean editaAutorizaPartida, Boolean editaAutorizaCompra, Boolean editaTipoSustido, Boolean editaRefPresupuesto, Boolean editaRefAutorizadoDirecto, Boolean editaMoPresupuestada, Boolean editaMoDirecta, Boolean cerrarValuacion, Boolean abrirValuacion, Boolean editarCotizaciones, Boolean cerrarCotizaciones, Boolean abrirCotizaciones, Boolean reportes, Boolean generaPedidos, Boolean editaPedidos, Boolean reportesPedidos, Boolean consultaPedidos, Boolean eliminaPedidos, Boolean autorizarPedidos, Boolean cerrarCompras, Boolean autorizarSobrecosto, Boolean consultaValuacion, Boolean editaDd, Boolean consultarEjemplar, Boolean editarEjemplar, Boolean consultarProveedores, Boolean editarProveedores, Boolean configuracion, Boolean enviarConta, Boolean cancelarEnvio, Boolean generarFactura, Boolean autorizarFactura, Boolean cancelarFactura, Boolean autorizaEntregas, Boolean movimientoAlmacen, Boolean consultaMovimientoAlmacen, Boolean cancelaMovimientoAlmacen, Boolean mivimientoMuestra, Boolean consultaMuestra, Boolean cancelaMuestra, Boolean generarCiclo, Boolean editarCiclo, Boolean editaPrecioAutorizado, Boolean editaTaller, Boolean consultaTaller, Boolean herramienta, Boolean responsiva, Boolean consultaSm, Boolean editaSm, Boolean consultaConsumible, Boolean editaConsumible, Set pedidosForAutorizo, Set ordensForREntregarAsigno, Set ordensForRLevantamientoAsigno, Set ordensForAutorizaClienteAsigno, Set cotizacionsForIdUsuario, Set ordensForRValuacionCierreAsigno, Set mensajes, Set cotizacionsForAutorizo, Set destajos, Set pedidosForIdUsuario, Set almacens, Set notasForGenero, Set ordensForRCotizaAsigno, Set pedidosForAutorizo2, Set ordensForRExpedienteAsigno, Set ordensForBloqueada, Set ordensForAutorizaCompaniaAsigno, Set partidas, Set ordensForIdModificado, Set ordensForRRefaccionesAsigno, Set pedidosForBloqueado, Set correos, Set ordensForRFactura, Set facturasForAutorizo, Set perdidases, Set ordensForIdUserApertura, Set facturasForGenero, Set ordensForEnvioCompaniaAsigno, Set configuracions, Set ordensForRCierre, Set notasForAutorizo, Set ordensForRAutorizacionInternaAsigno, Set ordensForRValuacionAsigno, Set ordensForRReparacionInicioAsigno, Set partidasForMecanico, Set partidaExternasForMecanico) {
        this.idUsuario = idUsuario;
        this.empleado = empleado;
        this.clave = clave;
@@ -308,6 +312,10 @@ public class Usuario  implements java.io.Serializable {
        this.partidaExternasForMecanico = partidaExternasForMecanico;
        this.herramienta = herramienta;
        this.responsiva = responsiva;
+       this.editaSm = editaSm;
+       this.consultaSm = consultaSm; 
+       this.consultaConsumible = consultaConsumible;
+       this.editaConsumible =editaConsumible;
     }
    
     public String getIdUsuario() {
@@ -1049,6 +1057,38 @@ public class Usuario  implements java.io.Serializable {
     
     public Boolean getEditaPrecioAutorizado() {
         return this.editaPrecioAutorizado;
+    }
+    
+    public void setEditaSm(Boolean editaSm) {
+        this.editaSm = editaSm;
+    }
+    
+    public Boolean getEditaSm() {
+        return this.editaSm;
+    }
+    
+    public void setConsultaSm(Boolean consultaSm) {
+        this.consultaSm = consultaSm;
+    }
+    
+    public Boolean getConsultaSm() {
+        return this.consultaSm;
+    }
+    
+    public void setConsultaConsumible(Boolean consultaConsumible) {
+        this.consultaConsumible = consultaConsumible;
+    }
+    
+    public Boolean getConsultaConsumible() {
+        return this.consultaConsumible;
+    }
+    
+    public void setEditaConsumible(Boolean editaConsumible) {
+        this.editaConsumible = editaConsumible;
+    }
+    
+    public Boolean getEditaConsumible() {
+        return this.editaConsumible;
     }
     
     public void setEditaPrecioAutorizado(Boolean editaPrecioAutorizado) {

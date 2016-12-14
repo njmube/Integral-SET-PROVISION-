@@ -86,6 +86,9 @@
         <property name="numeroExterior" type="string">
             <column name="numero_exterior" length="10" />
         </property>
+        <property name="formatoPago" type="string">
+            <column name="formato_pago" length="20" />
+        </property>
         <set name="ordenExternas" table="ordenExterna" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="id_compania" />

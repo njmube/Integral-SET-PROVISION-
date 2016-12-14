@@ -363,6 +363,12 @@
         <property name="responsiva" type="java.lang.Boolean">
             <column name="responsiva" />
         </property>
+        <property name="consultaSm" type="java.lang.Boolean">
+            <column name="consulta_sm" />
+        </property>
+        <property name="editaSm" type="java.lang.Boolean">
+            <column name="edita_sm" />
+        </property>
         <set name="pedidosForAutorizo" table="pedido" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="autorizo" length="10">

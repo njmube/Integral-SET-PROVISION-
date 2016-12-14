@@ -114,6 +114,8 @@ public class editaUsuario extends javax.swing.JPanel {
         cb_reportes = new javax.swing.JCheckBox();
         cb_consulta_valuacion = new javax.swing.JCheckBox();
         cb_dd = new javax.swing.JCheckBox();
+        cb_consulta_consumible = new javax.swing.JCheckBox();
+        cb_edita_consumible = new javax.swing.JCheckBox();
         panel_cotizacion = new javax.swing.JPanel();
         cb_edita_cotizacion = new javax.swing.JCheckBox();
         cb_cerrar_cotizacion = new javax.swing.JCheckBox();
@@ -157,6 +159,8 @@ public class editaUsuario extends javax.swing.JPanel {
         cb_editar_ejemplar = new javax.swing.JCheckBox();
         cb_consultar_proveedores = new javax.swing.JCheckBox();
         cb_editar_proveedores = new javax.swing.JCheckBox();
+        cb_generar_ciclo = new javax.swing.JCheckBox();
+        cb_editar_ciclo = new javax.swing.JCheckBox();
         jPanel1 = new javax.swing.JPanel();
         cb_movimiento_almacen = new javax.swing.JCheckBox();
         cb_consulta_almacen = new javax.swing.JCheckBox();
@@ -168,8 +172,8 @@ public class editaUsuario extends javax.swing.JPanel {
         cb_herramienta = new javax.swing.JCheckBox();
         cb_responsiva = new javax.swing.JCheckBox();
         jPanel2 = new javax.swing.JPanel();
-        cb_generar_ciclo = new javax.swing.JCheckBox();
-        cb_editar_ciclo = new javax.swing.JCheckBox();
+        cb_consultar_sm = new javax.swing.JCheckBox();
+        cb_editar_sm = new javax.swing.JCheckBox();
         panel_administracion = new javax.swing.JPanel();
         cb_usuarios = new javax.swing.JCheckBox();
         cb_periodos = new javax.swing.JCheckBox();
@@ -281,7 +285,7 @@ public class editaUsuario extends javax.swing.JPanel {
                 .addComponent(b_buscar_empleado, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(l_nombre_empleado)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 229, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 251, Short.MAX_VALUE)
                 .addComponent(b_cancelar1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(b_guardar1)
@@ -600,6 +604,12 @@ public class editaUsuario extends javax.swing.JPanel {
         cb_dd.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         cb_dd.setText("Deducible y D.");
 
+        cb_consulta_consumible.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        cb_consulta_consumible.setText("Consulta PresupuestoConsumible");
+
+        cb_edita_consumible.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        cb_edita_consumible.setText("Edita Presupuesto Consumible");
+
         javax.swing.GroupLayout panel_valuacionLayout = new javax.swing.GroupLayout(panel_valuacion);
         panel_valuacion.setLayout(panel_valuacionLayout);
         panel_valuacionLayout.setHorizontalGroup(
@@ -614,8 +624,9 @@ public class editaUsuario extends javax.swing.JPanel {
                     .addComponent(cb_edita_cantidad_autorizada)
                     .addComponent(cb_edita_cosoto_autorizado)
                     .addComponent(cb_edita_autorizar_partida)
-                    .addComponent(cb_consulta_valuacion))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(cb_consulta_valuacion)
+                    .addComponent(cb_consulta_consumible))
+                .addGap(26, 26, 26)
                 .addGroup(panel_valuacionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(cb_edita_autorizar_compra)
                     .addComponent(cb_edita_tipo_surtido)
@@ -630,8 +641,11 @@ public class editaUsuario extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(panel_valuacionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(cb_edita_abrir_val)
-                            .addComponent(cb_dd))))
-                .addContainerGap())
+                            .addComponent(cb_dd)))
+                    .addGroup(panel_valuacionLayout.createSequentialGroup()
+                        .addGap(3, 3, 3)
+                        .addComponent(cb_edita_consumible)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panel_valuacionLayout.setVerticalGroup(
             panel_valuacionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -673,6 +687,10 @@ public class editaUsuario extends javax.swing.JPanel {
                         .addComponent(cb_edita_cosoto_autorizado)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cb_edita_autorizar_partida)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panel_valuacionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cb_consulta_consumible)
+                    .addComponent(cb_edita_consumible))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -901,6 +919,17 @@ public class editaUsuario extends javax.swing.JPanel {
         cb_editar_proveedores.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         cb_editar_proveedores.setText("Editar Proveedores");
 
+        cb_generar_ciclo.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        cb_generar_ciclo.setText("Generar Ciclos");
+
+        cb_editar_ciclo.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        cb_editar_ciclo.setText("Editar Ciclos");
+        cb_editar_ciclo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cb_editar_cicloActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panel_catalogosLayout = new javax.swing.GroupLayout(panel_catalogos);
         panel_catalogos.setLayout(panel_catalogosLayout);
         panel_catalogosLayout.setHorizontalGroup(
@@ -918,28 +947,25 @@ public class editaUsuario extends javax.swing.JPanel {
                     .addComponent(cb_editar_empleados))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panel_catalogosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panel_catalogosLayout.createSequentialGroup()
-                        .addGroup(panel_catalogosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cb_editar_reparacion)
-                            .addComponent(cb_consultar_reparacion))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(panel_catalogosLayout.createSequentialGroup()
-                        .addGroup(panel_catalogosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cb_consultar_estatus)
-                            .addComponent(cb_editar_estatus)
-                            .addComponent(cb_consultar_marcas)
-                            .addComponent(cb_editar_marcas)
-                            .addComponent(cb_editar_puestos)
-                            .addComponent(cb_consultar_puestos))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(panel_catalogosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cb_editar_ejemplar)
-                            .addComponent(cb_consultar_ejemplar)
-                            .addComponent(cb_editar_unidades)
-                            .addComponent(cb_consultar_unidades)
-                            .addComponent(cb_editar_proveedores)
-                            .addComponent(cb_consultar_proveedores))
-                        .addGap(47, 47, 47))))
+                    .addComponent(cb_consultar_estatus)
+                    .addComponent(cb_editar_estatus)
+                    .addComponent(cb_consultar_marcas)
+                    .addComponent(cb_editar_marcas)
+                    .addComponent(cb_editar_puestos)
+                    .addComponent(cb_consultar_puestos)
+                    .addComponent(cb_editar_reparacion)
+                    .addComponent(cb_consultar_reparacion))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(panel_catalogosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cb_editar_ejemplar)
+                    .addComponent(cb_consultar_ejemplar)
+                    .addComponent(cb_editar_unidades)
+                    .addComponent(cb_consultar_unidades)
+                    .addComponent(cb_editar_proveedores)
+                    .addComponent(cb_consultar_proveedores)
+                    .addComponent(cb_generar_ciclo)
+                    .addComponent(cb_editar_ciclo))
+                .addGap(47, 47, 47))
         );
         panel_catalogosLayout.setVerticalGroup(
             panel_catalogosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -992,7 +1018,11 @@ public class editaUsuario extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cb_consultar_proveedores)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cb_editar_proveedores)))
+                        .addComponent(cb_editar_proveedores)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cb_generar_ciclo)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cb_editar_ciclo)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -1046,7 +1076,7 @@ public class editaUsuario extends javax.swing.JPanel {
                     .addComponent(cb_responsiva)
                     .addComponent(cb_autoriza_entregas)
                     .addComponent(cb_herramienta))
-                .addContainerGap(83, Short.MAX_VALUE))
+                .addContainerGap(99, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1071,16 +1101,16 @@ public class editaUsuario extends javax.swing.JPanel {
         );
 
         jPanel2.setBackground(new java.awt.Color(254, 254, 254));
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "Ciclos", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial", 1, 11))); // NOI18N
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "SM Logistics", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial", 1, 11))); // NOI18N
 
-        cb_generar_ciclo.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
-        cb_generar_ciclo.setText("Generar ");
+        cb_consultar_sm.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        cb_consultar_sm.setText("Consultar");
 
-        cb_editar_ciclo.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
-        cb_editar_ciclo.setText("Editar");
-        cb_editar_ciclo.addActionListener(new java.awt.event.ActionListener() {
+        cb_editar_sm.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        cb_editar_sm.setText("Editar");
+        cb_editar_sm.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cb_editar_cicloActionPerformed(evt);
+                cb_editar_smActionPerformed(evt);
             }
         });
 
@@ -1091,16 +1121,16 @@ public class editaUsuario extends javax.swing.JPanel {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cb_generar_ciclo)
-                    .addComponent(cb_editar_ciclo))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(cb_consultar_sm)
+                    .addComponent(cb_editar_sm))
+                .addContainerGap(47, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(cb_generar_ciclo)
+                .addComponent(cb_consultar_sm)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cb_editar_ciclo)
+                .addComponent(cb_editar_sm)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -1181,7 +1211,7 @@ public class editaUsuario extends javax.swing.JPanel {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(cb_s_consultar)
                     .addComponent(cb_s_editar))
-                .addContainerGap(86, Short.MAX_VALUE))
+                .addContainerGap(47, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1236,7 +1266,7 @@ public class editaUsuario extends javax.swing.JPanel {
                     .addGroup(contenedorLayout.createSequentialGroup()
                         .addComponent(panel_multimedia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(panel_inventarios, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                        .addComponent(panel_inventarios, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(panel_levantamiento, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(panel_valuacion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1263,7 +1293,7 @@ public class editaUsuario extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(panel_top, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(panel_centro)
+            .addComponent(panel_centro, javax.swing.GroupLayout.DEFAULT_SIZE, 1038, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1288,7 +1318,7 @@ public class editaUsuario extends javax.swing.JPanel {
         h=new Herramientas(usr, 0);
         h.session(sessionPrograma);
 
-        buscaEmpleado obj = new buscaEmpleado(new javax.swing.JFrame(), true, usr, sessionPrograma);
+        buscaEmpleado obj = new buscaEmpleado(new javax.swing.JFrame(), true, usr, sessionPrograma, false);
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
         obj.setVisible(true);
@@ -1446,6 +1476,12 @@ public class editaUsuario extends javax.swing.JPanel {
                             usr_edit.setConsultaTaller(this.cb_s_consultar.isSelected());
                             usr_edit.setEditaTaller(this.cb_s_editar.isSelected());
                             
+                            usr_edit.setConsultaSm(this.cb_consultar_sm.isSelected());
+                            usr_edit.setEditaSm(this.cb_consultar_sm.isSelected());
+                            
+                            usr_edit.setConsultaConsumible(this.cb_consulta_consumible.isSelected());
+                            usr_edit.setEditaConsumible(this.cb_edita_consumible.isSelected());
+                            
                             session.update(usr_edit);
                             Query query= session.createQuery("update Usuario obj set obj.idUsuario='"+this.t_usuario.getText()+"' where obj.idUsuario='"+usr_edit.getIdUsuario()+"'");
                             query.executeUpdate();
@@ -1511,6 +1547,10 @@ public class editaUsuario extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_cb_s_editarActionPerformed
 
+    private void cb_editar_smActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_editar_smActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cb_editar_smActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton b_buscar_empleado;
@@ -1537,6 +1577,7 @@ public class editaUsuario extends javax.swing.JPanel {
     private javax.swing.JCheckBox cb_configuracion;
     private javax.swing.JCheckBox cb_consulta_almacen;
     private javax.swing.JCheckBox cb_consulta_comentarios;
+    private javax.swing.JCheckBox cb_consulta_consumible;
     private javax.swing.JCheckBox cb_consulta_documentos;
     private javax.swing.JCheckBox cb_consulta_formatos;
     private javax.swing.JCheckBox cb_consulta_galeria;
@@ -1557,6 +1598,7 @@ public class editaUsuario extends javax.swing.JPanel {
     private javax.swing.JCheckBox cb_consultar_proveedores;
     private javax.swing.JCheckBox cb_consultar_puestos;
     private javax.swing.JCheckBox cb_consultar_reparacion;
+    private javax.swing.JCheckBox cb_consultar_sm;
     private javax.swing.JCheckBox cb_consultar_unidades;
     private javax.swing.JCheckBox cb_dd;
     private javax.swing.JCheckBox cb_edita_abrir_val;
@@ -1567,6 +1609,7 @@ public class editaUsuario extends javax.swing.JPanel {
     private javax.swing.JCheckBox cb_edita_cliente;
     private javax.swing.JCheckBox cb_edita_codigo;
     private javax.swing.JCheckBox cb_edita_comentarios;
+    private javax.swing.JCheckBox cb_edita_consumible;
     private javax.swing.JCheckBox cb_edita_cosoto_autorizado;
     private javax.swing.JCheckBox cb_edita_costo;
     private javax.swing.JCheckBox cb_edita_cotizacion;
@@ -1595,6 +1638,7 @@ public class editaUsuario extends javax.swing.JPanel {
     private javax.swing.JCheckBox cb_editar_proveedores;
     private javax.swing.JCheckBox cb_editar_puestos;
     private javax.swing.JCheckBox cb_editar_reparacion;
+    private javax.swing.JCheckBox cb_editar_sm;
     private javax.swing.JCheckBox cb_editar_unidades;
     private javax.swing.JCheckBox cb_elimina_pedido;
     private javax.swing.JCheckBox cb_enviar_contabilidad;
@@ -1771,6 +1815,10 @@ public class editaUsuario extends javax.swing.JPanel {
                     
                     this.cb_generar_ciclo.setSelected(usr_edit.getGenerarCiclo());
                     this.cb_editar_ciclo.setSelected(usr_edit.getEditarCiclo());
+                    
+                    this.cb_consultar_sm.setSelected(usr_edit.getConsultaSm());
+                    this.cb_editar_sm.setSelected(usr_edit.getEditaSm());
+                    
                     this.edo_cajas(true);
                 }
                 else

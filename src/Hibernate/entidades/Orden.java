@@ -123,6 +123,23 @@ public class Orden  implements java.io.Serializable {
      private Date suspensionLimite;
      private Date electricoLimite;
      private Date pinturaLimite;
+     private Ajustador ajustador;
+     private Agente agente;
+     private String inventario;
+     private String desgaste;
+     private String pago;
+     private String entrega;
+     private String idSm;
+     private Double PHojalateria;
+     private Double PMecanica;
+     private Double PSuspension;
+     private Double PElectrico;
+     private Double PPintura;
+     private Boolean DHojalateria;
+     private Boolean DMecanica;
+     private Boolean DSuspension;
+     private Boolean DElectrico;
+     private Boolean DPintura;
      private Set archivos = new HashSet(0);
      private Set partidasForEnlazada = new HashSet(0);
      private Set notas = new HashSet(0);
@@ -149,7 +166,7 @@ public class Orden  implements java.io.Serializable {
         this.clientes = clientes;
         this.fecha = fecha;
     }
-    public Orden(int idOrden, Usuario usuarioByREntregarAsigno, Reparacion reparacion, Usuario usuarioByIdModificado, Marca marca, Usuario usuarioByRAutorizacionInternaAsigno, Compania compania, Usuario usuarioByRCierre, Estatus estatus, Usuario usuarioByIdUserApertura, Empleado empleadoByRMecanica, Usuario usuarioByRElectricoAsigno, Usuario usuarioByRValuacionCierreAsigno, Usuario usuarioByAutorizaCompaniaAsigno, Usuario usuarioByRLevantamientoAsigno, Usuario usuarioByRExpedienteAsigno, Usuario usuarioByRRefaccionesAsigno, Empleado empleadoByRRefacciones, Usuario usuarioByRCotizaAsigno, Empleado empleadoByRElectrico, Tipo tipo, Empleado empleadoByRValuacion, Empleado empleadoByRHojalateria, Empleado empleadoByRCotiza, Empleado empleadoByRLevantamiento, Usuario usuarioByAutorizaClienteAsigno, Usuario usuarioByEnvioCompaniaAsigno, Clientes clientes, Usuario usuarioByRHojalateriaAsigno, Usuario usuarioByRFactura, Usuario usuarioByRSuspensionAsigno, Usuario usuarioByBloqueada, Usuario usuarioByRMecanicaAsigno, Empleado empleadoByRSuspension, Usuario usuarioByRValuacionAsigno, Usuario usuarioByRReparacionInicioAsigno, Empleado empleadoByRExpediente, Ciclo ciclo, Date fecha, Date hora, String siniestro, String poliza, String noReporte, Date fechaSiniestro, String inciso, String noMotor, String noPlacas, Integer modelo, String noSerie, String noEconomico, Double deducible, Double demerito, String tipoCliente, Date fechaEstatus, Date fechaTaller, Date fechaCliente, Date RExpedienteFecha, Date RLevantamientoInicio, Date RLevantamientoCierre, Date RCotizaInicio, Date RCotizaCierre, Date autorizaCliente, Date RAutorizacionInterna, Date RValuacionInicio, Date envioCompania, Date autorizaCompania, Date RValuacionCierre, Date metaValuacion, Date inicioRefacciones, Date cierreRefacciones, Date metaRefacciones, Date RReparacionInicio, Date RHojalateriaFecha, Date RMecanicaFecha, Date RSuspensionFecha, Date RElectricoFecha, Date RReparacionCierre, Date metaReparacion, Date REntregarFecha, Integer noFactura, Date fehaFectura, Date fechaCierre, Integer idObservacion, String session, String ventana, Double refPresupuesto, Double refAutorizadas, Double moPresupuestada, Double moDirecta, Boolean autorizadoFacturar, String color, String propietario, String codigoAsegurado, String tipoVehiculo, String contratante, String Km, double vales, Empleado empleadoByRPintura, Date RPinturaFecha, Usuario usuarioByRPinturaAsigno, Double importeHojalateria, Double importeMecanica, Double importeSuspension, Double importeElectrico, Double importePintura, Date hojalateriaLimite, Date mecanicaLimite, Date suspensionLimite, Date electricoLimite, Date pinturaLimite, Empleado empleadoByRTecnico, Set archivos, Set partidasForEnlazada, Set notas, Set adicionaleses, Set agendas, Set destajos, Set pagoAdicional, Set inventarios, Set facturas, Set fotos, Set mensajes, Set partidasForIdOrden, Set pedidos) {
+    public Orden(int idOrden, Usuario usuarioByREntregarAsigno, Reparacion reparacion, Usuario usuarioByIdModificado, Marca marca, Usuario usuarioByRAutorizacionInternaAsigno, Compania compania, Usuario usuarioByRCierre, Estatus estatus, Usuario usuarioByIdUserApertura, Empleado empleadoByRMecanica, Usuario usuarioByRElectricoAsigno, Usuario usuarioByRValuacionCierreAsigno, Usuario usuarioByAutorizaCompaniaAsigno, Usuario usuarioByRLevantamientoAsigno, Usuario usuarioByRExpedienteAsigno, Usuario usuarioByRRefaccionesAsigno, Empleado empleadoByRRefacciones, Usuario usuarioByRCotizaAsigno, Empleado empleadoByRElectrico, Tipo tipo, Empleado empleadoByRValuacion, Empleado empleadoByRHojalateria, Empleado empleadoByRCotiza, Empleado empleadoByRLevantamiento, Usuario usuarioByAutorizaClienteAsigno, Usuario usuarioByEnvioCompaniaAsigno, Clientes clientes, Usuario usuarioByRHojalateriaAsigno, Usuario usuarioByRFactura, Usuario usuarioByRSuspensionAsigno, Usuario usuarioByBloqueada, Usuario usuarioByRMecanicaAsigno, Empleado empleadoByRSuspension, Usuario usuarioByRValuacionAsigno, Usuario usuarioByRReparacionInicioAsigno, Empleado empleadoByRExpediente, Ciclo ciclo, Date fecha, Date hora, String siniestro, String poliza, String noReporte, Date fechaSiniestro, String inciso, String noMotor, String noPlacas, Integer modelo, String noSerie, String noEconomico, Double deducible, Double demerito, String tipoCliente, Date fechaEstatus, Date fechaTaller, Date fechaCliente, Date RExpedienteFecha, Date RLevantamientoInicio, Date RLevantamientoCierre, Date RCotizaInicio, Date RCotizaCierre, Date autorizaCliente, Date RAutorizacionInterna, Date RValuacionInicio, Date envioCompania, Date autorizaCompania, Date RValuacionCierre, Date metaValuacion, Date inicioRefacciones, Date cierreRefacciones, Date metaRefacciones, Date RReparacionInicio, Date RHojalateriaFecha, Date RMecanicaFecha, Date RSuspensionFecha, Date RElectricoFecha, Date RReparacionCierre, Date metaReparacion, Date REntregarFecha, Integer noFactura, Date fehaFectura, Date fechaCierre, Integer idObservacion, String session, String ventana, Double refPresupuesto, Double refAutorizadas, Double moPresupuestada, Double moDirecta, Boolean autorizadoFacturar, String color, String propietario, String codigoAsegurado, String tipoVehiculo, String contratante, String Km, double vales, Empleado empleadoByRPintura, Date RPinturaFecha, Usuario usuarioByRPinturaAsigno, Double importeHojalateria, Double importeMecanica, Double importeSuspension, Double importeElectrico, Double importePintura, Date hojalateriaLimite, Date mecanicaLimite, Date suspensionLimite, Date electricoLimite, Date pinturaLimite, Empleado empleadoByRTecnico, String inventario, String desgaste, String pago, String entrega, Ajustador ajustador, Agente agente, String idSm, Double PHojalateria, Double PMecanica, Double PSuspension, Double PElectrico, Double PPintura, Boolean DHojalateria, Boolean DMecanica, Boolean DSuspension, Boolean DElectrico, Boolean DPintura, Set archivos, Set partidasForEnlazada, Set notas, Set adicionaleses, Set agendas, Set destajos, Set pagoAdicional, Set inventarios, Set facturas, Set fotos, Set mensajes, Set partidasForIdOrden, Set pedidos) {
        this.idOrden = idOrden;
        this.usuarioByREntregarAsigno = usuarioByREntregarAsigno;
        this.reparacion = reparacion;
@@ -261,6 +278,23 @@ public class Orden  implements java.io.Serializable {
        this.electricoLimite=electricoLimite;
        this.pinturaLimite=pinturaLimite;
        this.empleadoByRTecnico=empleadoByRTecnico;
+       this.inventario=inventario;
+       this.desgaste=desgaste;
+       this.pago=pago;
+       this.entrega=entrega;
+       this.ajustador = ajustador;
+       this.agente = agente;
+       this.idSm = idSm;
+       this.PHojalateria = PHojalateria;
+       this.PMecanica=PMecanica;
+       this.PSuspension=PSuspension;
+       this.PElectrico= PElectrico;
+       this.PPintura= PPintura;
+       this.DHojalateria = DHojalateria;
+       this.DMecanica = DMecanica;
+       this.DSuspension = DSuspension;
+       this.DElectrico=DElectrico;
+       this.DPintura=DPintura;
        this.archivos = archivos;
        this.partidasForEnlazada = partidasForEnlazada;
        this.notas = notas;
@@ -1208,7 +1242,135 @@ public class Orden  implements java.io.Serializable {
     {
         this.pinturaLimite=pinturaLimite;
     }
-       
+    
+    public Ajustador getAjustador() {
+        return this.ajustador;
+    }
+    
+    public void setAjustador(Ajustador ajustador) {
+        this.ajustador = ajustador;
+    }
+    
+    public Agente getAgente() {
+        return this.agente;
+    }
+    
+    public void setAgente(Agente agente) {
+        this.agente = agente;
+    }
+    
+    public String getInventario() {
+        return this.inventario;
+    }
+    
+    public void setInventario(String inventario) {
+        this.inventario = inventario;
+    }
+    
+    public String getDesgaste() {
+        return this.desgaste;
+    }
+    
+    public void setDesgaste(String desgaste) {
+        this.desgaste = desgaste;
+    }
+    
+    public String getPago() {
+        return this.pago;
+    }
+    
+    public void setPago(String pago) {
+        this.pago = pago;
+    }
+    
+    public String getEntrega() {
+        return this.entrega;
+    }
+    
+    public void setEntrega(String entrega) {
+        this.entrega = entrega;
+    }
+    
+    public String getIdSm() {
+        return this.idSm;
+    }
+    
+    public void setIdSm(String idSm) {
+        this.idSm = idSm;
+    }
+    
+    public Double getPHojalateria() {
+        return this.PHojalateria;
+    }
+    
+    public void setPHojalateria(Double PHojalateria) {
+        this.PHojalateria = PHojalateria;
+    }
+    
+    public Double getPMecanica() {
+        return this.PMecanica;
+    }
+    
+    public void setPMecanica(Double PMecanica) {
+        this.PMecanica = PMecanica;
+    }
+    public Double getPSuspension() {
+        return this.PSuspension;
+    }
+    
+    public void setPSuspension(Double PSuspension) {
+        this.PSuspension = PSuspension;
+    }
+    public Double getPElectrico() {
+        return this.PElectrico;
+    }
+    
+    public void setPElectrico(Double PElectrico) {
+        this.PElectrico = PElectrico;
+    }
+    public Double getPPintura() {
+        return this.PPintura;
+    }
+    
+    public void setPPintura(Double PPintura) {
+        this.PPintura = PPintura;
+    }
+    
+    public void setDHojalateria(Boolean DHojalateria) {
+        this.DHojalateria=DHojalateria;
+    }
+    public Boolean getDHojalateria() {
+        return this.DHojalateria;
+    }
+    
+    public Boolean getDMecanica() {
+        return this.DMecanica;
+    }
+    
+    public void setDMecanica(Boolean DMecanica) {
+        this.DMecanica = DMecanica;
+    }
+    public Boolean getDSuspension() {
+        return this.DSuspension;
+    }
+    
+    public void setDSuspension(Boolean DSuspension) {
+        this.DSuspension = DSuspension;
+    }
+    public Boolean getDElectrico() {
+        return this.DElectrico;
+    }
+    
+    public void setDElectrico(Boolean DElectrico) {
+        this.DElectrico = DElectrico;
+    }
+    public Boolean getDPintura() {
+        return this.DPintura;
+    }
+    
+    public void setDPintura(Boolean DPintura) {
+        this.DPintura = DPintura;
+    }
 }
 
 

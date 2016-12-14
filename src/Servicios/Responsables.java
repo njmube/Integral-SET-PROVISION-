@@ -1155,7 +1155,7 @@ public class Responsables extends javax.swing.JPanel {
     private void b_buscar_expedienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_buscar_expedienteActionPerformed
         h=new Herramientas(usr, 0);
         h.session(sessionPrograma);
-        buscaEmpleado obj = new buscaEmpleado(new javax.swing.JFrame(), true, usr, this.sessionPrograma);
+        buscaEmpleado obj = new buscaEmpleado(new javax.swing.JFrame(), true, usr, this.sessionPrograma, false);
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
         obj.setVisible(true);
@@ -1180,7 +1180,7 @@ public class Responsables extends javax.swing.JPanel {
         h=new Herramientas(usr, 0);
         h.session(sessionPrograma);
         
-        buscaEmpleado obj = new buscaEmpleado(new javax.swing.JFrame(), true, usr, sessionPrograma);
+        buscaEmpleado obj = new buscaEmpleado(new javax.swing.JFrame(), true, usr, sessionPrograma, false);
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
         obj.setVisible(true);
@@ -1204,7 +1204,7 @@ public class Responsables extends javax.swing.JPanel {
         h=new Herramientas(usr, 0);
         h.session(sessionPrograma);
         
-        buscaEmpleado obj = new buscaEmpleado(new javax.swing.JFrame(), true, usr, sessionPrograma);
+        buscaEmpleado obj = new buscaEmpleado(new javax.swing.JFrame(), true, usr, sessionPrograma, false);
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
         obj.setVisible(true);        
@@ -1227,7 +1227,7 @@ public class Responsables extends javax.swing.JPanel {
         h=new Herramientas(usr, 0);
         h.session(sessionPrograma);
         
-        buscaEmpleado obj = new buscaEmpleado(new javax.swing.JFrame(), true, usr, sessionPrograma);
+        buscaEmpleado obj = new buscaEmpleado(new javax.swing.JFrame(), true, usr, sessionPrograma, false);
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
         obj.setVisible(true);
@@ -1252,7 +1252,7 @@ public class Responsables extends javax.swing.JPanel {
         h=new Herramientas(usr, 0);
         h.session(sessionPrograma);
         
-        buscaEmpleado obj = new buscaEmpleado(new javax.swing.JFrame(), true, usr, sessionPrograma);
+        buscaEmpleado obj = new buscaEmpleado(new javax.swing.JFrame(), true, usr, sessionPrograma, false);
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
         obj.setVisible(true);

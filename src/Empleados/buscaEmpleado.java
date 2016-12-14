@@ -43,18 +43,22 @@ public class buscaEmpleado extends javax.swing.JDialog {
     Usuario user;
     String sessionPrograma;
     Herramientas h;
+    boolean todos=false;
     
     /** Creates new form acceso */
-    public buscaEmpleado(java.awt.Frame parent, boolean modal, Usuario u, String ses) {
+    public buscaEmpleado(java.awt.Frame parent, boolean modal, Usuario u, String ses, boolean todos) {
         super(parent, modal);
         sessionPrograma=ses;
         user=u;
         initComponents();
         getRootPane().setDefaultButton(jButton1);        
+        this.todos=todos;
         //t_datos.setModel(ModeloTablaReporte(0, columnas));
         //t_busca.requestFocus();
         t_datos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         String consulta="from Empleado em where em.nombre like '%" + t_busca.getText() +"%'";          
+        if(todos==false)
+             consulta +=" and em.puestos.nombre!='BAJA'";
         List <Object[]> resultList=executeHQLQuery(consulta);
         
     }
@@ -295,7 +299,9 @@ public class buscaEmpleado extends javax.swing.JDialog {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void t_buscaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_buscaKeyReleased
-         String consulta="from Empleado em where em.nombre like '%" + t_busca.getText() +"%'";          
+         String consulta="from Empleado em where em.nombre like '%" + t_busca.getText() +"%'";
+         if(todos==false)
+             consulta +=" and em.puestos.nombre!='BAJA'";
          List <Object[]> resultList=executeHQLQuery(consulta);
     }//GEN-LAST:event_t_buscaKeyReleased
 

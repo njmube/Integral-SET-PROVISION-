@@ -64,5 +64,11 @@
             </key>
             <one-to-many class="Hibernate.entidades.Orden" />
         </set>
+        <set name="accesos" table="acceso" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_clientes" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Acceso" />
+        </set>
     </class>
 </hibernate-mapping>

@@ -196,6 +196,16 @@
         <many-to-one name="usuarioByRPinturaAsigno" class="Hibernate.entidades.Usuario" fetch="select">
             <column name="r_pintura_asigno" length="10" />
         </many-to-one>
+        <many-to-one name="ajustador" class="Hibernate.entidades.Ajustador" fetch="select">
+            <column name="id_ajustador" length="4" >
+                <comment>Ajustador de la Unidad</comment>
+            </column>
+        </many-to-one>
+        <many-to-one name="agente" class="Hibernate.entidades.Agente" fetch="select">
+            <column name="id_agente" length="4" >
+                <comment>Agente del siniestro Unidad</comment>
+            </column>
+        </many-to-one>
         <property name="fecha" type="date">
             <column name="fecha" length="10" not-null="true">
                 <comment>Fecha de Apertura de orden</comment>
@@ -497,6 +507,52 @@
         </property>
         <property name="importePintura" type="java.lang.Double">
             <column name="importe_pintura" precision="22" scale="0" />
+        </property>
+        
+        <property name="inventario" type="string">
+            <column name="inventario" length="15" />
+        </property>
+        <property name="desgaste" type="string">
+            <column name="desgaste" length="15" />
+        </property>
+        <property name="pago" type="string">
+            <column name="pago" length="15" />
+        </property>
+        <property name="entrega" type="string">
+            <column name="entrega" length="15" />
+        </property>
+        <property name="idSm" type="string">
+            <column name="id_sm" length="8" />
+        </property>
+        <property name="PHojalateria" type="java.lang.Double">
+            <column name="p_hojalateria" precision="22" scale="0" />
+        </property>
+        <property name="PMecanica" type="java.lang.Double">
+            <column name="p_mecanica" precision="22" scale="0" />
+        </property>
+        <property name="PSuspension" type="java.lang.Double">
+            <column name="p_suspension" precision="22" scale="0" />
+        </property>
+        <property name="PElectrico" type="java.lang.Double">
+            <column name="p_electrico" precision="22" scale="0" />
+        </property>
+        <property name="PPintura" type="java.lang.Double">
+            <column name="p_pintura" precision="22" scale="0" />
+        </property>
+        <property name="DHojalateria" type="java.lang.Boolean">
+            <column name="d_hojalateria" />
+        </property>
+        <property name="DMecanica" type="java.lang.Boolean">
+            <column name="d_mecanica" />
+        </property>
+        <property name="DSuspension" type="java.lang.Boolean">
+            <column name="d_suspension" />
+        </property>
+        <property name="DElectrico" type="java.lang.Boolean">
+            <column name="d_Electrico" />
+        </property>
+        <property name="DPintura" type="java.lang.Boolean">
+            <column name="d_pintura" />
         </property>
         <set name="archivos" table="archivo" inverse="true" lazy="true" fetch="select" cascade="all">
             <key>

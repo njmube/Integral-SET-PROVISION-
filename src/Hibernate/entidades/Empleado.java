@@ -28,6 +28,7 @@ public class Empleado  implements java.io.Serializable {
      private Set ordensForRElectrico = new HashSet(0);
      private Set ordensForRRefacciones = new HashSet(0);
      private Set ordensForRExpediente = new HashSet(0);
+     private Set almacens = new HashSet(0);
      private Set ordensForRLevantamiento = new HashSet(0);
      private Set ordensForRMecanica = new HashSet(0);
      private Set ordensForRHojalateria = new HashSet(0);
@@ -51,7 +52,7 @@ public class Empleado  implements java.io.Serializable {
         this.importe = importe;
         this.tls = tls;
     }
-    public Empleado(Puestos puestos, String nombre, String direccion, String telefono, String email, int fomaPago, Double importe, String password, String smtp, boolean tls, Integer puerto, Boolean autentificacion, Set ordensForRSuspension, Set ordensForRElectrico, Set ordensForRRefacciones, Set ordensForRExpediente, Set ordensForRLevantamiento, Set ordensForRMecanica, Set ordensForRHojalateria, Set ordensForRValuacion, Set pedidos, Set ordensForRCotiza, Set usuarios, Set ordensForRPintura, Set pagoAdicional, Set ordensForRTecnico) {
+    public Empleado(Puestos puestos, String nombre, String direccion, String telefono, String email, int fomaPago, Double importe, String password, String smtp, boolean tls, Integer puerto, Boolean autentificacion, Set ordensForRSuspension, Set ordensForRElectrico, Set ordensForRRefacciones, Set ordensForRExpediente, Set ordensForRLevantamiento, Set ordensForRMecanica, Set ordensForRHojalateria, Set ordensForRValuacion, Set pedidos, Set ordensForRCotiza, Set usuarios, Set ordensForRPintura, Set pagoAdicional, Set ordensForRTecnico, Set almacens) {
        this.puestos = puestos;
        this.nombre = nombre;
        this.direccion = direccion;
@@ -78,6 +79,7 @@ public class Empleado  implements java.io.Serializable {
        this.ordensForRPintura = ordensForRPintura;
        this.pagoAdicional = pagoAdicional;
        this.ordensForRTecnico= ordensForRTecnico;
+       this.almacens = almacens;
     }
    
     public Integer getIdEmpleado() {
@@ -269,7 +271,15 @@ public class Empleado  implements java.io.Serializable {
         this.pagoAdicional = pagoAdicional;
     }
 
-
+    public Set getAlmacens() {
+        return this.almacens;
+    }
+    
+    public void setAlmacens(Set almacens) {
+        this.almacens = almacens;
+    }
+    
+    
 }
 
 

@@ -117,8 +117,14 @@
                                               </Group>
                                           </Group>
                                       </Group>
-                                      <Group type="102" alignment="1" attributes="0">
-                                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                  </Group>
+                              </Group>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Group type="102" attributes="0">
+                                          <Component id="cb_todos" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace max="32767" attributes="0"/>
                                           <Component id="t_busca" min="-2" pref="336" max="-2" attributes="0"/>
                                           <EmptySpace max="-2" attributes="0"/>
                                           <Component id="b_busca" min="-2" pref="23" max="-2" attributes="0"/>
@@ -133,11 +139,8 @@
                                           <EmptySpace max="-2" attributes="0"/>
                                           <Component id="Selecciona1" min="-2" max="-2" attributes="0"/>
                                       </Group>
+                                      <Component id="jScrollPane1" max="32767" attributes="0"/>
                                   </Group>
-                              </Group>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
-                                  <Component id="jScrollPane1" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
@@ -160,7 +163,10 @@
                           <Component id="Selecciona1" alignment="3" min="-2" pref="36" max="-2" attributes="0"/>
                           <Component id="bt_actualiza2" alignment="3" min="-2" pref="36" max="-2" attributes="0"/>
                       </Group>
-                      <Component id="t_busca" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" alignment="0" groupAlignment="3" attributes="0">
+                          <Component id="t_busca" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="cb_todos" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
                       <Component id="b_busca" alignment="0" min="-2" pref="23" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
@@ -600,6 +606,14 @@
         <Component class="javax.swing.JTextField" name="t_busca">
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="t_buscaActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JCheckBox" name="cb_todos">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Todos"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cb_todosActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>

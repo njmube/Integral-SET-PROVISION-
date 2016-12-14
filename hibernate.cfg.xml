@@ -3,14 +3,15 @@
 <hibernate-configuration>
   <session-factory>
     <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
-    <property name="connection.pool_size">1</property>
     <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-    <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/facturas?noAccessToProcedureBodies=true</property>
-    <property name="hibernate.connection.username">red</property>
+    <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/mydb?noAccessToProcedureBodies=true</property>
+    <property name="hibernate.connection.username">root</property>
     <property name="hibernate.connection.password">04650077</property>
-    <property name="hibernate.connection.base">facturas</property>
-    <property name="hibernate.connection.servidor">localhost</property>
+    <property name="hibernate.connection.base">mydb</property>
+    <property name="hibernate.connection.servidor">lacalhost</property>
     <property name="hibernate.connection.puerto">3306</property>
+    <property name="connection.pool_size">1</property>
+    <property name="hibernate.show_sql">true</property>
     <mapping resource="Hibernate/entidades/Cuenta.hbm.xml"/>
     <mapping resource="Hibernate/entidades/Movimiento.hbm.xml"/>
     <mapping resource="Hibernate/entidades/Catalogo.hbm.xml"/>
@@ -51,6 +52,8 @@
     <mapping resource="Hibernate/entidades/Adicionales.hbm.xml"/>
     <mapping resource="Hibernate/entidades/Compania.hbm.xml"/>
     <mapping resource="Hibernate/entidades/Usuario.hbm.xml"/>
+    <mapping resource="Hibernate/entidades/Agente.hbm.xml"/>
+    <mapping resource="Hibernate/entidades/Ajustador.hbm.xml"/>
     <mapping resource="Hibernate/entidades/Servicio.hbm.xml"/>
     <mapping resource="Hibernate/entidades/Item.hbm.xml"/>
     <mapping resource="Hibernate/entidades/Herramienta.hbm.xml"/>
@@ -64,5 +67,7 @@
     <mapping resource="Hibernate/entidades/PagoReclamo.hbm.xml"/>
     <mapping resource="Hibernate/entidades/Reclamo.hbm.xml"/>
     <mapping resource="Hibernate/entidades/Registro.hbm.xml"/>
+    <mapping resource="Hibernate/entidades/Acceso.hbm.xml"/>
+    <mapping resource="Hibernate/entidades/Notificacion.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>

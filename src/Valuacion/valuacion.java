@@ -404,6 +404,9 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
         t_mo_directa = new javax.swing.JFormattedTextField();
         t_mo_directa1 = new javax.swing.JFormattedTextField();
         l6 = new javax.swing.JLabel();
+        jPanel8 = new javax.swing.JPanel();
+        t_horas1 = new javax.swing.JFormattedTextField();
+        b_consumibles = new javax.swing.JButton();
         scroll = new javax.swing.JScrollPane();
         t_datos = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
@@ -715,7 +718,7 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
         jLabel1.setFont(new java.awt.Font("Arial", 0, 9)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Buscar:");
-        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(660, 46, -1, -1));
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 50, -1, -1));
 
         t_busca.setFont(new java.awt.Font("Arial", 0, 9)); // NOI18N
         t_busca.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -729,7 +732,7 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
                 t_buscaKeyTyped(evt);
             }
         });
-        jPanel1.add(t_busca, new org.netbeans.lib.awtextra.AbsoluteConstraints(695, 44, 200, -1));
+        jPanel1.add(t_busca, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 48, 170, -1));
 
         b_busca.setIcon(new ImageIcon("imagenes/buscar1.png"));
         b_busca.setToolTipText("Busca una partida");
@@ -738,7 +741,7 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
                 b_buscaActionPerformed(evt);
             }
         });
-        jPanel1.add(b_busca, new org.netbeans.lib.awtextra.AbsoluteConstraints(900, 38, 23, 23));
+        jPanel1.add(b_busca, new org.netbeans.lib.awtextra.AbsoluteConstraints(1000, 40, 23, 23));
 
         b_pdf.setIcon(new ImageIcon("imagenes/pdf_icon.png"));
         b_pdf.setToolTipText("Exporta a PDF");
@@ -747,7 +750,7 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
                 b_pdfActionPerformed(evt);
             }
         });
-        jPanel1.add(b_pdf, new org.netbeans.lib.awtextra.AbsoluteConstraints(839, 0, 23, 23));
+        jPanel1.add(b_pdf, new org.netbeans.lib.awtextra.AbsoluteConstraints(940, 10, 23, 23));
 
         b_exel.setIcon(new ImageIcon("imagenes/xls_icon.png"));
         b_exel.setToolTipText("Exporta a EXCEL");
@@ -756,21 +759,21 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
                 b_exelActionPerformed(evt);
             }
         });
-        jPanel1.add(b_exel, new org.netbeans.lib.awtextra.AbsoluteConstraints(865, 0, 23, 23));
+        jPanel1.add(b_exel, new org.netbeans.lib.awtextra.AbsoluteConstraints(970, 10, 23, 23));
 
         b_enviar.setIcon(new ImageIcon("imagenes/send.png"));
         b_enviar.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         b_enviar.setPressedIcon(new ImageIcon("imagenes/send2.png"));
         b_enviar.setRolloverIcon(new ImageIcon("imagenes/send1.png"));
         b_enviar.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                b_enviarMouseReleased(evt);
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                b_enviarMouseEntered(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 b_enviarMouseExited(evt);
             }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                b_enviarMouseEntered(evt);
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                b_enviarMouseReleased(evt);
             }
         });
         b_enviar.addActionListener(new java.awt.event.ActionListener() {
@@ -778,7 +781,7 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
                 b_enviarActionPerformed(evt);
             }
         });
-        jPanel1.add(b_enviar, new org.netbeans.lib.awtextra.AbsoluteConstraints(890, 0, 23, 23));
+        jPanel1.add(b_enviar, new org.netbeans.lib.awtextra.AbsoluteConstraints(1000, 10, 23, 23));
 
         r_cerrar_cotizacion.setFont(new java.awt.Font("Tahoma", 0, 9)); // NOI18N
         r_cerrar_cotizacion.setForeground(new java.awt.Color(255, 255, 255));
@@ -789,7 +792,7 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
                 r_cerrar_cotizacionActionPerformed(evt);
             }
         });
-        jPanel1.add(r_cerrar_cotizacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(665, 23, -1, -1));
+        jPanel1.add(r_cerrar_cotizacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 30, -1, -1));
 
         r_cerrar_valuacion.setFont(new java.awt.Font("Tahoma", 0, 9)); // NOI18N
         r_cerrar_valuacion.setForeground(new java.awt.Color(255, 255, 255));
@@ -800,7 +803,7 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
                 r_cerrar_valuacionActionPerformed(evt);
             }
         });
-        jPanel1.add(r_cerrar_valuacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(665, 2, -1, -1));
+        jPanel1.add(r_cerrar_valuacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 10, -1, -1));
 
         jPanel6.setBackground(new java.awt.Color(2, 135, 242));
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "Refacciones", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Tahoma", 1, 10))); // NOI18N
@@ -979,6 +982,36 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
         jPanel7.add(l6, new org.netbeans.lib.awtextra.AbsoluteConstraints(132, 16, -1, -1));
 
         jPanel1.add(jPanel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 2, 275, 60));
+
+        jPanel8.setBackground(new java.awt.Color(2, 135, 242));
+        jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "Consumibles", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Tahoma", 1, 10))); // NOI18N
+        jPanel8.setLayout(null);
+
+        t_horas1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        t_horas1.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.00"))));
+        t_horas1.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        t_horas1.setText("0.00");
+        t_horas1.setDisabledTextColor(new java.awt.Color(2, 38, 253));
+        t_horas1.setEnabled(false);
+        t_horas1.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
+        jPanel8.add(t_horas1);
+        t_horas1.setBounds(10, 20, 69, 18);
+
+        b_consumibles.setBackground(new java.awt.Color(2, 135, 242));
+        b_consumibles.setIcon(new ImageIcon("imagenes/calendario.png"));
+        b_consumibles.setToolTipText("Calendario");
+        b_consumibles.setMaximumSize(new java.awt.Dimension(32, 8));
+        b_consumibles.setMinimumSize(new java.awt.Dimension(32, 8));
+        b_consumibles.setPreferredSize(new java.awt.Dimension(32, 8));
+        b_consumibles.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_consumiblesActionPerformed(evt);
+            }
+        });
+        jPanel8.add(b_consumibles);
+        b_consumibles.setBounds(83, 16, 28, 24);
+
+        jPanel1.add(jPanel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(660, 10, 120, 50));
 
         add(jPanel1, java.awt.BorderLayout.PAGE_END);
 
@@ -3523,10 +3556,15 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
         // TODO add your handling code here:
     }//GEN-LAST:event_cb_tipoActionPerformed
 
+    private void b_consumiblesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_consumiblesActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_b_consumiblesActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton b_ac;
     private javax.swing.JButton b_busca;
+    private javax.swing.JButton b_consumibles;
     private javax.swing.JButton b_enviar;
     private javax.swing.JButton b_exel;
     private javax.swing.JButton b_exel1;
@@ -3563,6 +3601,7 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel l1;
     private javax.swing.JLabel l2;
@@ -3585,6 +3624,7 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
     private javax.swing.JFormattedTextField t_deducible;
     private javax.swing.JFormattedTextField t_demerito;
     private javax.swing.JFormattedTextField t_horas;
+    private javax.swing.JFormattedTextField t_horas1;
     private javax.swing.JFormattedTextField t_importe;
     private javax.swing.JFormattedTextField t_mo_directa;
     private javax.swing.JFormattedTextField t_mo_directa1;

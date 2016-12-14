@@ -6,6 +6,8 @@
 
 package Servicios;
 
+import Agente.buscaAgentes;
+import Ajustador.buscaAjustadores;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,6 +30,8 @@ import Compras.altaCompras;
 import Compras.avanceSurtido;
 import Compras.generaCotizacion;
 import Empleados.buscaEmpleado;
+import Hibernate.entidades.Agente;
+import Hibernate.entidades.Ajustador;
 import Hibernate.entidades.Empleado;
 import Hibernate.entidades.Reparacion;
 import Marca.buscaMarca;
@@ -90,6 +94,10 @@ public class ModificarOrden extends javax.swing.JPanel {
     Imagen im;
     valuacion r1;
     valuacionDirecta r2;
+    
+    String id_ajustador="";
+    String id_agente="";
+    String id_tecnico="";
     
     /**
      * Creates new form altaServicios
@@ -227,10 +235,8 @@ public class ModificarOrden extends javax.swing.JPanel {
         l_nombre_modificado = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
         t_tipo = new javax.swing.JTextField();
-        jLabel20 = new javax.swing.JLabel();
         b_tipo = new javax.swing.JButton();
         l_nombre_marca = new javax.swing.JLabel();
-        jLabel21 = new javax.swing.JLabel();
         t_marca = new javax.swing.JTextField();
         b_marca = new javax.swing.JButton();
         jLabel23 = new javax.swing.JLabel();
@@ -247,10 +253,8 @@ public class ModificarOrden extends javax.swing.JPanel {
         t_fecha_estatus = new javax.swing.JTextField();
         b_fecha_cliente = new javax.swing.JButton();
         t_fecha_cliente = new javax.swing.JTextField();
-        l_fecha_cliente = new javax.swing.JLabel();
         b_fecha_interna = new javax.swing.JButton();
         t_fecha_interna = new javax.swing.JTextField();
-        jLabel19 = new javax.swing.JLabel();
         t_demerito = new javax.swing.JFormattedTextField();
         jLabel30 = new javax.swing.JLabel();
         t_deducible = new javax.swing.JFormattedTextField();
@@ -262,10 +266,12 @@ public class ModificarOrden extends javax.swing.JPanel {
         t_km = new javax.swing.JTextField();
         t_color = new javax.swing.JTextField();
         jLabel34 = new javax.swing.JLabel();
-        jLabel35 = new javax.swing.JLabel();
-        t_tecnico = new javax.swing.JTextField();
+        t_agente = new javax.swing.JTextField();
+        b_agente = new javax.swing.JButton();
+        b_ajustador = new javax.swing.JButton();
+        t_ajustador = new javax.swing.JTextField();
         b_buscarh = new javax.swing.JButton();
-        l_tecnico = new javax.swing.JLabel();
+        t_tecnico = new javax.swing.JTextField();
         p_responsables = new javax.swing.JScrollPane();
         p_galeria = new javax.swing.JPanel();
         p_documentos = new javax.swing.JPanel();
@@ -273,6 +279,7 @@ public class ModificarOrden extends javax.swing.JPanel {
         p_observaciones = new javax.swing.JPanel();
         p_agenda = new javax.swing.JPanel();
         p_inventario = new javax.swing.JScrollPane();
+        p_sm = new javax.swing.JPanel();
 
         p_levantamiento.setAutoscrolls(true);
 
@@ -1029,12 +1036,9 @@ public class ModificarOrden extends javax.swing.JPanel {
             }
         });
 
-        jLabel20.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel20.setForeground(new java.awt.Color(51, 0, 255));
-        jLabel20.setText("Tipo:");
-
         b_tipo.setBackground(new java.awt.Color(2, 135, 242));
-        b_tipo.setIcon(new ImageIcon("imagenes/buscar.png"));
+        b_tipo.setForeground(new java.awt.Color(255, 255, 255));
+        b_tipo.setText("Tipo");
         b_tipo.setToolTipText("Consultar Tipos de vehículo");
         b_tipo.setEnabled(false);
         b_tipo.setMargin(new java.awt.Insets(1, 14, 1, 14));
@@ -1049,10 +1053,6 @@ public class ModificarOrden extends javax.swing.JPanel {
 
         l_nombre_marca.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         l_nombre_marca.setText("Seleccione una marca");
-
-        jLabel21.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel21.setForeground(new java.awt.Color(51, 0, 255));
-        jLabel21.setText("Marca:");
 
         t_marca.setEditable(false);
         t_marca.setBackground(new java.awt.Color(204, 255, 255));
@@ -1074,7 +1074,8 @@ public class ModificarOrden extends javax.swing.JPanel {
         });
 
         b_marca.setBackground(new java.awt.Color(2, 135, 242));
-        b_marca.setIcon(new ImageIcon("imagenes/buscar.png"));
+        b_marca.setForeground(new java.awt.Color(255, 255, 255));
+        b_marca.setText("Marca");
         b_marca.setToolTipText("Consultar marcas");
         b_marca.setEnabled(false);
         b_marca.setMaximumSize(new java.awt.Dimension(32, 8));
@@ -1216,7 +1217,8 @@ public class ModificarOrden extends javax.swing.JPanel {
         );
 
         b_fecha_cliente.setBackground(new java.awt.Color(2, 135, 242));
-        b_fecha_cliente.setIcon(new ImageIcon("imagenes/calendario.png"));
+        b_fecha_cliente.setForeground(new java.awt.Color(255, 255, 255));
+        b_fecha_cliente.setText("F.Cliente");
         b_fecha_cliente.setToolTipText("Calendario");
         b_fecha_cliente.setEnabled(false);
         b_fecha_cliente.setMaximumSize(new java.awt.Dimension(32, 8));
@@ -1233,11 +1235,9 @@ public class ModificarOrden extends javax.swing.JPanel {
         t_fecha_cliente.setText("DD-MM-AAAA");
         t_fecha_cliente.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        l_fecha_cliente.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        l_fecha_cliente.setText("Promesa de entrega al cliente:");
-
         b_fecha_interna.setBackground(new java.awt.Color(2, 135, 242));
-        b_fecha_interna.setIcon(new ImageIcon("imagenes/calendario.png"));
+        b_fecha_interna.setForeground(new java.awt.Color(255, 255, 255));
+        b_fecha_interna.setText("F.Interna");
         b_fecha_interna.setToolTipText("Calendario");
         b_fecha_interna.setEnabled(false);
         b_fecha_interna.setMaximumSize(new java.awt.Dimension(32, 8));
@@ -1253,9 +1253,6 @@ public class ModificarOrden extends javax.swing.JPanel {
         t_fecha_interna.setBackground(new java.awt.Color(204, 255, 255));
         t_fecha_interna.setText("DD-MM-AAAA");
         t_fecha_interna.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-
-        jLabel19.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel19.setText("Promesa de entrega interna:");
 
         t_demerito.setEditable(false);
         t_demerito.setBackground(new java.awt.Color(204, 255, 255));
@@ -1349,15 +1346,75 @@ public class ModificarOrden extends javax.swing.JPanel {
         jLabel34.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         jLabel34.setText("Color:");
 
-        jLabel35.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel35.setText("Tecnico:");
+        t_agente.setEditable(false);
+        t_agente.setBackground(new java.awt.Color(204, 255, 255));
+        t_agente.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        t_agente.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                t_agenteFocusLost(evt);
+            }
+        });
+        t_agente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                t_agenteActionPerformed(evt);
+            }
+        });
+        t_agente.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                t_agenteKeyTyped(evt);
+            }
+        });
 
-        t_tecnico.setBackground(new java.awt.Color(204, 255, 255));
-        t_tecnico.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        t_tecnico.setEnabled(false);
+        b_agente.setBackground(new java.awt.Color(2, 135, 242));
+        b_agente.setForeground(new java.awt.Color(255, 255, 255));
+        b_agente.setText("Agente");
+        b_agente.setToolTipText("Calendario");
+        b_agente.setEnabled(false);
+        b_agente.setMaximumSize(new java.awt.Dimension(32, 8));
+        b_agente.setMinimumSize(new java.awt.Dimension(32, 8));
+        b_agente.setPreferredSize(new java.awt.Dimension(28, 24));
+        b_agente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_agenteActionPerformed(evt);
+            }
+        });
+
+        b_ajustador.setBackground(new java.awt.Color(2, 135, 242));
+        b_ajustador.setForeground(new java.awt.Color(255, 255, 255));
+        b_ajustador.setText("Ajustador");
+        b_ajustador.setToolTipText("Calendario");
+        b_ajustador.setEnabled(false);
+        b_ajustador.setMaximumSize(new java.awt.Dimension(32, 8));
+        b_ajustador.setMinimumSize(new java.awt.Dimension(32, 8));
+        b_ajustador.setPreferredSize(new java.awt.Dimension(28, 24));
+        b_ajustador.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_ajustadorActionPerformed(evt);
+            }
+        });
+
+        t_ajustador.setEditable(false);
+        t_ajustador.setBackground(new java.awt.Color(204, 255, 255));
+        t_ajustador.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        t_ajustador.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                t_ajustadorFocusLost(evt);
+            }
+        });
+        t_ajustador.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                t_ajustadorActionPerformed(evt);
+            }
+        });
+        t_ajustador.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                t_ajustadorKeyTyped(evt);
+            }
+        });
 
         b_buscarh.setBackground(new java.awt.Color(2, 135, 242));
-        b_buscarh.setIcon(new ImageIcon("imagenes/buscar.png"));
+        b_buscarh.setForeground(new java.awt.Color(255, 255, 255));
+        b_buscarh.setText("Tecnico");
         b_buscarh.setToolTipText("Consultar empleados");
         b_buscarh.setEnabled(false);
         b_buscarh.setMaximumSize(new java.awt.Dimension(32, 8));
@@ -1369,7 +1426,9 @@ public class ModificarOrden extends javax.swing.JPanel {
             }
         });
 
-        l_tecnico.setText("<Nombre del Responsable>");
+        t_tecnico.setBackground(new java.awt.Color(204, 255, 255));
+        t_tecnico.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        t_tecnico.setEnabled(false);
 
         javax.swing.GroupLayout p_unidadLayout = new javax.swing.GroupLayout(p_unidad);
         p_unidad.setLayout(p_unidadLayout);
@@ -1378,65 +1437,64 @@ public class ModificarOrden extends javax.swing.JPanel {
             .addGroup(p_unidadLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel17, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, p_unidadLayout.createSequentialGroup()
-                        .addComponent(jLabel25)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(id_modificado, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(l_nombre_modificado, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel17))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, p_unidadLayout.createSequentialGroup()
-                        .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(p_unidadLayout.createSequentialGroup()
-                                .addComponent(jLabel20)
+                        .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, p_unidadLayout.createSequentialGroup()
+                                .addComponent(b_buscarh, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(t_tipo, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(t_tecnico))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, p_unidadLayout.createSequentialGroup()
+                                .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(b_ajustador, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
+                                    .addComponent(b_agente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(6, 6, 6)
+                                .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(t_ajustador)
+                                    .addComponent(t_agente)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, p_unidadLayout.createSequentialGroup()
+                                .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(b_marca, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
+                                    .addComponent(b_tipo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(b_tipo, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addGroup(p_unidadLayout.createSequentialGroup()
-                                    .addComponent(jLabel19)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(t_fecha_interna, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(b_fecha_interna, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(p_unidadLayout.createSequentialGroup()
-                                    .addComponent(l_fecha_cliente)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(t_fecha_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(b_fecha_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(l_nombre_marca, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, p_unidadLayout.createSequentialGroup()
-                                    .addComponent(jLabel21)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(t_marca, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(b_marca, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(jLabel23)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(t_placas, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, p_unidadLayout.createSequentialGroup()
-                                    .addComponent(jLabel34)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(t_color))
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, p_unidadLayout.createSequentialGroup()
-                                    .addComponent(jLabel22)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(t_motor, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 168, Short.MAX_VALUE)
-                        .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(p_unidadLayout.createSequentialGroup()
-                                .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(p_unidadLayout.createSequentialGroup()
+                                        .addComponent(t_marca, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(l_nombre_marca, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addGroup(p_unidadLayout.createSequentialGroup()
+                                        .addComponent(t_tipo, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(0, 0, Short.MAX_VALUE))))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, p_unidadLayout.createSequentialGroup()
+                                .addComponent(b_fecha_interna, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(t_fecha_interna, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(b_fecha_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(t_fecha_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(99, 99, 99)
+                        .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(p_unidadLayout.createSequentialGroup()
+                                .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(p_unidadLayout.createSequentialGroup()
+                                        .addComponent(jLabel34)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(t_color))
+                                    .addGroup(p_unidadLayout.createSequentialGroup()
+                                        .addComponent(jLabel23)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(t_placas, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabel22)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(t_motor))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, p_unidadLayout.createSequentialGroup()
                                         .addComponent(jLabel32)
                                         .addGap(18, 18, 18)
                                         .addComponent(c_siniestro, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                    .addGroup(p_unidadLayout.createSequentialGroup()
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, p_unidadLayout.createSequentialGroup()
                                         .addComponent(jLabel26)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(t_modelo, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1444,7 +1502,7 @@ public class ModificarOrden extends javax.swing.JPanel {
                                         .addComponent(jLabel27)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addComponent(t_serie, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, p_unidadLayout.createSequentialGroup()
+                                    .addGroup(p_unidadLayout.createSequentialGroup()
                                         .addComponent(jLabel28)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addComponent(t_economico, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1452,7 +1510,7 @@ public class ModificarOrden extends javax.swing.JPanel {
                                         .addComponent(jLabel33)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(t_km, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(56, 56, 56)
                                 .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(b_guardar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1464,15 +1522,14 @@ public class ModificarOrden extends javax.swing.JPanel {
                                 .addGap(43, 43, 43)
                                 .addComponent(jLabel30)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(t_demerito, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(p_unidadLayout.createSequentialGroup()
-                                .addComponent(jLabel35)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(t_tecnico, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(b_buscarh, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(l_tecnico, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(t_demerito, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(p_unidadLayout.createSequentialGroup()
+                        .addComponent(jLabel25)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(id_modificado, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(l_nombre_modificado, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         p_unidadLayout.setVerticalGroup(
@@ -1488,11 +1545,45 @@ public class ModificarOrden extends javax.swing.JPanel {
                         .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(p_unidadLayout.createSequentialGroup()
                                 .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(b_tipo, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(t_tipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(b_marca, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(t_marca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(l_nombre_marca, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(b_fecha_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(b_fecha_interna, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(t_fecha_interna, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(t_fecha_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(b_ajustador, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(t_ajustador, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(b_agente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(t_agente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(p_unidadLayout.createSequentialGroup()
+                                .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jLabel27)
                                     .addComponent(t_serie, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel26)
                                     .addComponent(t_modelo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel23)
+                                    .addComponent(t_placas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel22)
+                                    .addComponent(t_motor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel34)
+                                    .addComponent(t_color, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                         .addComponent(jLabel33)
@@ -1501,68 +1592,30 @@ public class ModificarOrden extends javax.swing.JPanel {
                                         .addComponent(jLabel28)
                                         .addComponent(t_economico, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(c_siniestro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel32)))
-                            .addGroup(p_unidadLayout.createSequentialGroup()
-                                .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel20)
-                                    .addComponent(t_tipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(b_tipo, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(1, 1, 1)
-                                .addComponent(l_nombre_marca, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel21)
-                                    .addComponent(b_marca, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(t_marca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jLabel23)
-                                        .addComponent(t_placas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel22)
-                                    .addComponent(t_motor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel34)
-                                    .addComponent(t_color, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))))
-                .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(t_fecha_interna, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(b_fecha_interna, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, p_unidadLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel35)
-                            .addComponent(b_buscarh, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(p_unidadLayout.createSequentialGroup()
-                                .addGap(3, 3, 3)
-                                .addComponent(t_tecnico, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(l_tecnico, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(l_fecha_cliente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(t_fecha_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(b_fecha_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel29)
-                        .addComponent(jLabel30)
-                        .addComponent(t_deducible, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(t_demerito, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
                 .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel17)
+                        .addComponent(b_buscarh, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(t_tecnico, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(c_siniestro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel32)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel29)
+                    .addComponent(jLabel30)
+                    .addComponent(t_deducible, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(t_demerito, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel25)
                         .addComponent(id_modificado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(l_nombre_modificado, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(l_nombre_modificado, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel17)
+                .addGap(5, 5, 5))
         );
 
         p_ventanas.addTab("Unidad", p_unidad);
@@ -1586,6 +1639,9 @@ public class ModificarOrden extends javax.swing.JPanel {
         p_ventanas.addTab("Agenda de Cliente", p_agenda);
         p_ventanas.addTab("Inventario", p_inventario);
 
+        p_sm.setLayout(new java.awt.BorderLayout());
+        p_ventanas.addTab("SM Logistics", new javax.swing.ImageIcon(getClass().getResource("/Servicios/icono-1.png")), p_sm); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -1603,7 +1659,7 @@ public class ModificarOrden extends javax.swing.JPanel {
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 157, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(p_ventanas, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE))
+                .addComponent(p_ventanas))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -2460,6 +2516,30 @@ public class ModificarOrden extends javax.swing.JPanel {
                     System.out.println(e);
                 }
             }
+            if(ventana.compareTo("SM Logistics")==0)
+            {
+                estado_campos(true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
+                p_sm.removeAll();
+                p_sm.repaint();
+                p_sm.updateUI();
+                try
+                {
+                    //if(usr.getConsultaFormatos()==true)
+                    //{
+                        SmLogistics r1=new SmLogistics(t_orden.getText(), usr, estado, this.sessionPrograma, ruta);
+                        p_sm.add(r1);
+                        r1.setVisible(true);
+                        p_sm.repaint();
+                        p_sm.updateUI();
+                        r1=null;
+                    //}
+                    //else
+                        //JOptionPane.showMessageDialog(null, "¡Acceso denegado!");
+                }catch(Exception e)
+                {
+                    System.out.println(e);
+                }
+            }
         }
         else
         {
@@ -3239,28 +3319,100 @@ public class ModificarOrden extends javax.swing.JPanel {
         evt.consume();
     }//GEN-LAST:event_t_colorKeyTyped
 
+    private void t_agenteFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_agenteFocusLost
+        // TODO add your handling code here:
+    }//GEN-LAST:event_t_agenteFocusLost
+
+    private void t_agenteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_agenteActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_t_agenteActionPerformed
+
+    private void t_agenteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_agenteKeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_t_agenteKeyTyped
+
+    private void b_agenteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_agenteActionPerformed
+        // TODO add your handling code here:
+        buscaAgentes obj = new buscaAgentes(new javax.swing.JFrame(), true, this.sessionPrograma, this.usr);
+        obj.t_busca.requestFocus();
+        obj.formatoTabla();
+        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+        obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
+        obj.setVisible(true);
+
+        List actor=obj.getReturnStatus();
+        if(actor!=null)
+        {
+            id_agente=actor.get(0).toString();
+            t_agente.setText(actor.get(1).toString());
+        }
+        else
+        {
+            id_agente="";
+            t_agente.setText("");
+        }
+        t_motor.requestFocus();
+    }//GEN-LAST:event_b_agenteActionPerformed
+
+    private void b_ajustadorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_ajustadorActionPerformed
+        // TODO add your handling code here:
+        buscaAjustadores obj = new buscaAjustadores(new javax.swing.JFrame(), true, this.sessionPrograma, this.usr);
+        obj.t_busca.requestFocus();
+        obj.formatoTabla();
+        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+        obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
+        obj.setVisible(true);
+
+        List actor=obj.getReturnStatus();
+        if(actor!=null)
+        {
+            id_ajustador=actor.get(0).toString();
+            t_ajustador.setText(actor.get(1).toString());
+        }
+        else
+        {
+            id_ajustador="";
+            t_ajustador.setText("");
+        }
+        t_motor.requestFocus();
+    }//GEN-LAST:event_b_ajustadorActionPerformed
+
+    private void t_ajustadorFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_ajustadorFocusLost
+        // TODO add your handling code here:
+    }//GEN-LAST:event_t_ajustadorFocusLost
+
+    private void t_ajustadorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_ajustadorActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_t_ajustadorActionPerformed
+
+    private void t_ajustadorKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_ajustadorKeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_t_ajustadorKeyTyped
+
     private void b_buscarhActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_buscarhActionPerformed
         h=new Herramientas(usr, 0);
         h.session(sessionPrograma);
-        buscaEmpleado obj = new buscaEmpleado(new javax.swing.JFrame(), true, usr, this.sessionPrograma);
+        buscaEmpleado obj = new buscaEmpleado(new javax.swing.JFrame(), true, usr, this.sessionPrograma, false);
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
         obj.setVisible(true);
         Empleado actor=obj.getReturnStatus();
         if(actor!=null)
         {
-            t_tecnico.setText(""+actor.getIdEmpleado());
-            l_tecnico.setText(actor.getNombre());
+            id_tecnico=""+actor.getIdEmpleado();
+            t_tecnico.setText(actor.getNombre());
         }
         else
         {
+            id_tecnico="";
             t_tecnico.setText("");
-            l_tecnico.setText("");
         }
     }//GEN-LAST:event_b_buscarhActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton b_agente;
+    private javax.swing.JButton b_ajustador;
     private javax.swing.JButton b_busca_cliente;
     public javax.swing.JButton b_busca_orden;
     private javax.swing.JButton b_buscar_aseguradora;
@@ -3292,10 +3444,7 @@ public class ModificarOrden extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
-    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel20;
-    private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel25;
@@ -3309,7 +3458,6 @@ public class ModificarOrden extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel32;
     private javax.swing.JLabel jLabel33;
     private javax.swing.JLabel jLabel34;
-    private javax.swing.JLabel jLabel35;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -3320,12 +3468,10 @@ public class ModificarOrden extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JLabel l_fecha_cliente;
     private javax.swing.JLabel l_id_cliente;
     private javax.swing.JLabel l_nombre_aseguradora;
     private javax.swing.JLabel l_nombre_marca;
     private javax.swing.JLabel l_nombre_modificado;
-    private javax.swing.JLabel l_tecnico;
     private javax.swing.JPanel p_agenda;
     private javax.swing.JScrollPane p_autoriza_valuacion;
     private javax.swing.JScrollPane p_avance_pedidos;
@@ -3343,9 +3489,12 @@ public class ModificarOrden extends javax.swing.JPanel {
     private javax.swing.JPanel p_observaciones;
     private javax.swing.JScrollPane p_preFacura;
     private javax.swing.JScrollPane p_responsables;
+    private javax.swing.JPanel p_sm;
     private javax.swing.JPanel p_unidad;
     private javax.swing.JScrollPane p_valuacion;
     public javax.swing.JTabbedPane p_ventanas;
+    private javax.swing.JTextField t_agente;
+    private javax.swing.JTextField t_ajustador;
     private javax.swing.JTextField t_aseguradora;
     private javax.swing.JTextField t_colonia_cliente;
     private javax.swing.JTextField t_color;
@@ -3542,10 +3691,10 @@ public class ModificarOrden extends javax.swing.JPanel {
             if(op==0)
                 registro.setTipoCliente(null);
 
-            if(t_tecnico.getText().compareTo("")!=0)
+            if(id_tecnico.compareTo("")!=0)
             {
                 Empleado emp=new Empleado();
-                emp.setIdEmpleado(Integer.parseInt(t_tecnico.getText()));
+                emp.setIdEmpleado(Integer.parseInt(id_tecnico));
                 registro.setEmpleadoByRTecnico(emp);
             }
             else
@@ -3553,6 +3702,27 @@ public class ModificarOrden extends javax.swing.JPanel {
                 registro.setEmpleadoByRTecnico(null);
             }
             
+            if(id_agente.compareTo("")!=0)
+            {
+                Agente age=new Agente();
+                age.setIdAgente(Integer.parseInt(id_agente));
+                registro.setAgente(age);
+            }
+            else
+            {
+                registro.setAgente(null);
+            }
+            
+            if(id_ajustador.compareTo("")!=0)
+            {
+                Ajustador aju=new Ajustador();
+                aju.setIdAjustador(Integer.parseInt(id_ajustador));
+                registro.setAjustador(aju);
+            }
+            else
+            {
+                registro.setAjustador(null);
+            }
             //registro.setCiclo(new Ciclo(Integer.parseInt(periodo)));
             //************Guardamos el usuario que modifica*****************
             registro.setUsuarioByIdModificado(usr);
@@ -3931,7 +4101,11 @@ public class ModificarOrden extends javax.swing.JPanel {
         t_motor.setText("");
         t_placas.setText("");
         t_tecnico.setText("");
-        l_tecnico.setText("<Nombre del Responsable>");
+        id_tecnico="";
+        t_agente.setText("");
+        id_agente="";
+        t_ajustador.setText("");
+        id_ajustador="";
         t_nombre_cliente.setText("");
         t_direccion_cliente.setText("");
         t_colonia_cliente.setText("");
@@ -4019,8 +4193,20 @@ public class ModificarOrden extends javax.swing.JPanel {
 
                 if(orden_act.getEmpleadoByRTecnico()!=null)
                 {
-                    this.t_tecnico.setText(""+orden_act.getEmpleadoByRTecnico().getIdEmpleado());
-                    this.l_tecnico.setText(orden_act.getEmpleadoByRTecnico().getNombre());
+                    id_tecnico=""+orden_act.getEmpleadoByRTecnico().getIdEmpleado();
+                    t_tecnico.setText(orden_act.getEmpleadoByRTecnico().getNombre());
+                }
+                
+                if(orden_act.getAgente()!=null)
+                {
+                    id_agente=""+orden_act.getAgente().getIdAgente();
+                    t_agente.setText(orden_act.getAgente().getNombre());
+                }
+                
+                if(orden_act.getAjustador()!=null)
+                {
+                    id_ajustador=""+orden_act.getAjustador().getIdAjustador();
+                    t_ajustador.setText(orden_act.getAjustador().getNombre());
                 }
                 //*********Datos de la Unidad***********************************
                 this.t_tipo.setText(orden_act.getTipo().getTipoNombre());
@@ -4156,13 +4342,11 @@ public class ModificarOrden extends javax.swing.JPanel {
 
                     if(usr.getVerFechaCliente()==false)
                     {
-                        this.l_fecha_cliente.setVisible(false);
                         this.t_fecha_cliente.setVisible(false);
                         this.b_fecha_cliente.setVisible(false);
                     }
                     else
                     {
-                        this.l_fecha_cliente.setVisible(true);
                         this.t_fecha_cliente.setVisible(true);
                         this.b_fecha_cliente.setVisible(true);
                     }
@@ -4287,6 +4471,8 @@ public class ModificarOrden extends javax.swing.JPanel {
         this.b_cancelar.setEnabled(cancelar);
         this.b_guardar.setEnabled(guardar);
         this.b_buscarh.setEnabled(guardar);
+        this.b_ajustador.setEnabled(guardar);
+        this.b_agente.setEnabled(guardar);
     }
     
     

@@ -8,6 +8,8 @@
   <table-filter match-name="compania"/>
   <table-filter match-name="item"/>
   <table-filter match-name="usuario"/>
+  <table-filter match-name="Ajustador"/>
+  <table-filter match-name="Agente"/>
   <table-filter match-name="correo"/>
   <table-filter match-name="configuracion"/>
   <table-filter match-name="nota"/>
@@ -46,6 +48,8 @@
   <table-filter match-name="proveedor"/>
   <table-filter match-name="partida_cotizacion"/>
   <table-filter match-name="inventario"/>
+  <table-filter match-name="acceso"/>
+  <table-filter match-name="notificacion"/>
   <table-filter match-name="orden_externa"/>
   <table-filter match-name="clientes"/>
   <table-filter match-name="marca"/>

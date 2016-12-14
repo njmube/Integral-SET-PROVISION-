@@ -38,6 +38,7 @@ public class Compania  implements java.io.Serializable {
      private String municipio;
      private String pais;
      private String numeroExterior;
+     private String formatoPago;
      private Set ordenExternas = new HashSet(0);
      private Set cuentas = new HashSet(0);
      private Set documentoses = new HashSet(0);
@@ -50,7 +51,7 @@ public class Compania  implements java.io.Serializable {
     public Compania(String nombre) {
         this.nombre = nombre;
     }
-    public Compania(String nombre, String direccion, String colonia, String poblacion, String estado, String cp, String telefono, String fax, String email, String representante1, String r1Puesto, String representante2, String r2Puesto, Float importeHora, Float importeMax, String tipoPago, Integer plazo, String programaReporte, String comentarios, String grupoEjecutivo, String foto, String rfc, String municipio, String pais, String numeroExterior, String social, Set ordenExternas, Set cuentas, Set documentoses, Set ordens) {
+    public Compania(String nombre, String direccion, String colonia, String poblacion, String estado, String cp, String telefono, String fax, String email, String representante1, String r1Puesto, String representante2, String r2Puesto, Float importeHora, Float importeMax, String tipoPago, Integer plazo, String programaReporte, String comentarios, String grupoEjecutivo, String foto, String rfc, String municipio, String pais, String numeroExterior, String social, String formatoPago, Set ordenExternas, Set cuentas, Set documentoses, Set ordens) {
        this.nombre = nombre;
        this.social = social;
        this.direccion = direccion;
@@ -77,6 +78,7 @@ public class Compania  implements java.io.Serializable {
        this.municipio = municipio;
        this.pais = pais;
        this.numeroExterior = numeroExterior;
+       this.formatoPago = formatoPago;
        this.ordenExternas = ordenExternas;
        this.cuentas = cuentas;
        this.documentoses = documentoses;
@@ -274,6 +276,15 @@ public class Compania  implements java.io.Serializable {
     public void setNumeroExterior(String numeroExterior) {
         this.numeroExterior = numeroExterior;
     }
+    
+    public String getFormatoPago() {
+        return this.formatoPago;
+    }
+    
+    public void setFormatoPago(String formatoPago) {
+        this.formatoPago = formatoPago;
+    }
+    
     public Set getOrdenExternas() {
         return this.ordenExternas;
     }

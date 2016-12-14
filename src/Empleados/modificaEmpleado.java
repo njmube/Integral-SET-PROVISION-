@@ -147,6 +147,7 @@ public class modificaEmpleado extends javax.swing.JPanel {
         bt_actualiza2 = new javax.swing.JButton();
         b_busca = new javax.swing.JButton();
         t_busca = new javax.swing.JTextField();
+        cb_todos = new javax.swing.JCheckBox();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
@@ -401,6 +402,13 @@ public class modificaEmpleado extends javax.swing.JPanel {
             }
         });
 
+        cb_todos.setText("Todos");
+        cb_todos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cb_todosActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -452,9 +460,13 @@ public class modificaEmpleado extends javax.swing.JPanel {
                                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                                                 .addComponent(jLabel16)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(t_email, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                        .addGap(0, 0, Short.MAX_VALUE)
+                                                .addComponent(t_email, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                .addGap(8, 8, 8)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(cb_todos)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(t_busca, javax.swing.GroupLayout.PREFERRED_SIZE, 336, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(b_busca, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -467,10 +479,8 @@ public class modificaEmpleado extends javax.swing.JPanel {
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(Eliminar)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(Selecciona1))))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                                .addGap(8, 8, 8)
-                                .addComponent(jScrollPane1)))))
+                                        .addComponent(Selecciona1))
+                                    .addComponent(jScrollPane1))))))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -486,7 +496,9 @@ public class modificaEmpleado extends javax.swing.JPanel {
                         .addComponent(Eliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(Selecciona1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(bt_actualiza2, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(t_busca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(t_busca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cb_todos))
                     .addComponent(b_busca, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(15, 15, 15)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -914,6 +926,15 @@ public class modificaEmpleado extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_t_buscaActionPerformed
 
+    private void cb_todosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_todosActionPerformed
+        // TODO add your handling code here:
+        h=new Herramientas(this.user, 0);
+        h.session(sessionPrograma);
+        borra_cajas();
+        cajas(false, false, false, false, false, false, false, false, false, false);
+        buscaDato();
+    }//GEN-LAST:event_cb_todosActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Eliminar;
@@ -926,6 +947,7 @@ public class modificaEmpleado extends javax.swing.JPanel {
     private javax.swing.JButton bt_actualiza2;
     public javax.swing.JComboBox c_pago;
     public javax.swing.JComboBox c_puesto;
+    private javax.swing.JCheckBox cb_todos;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
@@ -1050,7 +1072,9 @@ public void cargaPuestos()
     
     private void buscaDato()
     {
-        String consulta="from Empleado";
+        String consulta="from Empleado em";
+        if(cb_todos.isSelected()==false)
+            consulta+=" where em.puestos.nombre!='BAJA'";
         List <Object[]> resultList=executeHQLQuery(consulta);
         if(resultList.size()>0)
         {
