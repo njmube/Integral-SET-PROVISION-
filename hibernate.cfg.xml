@@ -17,6 +17,7 @@
     <mapping resource="Hibernate/entidades/Catalogo.hbm.xml"/>
     <mapping resource="Hibernate/entidades/Concepto.hbm.xml"/>
     <mapping resource="Hibernate/entidades/Empleado.hbm.xml"/>
+    <mapping resource="Hibernate/entidades/TrabajoExtra.hbm.xml"/>
     <mapping resource="Hibernate/entidades/Clientes.hbm.xml"/>
     <mapping resource="Hibernate/entidades/Proveedor.hbm.xml"/>
     <mapping resource="Hibernate/entidades/Marca.hbm.xml"/>

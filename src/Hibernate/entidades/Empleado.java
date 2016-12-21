@@ -24,6 +24,7 @@ public class Empleado  implements java.io.Serializable {
      private boolean tls;
      private Integer puerto;
      private Boolean autentificacion;
+     private Set trabajoExtras = new HashSet(0);
      private Set ordensForRSuspension = new HashSet(0);
      private Set ordensForRElectrico = new HashSet(0);
      private Set ordensForRRefacciones = new HashSet(0);
@@ -35,7 +36,6 @@ public class Empleado  implements java.io.Serializable {
      private Set ordensForRTecnico = new HashSet(0);
      private Set ordensForRValuacion = new HashSet(0);
      private Set ordensForRPintura = new HashSet(0);
-     private Set pagoAdicional = new HashSet(0);
      private Set pedidos = new HashSet(0);
      private Set ordensForRCotiza = new HashSet(0);
      private Set usuarios = new HashSet(0);
@@ -52,7 +52,7 @@ public class Empleado  implements java.io.Serializable {
         this.importe = importe;
         this.tls = tls;
     }
-    public Empleado(Puestos puestos, String nombre, String direccion, String telefono, String email, int fomaPago, Double importe, String password, String smtp, boolean tls, Integer puerto, Boolean autentificacion, Set ordensForRSuspension, Set ordensForRElectrico, Set ordensForRRefacciones, Set ordensForRExpediente, Set ordensForRLevantamiento, Set ordensForRMecanica, Set ordensForRHojalateria, Set ordensForRValuacion, Set pedidos, Set ordensForRCotiza, Set usuarios, Set ordensForRPintura, Set pagoAdicional, Set ordensForRTecnico, Set almacens) {
+    public Empleado(Puestos puestos, String nombre, String direccion, String telefono, String email, int fomaPago, Double importe, String password, String smtp, boolean tls, Integer puerto, Boolean autentificacion, Set ordensForRSuspension, Set ordensForRElectrico, Set ordensForRRefacciones, Set ordensForRExpediente, Set ordensForRLevantamiento, Set ordensForRMecanica, Set ordensForRHojalateria, Set ordensForRValuacion, Set pedidos, Set ordensForRCotiza, Set usuarios, Set ordensForRPintura, Set trabajoExtras, Set ordensForRTecnico, Set almacens) {
        this.puestos = puestos;
        this.nombre = nombre;
        this.direccion = direccion;
@@ -77,7 +77,7 @@ public class Empleado  implements java.io.Serializable {
        this.ordensForRCotiza = ordensForRCotiza;
        this.usuarios = usuarios;
        this.ordensForRPintura = ordensForRPintura;
-       this.pagoAdicional = pagoAdicional;
+       this.trabajoExtras = trabajoExtras;
        this.ordensForRTecnico= ordensForRTecnico;
        this.almacens = almacens;
     }
@@ -263,12 +263,12 @@ public class Empleado  implements java.io.Serializable {
     public void setOrdensForRPintura(Set ordensForRPintura) {
         this.ordensForRPintura = ordensForRPintura;
     }
-    public Set getPagoAdicional() {
-        return this.pagoAdicional;
+    public Set getTrabajoExtras() {
+        return this.trabajoExtras;
     }
     
-    public void setPagoAdicional(Set pagoAdicional) {
-        this.pagoAdicional = pagoAdicional;
+    public void setTrabajoExtras(Set trabajoExtras) {
+        this.trabajoExtras = trabajoExtras;
     }
 
     public Set getAlmacens() {

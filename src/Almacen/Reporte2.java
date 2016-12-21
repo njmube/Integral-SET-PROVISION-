@@ -21,6 +21,7 @@ import Servicios.buscaOrden;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
+import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Rectangle;
@@ -43,6 +44,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 import javax.swing.ImageIcon;
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
@@ -77,6 +79,10 @@ public class Reporte2 extends javax.swing.JPanel {
         "Id","No","#","Descripcion","Can","Med","Codigo","Cant C.","$C/U Comp","Alm.","Ope.","Pend."};
     FormatoTabla formato;
     String valor;
+    int busca;
+    String consulta;
+    String query;
+    boolean val;
     /**
      * Creates new form Reporte2
      */
@@ -155,23 +161,65 @@ public class Reporte2 extends javax.swing.JPanel {
         DefaultTableModel modelo=(DefaultTableModel)t_unidad.getModel();
         modelo.setNumRows(0);
         valor=t_orden.getText();
-        if(valor.compareTo("")!=0)
+        busca = cmb_busca.getSelectedIndex();
+        
+        if(valor.compareTo("") != 0)
         {
+            query = "select if(almacen.tipo_movimiento=1, 'DEVOLUCION', 'SALIDA')as tipo, DATE_FORMAT(almacen.fecha, '%Y-%d-%m')as fecha, almacen.entrego, movimiento.id_Parte, ejemplar.id_catalogo, movimiento.cantidad, ejemplar.medida, movimiento.valor, (movimiento.cantidad*movimiento.valor) as total " +
+            "from movimiento left join ejemplar on ejemplar.id_Parte=movimiento.id_Parte left join almacen on almacen.id_almacen=movimiento.id_almacen where almacen.id_orden="+valor+" and almacen.operacion=8";
+            switch(busca)
+            {
+                case 0:
+                    consulta = query;
+                    break;
+                case 1:
+                    consulta = query + " and almacen.especialidad = 'H'";
+                    break;
+                case 2:
+                    consulta = query + " and almacen.especialidad = 'M' ";
+                    break;
+                case 3:
+                    consulta = query + " and almacen.especialidad = 'S' ";
+                    break;
+                case 4:
+                    consulta = query + " and almacen.especialidad = 'E' ";
+                    break;
+                case 5:
+                    consulta = query + " and almacen.especialidad = 'P' ";
+                    break;
+                default:
+                    break;
+            }
             ArrayList datos = new ArrayList();
             Session session = HibernateUtil.getSessionFactory().openSession();
-            Query query = session.createSQLQuery("select if(almacen.tipo_movimiento=1, 'DEVOLUCION', 'SALIDA')as tipo, DATE_FORMAT(almacen.fecha, '%Y-%d-%m')as fecha, almacen.entrego, movimiento.id_Parte, ejemplar.id_catalogo, movimiento.cantidad, ejemplar.medida, movimiento.valor, (movimiento.cantidad*movimiento.valor) as total " +
-            "from movimiento left join ejemplar on ejemplar.id_Parte=movimiento.id_Parte left join almacen on almacen.id_almacen=movimiento.id_almacen where almacen.id_orden="+valor+" and almacen.operacion=8");
+            Query query = session.createSQLQuery(consulta);
             query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
             datos = (ArrayList) query.list();
-            int num_d=datos.size();
-            for(int c=0; c<num_d; c++)
+            int num_d = datos.size();
+            System.out.println(val);
+            if(num_d >= 1)
             {
-                java.util.HashMap map = (java.util.HashMap) datos.get(c);
-                modelo.addRow(new Object[]{map.get("tipo"),map.get("fecha"),map.get("entrego"),map.get("id_Parte"),map.get("id_catalogo"),map.get("cantidad"),map.get("medida"),map.get("valor"),map.get("total")});
+                for(int c=0; c<num_d; c++)
+                {
+                    java.util.HashMap map = (java.util.HashMap) datos.get(c);
+                    modelo.addRow(new Object[]{map.get("tipo"),map.get("fecha"),map.get("entrego"),map.get("id_Parte"),map.get("id_catalogo"),map.get("cantidad"),map.get("medida"),map.get("valor"),map.get("total")});
+                }
+            }
+            if(num_d <= 0)
+            {
+                JOptionPane.showMessageDialog(this, "No se encontraron resultados", "Informacion",JOptionPane.INFORMATION_MESSAGE);
+                //t_orden.setText("");
+                //t_orden.requestFocus();
             }
             if(session.isOpen())
                 session.close();
             session=null;
+        }
+        else
+        {
+            JOptionPane.showMessageDialog(this, "Ingresa un numero de orden", "Informacion",JOptionPane.INFORMATION_MESSAGE);
+            cmb_busca.setSelectedIndex(0);
+            t_orden.requestFocus();
         }
     }
     
@@ -340,13 +388,15 @@ public class Reporte2 extends javax.swing.JPanel {
         t_surtir = new javax.swing.JTable();
         jButton15 = new javax.swing.JButton();
         jPanel8 = new javax.swing.JPanel();
-        t_orden = new javax.swing.JTextField();
         jButton16 = new javax.swing.JButton();
-        jButton17 = new javax.swing.JButton();
         jScrollPane6 = new javax.swing.JScrollPane();
         t_unidad = new javax.swing.JTable();
         jButton18 = new javax.swing.JButton();
         jButton19 = new javax.swing.JButton();
+        cmb_busca = new javax.swing.JComboBox();
+        jPanel9 = new javax.swing.JPanel();
+        jButton17 = new javax.swing.JButton();
+        t_orden = new javax.swing.JTextField();
         jPanel11 = new javax.swing.JPanel();
         t_pedido = new javax.swing.JTextField();
         jButton20 = new javax.swing.JButton();
@@ -520,7 +570,7 @@ public class Reporte2 extends javax.swing.JPanel {
                     .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 395, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 399, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel4)
                 .addContainerGap())
@@ -668,7 +718,7 @@ public class Reporte2 extends javax.swing.JPanel {
                         .addComponent(cb_tipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 366, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
@@ -809,7 +859,7 @@ public class Reporte2 extends javax.swing.JPanel {
                             .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 389, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 393, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel8)
                 .addContainerGap())
@@ -900,22 +950,10 @@ public class Reporte2 extends javax.swing.JPanel {
 
         jPanel8.setBackground(new java.awt.Color(255, 255, 255));
 
-        t_orden.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                t_ordenActionPerformed(evt);
-            }
-        });
-
-        jButton16.setText("Ok");
+        jButton16.setText("Buscar");
         jButton16.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton16ActionPerformed(evt);
-            }
-        });
-
-        jButton17.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton17ActionPerformed(evt);
             }
         });
 
@@ -959,6 +997,48 @@ public class Reporte2 extends javax.swing.JPanel {
             }
         });
 
+        cmb_busca.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Todos", "Hojalateria", "Mecanica", "Suspencion", "Electrico", "Pintura" }));
+        cmb_busca.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmb_buscaActionPerformed(evt);
+            }
+        });
+
+        jPanel9.setBackground(new java.awt.Color(254, 254, 254));
+        jPanel9.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "No Orden:", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP));
+
+        jButton17.setText("Orden");
+        jButton17.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton17ActionPerformed(evt);
+            }
+        });
+
+        t_orden.setBackground(new java.awt.Color(204, 255, 255));
+        t_orden.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                t_ordenActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
+        jPanel9.setLayout(jPanel9Layout);
+        jPanel9Layout.setHorizontalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jButton17)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(t_orden, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(24, Short.MAX_VALUE))
+        );
+        jPanel9Layout.setVerticalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(jButton17, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(t_orden, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
@@ -968,11 +1048,11 @@ public class Reporte2 extends javax.swing.JPanel {
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 985, Short.MAX_VALUE)
                     .addGroup(jPanel8Layout.createSequentialGroup()
-                        .addComponent(t_orden, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cmb_busca, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton16)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton17, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton19, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -982,19 +1062,24 @@ public class Reporte2 extends javax.swing.JPanel {
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel8Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(t_orden, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton16)
-                            .addComponent(jButton17, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jButton19, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jButton18, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 438, Short.MAX_VALUE)
-                .addContainerGap())
+                    .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel8Layout.createSequentialGroup()
+                            .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+                            .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(cmb_busca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jButton16))
+                            .addGap(20, 20, 20)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButton18, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton19, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 380, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(51, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Consumible  x unidad", jPanel8);
@@ -1048,7 +1133,7 @@ public class Reporte2 extends javax.swing.JPanel {
                     .addComponent(t_pedido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton20))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 442, Short.MAX_VALUE)
+                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 446, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -2029,7 +2114,7 @@ public class Reporte2 extends javax.swing.JPanel {
                         
                         PDF reporte = new PDF();
                         Date fecha = new Date();
-                        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
+                        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH-mm-ss");//YYYY-MM-DD HH:MM:SS
                         String valor=dateFormat.format(fecha);
 
                         reporte.Abrir2(PageSize.LETTER, "Reporte Pedidos Consumibles", ruta+".pdf");
@@ -2042,6 +2127,15 @@ public class Reporte2 extends javax.swing.JPanel {
 
                         PdfPTable tabla=reporte.crearTabla(nuevos.length, nuevos, 100, Element.ALIGN_CENTER);
                         cabecera1(reporte, bf, tabla, "Consumibles de la Unidad: "+valor, 3);
+
+                        reporte.agregaObjeto(new Paragraph("Reporte de Consumibles " +cmb_busca.getSelectedItem().toString()+ " no. orden: " + t_orden.getText() + " ",
+				FontFactory.getFont("helvetica",   // fuente
+				14,                            // tamaño
+				Font.NORMAL,                   // estilo
+				BaseColor.BLACK)));             // color
+                        reporte.finTexto();
+                        reporte.agregaObjeto(new Paragraph(" "));
+                        
                         for(int ren=0; ren<t_unidad.getRowCount(); ren++)
                         {
                             for(int col=0; col<t_unidad.getColumnCount(); col++)
@@ -2136,6 +2230,11 @@ public class Reporte2 extends javax.swing.JPanel {
         if(t_pedido.getText().compareTo("")!=0)
             buscaCuentas();
     }//GEN-LAST:event_t_pedidoActionPerformed
+
+    private void cmb_buscaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmb_buscaActionPerformed
+
+        //consultaOrden();
+    }//GEN-LAST:event_cmb_buscaActionPerformed
 
     DefaultTableModel ModeloTablaReporte(int renglones, String columnas[], final Class[] tipos, final boolean[] edo, DefaultTableModel modelo)
     {
@@ -2259,6 +2358,7 @@ public void cabecera1(PDF reporte, BaseFont bf, PdfPTable tabla, String titulo1,
                     if(op==3)
                         tabla.addCell(reporte.celda(t_unidad.getColumnName(a), font, cabecera, centro, 0, 1, Rectangle.RECTANGLE));
                 }
+              
        }catch(Exception e)
        {
            System.out.println(e);
@@ -2426,6 +2526,7 @@ public void cabecera1(PDF reporte, BaseFont bf, PdfPTable tabla, String titulo1,
     private javax.swing.JButton b_fecha_siniestro1;
     private javax.swing.JComboBox cb_tipo;
     private javax.swing.JPanel centro;
+    private javax.swing.JComboBox cmb_busca;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton13;
     private javax.swing.JButton jButton14;
@@ -2460,6 +2561,7 @@ public void cabecera1(PDF reporte, BaseFont bf, PdfPTable tabla, String titulo1,
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
+    private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;

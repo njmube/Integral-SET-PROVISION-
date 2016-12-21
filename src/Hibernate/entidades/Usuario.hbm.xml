@@ -369,6 +369,18 @@
         <property name="editaSm" type="java.lang.Boolean">
             <column name="edita_sm" />
         </property>
+        <property name="consultaConsumible" type="java.lang.Boolean">
+            <column name="consulta_consumible" />
+        </property>
+        <property name="editaConsumible" type="java.lang.Boolean">
+            <column name="edita_consumible" />
+        </property>
+        <property name="autorizaTrabajo" type="java.lang.Boolean">
+            <column name="autoriza_trabajo" />
+        </property>
+        <property name="generaAdicional" type="java.lang.Boolean">
+            <column name="genera_adicional" />
+        </property>
         <set name="pedidosForAutorizo" table="pedido" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="autorizo" length="10">

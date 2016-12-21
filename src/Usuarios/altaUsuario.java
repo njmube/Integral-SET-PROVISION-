@@ -180,6 +180,8 @@ public class altaUsuario extends javax.swing.JPanel {
         jPanel3 = new javax.swing.JPanel();
         cb_s_consultar = new javax.swing.JCheckBox();
         cb_s_editar = new javax.swing.JCheckBox();
+        cb_g_adicional = new javax.swing.JCheckBox();
+        cb_a_adicional = new javax.swing.JCheckBox();
 
         cb_consulta_muestra.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         cb_consulta_muestra.setText("Consulta muestras");
@@ -1120,9 +1122,8 @@ public class altaUsuario extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(cb_cancela_movimiento)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(cb_movimiento_almacen)
-                        .addComponent(cb_consulta_almacen)))
+                    .addComponent(cb_movimiento_almacen)
+                    .addComponent(cb_consulta_almacen))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(cb_autoriza_entregas)
@@ -1197,6 +1198,22 @@ public class altaUsuario extends javax.swing.JPanel {
             }
         });
 
+        cb_g_adicional.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        cb_g_adicional.setText("Genera adicionales");
+        cb_g_adicional.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cb_g_adicionalActionPerformed(evt);
+            }
+        });
+
+        cb_a_adicional.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        cb_a_adicional.setText("Autorizar adicionales");
+        cb_a_adicional.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cb_a_adicionalActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -1204,17 +1221,25 @@ public class altaUsuario extends javax.swing.JPanel {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cb_s_consultar)
-                    .addComponent(cb_s_editar))
-                .addContainerGap(61, Short.MAX_VALUE))
+                    .addComponent(cb_s_editar)
+                    .addComponent(cb_s_consultar))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cb_a_adicional)
+                    .addComponent(cb_g_adicional))
+                .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(cb_s_consultar)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cb_s_consultar)
+                    .addComponent(cb_g_adicional))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cb_s_editar)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cb_s_editar)
+                    .addComponent(cb_a_adicional))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout contenedorLayout = new javax.swing.GroupLayout(contenedor);
@@ -1447,6 +1472,8 @@ public class altaUsuario extends javax.swing.JPanel {
                                     this.cb_editar_sm.isSelected(),
                                     this.cb_consulta_consumible.isSelected(),
                                     this.cb_edita_consumible.isSelected(),
+                                    this.cb_g_adicional.isSelected(),
+                                    this.cb_a_adicional.isSelected(),
             /*aqui van los HashSet*/null,
                                     null,
                                     null,
@@ -1559,11 +1586,20 @@ public class altaUsuario extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_cb_edita_consumibleActionPerformed
 
+    private void cb_g_adicionalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_g_adicionalActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cb_g_adicionalActionPerformed
+
+    private void cb_a_adicionalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_a_adicionalActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cb_a_adicionalActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton b_buscar_empleado;
     private javax.swing.JButton b_cancelar;
     private javax.swing.JButton b_guardar;
+    private javax.swing.JCheckBox cb_a_adicional;
     private javax.swing.JCheckBox cb_a_valuacion;
     private javax.swing.JCheckBox cb_abrir_cotizacion;
     private javax.swing.JCheckBox cb_abrir_levantamiento;
@@ -1651,6 +1687,7 @@ public class altaUsuario extends javax.swing.JPanel {
     private javax.swing.JCheckBox cb_elimina_pedido;
     private javax.swing.JCheckBox cb_enviar_contabilidad;
     private javax.swing.JCheckBox cb_establecer_metas;
+    private javax.swing.JCheckBox cb_g_adicional;
     private javax.swing.JCheckBox cb_generar_ciclo;
     private javax.swing.JCheckBox cb_generar_factura;
     private javax.swing.JCheckBox cb_generar_pedido;
@@ -1715,6 +1752,8 @@ public class altaUsuario extends javax.swing.JPanel {
             this.cb_establecer_metas.setSelected(false);
             this.cb_consultar_agenda.setSelected(false);
             this.cb_editar_agenda.setSelected(false);
+            this.cb_g_adicional.setSelected(false);
+            this.cb_a_adicional.setSelected(false);
             
             //multimedia
             this.cb_consulta_galeria.setSelected(false);

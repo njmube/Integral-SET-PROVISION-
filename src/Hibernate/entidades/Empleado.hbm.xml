@@ -144,11 +144,11 @@
             </key>
             <one-to-many class="Hibernate.entidades.Usuario" />
         </set>
-        <set name="pagoAdicional" table="pago_adicional" inverse="true" lazy="true" fetch="select">
+        <set name="trabajoExtras" table="trabajo_extra" inverse="true" lazy="true" fetch="select">
             <key>
-                <column name="id_Empeado" />
+                <column name="id_empleado" />
             </key>
-            <one-to-many class="Hibernate.entidades.PagoAdicional" />
+            <one-to-many class="Hibernate.entidades.TrabajoExtra" />
         </set>
         <set name="almacens" table="almacen" inverse="true" lazy="true" fetch="select">
             <key>

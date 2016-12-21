@@ -16,6 +16,7 @@ public class Almacen  implements java.io.Serializable {
      private Usuario usuario;
      private Destajo destajo;
      private Pedido pedido;
+     private TrabajoExtra trabajoExtra;
      private Orden orden;
      private Empleado empleado;
      private String entrego;
@@ -41,10 +42,11 @@ public class Almacen  implements java.io.Serializable {
         this.operacion = operacion;
     }
     //public Almacen(Usuario usuario, Pedido pedido, String entrego, Date fecha, int tipoMovimiento, int operacion, String documento, String notas, String autorizo, String tipoDocumento, Orden orden, Set movimientos) {
-    public Almacen(Usuario usuario, Destajo destajo, Pedido pedido, Orden orden, Empleado empleado, String entrego, Date fecha, int tipoMovimiento, int operacion, String documento, String notas, String autorizo, String tipoDocumento, String especialidad, Set movimientos) {
+    public Almacen(Usuario usuario, Destajo destajo, Pedido pedido, TrabajoExtra trabajoExtra, Orden orden, Empleado empleado, String entrego, Date fecha, int tipoMovimiento, int operacion, String documento, String notas, String autorizo, String tipoDocumento, String especialidad, Set movimientos) {
        this.usuario = usuario;
        this.destajo = destajo;
        this.pedido = pedido;
+       this.trabajoExtra = trabajoExtra;
        this.entrego = entrego;
        this.fecha = fecha;
        this.tipoMovimiento = tipoMovimiento;
@@ -86,6 +88,14 @@ public class Almacen  implements java.io.Serializable {
     
     public void setPedido(Pedido pedido) {
         this.pedido = pedido;
+    }
+    
+    public TrabajoExtra getTrabajoExtra() {
+        return this.trabajoExtra;
+    }
+    
+    public void setTrabajoExtra(TrabajoExtra trabajoExtra) {
+        this.trabajoExtra = trabajoExtra;
     }
     
     public Orden getOrden() {

@@ -13,6 +13,7 @@ import Hibernate.entidades.OrdenExterna;
 import Hibernate.entidades.Partida;
 import Hibernate.entidades.PartidaExterna;
 import Hibernate.entidades.Pedido;
+import Hibernate.entidades.TrabajoExtra;
 import Hibernate.entidades.Usuario;
 import Hibernate.entidades.XCobrar;
 import Servicios.buscaOrden;
@@ -44,8 +45,11 @@ import Integral.FormatoEditor;
 import Integral.FormatoTabla;
 import Integral.Herramientas;
 import Integral.Render1;
+import Operaciones.buscaExtra;
+import Operaciones.buscaResponsable;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.math.BigDecimal;
 import java.util.Properties;
 import javax.mail.BodyPart;
 import javax.mail.Message;
@@ -54,6 +58,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import org.hibernate.Criteria;
 /**
  * @author ESPECIALIZADO TOLUCA
  */
@@ -71,7 +76,8 @@ public class nuevoAlmacen extends javax.swing.JPanel {
     Almacen miAlmacen;
     String miTitulo="ENTRADA DE MATERIAL DE PEDIDO";
     int iva=0;
-    /**
+    String id_empleado="", id_trabajo="";;
+    /**0
      * Creates new form nuevAlmacen
      */
     public nuevoAlmacen(Usuario usuario, String ses, int op) {
@@ -81,8 +87,8 @@ public class nuevoAlmacen extends javax.swing.JPanel {
         iva=con.getIva();
         if(session.isOpen())
             session.close();
-        
-        buscar.setIcon(new ImageIcon("imagenes/buscar.png"));
+       
+        cb_especialidad.setVisible(false);
         menu=op;
         usr=usuario;
         sessionPrograma=ses;
@@ -100,6 +106,7 @@ public class nuevoAlmacen extends javax.swing.JPanel {
         t_datos.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         sumaTotales();
         formatoTabla();
+        titulos();
         b_buscapedido.setEnabled(true);
         b_buscaorden.setEnabled(false);
         cb_sin_orden.setVisible(false);
@@ -174,24 +181,29 @@ public class nuevoAlmacen extends javax.swing.JPanel {
         jButton10 = new javax.swing.JButton();
         jButton11 = new javax.swing.JButton();
         jPanelMalmacen = new javax.swing.JPanel();
+        jPanel8 = new javax.swing.JPanel();
         jPanelProveedor = new javax.swing.JPanel();
+        jPanel4 = new javax.swing.JPanel();
+        b_buscapedido = new javax.swing.JButton();
+        t_pedido = new javax.swing.JTextField();
+        l_tipo_pedido = new javax.swing.JLabel();
+        b_buscaorden = new javax.swing.JButton();
+        t_orden = new javax.swing.JTextField();
+        cb_sin_orden = new javax.swing.JCheckBox();
+        b_detalles = new javax.swing.JButton();
+        jPanel6 = new javax.swing.JPanel();
+        buscar = new javax.swing.JButton();
+        cb_1 = new javax.swing.JComboBox();
+        t_er = new javax.swing.JTextField();
+        cb_especialidad = new javax.swing.JComboBox();
+        jPanel7 = new javax.swing.JPanel();
+        t_fecha = new javax.swing.JTextField();
         l_fecha = new javax.swing.JLabel();
         l_nmovimiento = new javax.swing.JLabel();
         t_nmovimiento = new javax.swing.JTextField();
-        t_fecha = new javax.swing.JTextField();
-        t_pedido = new javax.swing.JTextField();
-        b_buscapedido = new javax.swing.JButton();
-        t_orden = new javax.swing.JTextField();
-        b_buscaorden = new javax.swing.JButton();
-        t_folio = new javax.swing.JTextField();
-        l_tipo_pedido = new javax.swing.JLabel();
-        r1 = new javax.swing.JRadioButton();
         r2 = new javax.swing.JRadioButton();
-        b_detalles = new javax.swing.JButton();
-        t_er = new javax.swing.JTextField();
-        l_er = new javax.swing.JLabel();
-        cb_sin_orden = new javax.swing.JCheckBox();
-        buscar = new javax.swing.JButton();
+        r1 = new javax.swing.JRadioButton();
+        t_folio = new javax.swing.JTextField();
         jScrollPane4 = new javax.swing.JScrollPane();
         t_datos = new javax.swing.JTable();
         jPanelM = new javax.swing.JPanel();
@@ -205,7 +217,6 @@ public class nuevoAlmacen extends javax.swing.JPanel {
         jScrollPane2 = new javax.swing.JScrollPane();
         t_notas = new javax.swing.JTextArea();
         b_guardar = new javax.swing.JButton();
-        b_recargar = new javax.swing.JButton();
         b_mas = new javax.swing.JButton();
         b_menos = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
@@ -596,7 +607,7 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                 .addComponent(jButton11, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton10, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 117, Short.MAX_VALUE))
+                .addGap(0, 104, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -618,34 +629,18 @@ public class nuevoAlmacen extends javax.swing.JPanel {
         add(jPanel2, java.awt.BorderLayout.NORTH);
 
         jPanelMalmacen.setBackground(new java.awt.Color(254, 254, 254));
-        jPanelMalmacen.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), miTitulo, javax.swing.border.TitledBorder.RIGHT, javax.swing.border.TitledBorder.TOP));
+        jPanelMalmacen.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), miTitulo, javax.swing.border.TitledBorder.RIGHT, javax.swing.border.TitledBorder.ABOVE_TOP));
 
-        jPanelProveedor.setBackground(new java.awt.Color(255, 255, 255));
-        jPanelProveedor.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "Proveedor", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP));
+        jPanel8.setBackground(new java.awt.Color(51, 51, 255));
 
-        l_fecha.setFont(new java.awt.Font("Arial", 0, 10)); // NOI18N
-        l_fecha.setText("Fecha:");
+        jPanelProveedor.setBackground(new java.awt.Color(51, 51, 255));
 
-        l_nmovimiento.setFont(new java.awt.Font("Arial", 0, 10)); // NOI18N
-        l_nmovimiento.setText("N° Mov.");
-
-        t_nmovimiento.setEditable(false);
-        t_nmovimiento.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_nmovimiento.setEnabled(false);
-
-        t_fecha.setEditable(false);
-        t_fecha.setText("DD/MM/AAAA");
-        t_fecha.setToolTipText("fecha para refacciones");
-        t_fecha.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_fecha.setEnabled(false);
-
-        t_pedido.setEditable(false);
-        t_pedido.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_pedido.setEnabled(false);
+        jPanel4.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel4.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
 
         b_buscapedido.setBackground(new java.awt.Color(51, 51, 255));
         b_buscapedido.setForeground(new java.awt.Color(255, 255, 255));
-        b_buscapedido.setText("N° Pedido:");
+        b_buscapedido.setText("Pedido");
         b_buscapedido.setEnabled(false);
         b_buscapedido.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -653,13 +648,15 @@ public class nuevoAlmacen extends javax.swing.JPanel {
             }
         });
 
-        t_orden.setEditable(false);
-        t_orden.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_orden.setEnabled(false);
+        t_pedido.setEditable(false);
+        t_pedido.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
+        t_pedido.setOpaque(false);
+
+        l_tipo_pedido.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
 
         b_buscaorden.setBackground(new java.awt.Color(51, 51, 255));
         b_buscaorden.setForeground(new java.awt.Color(255, 255, 255));
-        b_buscaorden.setText("N° Orden:");
+        b_buscaorden.setText("Orden");
         b_buscaorden.setEnabled(false);
         b_buscaorden.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -667,31 +664,85 @@ public class nuevoAlmacen extends javax.swing.JPanel {
             }
         });
 
-        t_folio.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_folio.setEnabled(false);
-        t_folio.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                t_folioKeyTyped(evt);
+        t_orden.setEditable(false);
+        t_orden.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
+        t_orden.setOpaque(false);
+
+        cb_sin_orden.setText("Sin Orden");
+        cb_sin_orden.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cb_sin_ordenActionPerformed(evt);
             }
         });
 
-        l_tipo_pedido.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
-
-        buttonGroup1.add(r1);
-        r1.setText("Factura");
-        r1.setEnabled(false);
-
-        buttonGroup1.add(r2);
-        r2.setSelected(true);
-        r2.setText("Remisión");
-        r2.setEnabled(false);
-
         b_detalles.setBackground(new java.awt.Color(51, 51, 255));
         b_detalles.setForeground(new java.awt.Color(255, 255, 255));
-        b_detalles.setText("Ver mas");
+        b_detalles.setText("?");
         b_detalles.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 b_detallesActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(b_buscapedido)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(l_tipo_pedido, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(t_pedido, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(b_buscaorden)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(t_orden, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(b_detalles, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cb_sin_orden))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(t_orden, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(b_detalles, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cb_sin_orden))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(t_pedido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(8, 8, 8)
+                        .addComponent(l_tipo_pedido, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(b_buscapedido, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(b_buscaorden, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(11, Short.MAX_VALUE))
+        );
+
+        jPanel6.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel6.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+
+        buscar.setBackground(new java.awt.Color(51, 51, 255));
+        buscar.setForeground(new java.awt.Color(255, 255, 255));
+        buscar.setText("Entrego");
+        buscar.setPreferredSize(new java.awt.Dimension(32, 8));
+        buscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buscarActionPerformed(evt);
+            }
+        });
+
+        cb_1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "SINIESTRO", "ADICIONAL" }));
+        cb_1.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cb_1ItemStateChanged(evt);
             }
         });
 
@@ -708,23 +759,114 @@ public class nuevoAlmacen extends javax.swing.JPanel {
             }
         });
 
-        l_er.setFont(new java.awt.Font("Arial", 0, 10)); // NOI18N
-        l_er.setText("Entrego");
+        cb_especialidad.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "SELECCIONAR", "HOJALATERIA", "MECANICA", "SUSPENSION", "ELECTRICO", "PINTURA", "ADICIONAL" }));
+        cb_especialidad.setEnabled(false);
 
-        cb_sin_orden.setText("Sin Orden");
-        cb_sin_orden.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cb_sin_ordenActionPerformed(evt);
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addComponent(cb_1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(cb_especialidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(t_er))
+                .addContainerGap())
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(cb_1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cb_especialidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(t_er, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(buscar, javax.swing.GroupLayout.DEFAULT_SIZE, 46, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+
+        jPanel7.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel7.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+
+        t_fecha.setEditable(false);
+        t_fecha.setBackground(new java.awt.Color(255, 255, 255));
+        t_fecha.setText("DD/MM/AAAA");
+        t_fecha.setToolTipText("fecha para refacciones");
+        t_fecha.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
+
+        l_fecha.setFont(new java.awt.Font("Arial", 0, 10)); // NOI18N
+        l_fecha.setText("Fecha:");
+
+        l_nmovimiento.setFont(new java.awt.Font("Arial", 0, 10)); // NOI18N
+        l_nmovimiento.setText("N° Mov.");
+
+        t_nmovimiento.setEditable(false);
+        t_nmovimiento.setBackground(new java.awt.Color(255, 255, 255));
+        t_nmovimiento.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
+
+        buttonGroup1.add(r2);
+        r2.setSelected(true);
+        r2.setText("Remisión");
+        r2.setEnabled(false);
+
+        buttonGroup1.add(r1);
+        r1.setText("Factura");
+        r1.setEnabled(false);
+
+        t_folio.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        t_folio.setEnabled(false);
+        t_folio.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                t_folioKeyTyped(evt);
             }
         });
 
-        buscar.setBackground(new java.awt.Color(2, 135, 242));
-        buscar.setPreferredSize(new java.awt.Dimension(32, 8));
-        buscar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buscarActionPerformed(evt);
-            }
-        });
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addComponent(r1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(r2))
+                    .addComponent(t_folio, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(l_nmovimiento)
+                    .addComponent(l_fecha))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(t_fecha)
+                    .addComponent(t_nmovimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(l_nmovimiento)
+                    .addComponent(t_nmovimiento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(r1)
+                    .addComponent(r2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(t_fecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(l_fecha)
+                    .addComponent(t_folio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(13, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout jPanelProveedorLayout = new javax.swing.GroupLayout(jPanelProveedor);
         jPanelProveedor.setLayout(jPanelProveedorLayout);
@@ -732,77 +874,22 @@ public class nuevoAlmacen extends javax.swing.JPanel {
             jPanelProveedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelProveedorLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanelProveedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanelProveedorLayout.createSequentialGroup()
-                        .addComponent(l_er, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(t_er))
-                    .addGroup(jPanelProveedorLayout.createSequentialGroup()
-                        .addComponent(b_buscapedido)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(t_pedido, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(l_tipo_pedido, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(b_buscaorden)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(t_orden, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(b_detalles)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(cb_sin_orden)
-                        .addGap(122, 122, 122)))
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(buscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(10, 10, 10)
-                .addGroup(jPanelProveedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanelProveedorLayout.createSequentialGroup()
-                        .addComponent(r1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(r2))
-                    .addComponent(t_folio, javax.swing.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE))
+                .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanelProveedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(l_nmovimiento)
-                    .addComponent(l_fecha))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanelProveedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(t_fecha, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE)
-                    .addComponent(t_nmovimiento))
+                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         jPanelProveedorLayout.setVerticalGroup(
             jPanelProveedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelProveedorLayout.createSequentialGroup()
-                .addGroup(jPanelProveedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanelProveedorLayout.createSequentialGroup()
-                        .addGroup(jPanelProveedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(l_nmovimiento)
-                            .addComponent(t_nmovimiento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(r1)
-                            .addComponent(r2)
-                            .addComponent(b_buscaorden, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(t_orden, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(b_detalles, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(cb_sin_orden))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanelProveedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(t_fecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(l_fecha)
-                            .addComponent(t_folio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanelProveedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(jPanelProveedorLayout.createSequentialGroup()
-                            .addGroup(jPanelProveedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(jPanelProveedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(b_buscapedido, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(t_pedido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addComponent(l_tipo_pedido, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addGroup(jPanelProveedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(l_er, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(t_er, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelProveedorLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         t_datos.setModel(new javax.swing.table.DefaultTableModel(
@@ -881,17 +968,6 @@ public class nuevoAlmacen extends javax.swing.JPanel {
         b_guardar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 b_guardarActionPerformed(evt);
-            }
-        });
-
-        b_recargar.setFont(new java.awt.Font("Tahoma", 0, 9)); // NOI18N
-        b_recargar.setText("Recargar");
-        b_recargar.setToolTipText("");
-        b_recargar.setEnabled(false);
-        b_recargar.setPreferredSize(new java.awt.Dimension(32, 8));
-        b_recargar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                b_recargarActionPerformed(evt);
             }
         });
 
@@ -1014,13 +1090,11 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                 .addGap(10, 10, 10)
                 .addComponent(b_menos, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 577, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanelMLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(b_recargar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(b_guardar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(b_guardar, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanelOperaciones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -1035,31 +1109,41 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                         .addContainerGap()
                         .addGroup(jPanelMLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jPanelOperaciones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelMLayout.createSequentialGroup()
-                                .addComponent(b_recargar, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(b_guardar, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelMLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(b_guardar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanelProveedor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jScrollPane4)
+            .addComponent(jPanelM, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanelProveedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanelM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         javax.swing.GroupLayout jPanelMalmacenLayout = new javax.swing.GroupLayout(jPanelMalmacen);
         jPanelMalmacen.setLayout(jPanelMalmacenLayout);
         jPanelMalmacenLayout.setHorizontalGroup(
             jPanelMalmacenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.TRAILING)
-            .addComponent(jPanelProveedor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanelM, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanelMalmacenLayout.setVerticalGroup(
             jPanelMalmacenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelMalmacenLayout.createSequentialGroup()
-                .addComponent(jPanelProveedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanelM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         add(jPanelMalmacen, java.awt.BorderLayout.CENTER);
@@ -1086,244 +1170,245 @@ public class nuevoAlmacen extends javax.swing.JPanel {
         try
         {
             session.beginTransaction().begin();
-            if(c_toperacion.getSelectedItem().toString().compareTo("Pedido")==0)
+            switch(c_toperacion.getSelectedItem().toString())
             {
-                pedido =(Pedido)session.get(Pedido.class, Integer.parseInt(t_pedido.getText()));
-                if(t_pedido.getText().compareTo("")!=0)
-                {
-                    consultaPartidaPedido obj = new consultaPartidaPedido(new javax.swing.JFrame(), true, pedido, usr);
-                    obj.t_pedido.setText(t_pedido.getText());
-                    obj.busca(c_toperacion.getSelectedItem().toString(),l_tipo_pedido.getText(), c_tmovimiento.getSelectedItem().toString());
-                    Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-                    obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
-                    obj.setVisible(true);
-                    renglones=obj.getReturnStatus();
-                    if(renglones!=null)
+                case "Pedido":
+                    pedido =(Pedido)session.get(Pedido.class, Integer.parseInt(t_pedido.getText()));
+                    if(t_pedido.getText().compareTo("")!=0)
                     {
-                        for(int x=0; x<renglones.size(); x++)
-                        {
-                            part_act=(List)renglones.get(x);
-                            int r=buscapartida(part_act);
-                            if(r==-1)
-                            {
-                                Object[] vector=new Object[part_act.size()];
-                                for(int c=0; c<part_act.size(); c++)
-                                {
-                                    vector[c]=part_act.get(c);
-                                }
-                                model.addRow(vector);
-                                if(l_tipo_pedido.getText().compareTo("Interno")==0)
-                                {
-                                    model.setColumnaEditable(3, true);
-                                    model.setColumnaEditable(8, true);
-                                }
-                                if(l_tipo_pedido.getText().compareTo("Externo")==0)
-                                {
-                                    model.setColumnaEditable(6, true);
-                                }
-                                if(l_tipo_pedido.getText().compareTo("Adicional")==0)
-                                {
-                                    model.setColumnaEditable(8, true);
-                                }
-                            }
-                        }
-                        sumaTotales();
-                    }
-                }
-                else
-                {
-                    JOptionPane.showMessageDialog(null, "¡Selecciona una partida!");
-                    b_buscapedido.requestFocus();
-                }
-            }
-            if(c_toperacion.getSelectedItem().toString().compareTo("Compañía")==0)
-            {
-                orden_act =(Orden)session.get(Orden.class, Integer.parseInt(t_orden.getText()));
-                if(t_orden.getText().compareTo("")!=0)
-                {
-                    consultaPartidaOrden obj = new consultaPartidaOrden(new javax.swing.JFrame(), true,this.orden_act, usr);
-                    obj.t_orden.setText(t_orden.getText());
-                    obj.busca(c_toperacion.getSelectedItem().toString(),l_tipo_pedido.getText(), c_tmovimiento.getSelectedItem().toString(), "", "");
-                    Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-                    obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
-                    obj.setVisible(true);
-                    renglones=obj.getReturnStatus();
-                    if(renglones!=null)
-                    {
-                        for(int x=0; x<renglones.size(); x++)
-                        {
-                            part_act=(List)renglones.get(x);
-                            int r=buscapartida(part_act);
-                            if(r==-1)
-                            {
-                                Object[] vector=new Object[10];
-                                for(int c=0; c<part_act.size(); c++)
-                                {
-                                    vector[c]=part_act.get(c);
-                                }
-                                model.addRow(vector);
-                                model.setColumnaEditable(8, true);
-                                sumaTotales();
-                            }
-                        }
-                    }               
-                }
-                else
-                {
-                    JOptionPane.showMessageDialog(null, "¡Selecciona una partida!");
-                    b_buscapedido.requestFocus();
-                }
-            }
-            if(c_toperacion.getSelectedItem().toString().compareTo("Operarios")==0)
-            {
-                orden_act =(Orden)session.get(Orden.class, Integer.parseInt(t_orden.getText()));
-                if(t_orden.getText().compareTo("")!=0)
-                {
-                    consultaPartidaOrden obj = new consultaPartidaOrden(new javax.swing.JFrame(), true, this.orden_act, usr);
-                    String q1="";
-                    String q2="";
-                    if(f1.isSelected())
-                    {
-                        q1+=" and part.espHoj=true";
-                        q2+=" and partEx.pedido.partida.espHoj=true";
-                    }
-                    if(f2.isSelected())
-                    {
-                        q1+=" and part.espMec=true";
-                        q2+=" and partEx.pedido.partida.espMec=true";
-                    }
-                    if(f3.isSelected())
-                    {
-                        q1+=" and part.espSus=true";
-                        q2+=" and partEx.pedido.partida.espSus=true";
-                    }
-                    if(f4.isSelected())
-                    {
-                        q1+=" and part.espEle=true";
-                        q2+=" and partEx.pedido.partida.espEle=true";
-                    }
-                    obj.t_orden.setText(t_orden.getText());
-                    obj.busca(c_toperacion.getSelectedItem().toString(),l_tipo_pedido.getText(), c_tmovimiento.getSelectedItem().toString(), q1, q2);
-                    Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-                    obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
-                    obj.setVisible(true);
-                    renglones=obj.getReturnStatus();
-                    if(renglones!=null)
-                    {
-                        for(int x=0; x<renglones.size(); x++)
-                        {
-                            part_act=(List)renglones.get(x);
-                            int r=buscapartida(part_act);
-                            if(r==-1)
-                            {
-                                Object[] vector=new Object[10];
-                                for(int c=0; c<part_act.size(); c++)
-                                {
-                                    vector[c]=part_act.get(c);
-                                }
-                                model.addRow(vector);
-                                if(c_tmovimiento.getSelectedItem().toString().compareTo("Entrada")==0)
-                                    model.setColumnaEditable(7, true);
-                                else
-                                    model.setColumnaEditable(8, true);
-                                sumaTotales();
-                            }
-                            else
-                                JOptionPane.showMessageDialog(null, "¡No se pueden agregar partidas duplicadas!");
-                        }
-                    }               
-                }
-                else
-                {
-                    JOptionPane.showMessageDialog(null, "¡Selecciona una partida!");
-                    b_buscapedido.requestFocus();
-                }
-            }
-            if(c_toperacion.getSelectedItem().toString().compareTo("Inventario")==0)
-            {
-                if(t_orden.getText().compareTo("")!=0)
-                {
-                     buscaEjemplarAlmacen obj= new buscaEjemplarAlmacen(null, true, this.sessionPrograma, this.usr, t_orden.getText());
-                     Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-                     obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
-                     obj.setVisible(true);
-                     Object[] vector = obj.getReturnStatus();
-                     if(vector!=null)
-                     {
-                         String valor=(String)vector[0];
-                         int r= buscaEjemplar(valor);
- 
-                         if(r==-1)
-                         {
-                             System.out.println(vector.length);
-                             model.addRow(vector);
-                             model.setColumnaEditable(8, true);
-                         }
-                     } 
-                }
-                else
-                {
-                    if(cb_sin_orden.isSelected()==true)
-                    {
-                        buscaEjemplarAlmacen obj= new buscaEjemplarAlmacen(null, true, this.sessionPrograma, this.usr, "");
+                        consultaPartidaPedido obj = new consultaPartidaPedido(new javax.swing.JFrame(), true, pedido, usr);
+                        obj.t_pedido.setText(t_pedido.getText());
+                        obj.busca(c_toperacion.getSelectedItem().toString(),l_tipo_pedido.getText(), c_tmovimiento.getSelectedItem().toString());
                         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
                         obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
                         obj.setVisible(true);
-                        Object[] vector = obj.getReturnStatus();
-                        if(vector!=null)
+                        renglones=obj.getReturnStatus();
+                        if(renglones!=null)
                         {
-                            String valor=(String)vector[0];
-                            int r= buscaEjemplar(valor);
-
-                            if(r==-1)
+                            for(int x=0; x<renglones.size(); x++)
                             {
-                                model.addRow(vector);
-                                model.setColumnaEditable(7, true);
-                            }
-                        } 
-                    }
-                }
-            }
-            if(c_toperacion.getSelectedItem().toString().compareTo("Venta")==0)
-            {
-                pedido =(Pedido)session.get(Pedido.class, Integer.parseInt(t_pedido.getText()));
-                if(t_pedido.getText().compareTo("")!=0)
-                {
-                    consultaPartidaPedido obj = new consultaPartidaPedido(new javax.swing.JFrame(), true,pedido, usr);
-                    obj.t_pedido.setText(t_pedido.getText());
-                    obj.busca(c_toperacion.getSelectedItem().toString(),l_tipo_pedido.getText(), c_tmovimiento.getSelectedItem().toString());
-                    Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-                    obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
-                    obj.setVisible(true);
-                    renglones=obj.getReturnStatus();
-                    if(renglones!=null)
-                    {
-                        for(int x=0; x<renglones.size(); x++)
-                        {
-                            part_act=(List)renglones.get(x);
-                            int r=buscapartida(part_act);
-                            if(r==-1)
-                            {
-                                Object[] vector=new Object[10];
-                                for(int c=0; c<part_act.size(); c++)
+                                part_act=(List)renglones.get(x);
+                                int r=buscapartida(part_act);
+                                if(r==-1)
                                 {
-                                    vector[c]=part_act.get(c);
+                                    Object[] vector=new Object[part_act.size()];
+                                    for(int c=0; c<part_act.size(); c++)
+                                    {
+                                        vector[c]=part_act.get(c);
+                                    }
+                                    model.addRow(vector);
+                                    if(l_tipo_pedido.getText().compareTo("Interno")==0)
+                                    {
+                                        model.setColumnaEditable(3, true);
+                                        model.setColumnaEditable(8, true);
+                                    }
+                                    if(l_tipo_pedido.getText().compareTo("Externo")==0)
+                                    {
+                                        model.setColumnaEditable(6, true);
+                                    }
+                                    if(l_tipo_pedido.getText().compareTo("Adicional")==0)
+                                    {
+                                        model.setColumnaEditable(8, true);
+                                    }
                                 }
-                                model.addRow(vector);
-                                if(c_tmovimiento.getSelectedItem().toString().compareTo("Entrada")==0)
-                                    model.setColumnaEditable(5, true);
-                                else
-                                    model.setColumnaEditable(7, true);
-                                sumaTotales();
                             }
+                            sumaTotales();
                         }
-                    }               
-                }
-                else
-                {
-                    JOptionPane.showMessageDialog(null, "¡Selecciona una partida!");
-                    b_buscapedido.requestFocus();
-                }
+                    }
+                    else
+                    {
+                        JOptionPane.showMessageDialog(null, "¡Selecciona una partida!");
+                        b_buscapedido.requestFocus();
+                    }
+                break;
+                
+                case "Compañía":
+                    orden_act =(Orden)session.get(Orden.class, Integer.parseInt(t_orden.getText()));
+                    if(t_orden.getText().compareTo("")!=0)
+                    {
+                        consultaPartidaOrden obj = new consultaPartidaOrden(new javax.swing.JFrame(), true,this.orden_act, usr);
+                        obj.t_orden.setText(t_orden.getText());
+                        obj.busca(c_toperacion.getSelectedItem().toString(),l_tipo_pedido.getText(), c_tmovimiento.getSelectedItem().toString(), "", "");
+                        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+                        obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
+                        obj.setVisible(true);
+                        renglones=obj.getReturnStatus();
+                        if(renglones!=null)
+                        {
+                            for(int x=0; x<renglones.size(); x++)
+                            {
+                                part_act=(List)renglones.get(x);
+                                int r=buscapartida(part_act);
+                                if(r==-1)
+                                {
+                                    Object[] vector=new Object[10];
+                                    for(int c=0; c<part_act.size(); c++)
+                                    {
+                                        vector[c]=part_act.get(c);
+                                    }
+                                    model.addRow(vector);
+                                    model.setColumnaEditable(8, true);
+                                    sumaTotales();
+                                }
+                            }
+                        }               
+                    }
+                    else
+                    {
+                        JOptionPane.showMessageDialog(null, "¡Selecciona una partida!");
+                        b_buscapedido.requestFocus();
+                    }
+                break;
+                
+                case "Operarios":
+                    orden_act =(Orden)session.get(Orden.class, Integer.parseInt(t_orden.getText()));
+                    if(t_orden.getText().compareTo("")!=0)
+                    {
+                        consultaPartidaOrden obj = new consultaPartidaOrden(new javax.swing.JFrame(), true, this.orden_act, usr);
+                        String q1="";
+                        String q2="";
+                        if(f1.isSelected())
+                        {
+                            q1+=" and part.espHoj=true";
+                            q2+=" and partEx.pedido.partida.espHoj=true";
+                        }
+                        if(f2.isSelected())
+                        {
+                            q1+=" and part.espMec=true";
+                            q2+=" and partEx.pedido.partida.espMec=true";
+                        }
+                        if(f3.isSelected())
+                        {
+                            q1+=" and part.espSus=true";
+                            q2+=" and partEx.pedido.partida.espSus=true";
+                        }
+                        if(f4.isSelected())
+                        {
+                            q1+=" and part.espEle=true";
+                            q2+=" and partEx.pedido.partida.espEle=true";
+                        }
+                        obj.t_orden.setText(t_orden.getText());
+                        obj.busca(c_toperacion.getSelectedItem().toString(),l_tipo_pedido.getText(), c_tmovimiento.getSelectedItem().toString(), q1, q2);
+                        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+                        obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
+                        obj.setVisible(true);
+                        renglones=obj.getReturnStatus();
+                        if(renglones!=null)
+                        {
+                            for(int x=0; x<renglones.size(); x++)
+                            {
+                                part_act=(List)renglones.get(x);
+                                int r=buscapartida(part_act);
+                                if(r==-1)
+                                {
+                                    Object[] vector=new Object[10];
+                                    for(int c=0; c<part_act.size(); c++)
+                                    {
+                                        vector[c]=part_act.get(c);
+                                    }
+                                    model.addRow(vector);
+                                    if(c_tmovimiento.getSelectedItem().toString().compareTo("Entrada")==0)
+                                        model.setColumnaEditable(7, true);
+                                    else
+                                        model.setColumnaEditable(8, true);
+                                    sumaTotales();
+                                }
+                                else
+                                    JOptionPane.showMessageDialog(null, "¡No se pueden agregar partidas duplicadas!");
+                            }
+                        }               
+                    }
+                    else
+                    {
+                        JOptionPane.showMessageDialog(null, "¡Selecciona una partida!");
+                        b_buscapedido.requestFocus();
+                    }
+                break;
+                
+                case "Inventario":
+                    if(t_orden.getText().compareTo("")!=0)
+                    {
+                         buscaEjemplarAlmacen obj= new buscaEjemplarAlmacen(null, true, this.sessionPrograma, this.usr, t_orden.getText(), id_trabajo, cb_especialidad.getSelectedItem().toString());
+                         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+                         obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
+                         obj.setVisible(true);
+                         Object[] vector = obj.getReturnStatus();
+                         if(vector!=null)
+                         {
+                             String valor=(String)vector[0];
+                             int r= buscaEjemplar(valor);
+
+                             if(r==-1)
+                             {
+                                 model.addRow(vector);
+                                 model.setColumnaEditable(8, true);
+                             }
+                         } 
+                    }
+                    else
+                    {
+                        if(cb_sin_orden.isSelected()==true)
+                        {
+                            buscaEjemplarAlmacen obj= new buscaEjemplarAlmacen(null, true, this.sessionPrograma, this.usr, "", "", cb_especialidad.getSelectedItem().toString());
+                            Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+                            obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
+                            obj.setVisible(true);
+                            Object[] vector = obj.getReturnStatus();
+                            if(vector!=null)
+                            {
+                                String valor=(String)vector[0];
+                                int r= buscaEjemplar(valor);
+
+                                if(r==-1)
+                                {
+                                    model.addRow(vector);
+                                    model.setColumnaEditable(7, true);
+                                }
+                            } 
+                        }
+                    }
+                break;
+                    
+                case "Venta":
+                    pedido =(Pedido)session.get(Pedido.class, Integer.parseInt(t_pedido.getText()));
+                    if(t_pedido.getText().compareTo("")!=0)
+                    {
+                        consultaPartidaPedido obj = new consultaPartidaPedido(new javax.swing.JFrame(), true,pedido, usr);
+                        obj.t_pedido.setText(t_pedido.getText());
+                        obj.busca(c_toperacion.getSelectedItem().toString(),l_tipo_pedido.getText(), c_tmovimiento.getSelectedItem().toString());
+                        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+                        obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
+                        obj.setVisible(true);
+                        renglones=obj.getReturnStatus();
+                        if(renglones!=null)
+                        {
+                            for(int x=0; x<renglones.size(); x++)
+                            {
+                                part_act=(List)renglones.get(x);
+                                int r=buscapartida(part_act);
+                                if(r==-1)
+                                {
+                                    Object[] vector=new Object[10];
+                                    for(int c=0; c<part_act.size(); c++)
+                                    {
+                                        vector[c]=part_act.get(c);
+                                    }
+                                    model.addRow(vector);
+                                    if(c_tmovimiento.getSelectedItem().toString().compareTo("Entrada")==0)
+                                        model.setColumnaEditable(5, true);
+                                    else
+                                        model.setColumnaEditable(7, true);
+                                    sumaTotales();
+                                }
+                            }
+                        }               
+                    }
+                    else
+                    {
+                        JOptionPane.showMessageDialog(null, "¡Selecciona una partida!");
+                        b_buscapedido.requestFocus();
+                    }
+                break;
             }
         }catch(Exception e)
         {
@@ -1335,35 +1420,7 @@ public class nuevoAlmacen extends javax.swing.JPanel {
     }//GEN-LAST:event_b_masActionPerformed
 
     private void c_toperacionItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_c_toperacionItemStateChanged
-        switch (c_toperacion.getSelectedIndex()) 
-        {
-            case 0:
-                operacion(true, true, false, true, true, true, true, true, true, true);
-                borra_cajas();
-                limpiar_tabla();
-                break;
-            case 1:
-                operacion(false, true, true, true, false, false, false, false, false, false);
-                borra_cajas();
-                limpiar_tabla();
-                break;
-            case 2:
-                operacion(false, false, true, false, false, false, false, false, false, false);
-                borra_cajas();
-                limpiar_tabla();
-                break;
-            case 3:
-                operacion(true, true, false, true, true, true, true, true, true, true);
-                borra_cajas();
-                limpiar_tabla();
-                break;
-            case 4:
-                operacion(false, false, true, false, false, false, false, false, false, false);
-                borra_cajas();
-                limpiar_tabla();
-                break;
-        }
-        titulos();
+
     }//GEN-LAST:event_c_toperacionItemStateChanged
 
     private void b_buscapedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_buscapedidoActionPerformed
@@ -1381,7 +1438,7 @@ public class nuevoAlmacen extends javax.swing.JPanel {
         Pedido ped=obj.getReturnStatus();
         if(ped!=null)
         {
-            operacion(true, true, false, true, true, true, true, true, true, true);
+            operacion(true, true, false, true, true, true, true, true, true, true, false);
             limpiar_tabla();
             Session session = HibernateUtil.getSessionFactory().openSession();
             try
@@ -1515,11 +1572,7 @@ public class nuevoAlmacen extends javax.swing.JPanel {
     }//GEN-LAST:event_b_buscapedidoActionPerformed
 
     private void c_tmovimientoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_c_tmovimientoItemStateChanged
-        t_datos.setModel(model);
-        formatoTabla();
-        borra_cajas();
-        limpiar_tabla();
-        titulos();
+        
     }//GEN-LAST:event_c_tmovimientoItemStateChanged
 
     private void b_buscaordenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_buscaordenActionPerformed
@@ -1531,6 +1584,7 @@ public class nuevoAlmacen extends javax.swing.JPanel {
         obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
         obj.setVisible(true);
         t_er.setText("");
+        cb_especialidad.setSelectedIndex(0);
         orden_act=obj.getReturnStatus();
         try
         {
@@ -1671,11 +1725,9 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                                                 if(respuesta!=null)
                                                 {
                                                     JOptionPane.showMessageDialog(null, "Registro almacenado con la clave:  " +respuesta);
-                                                    estado(false, false, false, false, false, false, false, false, false, false, true);
-                                                    b_recargar.requestFocus();
                                                     formatosPedido fa=new formatosPedido(this.usr, this.sessionPrograma, almacen);
                                                     fa.formato();
-                                                    this.b_recargarActionPerformed(null);
+                                                    titulos();
                                                 }
                                                 else
                                                     b_guardar.requestFocus();
@@ -1695,11 +1747,9 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                                         if(respuesta!=null)
                                         {
                                             JOptionPane.showMessageDialog(null, "Registro almacenado con la clave:  " +respuesta);
-                                            estado(false, false, false, false, false, false, false, false, false, false, true);
-                                            b_recargar.requestFocus();
                                             formatosPedido fa=new formatosPedido(this.usr, this.sessionPrograma, almacen);
                                             fa.formato();
-                                            this.b_recargarActionPerformed(null);
+                                            titulos();
                                         }
                                         else
                                             b_guardar.requestFocus();
@@ -1713,7 +1763,7 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                         }
                         else
                         {
-                            JOptionPane.showMessageDialog(null, "Ingresa el nombre de quien "+l_er);
+                            JOptionPane.showMessageDialog(null, "Ingresa el nombre de quien "+buscar.getText());
                             t_er.requestFocus();
                         }
                     }
@@ -1738,11 +1788,9 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                                             if(respuesta!=null)
                                             {
                                                 JOptionPane.showMessageDialog(null, "Registro almacenado con la clave:  " +respuesta);
-                                                estado(false, false, false, false, false, false, false, false, false, false, true);                              
-                                                b_recargar.requestFocus();
                                                 formatosPedido fa=new formatosPedido(this.usr, this.sessionPrograma, almacen);
                                                 fa.formato();
-                                                this.b_recargarActionPerformed(null);
+                                                titulos();
                                             }
                                             else
                                                 b_guardar.requestFocus();
@@ -1761,11 +1809,9 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                                         if(respuesta!=null)
                                         {
                                             JOptionPane.showMessageDialog(null, "Registro almacenado con la clave:  " +respuesta);
-                                            estado(false, false, false, false, false, false, false, false, false, false, true);                              
-                                            b_recargar.requestFocus();
                                             formatosPedido fa=new formatosPedido(this.usr, this.sessionPrograma, almacen);
                                             fa.formato();
-                                            this.b_recargarActionPerformed(null);
+                                            titulos();
                                         }
                                         else
                                             b_guardar.requestFocus();
@@ -1779,7 +1825,7 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                         }
                         else
                         {
-                            JOptionPane.showMessageDialog(null, "Ingresa el nombre del que entrego/recibio");
+                            JOptionPane.showMessageDialog(null, "Ingresa el nombre de quien "+buscar.getText());
                             t_er.requestFocus();
                         }
                     }
@@ -1804,11 +1850,9 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                                             if(respuesta!=null)
                                             {
                                                 JOptionPane.showMessageDialog(null, "Registro almacenado con la clave:  " +respuesta);
-                                                estado(false, false, false, false, false, false, false, false, false, false, true);                              
-                                                b_recargar.requestFocus();
                                                 formatosOrden fa=new formatosOrden(this.usr, this.sessionPrograma, almacen);
                                                 fa.formato();
-                                                this.b_recargarActionPerformed(null);
+                                                titulos();
                                             }
                                             else
                                                 b_guardar.requestFocus();
@@ -1827,11 +1871,9 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                                         if(respuesta!=null)
                                         {
                                             JOptionPane.showMessageDialog(null, "Registro almacenado con la clave:  " +respuesta);
-                                            estado(false, false, false, false, false, false, false, false, false, false, true);                              
-                                            b_recargar.requestFocus();
                                             formatosOrden fa=new formatosOrden(this.usr, this.sessionPrograma, almacen);
                                             fa.formato();
-                                            this.b_recargarActionPerformed(null);
+                                            titulos();
                                         }
                                         else
                                             b_guardar.requestFocus();
@@ -1845,7 +1887,7 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                         }
                         else
                         {
-                            JOptionPane.showMessageDialog(null, "Ingresa el nombre del que entrego/recibio");
+                            JOptionPane.showMessageDialog(null, "Ingresa el nombre de quien "+buscar.getText());
                             t_er.requestFocus();
                         }
                     }
@@ -1873,11 +1915,9 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                                                 if(respuesta!=null)
                                                 {
                                                     JOptionPane.showMessageDialog(null, "Registro almacenado con la clave:  " +respuesta);
-                                                    estado(false, false, false, false, false, false, false, false, false, false, true);                              
-                                                    b_recargar.requestFocus();
                                                     formatosPedido fa=new formatosPedido(this.usr, this.sessionPrograma, almacen);
                                                     fa.formato();
-                                                    this.b_recargarActionPerformed(null);
+                                                    titulos();
                                                 }
                                                 else
                                                     b_guardar.requestFocus();
@@ -1897,11 +1937,9 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                                         if(respuesta!=null)
                                         {
                                             JOptionPane.showMessageDialog(null, "Registro almacenado con la clave:  " +respuesta);
-                                            estado(false, false, false, false, false, false, false, false, false, false, true);                              
-                                            b_recargar.requestFocus();
                                             formatosPedido fa=new formatosPedido(this.usr, this.sessionPrograma, almacen);
                                             fa.formato();
-                                            this.b_recargarActionPerformed(null);
+                                            titulos();
                                         }
                                         else
                                             b_guardar.requestFocus();
@@ -1915,7 +1953,7 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                         }
                         else
                         {
-                            JOptionPane.showMessageDialog(null, "Ingresa el nombre del que entrego/recibio");
+                            JOptionPane.showMessageDialog(null, "Ingresa el nombre de quien "+buscar.getText());
                             t_er.requestFocus();
                         }
                     }
@@ -1938,11 +1976,9 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                                     if(respuesta!=null)
                                     {
                                         JOptionPane.showMessageDialog(null, "Registro almacenado con la clave:  " +respuesta);
-                                        estado(false, false, false, false, false, false, false, false, false, false, true);
-                                        b_recargar.requestFocus();
                                         formatosOrden fa=new formatosOrden(this.usr, this.sessionPrograma, almacen);
                                         fa.formato();
-                                        this.b_recargarActionPerformed(null);
+                                        titulos();
                                     }
                                     else
                                         b_guardar.requestFocus();
@@ -1958,7 +1994,7 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                     }
                     else
                     {
-                        JOptionPane.showMessageDialog(null, "Ingresa el nombre del que entrego/recibio");
+                        JOptionPane.showMessageDialog(null, "Ingresa el nombre de quien "+buscar.getText());
                         t_er.requestFocus();
                     }
                     break;                
@@ -1976,11 +2012,9 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                                     if(respuesta!=null)
                                     {
                                         JOptionPane.showMessageDialog(null, "Registro almacenado con la clave:  " +respuesta);
-                                        estado(false, false, false, false, false, false, false, false, false, false, true);
-                                        b_recargar.requestFocus();
                                         formatosOrden fa=new formatosOrden(this.usr, this.sessionPrograma, almacen);
                                         fa.formato();
-                                        this.b_recargarActionPerformed(null);
+                                        titulos();
                                     }
                                     else
                                         b_guardar.requestFocus();
@@ -1993,7 +2027,7 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                         }
                         else
                         {
-                            JOptionPane.showMessageDialog(null, "Ingresa el nombre del que entrego/recibio");
+                            JOptionPane.showMessageDialog(null, "Ingresa el nombre de quien "+buscar.getText());
                             t_er.requestFocus();
                         }
                     }
@@ -2013,11 +2047,9 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                                         if(respuesta!=null)
                                         {
                                             JOptionPane.showMessageDialog(null, "Registro almacenado con la clave:  " +respuesta);
-                                            estado(false, false, false, false, false, false, false, false, false, false, true);
-                                            b_recargar.requestFocus();
                                             formatosOrden fa=new formatosOrden(this.usr, this.sessionPrograma, almacen);
                                             fa.formato();
-                                            this.b_recargarActionPerformed(null);
+                                            titulos();
                                         }
                                         else
                                             b_guardar.requestFocus();
@@ -2030,7 +2062,7 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                             }
                             else
                             {
-                                JOptionPane.showMessageDialog(null, "Ingresa el nombre del que entrego/recibio");
+                                JOptionPane.showMessageDialog(null, "Ingresa el nombre de quien "+buscar.getText());
                                 t_er.requestFocus();
                             }
                         }
@@ -2052,11 +2084,9 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                                 if(respuesta!=null)
                                 {
                                     JOptionPane.showMessageDialog(null, "Registro almacenado con la clave:  " +respuesta);
-                                    estado(false, false, false, false, false, false, false, false, false, false, true);
-                                    b_recargar.requestFocus();
                                     formatosPedido fa=new formatosPedido(this.usr, this.sessionPrograma, almacen);
                                     fa.formato();
-                                    this.b_recargarActionPerformed(null);
+                                    titulos();
                                 }
                                 else
                                 b_guardar.requestFocus();
@@ -2069,7 +2099,7 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                     }
                     else
                     {
-                        JOptionPane.showMessageDialog(null, "Ingresa el nombre del que entrego/recibio");
+                        JOptionPane.showMessageDialog(null, "Ingresa el nombre de quien "+buscar.getText());
                         t_er.requestFocus();
                     }
                     break;
@@ -2089,15 +2119,46 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                                 {
                                     almacen.setOperacion(8); 
                                     almacen.setOrden(orden_act);
+                                    
+                                    Empleado em1=new Empleado();
+                                    em1.setIdEmpleado(Integer.parseInt(id_empleado));
+                                    almacen.setEmpleado(em1);
+                                    
+                                    if(t_orden.getText().compareTo("")!=0)
+                                    {
+                                        switch(cb_especialidad.getSelectedItem().toString()){
+                                            case "HOJALATERIA":
+                                                almacen.setEspecialidad("H");
+                                                break;
+                                            case "MECANICA":
+                                                almacen.setEspecialidad("M");
+                                                break;
+                                            case "SUSPENSION":
+                                                almacen.setEspecialidad("S");
+                                                break;
+                                            case "ELECTRICO":
+                                                almacen.setEspecialidad("E");
+                                                break;
+                                            case "PINTURA":
+                                                almacen.setEspecialidad("P");
+                                                break;
+                                            case "ADICIONAL":
+                                                almacen.setEspecialidad("A");
+                                                TrabajoExtra trabajo=(TrabajoExtra)session.get(TrabajoExtra.class, Integer.parseInt(id_trabajo));
+                                                almacen.setTrabajoExtra(trabajo);
+                                                break;
+                                        }
+                                    }
+                                    Empleado em=new Empleado();
+                                    em.setIdEmpleado(Integer.parseInt(id_empleado));
+                                    almacen.setEmpleado(null);
                                     Integer respuesta=guardarAlmacenOrden(almacen);
                                     if(respuesta!=null)
                                     {
                                         JOptionPane.showMessageDialog(null, "Registro almacenado con la clave:  " +respuesta);
-                                        estado(false, false, false, false, false, false, false, false, false, false, true);
-                                        b_recargar.requestFocus();
                                         formatosOrden fa=new formatosOrden(this.usr, this.sessionPrograma, almacen);
-                                        fa.formato();
-                                        this.b_recargarActionPerformed(null);
+                                        fa.formato1();
+                                        titulos();
                                     }
                                     else
                                         b_guardar.requestFocus();
@@ -2110,7 +2171,7 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                         }
                         else
                         {
-                            JOptionPane.showMessageDialog(null, "Ingresa el nombre del que entrego/recibio");
+                            JOptionPane.showMessageDialog(null, "Ingresa el nombre de quien "+buscar.getText());
                             t_er.requestFocus();
                         }
                     }
@@ -2127,19 +2188,140 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                                     cero=consultaLista(8);
                                 if(cero==true)
                                 {
-                                    almacen.setOperacion(8);
-                                    Integer respuesta=guardarAlmacenOrden(almacen);
-                                    if(respuesta!=null)
+                                    session.beginTransaction();
+                                    orden_act= (Orden)session.get(Orden.class, orden_act.getIdOrden());
+                                    double importe=0.0d;
+                                    String especialidad="", complemento="";
+                                    boolean destajo=false;
+                                    
+                                    switch(this.cb_especialidad.getSelectedItem().toString())
                                     {
-                                        JOptionPane.showMessageDialog(null, "Registro almacenado con la clave:  " +respuesta);
-                                        estado(false, false, false, false, false, false, false, false, false, false, true);
-                                        b_recargar.requestFocus();
-                                        formatosOrden fa=new formatosOrden(this.usr, this.sessionPrograma, almacen);
-                                        fa.formato();
-                                        this.b_recargarActionPerformed(null);
+                                        case "HOJALATERIA":
+                                            especialidad="H";
+                                            destajo=orden_act.getDHojalateria();
+                                            if(destajo==true)// La orden es destajo
+                                                importe=orden_act.getImporteHojalateria();
+                                            else
+                                                importe=orden_act.getPHojalateria();
+                                            break;
+                                            
+                                        case "MECANICA":
+                                            especialidad="M";
+                                            destajo=orden_act.getDMecanica();
+                                            if(destajo==true)// La orden es destajo
+                                                importe=orden_act.getImporteMecanica();
+                                            else
+                                                importe=orden_act.getPMecanica();
+                                            break;
+                                            
+                                        case "SUSPENSION":
+                                            especialidad="S";
+                                            destajo=orden_act.getDSuspension();
+                                            if(destajo==true)// La orden es destajo
+                                                importe=orden_act.getImporteSuspension();
+                                            else
+                                                importe=orden_act.getPSuspension();
+                                            break;
+                                            
+                                        case "ELECTRICO":
+                                            especialidad="E";
+                                            destajo=orden_act.getDElectrico();
+                                            if(destajo==true)// La orden es destajo
+                                                importe=orden_act.getImporteElectrico();
+                                            else
+                                                importe=orden_act.getPElectrico();
+                                            break;
+                                        
+                                        case "PINTURA":
+                                            especialidad="P";
+                                            destajo=orden_act.getDPintura();
+                                            if(destajo==true)// La orden es destajo
+                                                importe=orden_act.getImportePintura();
+                                            else
+                                                importe=orden_act.getPPintura();
+                                            break;
+                                        
+                                        case "ADICIONAL":
+                                            especialidad="A";
+                                            TrabajoExtra trabajo=(TrabajoExtra)session.get(TrabajoExtra.class, Integer.parseInt(id_trabajo));
+                                            destajo=true;
+                                            importe=trabajo.getImporte();
+                                            complemento = "and id_trabajo="+this.id_trabajo;
+                                            almacen.setTrabajoExtra(trabajo);
+                                            break;
+                                    }
+                                    
+                                    Empleado em1=new Empleado();
+                                    em1.setIdEmpleado(Integer.parseInt(id_empleado));
+                                    almacen.setOperacion(8);
+                                    almacen.setEspecialidad(especialidad);
+                                    almacen.setEmpleado(em1);
+                                    Query q_consumido = session.createSQLQuery("select (select if(sum(cantidad*valor) is null, 0, sum(cantidad*valor)) from movimiento left join almacen on movimiento.id_almacen=almacen.id_almacen " +
+                                            "left join orden on almacen.id_orden=orden.id_orden where orden.id_orden="+orden_act.getIdOrden()+" and almacen.especialidad='"+especialidad+"' and almacen.operacion=8 and almacen.tipo_movimiento=2 "+complemento+") - " +
+                                            "(select if(sum(cantidad*valor) is null, 0, sum(cantidad*valor)) from movimiento left join almacen on movimiento.id_almacen=almacen.id_almacen " +
+                                            "left join orden on almacen.id_orden=orden.id_orden where orden.id_orden="+orden_act.getIdOrden()+" and almacen.especialidad='"+especialidad+"' and almacen.operacion=8 and almacen.tipo_movimiento=1 "+complemento+")as monto_consumible;");
+                                    
+                                    Query q_pagado = session.createSQLQuery("select if( sum(total) is null, 0.0, sum(total) ) as pagado from destajo where id_orden="+orden_act.getIdOrden()+" and especialidad='"+especialidad+"';");
+                                    if(especialidad.compareToIgnoreCase("A")==0)
+                                        q_pagado = session.createSQLQuery("select if( sum(total) is null, 0.0, sum(total) ) as pagado from pago_adicional where id_trabajo_extra="+this.id_trabajo); 
+                                    String msg1="", msg2="";
+                                    BigDecimal monto_pagado=new BigDecimal(0.0d);
+                                    if(destajo==true)// La orden es destajo
+                                    {
+                                        msg1="Aun no se ha acordado un monto por la reparación de "+cb_especialidad.getSelectedItem();
+                                        msg2="El material rebasa el monto a pagar por la repacación de ";
+
+                                        q_pagado.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+                                        ArrayList pagos=(ArrayList)q_pagado.list();
+                                        if(pagos.size()>0)
+                                        {
+                                            java.util.HashMap map=(java.util.HashMap)pagos.get(0);
+                                            monto_pagado = new BigDecimal((double)map.get("pagado"));
+                                        }
+                                    }
+                                    else//La orden es por monto
+                                    {
+                                        msg1="Aun no se ha asignado Presupuesto para consumibles de "+cb_especialidad.getSelectedItem();
+                                        msg2="El material rebasa el presuesto asignado a ";
+                                    }
+
+                                    if(importe > 0.0d)
+                                    {
+                                        //*******Monto del material entregado hasta el momento*******
+                                        q_consumido.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+                                        ArrayList partidas=(ArrayList)q_consumido.list();
+                                        BigDecimal monto_consumibles_entregado=new BigDecimal(0.0d);
+                                        if(partidas.size()>0)
+                                        {
+                                            java.util.HashMap map=(java.util.HashMap)partidas.get(0);
+                                            monto_consumibles_entregado = new BigDecimal((double)map.get("monto_consumible"));
+                                        }
+                                        monto_consumibles_entregado=monto_consumibles_entregado.add(monto_consumibles_entregado.multiply(new BigDecimal(0.16d)).setScale(2, BigDecimal.ROUND_HALF_UP));
+                                        monto_consumibles_entregado=monto_consumibles_entregado.add(new BigDecimal((double)t_total.getValue())).setScale(2, BigDecimal.ROUND_HALF_UP);
+                                        monto_consumibles_entregado=monto_consumibles_entregado.add(monto_pagado);
+                                        if(monto_consumibles_entregado.doubleValue()<=importe)
+                                        {
+                                            Integer respuesta=guardarAlmacenOrden(almacen);
+                                            if(respuesta!=null)
+                                            {
+                                                JOptionPane.showMessageDialog(null, "Registro almacenado con la clave:  " +respuesta);
+                                                formatosOrden fa=new formatosOrden(this.usr, this.sessionPrograma, almacen);
+                                                fa.formato1();
+                                                titulos();
+                                            }
+                                            else
+                                                b_guardar.requestFocus();
+                                        }
+                                        else{
+                                            BigDecimal diferencia = new BigDecimal(monto_consumibles_entregado.doubleValue()-importe);
+                                            JOptionPane.showMessageDialog(null, msg2+cb_especialidad.getSelectedItem()+" por $"+diferencia.setScale(2, BigDecimal.ROUND_HALF_UP));
+                                        }
                                     }
                                     else
-                                        b_guardar.requestFocus();
+                                        JOptionPane.showMessageDialog(null, msg1);
+                                    
+                                    session.getTransaction().rollback();
+                                    session.disconnect();
                                 }
                                 else
                                     JOptionPane.showMessageDialog(null, "No se puede almacenar la cantidad ya que una partida contiene 0.00");
@@ -2149,7 +2331,7 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                         }
                         else
                         {
-                            JOptionPane.showMessageDialog(null, "Ingresa el nombre del que entrego/recibio");
+                            JOptionPane.showMessageDialog(null, "Ingresa el nombre de quien "+buscar.getText());
                             t_er.requestFocus();
                         }
                     }
@@ -2157,28 +2339,12 @@ public class nuevoAlmacen extends javax.swing.JPanel {
             }
         }catch(Exception e)
         {
-            System.out.println();
+            e.printStackTrace();
         }
         if(session!=null)
             if(session.isOpen())
                 session.close();
     }//GEN-LAST:event_b_guardarActionPerformed
-
-    private void b_recargarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_recargarActionPerformed
-        h=new Herramientas(usr, menu);
-        h.session(sessionPrograma);
-        h.desbloqueaOrden();
-        c_tmovimiento.setSelectedIndex(0);
-        c_toperacion.setSelectedIndex(0);
-        cb_sin_orden.setVisible(false);
-        cb_sin_orden.setSelected(false);
-        limpiar_tabla();
-        borra_cajas();
-        estado(true, false, false, true, true, true, true, true, false, true, false);
-        r2.setSelected(true);
-        r2.setSelected(false);
-        sumaTotales();
-    }//GEN-LAST:event_b_recargarActionPerformed
 
     private void t_erActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_erActionPerformed
         b_guardar.requestFocus();
@@ -2294,163 +2460,58 @@ public class nuevoAlmacen extends javax.swing.JPanel {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        h= new Herramientas(usr, menu);
-        h.desbloqueaOrden();
-        h.desbloqueaPedido();
-        t_er.setEnabled(true);
         c_tmovimiento.setSelectedItem("Entrada");
         c_toperacion.setSelectedItem("Pedido");
-        jButton1.setBackground(Color.RED);
-        jButton2.setBackground(new java.awt.Color(51, 51, 255));
-        jButton3.setBackground(new java.awt.Color(51, 51, 255));
-        jButton4.setBackground(new java.awt.Color(51, 51, 255));
-        jButton5.setBackground(new java.awt.Color(51, 51, 255));
-        jButton6.setBackground(new java.awt.Color(51, 51, 255));
-        jButton7.setBackground(new java.awt.Color(51, 51, 255));
-        jButton8.setBackground(new java.awt.Color(51, 51, 255));
-        jButton10.setBackground(new java.awt.Color(51, 51, 255));
-        jButton11.setBackground(new java.awt.Color(51, 51, 255));
+        titulos();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-        h= new Herramientas(usr, menu);
-        h.desbloqueaOrden();
-        h.desbloqueaPedido();
-        t_er.setEnabled(true);
         c_tmovimiento.setSelectedItem("Salida");
         c_toperacion.setSelectedItem("Pedido");
-        jButton2.setBackground(Color.RED);
-        jButton1.setBackground(new java.awt.Color(51, 51, 255));
-        jButton3.setBackground(new java.awt.Color(51, 51, 255));
-        jButton4.setBackground(new java.awt.Color(51, 51, 255));
-        jButton5.setBackground(new java.awt.Color(51, 51, 255));
-        jButton6.setBackground(new java.awt.Color(51, 51, 255));
-        jButton7.setBackground(new java.awt.Color(51, 51, 255));
-        jButton8.setBackground(new java.awt.Color(51, 51, 255));
-        jButton10.setBackground(new java.awt.Color(51, 51, 255));
-        jButton11.setBackground(new java.awt.Color(51, 51, 255));
+        titulos();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-        h= new Herramientas(usr, menu);
-        h.desbloqueaOrden();
-        h.desbloqueaPedido();
-        t_er.setEnabled(true);
         c_tmovimiento.setSelectedItem("Entrada");
         c_toperacion.setSelectedItem("Compañía");
-        jButton3.setBackground(Color.RED);
-        jButton2.setBackground(new java.awt.Color(51, 51, 255));
-        jButton1.setBackground(new java.awt.Color(51, 51, 255));
-        jButton4.setBackground(new java.awt.Color(51, 51, 255));
-        jButton5.setBackground(new java.awt.Color(51, 51, 255));
-        jButton6.setBackground(new java.awt.Color(51, 51, 255));
-        jButton7.setBackground(new java.awt.Color(51, 51, 255));
-        jButton8.setBackground(new java.awt.Color(51, 51, 255));
-        jButton10.setBackground(new java.awt.Color(51, 51, 255));
-        jButton11.setBackground(new java.awt.Color(51, 51, 255));
+        titulos();
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
-        h= new Herramientas(usr, menu);
-        h.desbloqueaOrden();
-        h.desbloqueaPedido();
-        t_er.setEnabled(true);
-        t_er.setEnabled(true);
         c_tmovimiento.setSelectedItem("Salida");
         c_toperacion.setSelectedItem("Compañía");
-        jButton4.setBackground(Color.RED);
-        jButton2.setBackground(new java.awt.Color(51, 51, 255));
-        jButton3.setBackground(new java.awt.Color(51, 51, 255));
-        jButton1.setBackground(new java.awt.Color(51, 51, 255));
-        jButton5.setBackground(new java.awt.Color(51, 51, 255));
-        jButton6.setBackground(new java.awt.Color(51, 51, 255));
-        jButton7.setBackground(new java.awt.Color(51, 51, 255));
-        jButton8.setBackground(new java.awt.Color(51, 51, 255));
-        jButton10.setBackground(new java.awt.Color(51, 51, 255));
-        jButton11.setBackground(new java.awt.Color(51, 51, 255));
+        titulos();
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         // TODO add your handling code here:
-        h= new Herramientas(usr, menu);
-        h.desbloqueaOrden();
-        h.desbloqueaPedido();
-        t_er.setEnabled(true);
         c_tmovimiento.setSelectedItem("Salida");
         c_toperacion.setSelectedItem("Operarios");
-        jButton5.setBackground(Color.RED);
-        jButton2.setBackground(new java.awt.Color(51, 51, 255));
-        jButton3.setBackground(new java.awt.Color(51, 51, 255));
-        jButton4.setBackground(new java.awt.Color(51, 51, 255));
-        jButton1.setBackground(new java.awt.Color(51, 51, 255));
-        jButton6.setBackground(new java.awt.Color(51, 51, 255));
-        jButton7.setBackground(new java.awt.Color(51, 51, 255));
-        jButton8.setBackground(new java.awt.Color(51, 51, 255));
-        jButton10.setBackground(new java.awt.Color(51, 51, 255));
-        jButton11.setBackground(new java.awt.Color(51, 51, 255));
+        titulos();
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         // TODO add your handling code here:
-        h= new Herramientas(usr, menu);
-        h.desbloqueaOrden();
-        h.desbloqueaPedido();
-        t_er.setEnabled(true);
         c_tmovimiento.setSelectedItem("Entrada");
         c_toperacion.setSelectedItem("Operarios");
-        jButton6.setBackground(Color.RED);
-        jButton2.setBackground(new java.awt.Color(51, 51, 255));
-        jButton3.setBackground(new java.awt.Color(51, 51, 255));
-        jButton4.setBackground(new java.awt.Color(51, 51, 255));
-        jButton5.setBackground(new java.awt.Color(51, 51, 255));
-        jButton1.setBackground(new java.awt.Color(51, 51, 255));
-        jButton7.setBackground(new java.awt.Color(51, 51, 255));
-        jButton8.setBackground(new java.awt.Color(51, 51, 255));
-        jButton10.setBackground(new java.awt.Color(51, 51, 255));
-        jButton11.setBackground(new java.awt.Color(51, 51, 255));
+        titulos();
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
         // TODO add your handling code here:
-        h= new Herramientas(usr, menu);
-        h.desbloqueaOrden();
-        h.desbloqueaPedido();
-        t_er.setEnabled(true);
         c_tmovimiento.setSelectedItem("Salida");
         c_toperacion.setSelectedItem("Venta");
-        jButton7.setBackground(Color.RED);
-        jButton2.setBackground(new java.awt.Color(51, 51, 255));
-        jButton3.setBackground(new java.awt.Color(51, 51, 255));
-        jButton4.setBackground(new java.awt.Color(51, 51, 255));
-        jButton5.setBackground(new java.awt.Color(51, 51, 255));
-        jButton6.setBackground(new java.awt.Color(51, 51, 255));
-        jButton1.setBackground(new java.awt.Color(51, 51, 255));
-        jButton8.setBackground(new java.awt.Color(51, 51, 255));
-        jButton10.setBackground(new java.awt.Color(51, 51, 255));
-        jButton11.setBackground(new java.awt.Color(51, 51, 255));
+        titulos();
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
         // TODO add your handling code here:
-        h= new Herramientas(usr, menu);
-        h.desbloqueaOrden();
-        h.desbloqueaPedido();
-        t_er.setEnabled(true);
         c_tmovimiento.setSelectedItem("Entrada");
         c_toperacion.setSelectedItem("Venta");
-        jButton8.setBackground(Color.RED);
-        jButton2.setBackground(new java.awt.Color(51, 51, 255));
-        jButton3.setBackground(new java.awt.Color(51, 51, 255));
-        jButton4.setBackground(new java.awt.Color(51, 51, 255));
-        jButton5.setBackground(new java.awt.Color(51, 51, 255));
-        jButton6.setBackground(new java.awt.Color(51, 51, 255));
-        jButton7.setBackground(new java.awt.Color(51, 51, 255));
-        jButton1.setBackground(new java.awt.Color(51, 51, 255));
-        jButton10.setBackground(new java.awt.Color(51, 51, 255));
-        jButton11.setBackground(new java.awt.Color(51, 51, 255));
+        titulos();
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void b_detallesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_detallesActionPerformed
@@ -2463,46 +2524,16 @@ public class nuevoAlmacen extends javax.swing.JPanel {
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
         // TODO add your handling code here:
-        h= new Herramientas(usr, menu);
-        h.desbloqueaOrden();
-        h.desbloqueaPedido();
-        t_er.setEnabled(false);
         c_tmovimiento.setSelectedItem("Entrada");
         c_toperacion.setSelectedItem("Inventario");
-        cb_sin_orden.setSelected(false);
-        b_buscaorden.setEnabled(true);
-        jButton10.setBackground(Color.RED);
-        jButton2.setBackground(new java.awt.Color(51, 51, 255));
-        jButton3.setBackground(new java.awt.Color(51, 51, 255));
-        jButton4.setBackground(new java.awt.Color(51, 51, 255));
-        jButton5.setBackground(new java.awt.Color(51, 51, 255));
-        jButton6.setBackground(new java.awt.Color(51, 51, 255));
-        jButton7.setBackground(new java.awt.Color(51, 51, 255));
-        jButton8.setBackground(new java.awt.Color(51, 51, 255));
-        jButton1.setBackground(new java.awt.Color(51, 51, 255));
-        jButton11.setBackground(new java.awt.Color(51, 51, 255));
+        titulos();
     }//GEN-LAST:event_jButton10ActionPerformed
 
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
         // TODO add your handling code here:
-        h= new Herramientas(usr, menu);
-        h.desbloqueaOrden();
-        h.desbloqueaPedido();
-        t_er.setEnabled(false);
         c_tmovimiento.setSelectedItem("Salida");
         c_toperacion.setSelectedItem("Inventario");
-        cb_sin_orden.setSelected(false);
-        b_buscaorden.setEnabled(true);
-        jButton11.setBackground(Color.RED);
-        jButton2.setBackground(new java.awt.Color(51, 51, 255));
-        jButton3.setBackground(new java.awt.Color(51, 51, 255));
-        jButton4.setBackground(new java.awt.Color(51, 51, 255));
-        jButton5.setBackground(new java.awt.Color(51, 51, 255));
-        jButton6.setBackground(new java.awt.Color(51, 51, 255));
-        jButton7.setBackground(new java.awt.Color(51, 51, 255));
-        jButton8.setBackground(new java.awt.Color(51, 51, 255));
-        jButton10.setBackground(new java.awt.Color(51, 51, 255));
-        jButton1.setBackground(new java.awt.Color(51, 51, 255));
+        titulos();
     }//GEN-LAST:event_jButton11ActionPerformed
 
     private void cb_sin_ordenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_sin_ordenActionPerformed
@@ -2523,19 +2554,22 @@ public class nuevoAlmacen extends javax.swing.JPanel {
             b_buscaorden.setEnabled(false);
             b_mas.setEnabled(true);
             b_menos.setEnabled(true);
+            cb_especialidad.setSelectedIndex(0);
         }
         else
         {
             b_buscaorden.setEnabled(true);
             b_mas.setEnabled(false);
             b_menos.setEnabled(false);
+            cb_especialidad.setSelectedIndex(0);
         }
         if(c_tmovimiento.getSelectedItem().toString().compareTo("Entrada")==0)//devolución de consumibles
         {
             Class[] types = new Class [] 
             {
                 java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, 
-                java.lang.String.class, java.lang.String.class, java.lang.Double.class, java.lang.Double.class
+                java.lang.String.class, java.lang.String.class, java.lang.Double.class, java.lang.Double.class,
+                java.lang.Double.class, java.lang.Double.class
             };
             String[] columnas = new String [] {"No Parte","Modelo","Marca","Tipo","Catalogo","Medida","Existencias","Devoluciones"};
             model=new nuevoAlmacen.MyModel(0, columnas, types);
@@ -2547,7 +2581,8 @@ public class nuevoAlmacen extends javax.swing.JPanel {
             Class[] types = new Class [] 
             {
                 java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, 
-                java.lang.String.class, java.lang.String.class, java.lang.Double.class, java.lang.Double.class
+                java.lang.String.class, java.lang.String.class, java.lang.Double.class, java.lang.Double.class,
+                java.lang.Double.class, java.lang.Double.class
             };
             String[] columnas = new String [] {"No Parte","Modelo","Marca","Tipo","Catalogo","Medida","Existencias","Entregadas"}; 
             model=new nuevoAlmacen.MyModel(0, columnas, types);
@@ -2562,38 +2597,117 @@ public class nuevoAlmacen extends javax.swing.JPanel {
         Session session = HibernateUtil.getSessionFactory().openSession();
         try
         {
-            session.beginTransaction().begin();
-            usr = (Usuario)session.get(Usuario.class, usr.getIdUsuario());
-            if(usr.getConsultaEmpleados()==true || usr.getEditaEmpleados()==true)
+            id_empleado="";
+            t_er.setText("");
+            cb_especialidad.setSelectedIndex(0);
+            limpiar_tabla();
+            sumaTotales();
+            if(cb_sin_orden.isSelected()==true)
             {
-                buscaEmpleado obj = new buscaEmpleado(new javax.swing.JFrame(), true, usr, this.sessionPrograma, false);
-                Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-                obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
-                obj.setVisible(true);
-                Empleado emp_act=obj.getReturnStatus();
-                if (emp_act!=null)
+                session.beginTransaction().begin();
+                usr = (Usuario)session.get(Usuario.class, usr.getIdUsuario());
+                if(usr.getConsultaEmpleados()==true || usr.getEditaEmpleados()==true)
                 {
-                    t_er.setText("");
-                    emp_act=(Empleado)session.get(Empleado.class, emp_act.getIdEmpleado());
-                    usr = (Usuario)session.get(Usuario.class, usr.getIdUsuario());
-                    if(usr.getEditaEmpleados()==true)
+                    buscaEmpleado obj = new buscaEmpleado(new javax.swing.JFrame(), true, usr, this.sessionPrograma, false);
+                    Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+                    obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
+                    obj.setVisible(true);
+                    Empleado emp_act=obj.getReturnStatus();
+                    if (emp_act!=null)
                     {
-                        t_er.setText(emp_act.getNombre());
+                        t_er.setText("");
+                        emp_act=(Empleado)session.get(Empleado.class, emp_act.getIdEmpleado());
+                        usr = (Usuario)session.get(Usuario.class, usr.getIdUsuario());
+                        if(usr.getEditaEmpleados()==true)
+                        {
+                            id_empleado=""+emp_act.getIdEmpleado();
+                            t_er.setText(emp_act.getNombre());
+                        }
+                        else
+                        JOptionPane.showMessageDialog(null, "¡Acceso denegado!");
                     }
                     else
-                    JOptionPane.showMessageDialog(null, "¡Acceso denegado!");
+                    {
+                        id_empleado="";
+                        t_er.setText("");
+                        cb_especialidad.setSelectedIndex(0);
+                    }
                 }
+                else
+                    JOptionPane.showMessageDialog(null, "¡Acceso denegado!");
             }
             else
-            JOptionPane.showMessageDialog(null, "¡Acceso denegado!");
+            {
+                if(orden_act!=null)
+                {
+                    if(cb_1.isVisible()==false || cb_1.getSelectedIndex()==0)
+                    {
+                        buscaResponsable resp = new buscaResponsable(new javax.swing.JFrame(), true, usr, this.sessionPrograma, orden_act);
+                        Dimension d1 = Toolkit.getDefaultToolkit().getScreenSize();
+                        resp.setLocation((d1.width/2)-(resp.getWidth()/2), (d1.height/2)-(resp.getHeight()/2));
+                        resp.setVisible(true);
+                        ArrayList aux = resp.getReturnStatus();
+                        if (aux!=null)
+                        {
+                            id_empleado=aux.get(0).toString();
+                            t_er.setText(aux.get(1).toString());
+                            cb_especialidad.setSelectedItem(aux.get(2).toString());
+                        }
+                        else
+                        {
+                            id_empleado="";
+                            t_er.setText("");
+                            cb_especialidad.setSelectedIndex(0);
+                        }
+                    }
+                    else
+                    {
+                        buscaExtra resp = new buscaExtra(new javax.swing.JFrame(), true, usr, this.sessionPrograma, orden_act);
+                        Dimension d1 = Toolkit.getDefaultToolkit().getScreenSize();
+                        resp.setLocation((d1.width/2)-(resp.getWidth()/2), (d1.height/2)-(resp.getHeight()/2));
+                        resp.setVisible(true);
+                        ArrayList aux = resp.getReturnStatus();
+                        if (aux!=null)
+                        {
+                            id_trabajo=aux.get(0).toString();
+                            id_empleado=aux.get(1).toString();
+                            t_er.setText(aux.get(2).toString());
+                            cb_especialidad.setSelectedItem("ADICIONAL");
+                        }
+                        else
+                        {
+                            id_trabajo="";
+                            id_empleado="";
+                            t_er.setText("");
+                            cb_especialidad.setSelectedIndex(0);
+                        }
+                    }
+                }
+                else
+                {
+                    JOptionPane.showMessageDialog(null, "¡Debe seleccionar primero una orden!");
+                }
+            }
+            
+            
         }catch(Exception e)
         {
-            System.out.println(e);
+            e.printStackTrace();
         }
         if(session!=null)
         if(session.isOpen())
         session.close();
     }//GEN-LAST:event_buscarActionPerformed
+
+    private void cb_1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cb_1ItemStateChanged
+        // TODO add your handling code here:
+        id_empleado="";
+        t_er.setText("");
+        t_er.setText("");
+        cb_especialidad.setSelectedIndex(0);
+        limpiar_tabla();
+        sumaTotales();
+    }//GEN-LAST:event_cb_1ItemStateChanged
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDialog autoriza;
@@ -2604,12 +2718,13 @@ public class nuevoAlmacen extends javax.swing.JPanel {
     private javax.swing.JButton b_guardar;
     private javax.swing.JButton b_mas;
     private javax.swing.JButton b_menos;
-    private javax.swing.JButton b_recargar;
     private javax.swing.JButton buscar;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.ButtonGroup buttonGroup2;
     private javax.swing.JComboBox c_tmovimiento;
     private javax.swing.JComboBox c_toperacion;
+    private javax.swing.JComboBox cb_1;
+    private javax.swing.JComboBox cb_especialidad;
     private javax.swing.JCheckBox cb_sin_orden;
     private javax.swing.JComboBox codigo;
     private javax.swing.JDialog datos;
@@ -2634,7 +2749,11 @@ public class nuevoAlmacen extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanelM;
     private javax.swing.JPanel jPanelMalmacen;
     private javax.swing.JPanel jPanelOperaciones;
@@ -2644,7 +2763,6 @@ public class nuevoAlmacen extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JLabel l_asegurado;
     private javax.swing.JLabel l_compania;
-    private javax.swing.JLabel l_er;
     private javax.swing.JLabel l_fecha;
     private javax.swing.JLabel l_iva;
     private javax.swing.JLabel l_marca;
@@ -3631,9 +3749,10 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                         Class[] types = new Class [] 
                         {
                             java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, 
-                            java.lang.String.class, java.lang.String.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class
+                            java.lang.String.class, java.lang.String.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class,
+                            java.lang.Double.class, java.lang.Double.class
                         };
-                        String[] columnas = new String [] {"No Parte","Modelo","Marca","Tipo","Catalogo","Medida","Existencias","Operario","Devoluciones"};
+                        String[] columnas = new String [] {"No Parte","Modelo","Marca","Tipo","Catalogo","Medida","Existencias","Operario","Devoluciones", "Costo c/u","Total"};
                         model=new nuevoAlmacen.MyModel(0, columnas, types);
                         model.setColumnaEditable(8, true);
                         t_datos.setModel(model);
@@ -3643,9 +3762,10 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                         Class[] types = new Class [] 
                         {
                             java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, 
-                            java.lang.String.class, java.lang.String.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class
+                            java.lang.String.class, java.lang.String.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class,
+                            java.lang.Double.class, java.lang.Double.class
                         };
-                        String[] columnas = new String [] {"No Parte","Modelo","Marca","Tipo","Catalogo","Medida","Existencias","Operario","Entregadas"}; 
+                        String[] columnas = new String [] {"No Parte","Modelo","Marca","Tipo","Catalogo","Medida","Existencias","Operario","Entregadas", "Costo c/u","Total"}; 
                         model=new nuevoAlmacen.MyModel(0, columnas, types);
                         model.setColumnaEditable(8, true);
                         t_datos.setModel(model);
@@ -4486,17 +4606,20 @@ public class nuevoAlmacen extends javax.swing.JPanel {
             model.removeRow(i);
             i-=1;
         }
-        b_mas.setEnabled(false);
-        b_menos.setEnabled(false);
+        if(t_orden.getText().compareTo("")==0)
+        {
+            b_mas.setEnabled(false);
+            b_menos.setEnabled(false);
+        }
         formatoTabla();
     }
     
     private void borra_cajas()
     {
         if (c_tmovimiento.getSelectedItem().toString().compareTo("Entrada")==0)
-            l_er.setText("Entrego");
+            buscar.setText("Entrego");
         else
-            l_er.setText("Recibio");
+            buscar.setText("Recibio");
         t_er.setText("");
         t_notas.setText("");
         t_fecha.setText("DD/MM/AAAA");
@@ -4838,9 +4961,9 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                 mov.setPartida(part);
                 mov.setPartidaExterna(parEx);
                 mov.setEjemplar(ejem);
-                alm.setNotas(t_notas.getText());
                 alm.addMovimiento(mov);
             }
+            alm.setNotas(t_notas.getText());
             session.update(alm);
             session.beginTransaction().commit();
             t_nmovimiento.setText(alm.getIdAlmacen().toString());
@@ -4888,41 +5011,42 @@ public class nuevoAlmacen extends javax.swing.JPanel {
             }
             
         }
+        
+        if(c_toperacion.getSelectedItem().toString().compareTo("Inventario")==0 && t_orden.getText().compareTo("")!=0)
+        {
+            for(int ren=0; ren<t_datos.getRowCount(); ren++)
+            {
+                double multi= Double.parseDouble(String.valueOf(t_datos.getValueAt(ren,8)))*Double.parseDouble(String.valueOf(t_datos.getValueAt(ren,9)));
+                t_datos.setValueAt(multi,ren,10);
+                subtotal+=multi;
+            }
+        }
         t_subtotal.setValue(subtotal);
         t_IVA.setValue(iva1=subtotal*iva/100);
         t_total.setValue(subtotal+iva1);
     }
     
-    public void estado(boolean guardar, boolean mas, boolean menos, boolean notas, boolean datos, boolean tmovimiento, boolean toperacion, boolean er, boolean buscao, boolean buscap, boolean recargar)
-    {
-        b_guardar.setEnabled(guardar);
-        b_mas.setEnabled(mas);
-        b_menos.setEnabled(menos);
-        t_notas.setEnabled(notas);
-        t_datos.setEnabled(datos);
-        c_tmovimiento.setEnabled(tmovimiento);
-        c_toperacion.setEnabled(toperacion);
-        t_er.setEnabled(er);
-        b_buscaorden.setEnabled(buscao);
-        b_buscapedido.setEnabled(buscap);
-        b_recargar.setEnabled(recargar);
-    }
-    public void operacion(boolean buscap, boolean nreferencia, boolean buscao, boolean folio, boolean lsubtotal, boolean tsubtotal, boolean liva, boolean tiva, boolean ltotal, boolean ttotal)
+    public void operacion(boolean buscap, boolean nreferencia, boolean buscao, boolean folio, boolean lsubtotal, boolean tsubtotal, boolean liva, boolean tiva, boolean ltotal, boolean ttotal, boolean bbusca)
     {
         if(c_toperacion.getSelectedItem().toString().compareTo("Inventario")==0)
         {
             cb_sin_orden.setVisible(true);
             cb_sin_orden.setSelected(false);
+            cb_especialidad.setVisible(true);
+            cb_1.setVisible(true);
         }
         else
         {
             cb_sin_orden.setVisible(false);
             cb_sin_orden.setSelected(false);
+            cb_especialidad.setVisible(false);
+            cb_1.setVisible(false);
         }
         
         b_buscapedido.setEnabled(buscap);
         t_nreferencia.setEditable(nreferencia);
         b_buscaorden.setEnabled(buscao); 
+        buscar.setEnabled(bbusca);
         if(c_toperacion.getSelectedItem().toString().compareTo("Operarios")==0)
         {
             
@@ -4955,33 +5079,122 @@ public class nuevoAlmacen extends javax.swing.JPanel {
     }
     public void titulos()
     {
-        if(c_tmovimiento.getSelectedItem().toString().compareTo("Entrada")==0)
+        h= new Herramientas(usr, menu);
+        h.desbloqueaOrden();
+        h.desbloqueaPedido();
+        orden_act=null;
+        id_empleado="";
+        id_trabajo="";
+        
+        t_datos.setModel(model);
+        formatoTabla();
+        borra_cajas();
+        limpiar_tabla();
+        sumaTotales();
+        cb_especialidad.setSelectedIndex(0);
+        cb_1.setSelectedIndex(0);
+        t_er.setText("");
+        
+        if(c_toperacion.getSelectedItem().toString().compareTo("Pedido")==0 && c_tmovimiento.getSelectedItem().toString().compareTo("Entrada")==0)
         {
-            if(c_toperacion.getSelectedItem().toString().compareTo("Pedido")==0)
-                miTitulo="ENTRADA DE MATERIAL DE PEDIDO";
-            if(c_toperacion.getSelectedItem().toString().compareTo("Compañía")==0)
-                miTitulo="ENTRADA DE MATERIAL DE LA COMPAÑIA";
-            if(c_toperacion.getSelectedItem().toString().compareTo("Operarios")==0)
-                miTitulo="DEVOLUCION DE MATERIAL OPERARIOS";
-            if(c_toperacion.getSelectedItem().toString().compareTo("Venta")==0)
-                miTitulo="DEVOLUCION DE MATERIAL SALIDA EXTERNA";
-            if(c_toperacion.getSelectedItem().toString().compareTo("Inventario")==0)
-                miTitulo="DEVOLUCION DE CONSUMIBLES";
+            miTitulo="ENTRADA DE MATERIAL DE PEDIDO";
+            jButton1.setBackground(Color.RED);
+            t_er.setEnabled(true);
+            operacion(true, true, false, true, true, true, true, true, true, true, false);
         }
         else
+            jButton1.setBackground(new java.awt.Color(51, 51, 255));
+
+        if(c_toperacion.getSelectedItem().toString().compareTo("Compañía")==0 && c_tmovimiento.getSelectedItem().toString().compareTo("Entrada")==0)
         {
-            if(c_toperacion.getSelectedItem().toString().compareTo("Pedido")==0)
-                miTitulo="DEVOLUCION DE MATERIAL DE PEDIDO";
-            if(c_toperacion.getSelectedItem().toString().compareTo("Compañía")==0)
-                miTitulo="DEVOLUCION DE MATERIAL A LA COMPAÑIA";
-            if(c_toperacion.getSelectedItem().toString().compareTo("Operarios")==0)
-                miTitulo="ENTREGA DE MATERIAL A OPERARIOS";
-            if(c_toperacion.getSelectedItem().toString().compareTo("Venta")==0)
-                miTitulo="SALIDA DE MATERIAL EXTERNO";
-            if(c_toperacion.getSelectedItem().toString().compareTo("Inventario")==0)
-                miTitulo="SALIDA DE CONSUMIBLES";
+            miTitulo="ENTRADA DE MATERIAL DE LA COMPAÑIA";
+            jButton3.setBackground(Color.RED);
+            t_er.setEnabled(true);
+            operacion(false, true, true, true, false, false, false, false, false, false, false);
         }
-        jPanelMalmacen.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), miTitulo, javax.swing.border.TitledBorder.RIGHT, javax.swing.border.TitledBorder.TOP));
+        else
+            jButton3.setBackground(new java.awt.Color(51, 51, 255));
+
+        if(c_toperacion.getSelectedItem().toString().compareTo("Operarios")==0 && c_tmovimiento.getSelectedItem().toString().compareTo("Entrada")==0)
+        {
+            miTitulo="DEVOLUCION DE MATERIAL OPERARIOS";
+            jButton6.setBackground(Color.RED);
+            t_er.setEnabled(true);
+            operacion(false, false, true, false, false, false, false, false, false, false, true);
+        }
+        else
+            jButton6.setBackground(new java.awt.Color(51, 51, 255));
+
+        if(c_toperacion.getSelectedItem().toString().compareTo("Venta")==0 && c_tmovimiento.getSelectedItem().toString().compareTo("Entrada")==0)
+        {
+            miTitulo="DEVOLUCION DE MATERIAL SALIDA EXTERNA";
+            jButton8.setBackground(Color.RED);
+            t_er.setEnabled(true);
+            operacion(true, true, false, true, true, true, true, true, true, true, false);
+        }
+        else
+            jButton8.setBackground(new java.awt.Color(51, 51, 255));
+
+        if(c_toperacion.getSelectedItem().toString().compareTo("Inventario")==0 && c_tmovimiento.getSelectedItem().toString().compareTo("Entrada")==0)
+        {
+            miTitulo="DEVOLUCION DE CONSUMIBLES";
+            jButton10.setBackground(Color.RED);
+            t_er.setEnabled(false);
+            operacion(false, false, true, false, true, true, true, true, true, true, true);
+        }
+        else
+            jButton10.setBackground(new java.awt.Color(51, 51, 255));
+
+        if(c_toperacion.getSelectedItem().toString().compareTo("Pedido")==0 && c_tmovimiento.getSelectedItem().toString().compareTo("Salida")==0)
+        {
+            miTitulo="DEVOLUCION DE MATERIAL DE PEDIDO";
+            jButton2.setBackground(Color.RED);
+            t_er.setEnabled(true);
+            operacion(true, true, false, true, true, true, true, true, true, true, false);
+        }
+        else
+            jButton2.setBackground(new java.awt.Color(51, 51, 255));
+
+        if(c_toperacion.getSelectedItem().toString().compareTo("Compañía")==0 && c_tmovimiento.getSelectedItem().toString().compareTo("Salida")==0)
+        {
+            miTitulo="DEVOLUCION DE MATERIAL A LA COMPAÑIA";
+            jButton4.setBackground(Color.RED);
+            t_er.setEnabled(true);
+            operacion(false, true, true, true, false, false, false, false, false, false, false);
+        }
+        else
+            jButton4.setBackground(new java.awt.Color(51, 51, 255));
+
+        if(c_toperacion.getSelectedItem().toString().compareTo("Operarios")==0 && c_tmovimiento.getSelectedItem().toString().compareTo("Salida")==0)
+        {
+            miTitulo="ENTREGA DE MATERIAL A OPERARIOS";
+            jButton5.setBackground(Color.RED);
+            t_er.setEnabled(true);
+            operacion(false, false, true, false, false, false, false, false, false, false, true);
+        }
+        else
+            jButton5.setBackground(new java.awt.Color(51, 51, 255));
+
+        if(c_toperacion.getSelectedItem().toString().compareTo("Venta")==0 && c_tmovimiento.getSelectedItem().toString().compareTo("Salida")==0)
+        {
+            miTitulo="SALIDA DE MATERIAL EXTERNO";
+            jButton7.setBackground(Color.RED);
+            t_er.setEnabled(true);
+            operacion(true, true, false, true, true, true, true, true, true, true, false);
+        }
+        else
+            jButton7.setBackground(new java.awt.Color(51, 51, 255));    
+
+        if(c_toperacion.getSelectedItem().toString().compareTo("Inventario")==0 && c_tmovimiento.getSelectedItem().toString().compareTo("Salida")==0)
+        {
+            miTitulo="SALIDA DE CONSUMIBLES";
+            jButton11.setBackground(Color.RED);
+            t_er.setEnabled(false);
+            operacion(false, false, true, false, true, true, true, true, true, true, true);
+        }
+        else
+            jButton11.setBackground(new java.awt.Color(51, 51, 255));
+        jPanelMalmacen.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), miTitulo, javax.swing.border.TitledBorder.RIGHT, javax.swing.border.TitledBorder.ABOVE_TOP));
     }
     
     public void enviaCorreo(String asunto, String mensaje, String from)
@@ -5044,7 +5257,6 @@ public class nuevoAlmacen extends javax.swing.JPanel {
             // Se compone la parte del texto
             BodyPart texto_mensaje = new MimeBodyPart();
             texto_mensaje.setContent(mensaje, "text/html");
-            //texto_mensaje.setText(mensaje);
 
             // Una MultiParte para agrupar texto e imagen.
             MimeMultipart multiParte = new MimeMultipart();

@@ -2054,7 +2054,7 @@ public class Destajo extends javax.swing.JPanel {
 
     private void b_guardar_pago1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_guardar_pago1ActionPerformed
         // TODO add your handling code here:
-        if(t_fecha_pago1.getText().compareTo("")!=0)
+        /*if(t_fecha_pago1.getText().compareTo("")!=0)
         {
             if(((Number)t_porcentaje_pago1.getValue()).doubleValue()>0.0d)
             {
@@ -2118,7 +2118,7 @@ public class Destajo extends javax.swing.JPanel {
         }else
         {
             JOptionPane.showMessageDialog(null, "¡Debe ingresar una fecha de avance!");
-        }
+        }*/
     }//GEN-LAST:event_b_guardar_pago1ActionPerformed
 
     private void b_cancelar_pago1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_cancelar_pago1ActionPerformed

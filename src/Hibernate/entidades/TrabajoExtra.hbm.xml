@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/12/2016 12:54:17 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.TrabajoExtra" table="trabajo_extra" catalog="mydb">
+        <id name="idAdicional" type="java.lang.Integer">
+            <column name="id_adicional" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="orden" class="Hibernate.entidades.Orden" fetch="select">
+            <column name="id_orden" />
+        </many-to-one>
+        <many-to-one name="empleado" class="Hibernate.entidades.Empleado" fetch="select">
+            <column name="id_empleado" />
+        </many-to-one>
+        <property name="fechaDestajo" type="date">
+            <column name="fecha_destajo" length="10" />
+        </property>
+        <property name="horas" type="java.lang.Double">
+            <column name="horas" precision="22" scale="0" />
+        </property>
+        <property name="importe" type="java.lang.Double">
+            <column name="importe" precision="22" scale="0" />
+        </property>
+        <property name="notas" type="string">
+            <column name="notas" length="150" />
+        </property>
+        <property name="autorizado" type="java.lang.Byte">
+            <column name="autorizado" />
+        </property>
+        <property name="idAutorizado" type="string">
+            <column name="id_autorizado" length="10" />
+        </property>
+        <set name="almacens" table="almacen" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_trabajo" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Almacen" />
+        </set>
+        <set name="pagoAdicionals" table="pago_adicional" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_trabajo_extra" />
+            </key>
+            <one-to-many class="Hibernate.entidades.PagoAdicional" />
+        </set>
+    </class>
+</hibernate-mapping>

@@ -13,6 +13,7 @@
   <table-filter match-name="correo"/>
   <table-filter match-name="configuracion"/>
   <table-filter match-name="nota"/>
+  <table-filter match-name="trabajo_extra"/>
   <table-filter match-name="empleado"/>
   <table-filter match-name="archivo"/>
   <table-filter match-name="estatus"/>

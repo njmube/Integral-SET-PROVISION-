@@ -25,16 +25,18 @@ public class buscaEjemplarAlmacen extends javax.swing.JDialog {
     public static final Object[] RET_CANCEL =null;
     InputMap map = new InputMap();
     DefaultTableModel model;
-    String sessionPrograma="";
+    String sessionPrograma="", trabajo="", especialidad="";
     Herramientas h;
     Usuario usr;
     String orden;
     
-    public buscaEjemplarAlmacen(java.awt.Frame parent, boolean modal, String ses, Usuario usuario, String orden) {
+    public buscaEjemplarAlmacen(java.awt.Frame parent, boolean modal, String ses, Usuario usuario, String orden, String trabajo, String especialidad) {
         super(parent, modal);
         this.orden=orden;
         sessionPrograma=ses;
         usr=usuario;
+        this.especialidad=especialidad;
+        this.trabajo=trabajo;
         initComponents();
         getRootPane().setDefaultButton(jButton1);
         t_datos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -123,14 +125,14 @@ public class buscaEjemplarAlmacen extends javax.swing.JDialog {
 
             },
             new String [] {
-                "No Parte", "Modelo", "Marca", "Tipo", "Catálogo", "Medida", "Existencia", "Operario", "-"
+                "No Parte", "Modelo", "Marca", "Tipo", "Catálogo", "Medida", "Existencia", "Operario", "-", "$ C/U", "-"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -156,7 +158,7 @@ public class buscaEjemplarAlmacen extends javax.swing.JDialog {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 563, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 869, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -243,7 +245,7 @@ public class buscaEjemplarAlmacen extends javax.swing.JDialog {
                         t_datos.getValueAt(t_datos.getSelectedRow(), 4).toString(),
                         t_datos.getValueAt(t_datos.getSelectedRow(), 5).toString(),
                         Double.parseDouble(t_datos.getValueAt(t_datos.getSelectedRow(), 6).toString()),
-                        Double.parseDouble(t_datos.getValueAt(t_datos.getSelectedRow(), 8).toString())
+                        Double.parseDouble(t_datos.getValueAt(t_datos.getSelectedRow(), 8).toString()),
                     };
                 }
                 else
@@ -257,7 +259,9 @@ public class buscaEjemplarAlmacen extends javax.swing.JDialog {
                         t_datos.getValueAt(t_datos.getSelectedRow(), 5).toString(),
                         Double.parseDouble(t_datos.getValueAt(t_datos.getSelectedRow(), 6).toString()),
                         Double.parseDouble(t_datos.getValueAt(t_datos.getSelectedRow(), 7).toString()),
-                        Double.parseDouble(t_datos.getValueAt(t_datos.getSelectedRow(), 8).toString())
+                        Double.parseDouble(t_datos.getValueAt(t_datos.getSelectedRow(), 8).toString()),
+                        Double.parseDouble(t_datos.getValueAt(t_datos.getSelectedRow(), 9).toString()),
+                        Double.parseDouble(t_datos.getValueAt(t_datos.getSelectedRow(), 10).toString())
                     };
                 }
                 doClose(op);
@@ -307,16 +311,42 @@ public class buscaEjemplarAlmacen extends javax.swing.JDialog {
             String texto="";
             if(orden.compareTo("")==0)
             {
-                texto="select id_parte as id, if(modelo is null,'', modelo) as modelo, if(id_marca is null, '', id_marca) as marca, if(tipo_nombre is null,'', tipo_nombre) as tipo, id_catalogo, medida, existencias, 0.0 as cero " +
+                texto="select id_parte as id, if(modelo is null,'', modelo) as modelo, if(id_marca is null, '', id_marca) as marca, if(tipo_nombre is null,'', tipo_nombre) as tipo, id_catalogo, medida, existencias, 0.0 as cero, precio " +
                       "from ejemplar where inventario=1 and ";
             }
             else
             {
+                String aux="", aux1="";
+                if(trabajo.compareTo("")!=0)
+                    aux=" and almacen.id_trabajo="+trabajo;
+                else
+                    aux=" and almacen.id_trabajo is null";
+                switch(especialidad){
+                    case "HOJALATERIA":
+                        aux1=" and almacen.especialidad='H'";
+                        break;
+                    case "MECANICA":
+                        aux1=" and almacen.especialidad='M'";
+                        break;
+                    case "SUSPENSION":
+                        aux1=" and almacen.especialidad='S'";
+                        break;
+                    case "ELECTRICO":
+                        aux1=" and almacen.especialidad='E'";
+                        break;
+                    case "PINTURA":
+                        aux1=" and almacen.especialidad='P'";
+                        break;
+                    /*case "ADICIONAL":
+                        aux1="and almacen.especialidad='A'";
+                        break;    */
+                }
+                
                 texto="select ejemplar.id_Parte as id, if(modelo is null,'', modelo) as modelo, if(id_marca is null, '', id_marca) as marca, if(tipo_nombre is null,'', tipo_nombre) as tipo, id_catalogo, medida, 0.0 as cero, " +
                       "( (select if(sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) from ejemplar left join movimiento on ejemplar.id_Parte=movimiento.id_Parte " +
-                      "left join almacen on movimiento.id_almacen=almacen.id_almacen where ejemplar.id_Parte=id and almacen.id_orden="+orden+" and almacen.tipo_movimiento=2 and almacen.operacion=8) - " +
+                      "left join almacen on movimiento.id_almacen=almacen.id_almacen where ejemplar.id_Parte=id and almacen.id_orden="+orden+" and almacen.tipo_movimiento=2 and almacen.operacion=8 "+aux+aux1+") - " +
                       "(select if(sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) from ejemplar left join movimiento on ejemplar.id_Parte=movimiento.id_Parte " +
-                      "left join almacen on movimiento.id_almacen=almacen.id_almacen where ejemplar.id_Parte=id and almacen.id_orden="+orden+" and almacen.tipo_movimiento=1 and almacen.operacion=8) )as operario, existencias " +
+                      "left join almacen on movimiento.id_almacen=almacen.id_almacen where ejemplar.id_Parte=id and almacen.id_orden="+orden+" and almacen.tipo_movimiento=1 and almacen.operacion=8 "+aux+aux1+") )as operario, existencias, precio " +
                       "from ejemplar where inventario=1 and ";
             }
             if(cb_tipo.getSelectedItem().toString().compareTo("clave")==0)
@@ -332,7 +362,7 @@ public class buscaEjemplarAlmacen extends javax.swing.JDialog {
             for (Object o : resultList) 
             {
                 java.util.HashMap actor=(java.util.HashMap)o;
-                Object[] vector=new Object[]{actor.get("id"), actor.get("modelo"),actor.get("marca"),actor.get("tipo"), actor.get("id_catalogo"),actor.get("medida"),actor.get("existencias"),actor.get("operario"),actor.get("cero")};
+                Object[] vector=new Object[]{actor.get("id"), actor.get("modelo"),actor.get("marca"),actor.get("tipo"), actor.get("id_catalogo"),actor.get("medida"),actor.get("existencias"),actor.get("operario"),actor.get("cero"), actor.get("precio"), actor.get("cero")};
                 model.addRow(vector);
             }
             session.disconnect();

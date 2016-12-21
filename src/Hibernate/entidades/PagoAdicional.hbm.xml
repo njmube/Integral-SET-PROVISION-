@@ -1,36 +1,36 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 13/07/2016 09:31:28 AM by Hibernate Tools 3.6.0 -->
+<!-- Generated 21/12/2016 12:54:17 PM by Hibernate Tools 3.6.0 -->
 <hibernate-mapping>
-    <class name="Hibernate.entidades.PagoAdicional" table="pago_adicional">
-        <id name="idAdicional" type="int">
-            <column name="id_adicional" />
+    <class name="Hibernate.entidades.PagoAdicional" table="pago_adicional" catalog="mydb">
+        <id name="idPagoAdicional" type="java.lang.Integer">
+            <column name="id_pago_adicional" />
             <generator class="identity" />
         </id>
-        <many-to-one name="orden" class="Hibernate.entidades.Orden" fetch="select">
-            <column name="id_orden" />
+        <many-to-one name="trabajoExtra" class="Hibernate.entidades.TrabajoExtra" fetch="select">
+            <column name="id_trabajo_extra" />
         </many-to-one>
-        <many-to-one name="empleado" class="Hibernate.entidades.Empleado" fetch="select">
-            <column name="id_empleado" />
-        </many-to-one>
-        <property name="fechaDestajo" type="date">
-            <column name="fecha_destajo" length="10" />
+        <property name="fecha" type="date">
+            <column name="fecha" length="10" />
         </property>
-        <property name="avance" type="java.lang.Double">
-            <column name="avance" precision="22" scale="0" />
+        <property name="porcentaje" type="java.lang.Double">
+            <column name="porcentaje" precision="22" scale="0" />
         </property>
-        <property name="horas" type="java.lang.Double">
-            <column name="horas" precision="22" scale="0" />
+        <property name="impote" type="java.lang.Double">
+            <column name="impote" precision="22" scale="0" />
         </property>
-        <property name="importe" type="java.lang.Double">
-            <column name="importe" precision="22" scale="0" />
+        <property name="nota" type="string">
+            <column name="nota" length="100" />
         </property>
-        <property name="notas" type="string">
-            <column name="notas" length="150" />
+        <property name="total" type="java.lang.Double">
+            <column name="total" precision="22" scale="0" />
         </property>
-        <property name="fechaModifico" type="timestamp">
-            <column name="fecha_modifico" length="19" />
-        </property>
+        <set name="almacens" table="almacen" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_pago_adicional" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Almacen" />
+        </set>
     </class>
 </hibernate-mapping>
