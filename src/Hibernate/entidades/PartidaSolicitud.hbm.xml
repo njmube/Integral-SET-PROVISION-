@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/08/2015 05:39:12 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.PartidaSolicitud" table="partida_solicitud">
+        <id name="idPartidas" type="java.lang.Integer">
+            <column name="id_partidas"/>
+            <generator class="identity" />
+        </id>
+        
+        <many-to-one name="ejemplar" class="Hibernate.entidades.Ejemplar" fetch="select">
+            <column name="id_Parte" />
+        </many-to-one>
+        
+        <many-to-one name="cotConsumible" class="Hibernate.entidades.CotConsumible" fetch="select">
+            <column name="id_solicitud" />
+        </many-to-one>
+        
+        <property name="cantidad" type="java.lang.Double">
+            <column name="cantidad" precision="22" scale="0" />
+        </property>
+        
+        <property name="medida" type="java.lang.String">
+            <column name="medida" precision="22" scale="0" />
+        </property>
+        
+        <property name="costo" type="java.lang.Double">
+            <column name="costo" precision="22" scale="0" />
+        </property>
+       
+    </class>
+</hibernate-mapping>
+

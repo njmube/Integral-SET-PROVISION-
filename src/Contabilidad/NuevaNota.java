@@ -149,6 +149,13 @@ public class NuevaNota extends javax.swing.JPanel {
         t_inc = new javax.swing.JTextField();
         b_tipo = new javax.swing.JButton();
         b_marca = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
+        b_mas = new javax.swing.JButton();
+        b_menos = new javax.swing.JButton();
+        l_iva1 = new javax.swing.JLabel();
+        t_descuento = new javax.swing.JFormattedTextField();
+        jLabel22 = new javax.swing.JLabel();
+        t_noFactura = new javax.swing.JTextField();
         p_totales = new javax.swing.JPanel();
         b_guardar = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
@@ -159,16 +166,12 @@ public class NuevaNota extends javax.swing.JPanel {
         l_total = new javax.swing.JLabel();
         t_total = new javax.swing.JFormattedTextField();
         t_iva1 = new javax.swing.JFormattedTextField();
-        t_descuento = new javax.swing.JFormattedTextField();
-        l_iva1 = new javax.swing.JLabel();
-        jLabel22 = new javax.swing.JLabel();
-        t_noFactura = new javax.swing.JTextField();
-        b_mas = new javax.swing.JButton();
-        b_menos = new javax.swing.JButton();
         jButton7 = new javax.swing.JButton();
         t_extra = new javax.swing.JTextField();
         l_iva2 = new javax.swing.JLabel();
         jButton3 = new javax.swing.JButton();
+        c_emisor = new javax.swing.JComboBox();
+        jLabel26 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         t_datos = new javax.swing.JTable();
 
@@ -266,7 +269,7 @@ public class NuevaNota extends javax.swing.JPanel {
             }
         });
 
-        c_estado.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "AGUASCALIENTES", "BAJA CALIFORNIA", "BAJA CALIFORNIA SUR", "CAMPECHE", "CHIAPAS", "CHIHUAHUA", "COAHUILA", "COLIMA", "DISTRITO FEDERAL", "DURANGO", "ESTADO DE MEXICO", "GUANAJUATO", "GUERRERO", "HIDALGO", "JALISCO", "MICHOACAN", "MORELOS", "NAYARIT", "NUEVO LEON", "OAXACA", "PUEBLA", "QUERETARO", "QUINTANA ROO", "SAN LUIS POTOSI", "SINALOA", "SONORA", "TABASCO", "TAMAULIPAS", "TLAXCALA", "VERACRUZ", "YUCATAN", "ZACATECAS" }));
+        c_estado.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "AGUASCALIENTES", "BAJA CALIFORNIA", "BAJA CALIFORNIA SUR", "CAMPECHE", "CHIAPAS", "CHIHUAHUA", "COAHUILA", "COLIMA", "CIUDAD DE MÉXICO", "DURANGO", "ESTADO DE MÉXICO", "GUANAJUATO", "GUERRERO", "HIDALGO", "JALISCO", "MICHOACAN", "MORELOS", "NAYARIT", "NUEVO LEON", "OAXACA", "PUEBLA", "QUERETARO", "QUINTANA ROO", "SAN LUIS POTOSI", "SINALOA", "SONORA", "TABASCO", "TAMAULIPAS", "TLAXCALA", "VERACRUZ", "YUCATAN", "ZACATECAS" }));
         c_estado.setToolTipText("Estado del receptor");
 
         c_pais.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "AD", "AE", "AF", "AG", "AI", "AL", "AM", "AN", "AO", "AQ", "AR", "AS", "AT", "AU", "AW", "AX", "AZ", "BA", "BB", "BD", "BE", "BF", "BG", "BH", "BI", "BJ", "BL", "BM", "BN", "BO", "BR", "BS", "BT", "BV", "BW", "BY", "BZ", "CA", "CC", "CD", "CF", "CG", "CH", "CI", "CK", "CL", "CM", "CN", "CO", "CR", "CU", "CV", "CX", "CY", "CZ", "DE", "DJ", "DK", "DM", "DO", "DZ", "EC", "EE", "EG", "EH", "ER", "ES", "ET", "FI", "FJ", "FK", "FM", "FO", "FR", "GA", "GB", "GD", "GE", "GF", "GG", "GH", "GI", "GL", "GM", "GN", "GP", "GQ", "GR", "GS", "GT", "GU", "GW", "GY", "HK", "HM", "HN", "HR", "HT", "HU", "ID", "IE", "IL", "IM", "IN", "IO", "IQ", "IR", "IS", "IT", "JE", "JM", "JO", "JP", "KE", "KG", "KH", "KI", "KM", "KN", "KP", "KR", "KW", "KY", "KZ", "LA", "LB", "LC", "LI", "LK", "LR", "LS", "LT", "LU", "LV", "LY", "MA", "MC", "MD", "ME", "MF", "MG", "MH", "MK", "ML", "MM", "MN", "MO", "MP", "MQ", "MR", "MS", "MT", "MU", "MV", "MW", "MX", "MY", "MZ", "NA", "NC", "NE", "NF", "NG", "NI", "NL", "NO", "NP", "NR", "NU", "NZ", "OM", "PA", "PE", "PF", "PG", "PH", "PK", "PL", "PM", "PN", "PR", "PS", "PT", "PW", "PY", "QA", "RE", "RO", "RS", "RU", "RW", "SA", "SB", "SC", "SD", "SE", "SG", "SH", "SI", "SJ", "SK", "SL", "SM", "SN", "SO", "SR", "ST", "SV", "SY", "SZ", "TC", "TD", "TF", "TG", "TH", "TJ", "TK", "TL", "TM", "TN", "TO", "TR", "TT", "TV", "TW", "TZ", "UA", "UG", "UM", "US", "UY", "UZ", "VA", "VC", "VE", "VG", "VI", "VN", "VU", "WF", "WS", "YE", "YT", "ZA", "ZM", "ZW" }));
@@ -566,7 +569,7 @@ public class NuevaNota extends javax.swing.JPanel {
                         .addComponent(l_asegurado)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(t_asegurado, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 5, Short.MAX_VALUE)
                         .addComponent(jLabel20)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(t_inc, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -652,6 +655,89 @@ public class NuevaNota extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jPanel2.setBackground(new java.awt.Color(2, 135, 242));
+
+        b_mas.setBackground(new java.awt.Color(2, 135, 242));
+        b_mas.setForeground(new java.awt.Color(255, 255, 255));
+        b_mas.setIcon(new ImageIcon("imagenes/boton_mas.png"));
+        b_mas.setToolTipText("Agrega un concepto");
+        b_mas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_masActionPerformed(evt);
+            }
+        });
+
+        b_menos.setBackground(new java.awt.Color(2, 135, 242));
+        b_menos.setForeground(new java.awt.Color(255, 255, 255));
+        b_menos.setIcon(new ImageIcon("imagenes/boton_menos.png"));
+        b_menos.setToolTipText("Eliminar un concepto");
+        b_menos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_menosActionPerformed(evt);
+            }
+        });
+
+        l_iva1.setFont(new java.awt.Font("Arial", 0, 9)); // NOI18N
+        l_iva1.setForeground(new java.awt.Color(255, 255, 255));
+        l_iva1.setText("Agregar Descuento:");
+
+        t_descuento.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        t_descuento.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("0.00"))));
+        t_descuento.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        t_descuento.setToolTipText("Agregar descuento global");
+        t_descuento.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
+        t_descuento.setNextFocusableComponent(t_datos);
+        t_descuento.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                t_descuentoFocusLost(evt);
+            }
+        });
+
+        jLabel22.setFont(new java.awt.Font("Arial", 0, 9)); // NOI18N
+        jLabel22.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel22.setText("No Factura:");
+
+        t_noFactura.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
+        t_noFactura.setToolTipText("Numero de nota");
+        t_noFactura.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        t_noFactura.setEnabled(false);
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(b_mas, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(b_menos, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(l_iva1)
+                .addGap(15, 15, 15)
+                .addComponent(t_descuento, javax.swing.GroupLayout.DEFAULT_SIZE, 88, Short.MAX_VALUE)
+                .addGap(631, 631, 631)
+                .addComponent(jLabel22)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(t_noFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(3, 3, 3)
+                        .addComponent(l_iva1))
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(t_noFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel22))
+                    .addComponent(t_descuento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(b_mas, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(b_menos, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -660,6 +746,7 @@ public class NuevaNota extends javax.swing.JPanel {
                 .addComponent(p_orden, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(6, 6, 6)
                 .addComponent(p_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -667,7 +754,8 @@ public class NuevaNota extends javax.swing.JPanel {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(p_cliente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(p_orden, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         add(jPanel1, java.awt.BorderLayout.PAGE_START);
@@ -751,51 +839,6 @@ public class NuevaNota extends javax.swing.JPanel {
         });
         jPanel5.add(t_iva1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1, 20, 40, -1));
 
-        t_descuento.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_descuento.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("0.00"))));
-        t_descuento.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        t_descuento.setToolTipText("Agregar descuento global");
-        t_descuento.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
-        t_descuento.setNextFocusableComponent(t_datos);
-        t_descuento.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                t_descuentoFocusLost(evt);
-            }
-        });
-
-        l_iva1.setFont(new java.awt.Font("Arial", 0, 9)); // NOI18N
-        l_iva1.setForeground(new java.awt.Color(255, 255, 255));
-        l_iva1.setText("Agregar Descuento:");
-
-        jLabel22.setFont(new java.awt.Font("Arial", 0, 9)); // NOI18N
-        jLabel22.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel22.setText("No Factura:");
-
-        t_noFactura.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
-        t_noFactura.setToolTipText("Numero de nota");
-        t_noFactura.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_noFactura.setEnabled(false);
-
-        b_mas.setBackground(new java.awt.Color(2, 135, 242));
-        b_mas.setForeground(new java.awt.Color(255, 255, 255));
-        b_mas.setIcon(new ImageIcon("imagenes/boton_mas.png"));
-        b_mas.setToolTipText("Agrega un concepto");
-        b_mas.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                b_masActionPerformed(evt);
-            }
-        });
-
-        b_menos.setBackground(new java.awt.Color(2, 135, 242));
-        b_menos.setForeground(new java.awt.Color(255, 255, 255));
-        b_menos.setIcon(new ImageIcon("imagenes/boton_menos.png"));
-        b_menos.setToolTipText("Eliminar un concepto");
-        b_menos.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                b_menosActionPerformed(evt);
-            }
-        });
-
         jButton7.setIcon(new ImageIcon("imagenes/nuevo.png"));
         jButton7.setText("Nuevo");
         jButton7.setToolTipText("Nueva Nota(Elimina todo texto en los campos)");
@@ -823,38 +866,34 @@ public class NuevaNota extends javax.swing.JPanel {
             }
         });
 
+        c_emisor.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "SELECCIONAR", "SET", "TBS " }));
+
+        jLabel26.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel26.setText("Emisor:");
+
         javax.swing.GroupLayout p_totalesLayout = new javax.swing.GroupLayout(p_totales);
         p_totales.setLayout(p_totalesLayout);
         p_totalesLayout.setHorizontalGroup(
             p_totalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(p_totalesLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(b_mas, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(b_menos, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(b_guardar)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton7)
                 .addGroup(p_totalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, p_totalesLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton3)
-                        .addGap(26, 26, 26)
+                    .addGroup(p_totalesLayout.createSequentialGroup()
+                        .addComponent(jLabel26)
+                        .addGap(18, 18, 18)
+                        .addComponent(c_emisor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(161, 161, 161)
                         .addComponent(l_iva2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(t_extra, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
+                        .addGap(196, 196, 196))
+                    .addGroup(p_totalesLayout.createSequentialGroup()
+                        .addComponent(b_guardar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(l_iva1)
-                        .addGap(15, 15, 15))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, p_totalesLayout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel22)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                .addGroup(p_totalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(t_noFactura)
-                    .addComponent(t_descuento, javax.swing.GroupLayout.DEFAULT_SIZE, 88, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton7)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(6, 6, 6))
         );
@@ -863,29 +902,19 @@ public class NuevaNota extends javax.swing.JPanel {
             .addGroup(p_totalesLayout.createSequentialGroup()
                 .addGroup(p_totalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(p_totalesLayout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addGroup(p_totalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(p_totalesLayout.createSequentialGroup()
-                                .addGap(3, 3, 3)
-                                .addGroup(p_totalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(l_iva1)
-                                    .addComponent(b_mas, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(b_menos, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(p_totalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(l_iva2)
-                                        .addComponent(t_extra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(p_totalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(b_guardar)
-                                        .addComponent(jButton7)
-                                        .addComponent(jButton3))))
-                            .addGroup(p_totalesLayout.createSequentialGroup()
-                                .addComponent(t_descuento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(p_totalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(t_noFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel22)))))
+                        .addGap(8, 8, 8)
+                        .addGroup(p_totalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(l_iva2)
+                            .addComponent(t_extra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(c_emisor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel26))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(p_totalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(b_guardar)
+                            .addComponent(jButton7)
+                            .addComponent(jButton3)))
                     .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(12, Short.MAX_VALUE))
         );
 
         add(p_totales, java.awt.BorderLayout.PAGE_END);
@@ -1008,178 +1037,183 @@ public class NuevaNota extends javax.swing.JPanel {
         {
             if(t_datos.getRowCount()>0)
             {
-                if(t_cliente.getText().trim().compareTo("")!=0)
+                if(c_emisor.getSelectedIndex()!=0)
                 {
-                    if(t_rfc.getText().compareTo("")!=0)
+                    if(t_cliente.getText().trim().compareTo("")!=0)
                     {
-                        if(t_direccion.getText().trim().compareTo("")!=0)
+                        if(t_rfc.getText().compareTo("")!=0)
                         {
-                            if(t_numero_exterior.getText().compareTo("")!=0)
+                            if(t_direccion.getText().trim().compareTo("")!=0)
                             {
-                                if(t_cp.getText().compareTo("")!=0)
+                                if(t_numero_exterior.getText().compareTo("")!=0)
                                 {
-                                    if(t_municipio.getText().compareTo("")!=0)
+                                    if(t_cp.getText().compareTo("")!=0)
                                     {
-                                        Session session = HibernateUtil.getSessionFactory().openSession();
-                                        try
+                                        if(t_municipio.getText().compareTo("")!=0)
                                         {
-                                            Calendar c1 = Calendar.getInstance();
-                                            //Calendar c2 = new GregorianCalendar();
-                                            session.beginTransaction().begin();
-                                            OrdenExterna nueva=new OrdenExterna();
-                                            if(t_asegurado.getText().trim().compareTo("")!=0)
-                                                nueva.setAsegurado(t_asegurado.getText().trim());
-                                            if(t_inc.getText().trim().compareTo("")!=0)
-                                                nueva.setInciso(t_inc.getText().trim());
-                                            if(t_marca.getText().trim().compareTo("")!=0)
+                                            Session session = HibernateUtil.getSessionFactory().openSession();
+                                            try
                                             {
-                                                Marca m1=(Marca)session.get(Marca.class, t_marca.getText());
-                                                nueva.setMarca(m1);
-                                            }
-                                            if(t_tipo.getText().trim().compareTo("")!=0)
-                                            {
-                                                Tipo t1=(Tipo)session.get(Tipo.class, t_tipo.getText());
-                                                nueva.setTipo(t1);
-                                            }
-                                            if(t_serie.getText().trim().compareTo("")!=0)
-                                                nueva.setNoSerie(t_serie.getText().trim());
-                                            if(t_modelo.getText().trim().compareTo("")!=0)
-                                                nueva.setModelo(Integer.parseInt(t_modelo.getText().trim()));
-                                            if(t_placas.getText().trim().compareTo("")!=0)
-                                                nueva.setNoPlacas(t_placas.getText().trim());
-                                            if(t_poliza.getText().trim().compareTo("")!=0)
-                                                nueva.setPoliza(t_poliza.getText().trim());
-                                            if(t_siniestro.getText().trim().compareTo("")!=0)
-                                                nueva.setSiniestro(t_siniestro.getText().trim());
-                                            if(t_reporte.getText().trim().compareTo("")!=0)
-                                                nueva.setNoReporte(t_reporte.getText().trim());
-                                            nueva.setDeducible(0.00d);
-                                            int id=(int)session.save(nueva);
-                                            nueva=(OrdenExterna)session.get(OrdenExterna.class, id);
+                                                Calendar c1 = Calendar.getInstance();
+                                                //Calendar c2 = new GregorianCalendar();
+                                                session.beginTransaction().begin();
+                                                OrdenExterna nueva=new OrdenExterna();
+                                                if(t_asegurado.getText().trim().compareTo("")!=0)
+                                                    nueva.setAsegurado(t_asegurado.getText().trim());
+                                                if(t_inc.getText().trim().compareTo("")!=0)
+                                                    nueva.setInciso(t_inc.getText().trim());
+                                                if(t_marca.getText().trim().compareTo("")!=0)
+                                                {
+                                                    Marca m1=(Marca)session.get(Marca.class, t_marca.getText());
+                                                    nueva.setMarca(m1);
+                                                }
+                                                if(t_tipo.getText().trim().compareTo("")!=0)
+                                                {
+                                                    Tipo t1=(Tipo)session.get(Tipo.class, t_tipo.getText());
+                                                    nueva.setTipo(t1);
+                                                }
+                                                if(t_serie.getText().trim().compareTo("")!=0)
+                                                    nueva.setNoSerie(t_serie.getText().trim());
+                                                if(t_modelo.getText().trim().compareTo("")!=0)
+                                                    nueva.setModelo(Integer.parseInt(t_modelo.getText().trim()));
+                                                if(t_placas.getText().trim().compareTo("")!=0)
+                                                    nueva.setNoPlacas(t_placas.getText().trim());
+                                                if(t_poliza.getText().trim().compareTo("")!=0)
+                                                    nueva.setPoliza(t_poliza.getText().trim());
+                                                if(t_siniestro.getText().trim().compareTo("")!=0)
+                                                    nueva.setSiniestro(t_siniestro.getText().trim());
+                                                if(t_reporte.getText().trim().compareTo("")!=0)
+                                                    nueva.setNoReporte(t_reporte.getText().trim());
+                                                nueva.setDeducible(0.00d);
+                                                int id=(int)session.save(nueva);
+                                                nueva=(OrdenExterna)session.get(OrdenExterna.class, id);
 
-                                            Configuracion con =(Configuracion)session.get(Configuracion.class, 1);
-                                            Nota nuevaNota=new Nota();
-                                            nuevaNota.setOrdenExterna(nueva);
-                                            nuevaNota.setFecha(c1.getTime());// fecha de emision
-                                            nuevaNota.setRfcEmisor(con.getRfc());//RFC emisor
-                                            nuevaNota.setNombreEmisor(con.getNombre());//nombre emisor
-                                            nuevaNota.setCalleEmisor(con.getDireccion());//calle emisor
-                                            nuevaNota.setColoniaEmisor(con.getColonia());//Colonia emisor
-                                            nuevaNota.setNumeroExteriorEmisor(con.getNo());//numero exteerior emisor
-                                            nuevaNota.setMunicipioEmisor(con.getMunicipio());//municipio emisor
-                                            nuevaNota.setEstadoEmisor(con.getEstado());//estado emisor
-                                            nuevaNota.setPaisEmisor(con.getPais());//pais emisor
-                                            nuevaNota.setCpEmisor(con.getCp());//cp emisor
-                                            nuevaNota.setRfcReceptor(t_rfc.getText());
-                                            nuevaNota.setNombreReceptor(t_cliente.getText());
-                                            nuevaNota.setCalleReceptor(t_direccion.getText());
-                                            nuevaNota.setNumeroExteriorReceptor(t_numero_exterior.getText());
-                                            nuevaNota.setColoniaReceptor(t_colonia.getText());
-                                            nuevaNota.setMunicipioReceptor(t_municipio.getText());
-                                            nuevaNota.setEstadoReceptor(c_estado.getSelectedItem().toString());
-                                            nuevaNota.setPaisReceptor(c_pais.getSelectedItem().toString());
-                                            nuevaNota.setCpReceptor(t_cp.getText());
-                                            nuevaNota.setEstadoFactura("Pendiente");
-                                            nuevaNota.setEstatus("PENDIENTE");
-                                            nuevaNota.setDeducible(0.00d);
-                                            //f_fiscal
-                                            //fecha_fiscal
-                                            //serie
-                                            //folio
-                                            nuevaNota.setMetodoPago("99");
-                                            nuevaNota.setCuentaPago("");
-                                            nuevaNota.setMoneda("MXN");
-                                            nuevaNota.setFactorCambio(1.0d);
-                                            nuevaNota.setArea("Talleres");
-                                            nuevaNota.setTipoPoliza("AUTOS");
-                                            nuevaNota.setTipoEmisor("MATRIZ");
-                                            nuevaNota.setContactoEmisor(con.getContacto());
-                                            nuevaNota.setCorreoEmisor(con.getMail());
-                                            nuevaNota.setTelefonoEmisor(con.getTel());
-                                            nuevaNota.setTipoReceptor("COORDINADOR");
-                                            nuevaNota.setContactoReceptor(t_receptor.getText());
-                                            nuevaNota.setCorreoReceptor(t_email.getText());
-                                            nuevaNota.setTelefonoReceptor("");
-                                            nuevaNota.setCodigoOficina("");
-                                            nuevaNota.setFoliosElectronicos("");
-                                            nuevaNota.setUsuarioByGenero(user);
-                                            //AUTORIZO
-                                             //NPOMBRE DE DOCUMENTO
-                                             //ERROR
-                                             //ADDENDA
-                                             //RI_EMOSOR
-                                             //RI_RECEPTOR
-                                             //PROVEEDOR
-                                             nuevaNota.setCondicionesPago("UNA SOLA EXHIBICION");
-                                             //TIPO FACTURACION
-                                             //DESCRIPCION EMISOR
-                                             nuevaNota.setMedioPago("NO IDENTIFICADO");
-                                             nuevaNota.setFechaMedioPago(c1.getTime());
-                                             //FECHA CONDICIONES DE PAGO
-                                             //RIESGO
-                                             //ID ORDEN
-                                             nuevaNota.setIva(Integer.parseInt(t_iva1.getValue().toString()));
-                                             nuevaNota.setExtra(t_extra.getText());
+                                                Configuracion con =(Configuracion)session.get(Configuracion.class, c_emisor.getSelectedIndex());
+                                                Nota nuevaNota=new Nota();
+                                                nuevaNota.setOrdenExterna(nueva);
+                                                nuevaNota.setFecha(c1.getTime());// fecha de emision
+                                                nuevaNota.setRfcEmisor(con.getRfc());//RFC emisor
+                                                nuevaNota.setNombreEmisor(con.getNombre());//nombre emisor
+                                                nuevaNota.setCalleEmisor(con.getDireccion());//calle emisor
+                                                nuevaNota.setColoniaEmisor(con.getColonia());//Colonia emisor
+                                                nuevaNota.setNumeroExteriorEmisor(con.getNo());//numero exteerior emisor
+                                                nuevaNota.setMunicipioEmisor(con.getMunicipio());//municipio emisor
+                                                nuevaNota.setEstadoEmisor(con.getEstado());//estado emisor
+                                                nuevaNota.setPaisEmisor(con.getPais());//pais emisor
+                                                nuevaNota.setCpEmisor(con.getCp());//cp emisor
+                                                nuevaNota.setRfcReceptor(t_rfc.getText());
+                                                nuevaNota.setNombreReceptor(t_cliente.getText());
+                                                nuevaNota.setCalleReceptor(t_direccion.getText());
+                                                nuevaNota.setNumeroExteriorReceptor(t_numero_exterior.getText());
+                                                nuevaNota.setColoniaReceptor(t_colonia.getText());
+                                                nuevaNota.setMunicipioReceptor(t_municipio.getText());
+                                                nuevaNota.setEstadoReceptor(c_estado.getSelectedItem().toString());
+                                                nuevaNota.setPaisReceptor(c_pais.getSelectedItem().toString());
+                                                nuevaNota.setCpReceptor(t_cp.getText());
+                                                nuevaNota.setEstadoFactura("Pendiente");
+                                                nuevaNota.setEstatus("PENDIENTE");
+                                                nuevaNota.setDeducible(0.00d);
+                                                //f_fiscal
+                                                //fecha_fiscal
+                                                //serie
+                                                //folio
+                                                nuevaNota.setMetodoPago("99");
+                                                nuevaNota.setCuentaPago("");
+                                                nuevaNota.setMoneda("MXN");
+                                                nuevaNota.setFactorCambio(1.0d);
+                                                nuevaNota.setArea("Talleres");
+                                                nuevaNota.setTipoPoliza("AUTOS");
+                                                nuevaNota.setTipoEmisor("MATRIZ");
+                                                nuevaNota.setContactoEmisor(con.getContacto());
+                                                nuevaNota.setCorreoEmisor(con.getMail());
+                                                nuevaNota.setTelefonoEmisor(con.getTel());
+                                                nuevaNota.setTipoReceptor("COORDINADOR");
+                                                nuevaNota.setContactoReceptor(t_receptor.getText());
+                                                nuevaNota.setCorreoReceptor(t_email.getText());
+                                                nuevaNota.setTelefonoReceptor("");
+                                                nuevaNota.setCodigoOficina("");
+                                                nuevaNota.setFoliosElectronicos("");
+                                                nuevaNota.setUsuarioByGenero(user);
+                                                //AUTORIZO
+                                                 //NPOMBRE DE DOCUMENTO
+                                                 //ERROR
+                                                 //ADDENDA
+                                                 //RI_EMOSOR
+                                                 //RI_RECEPTOR
+                                                 //PROVEEDOR
+                                                 nuevaNota.setCondicionesPago("UNA SOLA EXHIBICION");
+                                                 //TIPO FACTURACION
+                                                 //DESCRIPCION EMISOR
+                                                 nuevaNota.setMedioPago("NO IDENTIFICADO");
+                                                 nuevaNota.setFechaMedioPago(c1.getTime());
+                                                 //FECHA CONDICIONES DE PAGO
+                                                 //RIESGO
+                                                 //ID ORDEN
+                                                 nuevaNota.setIva(Integer.parseInt(t_iva1.getValue().toString()));
+                                                 nuevaNota.setExtra(t_extra.getText());
 
-                                            int noNota=(Integer)session.save(nuevaNota);
-                                            nota=(Nota)session.get(Nota.class, noNota);
-                                            //crear los conceptos
-                                            for(int a=0; a<t_datos.getRowCount(); a++)
-                                            {
-                                                Concepto renglon=new Concepto();
-                                                renglon.setNota(nuevaNota);
-                                                renglon.setCantidad((double)t_datos.getValueAt(a, 0));
-                                                renglon.setMedida(t_datos.getValueAt(a, 1).toString());
-                                                renglon.setDescripcion(t_datos.getValueAt(a, 2).toString());
-                                                renglon.setPrecio((double)t_datos.getValueAt(a, 3));
-                                                renglon.setDescuento((double)t_datos.getValueAt(a, 4));
-                                                renglon.setNota(nota);
-                                                session.save(renglon);
-                                                //nuevaNota.getConceptos().add(renglon);
+                                                int noNota=(Integer)session.save(nuevaNota);
+                                                nota=(Nota)session.get(Nota.class, noNota);
+                                                //crear los conceptos
+                                                for(int a=0; a<t_datos.getRowCount(); a++)
+                                                {
+                                                    Concepto renglon=new Concepto();
+                                                    renglon.setNota(nuevaNota);
+                                                    renglon.setCantidad((double)t_datos.getValueAt(a, 0));
+                                                    renglon.setMedida(t_datos.getValueAt(a, 1).toString());
+                                                    renglon.setDescripcion(t_datos.getValueAt(a, 2).toString());
+                                                    renglon.setPrecio((double)t_datos.getValueAt(a, 3));
+                                                    renglon.setDescuento((double)t_datos.getValueAt(a, 4));
+                                                    renglon.setNota(nota);
+                                                    session.save(renglon);
+                                                    //nuevaNota.getConceptos().add(renglon);
+                                                }
+                                                session.beginTransaction().commit();
+                                                habilita(false);
+                                                t_noFactura.setText(""+noNota);
+                                                JOptionPane.showMessageDialog(this, "La Nota se ha guardado con el numero:"+noNota);
+                                                session.beginTransaction().begin();
+                                                nota=(Nota)session.get(Nota.class, nota.getIdNota());
+                                                session.beginTransaction().commit();
+                                                GeneraNota genera=new GeneraNota(new javax.swing.JFrame(), true, user, sessionPrograma, nota);
+                                                Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+                                                genera.setLocation((d.width/2)-(genera.getWidth()/2), (d.height/2)-(genera.getHeight()/2));
+                                                genera.consulta();
+                                                genera.setVisible(true);
                                             }
-                                            session.beginTransaction().commit();
-                                            habilita(false);
-                                            t_noFactura.setText(""+noNota);
-                                            JOptionPane.showMessageDialog(this, "La Nota se ha guardado con el numero:"+noNota);
-                                            session.beginTransaction().begin();
-                                            nota=(Nota)session.get(Nota.class, nota.getIdNota());
-                                            session.beginTransaction().commit();
-                                            GeneraNota genera=new GeneraNota(new javax.swing.JFrame(), true, user, sessionPrograma, nota);
-                                            Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-                                            genera.setLocation((d.width/2)-(genera.getWidth()/2), (d.height/2)-(genera.getHeight()/2));
-                                            genera.consulta();
-                                            genera.setVisible(true);
+                                            catch(Exception e)
+                                            {
+                                                session.beginTransaction().rollback();
+                                                e.printStackTrace();
+                                                JOptionPane.showMessageDialog(this, "No se pudo guardar la nota.");
+                                            }
+                                            finally
+                                            {
+                                                if(session!=null)
+                                                    if(session.isOpen())
+                                                        session.close();
+                                            }
                                         }
-                                        catch(Exception e)
-                                        {
-                                            session.beginTransaction().rollback();
-                                            e.printStackTrace();
-                                            JOptionPane.showMessageDialog(this, "No se pudo guardar la nota.");
-                                        }
-                                        finally
-                                        {
-                                            if(session!=null)
-                                                if(session.isOpen())
-                                                    session.close();
-                                        }
+                                        else
+                                            JOptionPane.showMessageDialog(this, "Ingrese el municipio del receptor");
                                     }
                                     else
-                                        JOptionPane.showMessageDialog(this, "Ingrese el municipio del receptor");
+                                        JOptionPane.showMessageDialog(this, "Ingrese el CP del teceptor");
                                 }
                                 else
-                                    JOptionPane.showMessageDialog(this, "Ingrese el CP del teceptor");
+                                    JOptionPane.showMessageDialog(this, "Ingrese el Número exterior del receptor");
                             }
                             else
-                                JOptionPane.showMessageDialog(this, "Ingrese el Número exterior del receptor");
+                                JOptionPane.showMessageDialog(this, "Ingrese la calle del receptor");
                         }
                         else
-                            JOptionPane.showMessageDialog(this, "Ingrese la calle del receptor");
+                            JOptionPane.showMessageDialog(this, "Ingrese el RFC del receptor");
                     }
                     else
-                        JOptionPane.showMessageDialog(this, "Ingrese el RFC del receptor");
+                        JOptionPane.showMessageDialog(this, "Ingrese en nombre de la razón social del receptor");
                 }
                 else
-                    JOptionPane.showMessageDialog(this, "Ingrese en nombre de la razón social del receptor");
+                    JOptionPane.showMessageDialog(this, "Seleleccione el emisor para facturar");
             }
             else
                 JOptionPane.showMessageDialog(this, "Ingrese conceptos de la nota");
@@ -1445,7 +1479,7 @@ public class NuevaNota extends javax.swing.JPanel {
 
     private void t_incKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_incKeyTyped
         // TODO add your handling code here:
-        if(t_inc.getText().length()>=10) 
+        if(t_inc.getText().length()>=13) 
             evt.consume();
     }//GEN-LAST:event_t_incKeyTyped
 
@@ -1484,7 +1518,7 @@ public class NuevaNota extends javax.swing.JPanel {
 
     private void t_reporteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_reporteKeyTyped
         // TODO add your handling code here:
-        if(t_reporte.getText().length()>=11) 
+        if(t_reporte.getText().length()>=20) 
             evt.consume();
     }//GEN-LAST:event_t_reporteKeyTyped
 
@@ -1786,6 +1820,7 @@ public class NuevaNota extends javax.swing.JPanel {
     private javax.swing.JButton b_menos;
     private javax.swing.JButton b_tipo;
     private javax.swing.JComboBox c_cliente;
+    private javax.swing.JComboBox c_emisor;
     private javax.swing.JComboBox c_estado;
     private javax.swing.JComboBox c_pais;
     private javax.swing.JButton jButton3;
@@ -1803,6 +1838,7 @@ public class NuevaNota extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
+    private javax.swing.JLabel jLabel26;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -1811,6 +1847,7 @@ public class NuevaNota extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel l_asegurado;
@@ -1920,6 +1957,7 @@ public class NuevaNota extends javax.swing.JPanel {
         t_extra.setText("");
         t_datos.setModel(ModeloTablaReporte(0, columnas));
         formatoTabla();
+        c_emisor.setSelectedIndex(0);
     }
     
     public void tabla_tamaños()

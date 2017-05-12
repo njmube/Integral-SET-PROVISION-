@@ -7,12 +7,14 @@ import Hibernate.entidades.Almacen;
 import Hibernate.entidades.Configuracion;
 import Hibernate.entidades.Ejemplar;
 import Hibernate.entidades.Empleado;
+import Hibernate.entidades.Marca;
 import Hibernate.entidades.Movimiento;
 import Hibernate.entidades.Orden;
 import Hibernate.entidades.OrdenExterna;
 import Hibernate.entidades.Partida;
 import Hibernate.entidades.PartidaExterna;
 import Hibernate.entidades.Pedido;
+import Hibernate.entidades.Tipo;
 import Hibernate.entidades.TrabajoExtra;
 import Hibernate.entidades.Usuario;
 import Hibernate.entidades.XCobrar;
@@ -169,6 +171,7 @@ public class nuevoAlmacen extends javax.swing.JPanel {
         t_compania = new javax.swing.JTextField();
         l_nreferencia = new javax.swing.JLabel();
         t_nreferencia = new javax.swing.JTextField();
+        reportes = new javax.swing.JDialog();
         jPanel2 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
@@ -180,6 +183,7 @@ public class nuevoAlmacen extends javax.swing.JPanel {
         jButton8 = new javax.swing.JButton();
         jButton10 = new javax.swing.JButton();
         jButton11 = new javax.swing.JButton();
+        jButton9 = new javax.swing.JButton();
         jPanelMalmacen = new javax.swing.JPanel();
         jPanel8 = new javax.swing.JPanel();
         jPanelProveedor = new javax.swing.JPanel();
@@ -499,6 +503,8 @@ public class nuevoAlmacen extends javax.swing.JPanel {
             .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
+        reportes.setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
+
         setLayout(new java.awt.BorderLayout());
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
@@ -583,6 +589,13 @@ public class nuevoAlmacen extends javax.swing.JPanel {
             }
         });
 
+        jButton9.setText("Reportes");
+        jButton9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton9ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -607,23 +620,26 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                 .addComponent(jButton11, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton10, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 104, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton9)
+                .addGap(0, 21, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton11, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton10, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jButton9, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
+                    .addComponent(jButton2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
+                    .addComponent(jButton3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
+                    .addComponent(jButton4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
+                    .addComponent(jButton5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
+                    .addComponent(jButton6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
+                    .addComponent(jButton7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
+                    .addComponent(jButton8, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
+                    .addComponent(jButton11, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
+                    .addComponent(jButton10, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE))
+                .addGap(0, 5, Short.MAX_VALUE))
         );
 
         add(jPanel2, java.awt.BorderLayout.NORTH);
@@ -1130,7 +1146,7 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jPanelProveedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 273, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanelM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -1724,9 +1740,18 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                                                 Integer respuesta=guardarAlmacen(almacen);
                                                 if(respuesta!=null)
                                                 {
-                                                    JOptionPane.showMessageDialog(null, "Registro almacenado con la clave:  " +respuesta);
+                                                    //JOptionPane.showMessageDialog(null, "Registro almacenado con la clave:  " +respuesta);
+                                                    int seleccion =JOptionPane.showOptionDialog(null, "Clave:  " +respuesta+"Numero de copias:","Registro almacenado",JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,new Object[] { "1", "2" },   "1");
                                                     formatosPedido fa=new formatosPedido(this.usr, this.sessionPrograma, almacen);
-                                                    fa.formato();
+                                                    if (seleccion != -1)
+                                                    {
+                                                        if(seleccion==0)
+                                                            fa.formato(false);
+                                                        else
+                                                            fa.formato(true);
+                                                    }
+                                                    else
+                                                        fa.formato(false);
                                                     titulos();
                                                 }
                                                 else
@@ -1748,7 +1773,7 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                                         {
                                             JOptionPane.showMessageDialog(null, "Registro almacenado con la clave:  " +respuesta);
                                             formatosPedido fa=new formatosPedido(this.usr, this.sessionPrograma, almacen);
-                                            fa.formato();
+                                            fa.formato(false);//chava
                                             titulos();
                                         }
                                         else
@@ -1789,7 +1814,7 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                                             {
                                                 JOptionPane.showMessageDialog(null, "Registro almacenado con la clave:  " +respuesta);
                                                 formatosPedido fa=new formatosPedido(this.usr, this.sessionPrograma, almacen);
-                                                fa.formato();
+                                                fa.formato(false);//chava
                                                 titulos();
                                             }
                                             else
@@ -1810,7 +1835,7 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                                         {
                                             JOptionPane.showMessageDialog(null, "Registro almacenado con la clave:  " +respuesta);
                                             formatosPedido fa=new formatosPedido(this.usr, this.sessionPrograma, almacen);
-                                            fa.formato();
+                                            fa.formato(false);//chava
                                             titulos();
                                         }
                                         else
@@ -1916,7 +1941,7 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                                                 {
                                                     JOptionPane.showMessageDialog(null, "Registro almacenado con la clave:  " +respuesta);
                                                     formatosPedido fa=new formatosPedido(this.usr, this.sessionPrograma, almacen);
-                                                    fa.formato();
+                                                    fa.formato(false);//chava
                                                     titulos();
                                                 }
                                                 else
@@ -1938,7 +1963,7 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                                         {
                                             JOptionPane.showMessageDialog(null, "Registro almacenado con la clave:  " +respuesta);
                                             formatosPedido fa=new formatosPedido(this.usr, this.sessionPrograma, almacen);
-                                            fa.formato();
+                                            fa.formato(false);//chava
                                             titulos();
                                         }
                                         else
@@ -2085,7 +2110,7 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                                 {
                                     JOptionPane.showMessageDialog(null, "Registro almacenado con la clave:  " +respuesta);
                                     formatosPedido fa=new formatosPedido(this.usr, this.sessionPrograma, almacen);
-                                    fa.formato();
+                                    fa.formato(false);//chava
                                     titulos();
                                 }
                                 else
@@ -2117,51 +2142,72 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                                     cero=consultaLista(8);
                                 if(cero==true)
                                 {
-                                    almacen.setOperacion(8); 
-                                    almacen.setOrden(orden_act);
-                                    
-                                    Empleado em1=new Empleado();
-                                    em1.setIdEmpleado(Integer.parseInt(id_empleado));
-                                    almacen.setEmpleado(em1);
-                                    
-                                    if(t_orden.getText().compareTo("")!=0)
+                                    if(orden_act!=null)
                                     {
-                                        switch(cb_especialidad.getSelectedItem().toString()){
-                                            case "HOJALATERIA":
-                                                almacen.setEspecialidad("H");
-                                                break;
-                                            case "MECANICA":
-                                                almacen.setEspecialidad("M");
-                                                break;
-                                            case "SUSPENSION":
-                                                almacen.setEspecialidad("S");
-                                                break;
-                                            case "ELECTRICO":
-                                                almacen.setEspecialidad("E");
-                                                break;
-                                            case "PINTURA":
-                                                almacen.setEspecialidad("P");
-                                                break;
-                                            case "ADICIONAL":
-                                                almacen.setEspecialidad("A");
-                                                TrabajoExtra trabajo=(TrabajoExtra)session.get(TrabajoExtra.class, Integer.parseInt(id_trabajo));
-                                                almacen.setTrabajoExtra(trabajo);
-                                                break;
+                                        almacen.setOperacion(8); 
+                                        almacen.setOrden(orden_act);
+
+                                        Empleado em1=new Empleado();
+                                        em1.setIdEmpleado(Integer.parseInt(id_empleado));
+                                        almacen.setEmpleado(em1);
+
+                                        if(t_orden.getText().compareTo("")!=0)
+                                        {
+                                            switch(cb_especialidad.getSelectedItem().toString()){
+                                                case "HOJALATERIA":
+                                                    almacen.setEspecialidad("H");
+                                                    break;
+                                                case "MECANICA":
+                                                    almacen.setEspecialidad("M");
+                                                    break;
+                                                case "SUSPENSION":
+                                                    almacen.setEspecialidad("S");
+                                                    break;
+                                                case "ELECTRICO":
+                                                    almacen.setEspecialidad("E");
+                                                    break;
+                                                case "PINTURA":
+                                                    almacen.setEspecialidad("P");
+                                                    break;
+                                                case "ADICIONAL":
+                                                    almacen.setEspecialidad("A");
+                                                    TrabajoExtra trabajo=(TrabajoExtra)session.get(TrabajoExtra.class, Integer.parseInt(id_trabajo));
+                                                    almacen.setTrabajoExtra(trabajo);
+                                                    break;
+                                            }
                                         }
-                                    }
-                                    Empleado em=new Empleado();
-                                    em.setIdEmpleado(Integer.parseInt(id_empleado));
-                                    almacen.setEmpleado(null);
-                                    Integer respuesta=guardarAlmacenOrden(almacen);
-                                    if(respuesta!=null)
-                                    {
-                                        JOptionPane.showMessageDialog(null, "Registro almacenado con la clave:  " +respuesta);
-                                        formatosOrden fa=new formatosOrden(this.usr, this.sessionPrograma, almacen);
-                                        fa.formato1();
-                                        titulos();
+                                        Empleado em=new Empleado();
+                                        em.setIdEmpleado(Integer.parseInt(id_empleado));
+                                        almacen.setEmpleado(null);
+                                        Integer respuesta=guardarAlmacenOrden(almacen);
+                                        if(respuesta!=null)
+                                        {
+                                            JOptionPane.showMessageDialog(null, "Registro almacenado con la clave:  " +respuesta);
+                                            formatosOrden fa=new formatosOrden(this.usr, this.sessionPrograma, almacen);
+                                            fa.formato1();
+                                            titulos();
+                                        }
+                                        else
+                                            b_guardar.requestFocus();
                                     }
                                     else
-                                        b_guardar.requestFocus();
+                                    {
+                                        almacen.setOperacion(8);
+                                        almacen.setEspecialidad("");
+                                        Empleado em1=new Empleado();
+                                        em1.setIdEmpleado(Integer.parseInt(id_empleado));
+                                        almacen.setEmpleado(em1);
+                                        Integer respuesta=guardarAlmacenOrden(almacen);
+                                        if(respuesta!=null)
+                                        {
+                                            JOptionPane.showMessageDialog(null, "Registro almacenado con la clave:  " +respuesta);
+                                            formatosOrden fa=new formatosOrden(this.usr, this.sessionPrograma, almacen);
+                                            fa.formato1();
+                                            titulos();
+                                        }
+                                        else
+                                            b_guardar.requestFocus();
+                                    }
                                 }
                                 else
                                     JOptionPane.showMessageDialog(null, "No se puede almacenar la cantidad ya que una partida contiene 0.00");
@@ -2189,137 +2235,74 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                                 if(cero==true)
                                 {
                                     session.beginTransaction();
-                                    orden_act= (Orden)session.get(Orden.class, orden_act.getIdOrden());
-                                    double importe=0.0d;
-                                    String especialidad="", complemento="";
-                                    boolean destajo=false;
-                                    
-                                    switch(this.cb_especialidad.getSelectedItem().toString())
+                                    if(orden_act!=null)
                                     {
-                                        case "HOJALATERIA":
-                                            especialidad="H";
-                                            destajo=orden_act.getDHojalateria();
-                                            if(destajo==true)// La orden es destajo
-                                                importe=orden_act.getImporteHojalateria();
-                                            else
-                                                importe=orden_act.getPHojalateria();
-                                            break;
-                                            
-                                        case "MECANICA":
-                                            especialidad="M";
-                                            destajo=orden_act.getDMecanica();
-                                            if(destajo==true)// La orden es destajo
-                                                importe=orden_act.getImporteMecanica();
-                                            else
-                                                importe=orden_act.getPMecanica();
-                                            break;
-                                            
-                                        case "SUSPENSION":
-                                            especialidad="S";
-                                            destajo=orden_act.getDSuspension();
-                                            if(destajo==true)// La orden es destajo
-                                                importe=orden_act.getImporteSuspension();
-                                            else
-                                                importe=orden_act.getPSuspension();
-                                            break;
-                                            
-                                        case "ELECTRICO":
-                                            especialidad="E";
-                                            destajo=orden_act.getDElectrico();
-                                            if(destajo==true)// La orden es destajo
-                                                importe=orden_act.getImporteElectrico();
-                                            else
-                                                importe=orden_act.getPElectrico();
-                                            break;
-                                        
-                                        case "PINTURA":
-                                            especialidad="P";
-                                            destajo=orden_act.getDPintura();
-                                            if(destajo==true)// La orden es destajo
-                                                importe=orden_act.getImportePintura();
-                                            else
-                                                importe=orden_act.getPPintura();
-                                            break;
-                                        
-                                        case "ADICIONAL":
-                                            especialidad="A";
-                                            TrabajoExtra trabajo=(TrabajoExtra)session.get(TrabajoExtra.class, Integer.parseInt(id_trabajo));
-                                            destajo=true;
-                                            importe=trabajo.getImporte();
-                                            complemento = "and id_trabajo="+this.id_trabajo;
-                                            almacen.setTrabajoExtra(trabajo);
-                                            break;
-                                    }
-                                    
-                                    Empleado em1=new Empleado();
-                                    em1.setIdEmpleado(Integer.parseInt(id_empleado));
-                                    almacen.setOperacion(8);
-                                    almacen.setEspecialidad(especialidad);
-                                    almacen.setEmpleado(em1);
-                                    Query q_consumido = session.createSQLQuery("select (select if(sum(cantidad*valor) is null, 0, sum(cantidad*valor)) from movimiento left join almacen on movimiento.id_almacen=almacen.id_almacen " +
-                                            "left join orden on almacen.id_orden=orden.id_orden where orden.id_orden="+orden_act.getIdOrden()+" and almacen.especialidad='"+especialidad+"' and almacen.operacion=8 and almacen.tipo_movimiento=2 "+complemento+") - " +
-                                            "(select if(sum(cantidad*valor) is null, 0, sum(cantidad*valor)) from movimiento left join almacen on movimiento.id_almacen=almacen.id_almacen " +
-                                            "left join orden on almacen.id_orden=orden.id_orden where orden.id_orden="+orden_act.getIdOrden()+" and almacen.especialidad='"+especialidad+"' and almacen.operacion=8 and almacen.tipo_movimiento=1 "+complemento+")as monto_consumible;");
-                                    
-                                    Query q_pagado = session.createSQLQuery("select if( sum(total) is null, 0.0, sum(total) ) as pagado from destajo where id_orden="+orden_act.getIdOrden()+" and especialidad='"+especialidad+"';");
-                                    if(especialidad.compareToIgnoreCase("A")==0)
-                                        q_pagado = session.createSQLQuery("select if( sum(total) is null, 0.0, sum(total) ) as pagado from pago_adicional where id_trabajo_extra="+this.id_trabajo); 
-                                    String msg1="", msg2="";
-                                    BigDecimal monto_pagado=new BigDecimal(0.0d);
-                                    if(destajo==true)// La orden es destajo
-                                    {
-                                        msg1="Aun no se ha acordado un monto por la reparación de "+cb_especialidad.getSelectedItem();
-                                        msg2="El material rebasa el monto a pagar por la repacación de ";
+                                        orden_act= (Orden)session.get(Orden.class, orden_act.getIdOrden());
+                                        String especialidad="";
 
-                                        q_pagado.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
-                                        ArrayList pagos=(ArrayList)q_pagado.list();
-                                        if(pagos.size()>0)
+                                        switch(this.cb_especialidad.getSelectedItem().toString())
                                         {
-                                            java.util.HashMap map=(java.util.HashMap)pagos.get(0);
-                                            monto_pagado = new BigDecimal((double)map.get("pagado"));
-                                        }
-                                    }
-                                    else//La orden es por monto
-                                    {
-                                        msg1="Aun no se ha asignado Presupuesto para consumibles de "+cb_especialidad.getSelectedItem();
-                                        msg2="El material rebasa el presuesto asignado a ";
-                                    }
+                                            case "HOJALATERIA":
+                                                especialidad="H";
+                                                break;
 
-                                    if(importe > 0.0d)
-                                    {
-                                        //*******Monto del material entregado hasta el momento*******
-                                        q_consumido.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
-                                        ArrayList partidas=(ArrayList)q_consumido.list();
-                                        BigDecimal monto_consumibles_entregado=new BigDecimal(0.0d);
-                                        if(partidas.size()>0)
+                                            case "MECANICA":
+                                                especialidad="M";
+                                                break;
+
+                                            case "SUSPENSION":
+                                                especialidad="S";
+                                                break;
+
+                                            case "ELECTRICO":
+                                                especialidad="E";
+                                                break;
+
+                                            case "PINTURA":
+                                                especialidad="P";
+                                                break;
+
+                                            case "ADICIONAL":
+                                                especialidad="A";
+                                                TrabajoExtra trabajo=(TrabajoExtra)session.get(TrabajoExtra.class, Integer.parseInt(id_trabajo));
+                                                almacen.setTrabajoExtra(trabajo);
+                                                break;
+                                        }
+
+                                        Empleado em1=new Empleado();
+                                        em1.setIdEmpleado(Integer.parseInt(id_empleado));
+                                        almacen.setOperacion(8);
+                                        almacen.setEspecialidad(especialidad);
+                                        almacen.setEmpleado(em1);
+                                        Integer respuesta=guardarAlmacenOrden(almacen);
+                                        if(respuesta!=null)
                                         {
-                                            java.util.HashMap map=(java.util.HashMap)partidas.get(0);
-                                            monto_consumibles_entregado = new BigDecimal((double)map.get("monto_consumible"));
+                                            JOptionPane.showMessageDialog(null, "Registro almacenado con la clave:  " +respuesta);
+                                            formatosOrden fa=new formatosOrden(this.usr, this.sessionPrograma, almacen);
+                                            fa.formato1();
+                                            titulos();
                                         }
-                                        monto_consumibles_entregado=monto_consumibles_entregado.add(monto_consumibles_entregado.multiply(new BigDecimal(0.16d)).setScale(2, BigDecimal.ROUND_HALF_UP));
-                                        monto_consumibles_entregado=monto_consumibles_entregado.add(new BigDecimal((double)t_total.getValue())).setScale(2, BigDecimal.ROUND_HALF_UP);
-                                        monto_consumibles_entregado=monto_consumibles_entregado.add(monto_pagado);
-                                        if(monto_consumibles_entregado.doubleValue()<=importe)
-                                        {
-                                            Integer respuesta=guardarAlmacenOrden(almacen);
-                                            if(respuesta!=null)
-                                            {
-                                                JOptionPane.showMessageDialog(null, "Registro almacenado con la clave:  " +respuesta);
-                                                formatosOrden fa=new formatosOrden(this.usr, this.sessionPrograma, almacen);
-                                                fa.formato1();
-                                                titulos();
-                                            }
-                                            else
-                                                b_guardar.requestFocus();
-                                        }
-                                        else{
-                                            BigDecimal diferencia = new BigDecimal(monto_consumibles_entregado.doubleValue()-importe);
-                                            JOptionPane.showMessageDialog(null, msg2+cb_especialidad.getSelectedItem()+" por $"+diferencia.setScale(2, BigDecimal.ROUND_HALF_UP));
-                                        }
+                                        else
+                                            b_guardar.requestFocus();
                                     }
                                     else
-                                        JOptionPane.showMessageDialog(null, msg1);
-                                    
+                                    {
+                                        almacen.setOperacion(8);
+                                        almacen.setEspecialidad("");
+                                        Empleado em1=new Empleado();
+                                        em1.setIdEmpleado(Integer.parseInt(id_empleado));
+                                        almacen.setEmpleado(em1);
+                                        Integer respuesta=guardarAlmacenOrden(almacen);
+                                        if(respuesta!=null)
+                                        {
+                                            JOptionPane.showMessageDialog(null, "Registro almacenado con la clave:  " +respuesta);
+                                            formatosOrden fa=new formatosOrden(this.usr, this.sessionPrograma, almacen);
+                                            fa.formato1();
+                                            titulos();
+                                        }
+                                        else
+                                            b_guardar.requestFocus();
+                                    }
                                     session.getTransaction().rollback();
                                     session.disconnect();
                                 }
@@ -2709,6 +2692,34 @@ public class nuevoAlmacen extends javax.swing.JPanel {
         sumaTotales();
     }//GEN-LAST:event_cb_1ItemStateChanged
 
+    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+        // TODO add your handling code here:
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try
+        {
+            session.beginTransaction().begin();
+            usr = (Usuario)session.get(Usuario.class, usr.getIdUsuario());
+            if(usr.getConsultaMovimientoAlmacen()==true)
+            {
+                h.session(sessionPrograma);
+                Reporte2 reporte2 = new Reporte2(usr, sessionPrograma, 26);
+                reporte2.jTabbedPane1.setSelectedIndex(4);
+                reportes.setSize(1020, 570);
+                reportes.getContentPane().removeAll();
+                reportes.getContentPane().add(reporte2, java.awt.BorderLayout.CENTER);
+                reportes.setVisible(true);
+            }
+            else
+                JOptionPane.showMessageDialog(null, "¡Acceso denegado!");
+        }catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        if(session!=null)
+            if(session.isOpen())
+                session.close();
+    }//GEN-LAST:event_jButton9ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDialog autoriza;
     private javax.swing.JButton b_autorizar;
@@ -2743,6 +2754,7 @@ public class nuevoAlmacen extends javax.swing.JPanel {
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
+    private javax.swing.JButton jButton9;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -2777,6 +2789,7 @@ public class nuevoAlmacen extends javax.swing.JPanel {
     private javax.swing.JLabel l_total;
     private javax.swing.JRadioButton r1;
     private javax.swing.JRadioButton r2;
+    private javax.swing.JDialog reportes;
     private javax.swing.JFormattedTextField t_IVA;
     private javax.swing.JTextField t_asegurado;
     private javax.swing.JTextField t_compania;
@@ -3748,11 +3761,11 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                     {
                         Class[] types = new Class [] 
                         {
-                            java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, 
+                            java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Double.class, 
                             java.lang.String.class, java.lang.String.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class,
                             java.lang.Double.class, java.lang.Double.class
                         };
-                        String[] columnas = new String [] {"No Parte","Modelo","Marca","Tipo","Catalogo","Medida","Existencias","Operario","Devoluciones", "Costo c/u","Total"};
+                        String[] columnas = new String [] {"No Parte","Modelo","Marca","Autorizados","Catalogo","Medida","Existencias","Operario","Devoluciones", "Costo c/u","Total"};
                         model=new nuevoAlmacen.MyModel(0, columnas, types);
                         model.setColumnaEditable(8, true);
                         t_datos.setModel(model);
@@ -3761,11 +3774,11 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                     {
                         Class[] types = new Class [] 
                         {
-                            java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, 
+                            java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Double.class, 
                             java.lang.String.class, java.lang.String.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class,
                             java.lang.Double.class, java.lang.Double.class
                         };
-                        String[] columnas = new String [] {"No Parte","Modelo","Marca","Tipo","Catalogo","Medida","Existencias","Operario","Entregadas", "Costo c/u","Total"}; 
+                        String[] columnas = new String [] {"No Parte","Modelo","Marca","Autorizados","Catalogo","Medida","Existencias","Operario","Entregadas", "Costo c/u","Total"}; 
                         model=new nuevoAlmacen.MyModel(0, columnas, types);
                         model.setColumnaEditable(8, true);
                         t_datos.setModel(model);
@@ -3966,6 +3979,39 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                                             if(ejem!=null)
                                             {
                                                 part.setEjemplar(ejem);
+                                                session.update(part);
+                                                session.getTransaction().commit();
+                                                vector.setElementAt(value, col);
+                                                dataVector.setElementAt(vector, row);
+                                                fireTableCellUpdated(row, col);
+                                                if(session.isOpen()==true)
+                                                    session.close();
+                                            }
+                                            else{
+                                                Ejemplar e_nuevo=new Ejemplar();
+                                                e_nuevo.setIdParte(value.toString());
+                                                if(orden_act!=null){
+                                                    if(orden_act.getMarca()!=null)
+                                                    {
+                                                        Marca mar=(Marca)session.get(Marca.class, orden_act.getMarca().getIdMarca());
+                                                        e_nuevo.setMarca(mar);
+                                                    }
+                                                    else
+                                                        e_nuevo.setMarca(null);
+                                                
+                                                    if(orden_act.getTipo()!=null)
+                                                    {
+                                                        Tipo tip=(Tipo)session.get(Tipo.class, orden_act.getTipo().getTipoNombre());
+                                                        e_nuevo.setTipo(tip);
+                                                    }
+                                                    else
+                                                        e_nuevo.setTipo(null);
+                                                }
+                                                e_nuevo.setCatalogo(t_datos.getValueAt(row, 4).toString());
+                                                e_nuevo.setComentario("");
+                                                e_nuevo.setInventario(0);
+                                                session.save(e_nuevo);
+                                                part.setEjemplar(e_nuevo);
                                                 session.update(part);
                                                 session.getTransaction().commit();
                                                 vector.setElementAt(value, col);
@@ -4483,16 +4529,22 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                                                                 sumaTotales();
                                                             }
                                                             else
-                                                                JOptionPane.showMessageDialog(null, "La cantidad máxima por devolver es: "+t_datos.getValueAt(row, 6)+t_datos.getValueAt(row, 5).toString()); 
+                                                                JOptionPane.showMessageDialog(null, "La cantidad máxima por devolver es: "+t_datos.getValueAt(row, 7)); 
                                                         }
                                                         else
                                                         {
                                                             if((double)value<=(double)t_datos.getValueAt(row, 6))
                                                             {
-                                                                vector.setElementAt(value, col);
-                                                                dataVector.setElementAt(vector, row);
-                                                                fireTableCellUpdated(row, col);
-                                                                sumaTotales();
+                                                                double ref=(double)value+(double)t_datos.getValueAt(row, 7);
+                                                                if((double)t_datos.getValueAt(row, 3)>=ref)
+                                                                {
+                                                                    vector.setElementAt(value, col);
+                                                                    dataVector.setElementAt(vector, row);
+                                                                    fireTableCellUpdated(row, col);
+                                                                    sumaTotales();
+                                                                }
+                                                                else
+                                                                    JOptionPane.showMessageDialog(null, "La cantidad Autorizada es de "+t_datos.getValueAt(row, 3)); 
                                                             }
                                                             else
                                                                 JOptionPane.showMessageDialog(null, "La cantidad máxima a entregar es: "+t_datos.getValueAt(row, 6)+t_datos.getValueAt(row, 5).toString()); 
@@ -4606,11 +4658,11 @@ public class nuevoAlmacen extends javax.swing.JPanel {
             model.removeRow(i);
             i-=1;
         }
-        if(t_orden.getText().compareTo("")==0)
-        {
-            b_mas.setEnabled(false);
-            b_menos.setEnabled(false);
-        }
+        //if(t_orden.getText().compareTo("")==0)
+        //{
+            b_mas.setEnabled(true);
+            b_menos.setEnabled(true);
+        //}
         formatoTabla();
     }
     
@@ -4879,7 +4931,7 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                                       "</tr>";
                     }
                     mensaje+="</table><p>"+t_notas.getText()+"</p> <p>Saludos. </p>";
-                    enviaCorreo("Recepción de material OT("+t_orden.getText()+")", mensaje, "hectorolivares@tractoservicio.com;alejandroflores@tractoservicio.com;jorgerios@tractoservicio.com;r.sanchez@imperia.mx;servicio.especializado.toluca@gmail.com"); 
+                    enviaCorreo("Recepción de material OT("+t_orden.getText()+")", mensaje, "hectorolivares@tractoservicio.com;edwinaldair@tractoservicio.com;jorgerios@tractoservicio.com;r.sanchez@imperia.mx;operaciones1@tractoservicio.com;servicio.especializado.toluca@gmail.com"); 
                 }
                 t_nmovimiento.setText(alm.getIdAlmacen().toString());
                 t_fecha.setText(alm.getFecha().toLocaleString());
@@ -4918,6 +4970,7 @@ public class nuevoAlmacen extends javax.swing.JPanel {
             obj.setMovimientos(new HashSet(0));
             IdAlmacen=(Integer) session.save(obj);
             Almacen alm = (Almacen)session.get(Almacen.class, IdAlmacen);
+            String msg="";
             for(int ren=0; ren<t_datos.getRowCount(); ren++)
             {
                 Partida part=null;
@@ -4946,11 +4999,22 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                 }
                 if(c_toperacion.getSelectedItem().toString().compareTo("Inventario")==0)
                 {
+                    
                     ejem=(Ejemplar)session.get(Ejemplar.class, t_datos.getValueAt(ren, 0).toString());
                     if(t_orden.getText().compareTo("")!=0)
-                        mov.setCantidad((double)t_datos.getValueAt(ren, 8));
+                    {
+                        if(ejem.getExistencias()>=(double)t_datos.getValueAt(ren, 8))
+                            mov.setCantidad((double)t_datos.getValueAt(ren, 8));
+                        else
+                        {
+                            ren=t_datos.getRowCount();
+                            msg="Solo hay "+ejem.getExistencias()+" existencias y no son suficientes para surtir el pedido";
+                        }
+                    }
                     else
+                    {
                         mov.setCantidad((double)t_datos.getValueAt(ren, 7));
+                    }
                     if(c_tmovimiento.getSelectedItem().toString().compareTo("Salida")==0)
                         ejem.setExistencias(ejem.getExistencias()-mov.getCantidad());
                     else
@@ -4958,10 +5022,19 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                     session.update(ejem);
                     mov.setValor(ejem.getPrecio());
                 }
-                mov.setPartida(part);
-                mov.setPartidaExterna(parEx);
-                mov.setEjemplar(ejem);
-                alm.addMovimiento(mov);
+                if(msg.compareTo("")==0)
+                {
+                    mov.setPartida(part);
+                    mov.setPartidaExterna(parEx);
+                    mov.setEjemplar(ejem);
+                    alm.addMovimiento(mov);
+                }
+                else
+                {
+                    session.getTransaction().rollback();
+                    JOptionPane.showMessageDialog(null, msg); 
+                    IdAlmacen = null;
+                }
             }
             alm.setNotas(t_notas.getText());
             session.update(alm);

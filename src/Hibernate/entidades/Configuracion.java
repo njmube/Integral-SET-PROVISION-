@@ -31,6 +31,14 @@ public class Configuracion  implements java.io.Serializable {
      private String mail;
      private String tel;
      private String sucursal;
+     private String emailFinkok;
+     private String claveFinkok;
+     private String pac;
+     private String cer;
+     private String llave;
+     private String clave;
+     private String serie;
+     private String serie1;
 
     public Configuracion() {
     }
@@ -39,7 +47,7 @@ public class Configuracion  implements java.io.Serializable {
     public Configuracion(int idConfiguracion) {
         this.idConfiguracion = idConfiguracion;
     }
-    public Configuracion(int idConfiguracion, Usuario usuario, String empresa, String logo, String sello, String cinta, Integer iva, String requestor, String rfc, String usuario_1, String nombre, String cp, String direccion, String no, String colonia, String municipio, String estado, String pais, String contacto, String mail, String sucursal, String tel) {
+    public Configuracion(int idConfiguracion, Usuario usuario, String empresa, String logo, String sello, String cinta, Integer iva, String requestor, String rfc, String usuario_1, String nombre, String cp, String direccion, String no, String colonia, String municipio, String estado, String pais, String contacto, String mail, String sucursal, String tel, String emailFinkok, String claveFinkok, String pac, String cer, String llave, String clave, String serie, String serie1) {
        this.idConfiguracion = idConfiguracion;
        this.usuario = usuario;
        this.empresa = empresa;
@@ -62,6 +70,14 @@ public class Configuracion  implements java.io.Serializable {
        this.mail = mail;
        this.tel = tel;
        this.sucursal = sucursal;
+       this.emailFinkok = emailFinkok;
+       this.claveFinkok = claveFinkok;
+       this.pac = pac;
+       this.cer=cer;
+       this.llave=llave;
+       this.clave=clave;
+       this.serie=serie;
+       this.serie=serie1;
     }
    
     public int getIdConfiguracion() {
@@ -221,9 +237,69 @@ public class Configuracion  implements java.io.Serializable {
         this.sucursal = sucursal;
     }
 
+    public String getEmailFinkok() {
+        return this.emailFinkok;
+    }
+    
+    public void setEmailFinkok(String emailFinkok) {
+        this.emailFinkok = emailFinkok;
+    }
 
-
-
+    public String getClaveFinkok() {
+        return this.claveFinkok;
+    }
+    
+    public void setClaveFinkok(String claveFinkok) {
+        this.claveFinkok = claveFinkok;
+    }
+    
+    public String getPac() {
+        return this.pac;
+    }
+    
+    public void setPac(String pac) {
+        this.pac = pac;
+    }
+    
+    public String getCer() {
+        return this.cer;
+    }
+    
+    public void setCer(String cer) {
+        this.cer = cer;
+    }
+    
+    public String getLlave() {
+        return this.llave;
+    }
+    
+    public void setLlave(String llave) {
+        this.llave = llave;
+    }
+    
+    public String getClave() {
+        return this.clave;
+    }
+    
+    public void setClave(String clave) {
+        this.clave = clave;
+    }
+    
+    public String getSerie() {
+        return this.serie;
+    }
+    
+    public void setSerie(String serie) {
+        this.serie = serie;
+    }
+    
+    public String getSerie1() {
+        return this.serie1;
+    }
+    
+    public void setSerie1(String serie1) {
+        this.serie1 = serie1;
+    }
 }
 
 

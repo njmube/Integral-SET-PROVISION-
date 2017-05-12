@@ -116,7 +116,11 @@ public class PDF {
             {
                 HeaderFooter event = new HeaderFooter();
                 writer.setPageEvent(event);
+            }else if(titulo.compareToIgnoreCase("almacen")==0){
+                //HeaderFooter1 event = new HeaderFooter1();
+                //writer.setPageEvent(event);
             }
+            
             document.open();
             contenido = writer.getDirectContent();
             
@@ -503,10 +507,31 @@ public static class HeaderFooter extends PdfPageEventHelper {
                     rect.getRight(), rect.getTop(), 0);*/
             ColumnText.showTextAligned(writer.getDirectContent(),PdfContentByte.ALIGN_LEFT, new Phrase("_____________________________"), 50, 30, 0);
             ColumnText.showTextAligned(writer.getDirectContent(),PdfContentByte.ALIGN_LEFT, new Phrase("Solicita"), 120, 20, 0);
-            ColumnText.showTextAligned(writer.getDirectContent(),PdfContentByte.ALIGN_LEFT, new Phrase(autoriza1), 370, 40, 0);
+            ColumnText.showTextAligned(writer.getDirectContent(),PdfContentByte.ALIGN_LEFT, new Phrase(autoriza1), 80, 30, 0);
             ColumnText.showTextAligned(writer.getDirectContent(),PdfContentByte.ALIGN_LEFT, new Phrase(autoriza2), 370, 30, 0);
             ColumnText.showTextAligned(writer.getDirectContent(),PdfContentByte.ALIGN_LEFT, new Phrase("_____________________________"), 370, 30, 0);
             ColumnText.showTextAligned(writer.getDirectContent(),PdfContentByte.ALIGN_LEFT, new Phrase("Autoriza"), 440, 20, 0);
+            
+        /*reporte.contenido.roundRectangle(50, 20, 180, 1, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Solicita", 120, 10, 0);
+        reporte.contenido.roundRectangle(370, 20, 180, 1, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Autoriza", 440, 10, 0);*/
+        }
+    }
+
+public static class HeaderFooter1 extends PdfPageEventHelper {
+
+        public void onEndPage (PdfWriter writer, Document document) {
+            Rectangle rect = writer.getBoxSize("art");
+            //Aquí definimos el encabezado de nuestro documento PDF
+           //Únicamente le ponemos nuestro nombre
+            /*ColumnText.showTextAligned(writer.getDirectContent(),
+                    Element.ALIGN_RIGHT, new Phrase("Roberto León Encabezado"),
+                    rect.getRight(), rect.getTop(), 0);*/
+            ColumnText.showTextAligned(writer.getDirectContent(),PdfContentByte.ALIGN_LEFT, new Phrase("_____________________________"), 50, 30, 0);
+            ColumnText.showTextAligned(writer.getDirectContent(),PdfContentByte.ALIGN_LEFT, new Phrase("Solicita"), 120, 15, 0);
+            ColumnText.showTextAligned(writer.getDirectContent(),PdfContentByte.ALIGN_LEFT, new Phrase("_____________________________"), 970, 30, 0);
+            ColumnText.showTextAligned(writer.getDirectContent(),PdfContentByte.ALIGN_LEFT, new Phrase("Autoriza"), 1040, 15, 0);
             
         /*reporte.contenido.roundRectangle(50, 20, 180, 1, 0);
         reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Solicita", 120, 10, 0);

@@ -4,14 +4,14 @@
   <session-factory>
     <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
     <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-    <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/mydb?noAccessToProcedureBodies=true</property>
-    <property name="hibernate.connection.username">root</property>
+    <property name="hibernate.connection.url">jdbc:mysql://192.168.1.253:3306/mydb?noAccessToProcedureBodies=true</property>
+    <property name="hibernate.connection.username">red</property>
     <property name="hibernate.connection.password">04650077</property>
     <property name="hibernate.connection.base">mydb</property>
-    <property name="hibernate.connection.servidor">lacalhost</property>
+    <property name="hibernate.connection.servidor">192.168.1.253</property>
     <property name="hibernate.connection.puerto">3306</property>
     <property name="connection.pool_size">1</property>
-    <property name="hibernate.show_sql">true</property>
+    <property name="hibernate.show_sql">false</property>
     <mapping resource="Hibernate/entidades/Cuenta.hbm.xml"/>
     <mapping resource="Hibernate/entidades/Movimiento.hbm.xml"/>
     <mapping resource="Hibernate/entidades/Catalogo.hbm.xml"/>
@@ -48,6 +48,7 @@
     <mapping resource="Hibernate/entidades/Destajo.hbm.xml"/>
     <mapping resource="Hibernate/entidades/PagoAdicional.hbm.xml"/>
     <mapping resource="Hibernate/entidades/Orden.hbm.xml"/>
+    <mapping resource="Hibernate/entidades/Consumible.hbm.xml"/>
     <mapping resource="Hibernate/entidades/Documentos.hbm.xml"/>
     <mapping resource="Hibernate/entidades/Cotizacion.hbm.xml"/>
     <mapping resource="Hibernate/entidades/Adicionales.hbm.xml"/>
@@ -70,5 +71,8 @@
     <mapping resource="Hibernate/entidades/Registro.hbm.xml"/>
     <mapping resource="Hibernate/entidades/Acceso.hbm.xml"/>
     <mapping resource="Hibernate/entidades/Notificacion.hbm.xml"/>
+	<mapping resource="Hibernate/entidades/CotizacionCliente.hbm.xml"/>
+	<mapping resource="Hibernate/entidades/CotConsumible.hbm.xml"/>
+	<mapping resource="Hibernate/entidades/PartidaSolicitud.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>

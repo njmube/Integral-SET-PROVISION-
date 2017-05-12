@@ -13,10 +13,28 @@ import Hibernate.entidades.Empleado;
 import Hibernate.entidades.Herramienta;
 import Hibernate.entidades.Usuario;
 import Integral.Herramientas;
+import Integral.PDF;
 import Integral.Render1;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.AcroFields;
+import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.pdf.PdfContentByte;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfReader;
+import com.itextpdf.text.pdf.PdfStamper;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
@@ -158,12 +176,15 @@ public class Responsiva extends javax.swing.JPanel {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(t_ubicacion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(b_agregar)
-                    .addComponent(jLabel3)
-                    .addComponent(t_cantidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3)
+                            .addComponent(t_cantidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(b_agregar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout v_nuevoLayout = new javax.swing.GroupLayout(v_nuevo.getContentPane());
@@ -247,6 +268,11 @@ public class Responsiva extends javax.swing.JPanel {
 
         b_imprimir.setText("Imprimir");
         b_imprimir.setEnabled(false);
+        b_imprimir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_imprimirActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -362,7 +388,7 @@ public class Responsiva extends javax.swing.JPanel {
                 for(int x=0; x<lista.size(); x++)
                 {
                     java.util.HashMap map=(java.util.HashMap)lista.get(x);
-                    model.addRow(new Object[]{map.get("id_responsiva"),map.get("nombre"),map.get("cantidad"),map.get("")});
+                    model.addRow(new Object[]{map.get("id_responsiva"),map.get("nombre"),map.get("cantidad"),map.get("ubicacion")});
                 }
                 b_mas.setEnabled(true);
                 b_menos.setEnabled(true);
@@ -438,7 +464,7 @@ public class Responsiva extends javax.swing.JPanel {
                         nuevo.setEmpleado(emp);
                         int numero=(int)session.save(nuevo);
                         String valor=""+numero;
-                        model.addRow(new Object[]{valor, t_nombre_herramienta.getText(), Integer.parseInt(t_cantidad.getText()), t_ubicacion.getText()});
+                        model.addRow(new Object[]{valor, t_nombre_herramienta.getText(), Double.parseDouble(t_cantidad.getText()), t_ubicacion.getText()});
                         session.beginTransaction().commit();
                         this.v_nuevo.dispose();
                     }
@@ -476,6 +502,125 @@ public class Responsiva extends javax.swing.JPanel {
             t_cantidad.setText("0");
         }
     }//GEN-LAST:event_t_cantidadFocusLost
+
+    private void b_imprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_imprimirActionPerformed
+        // TODO add your handling code here:
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try {
+            String empleado="";
+            String puesto="";
+            if(t_datos.getRowCount()>0){
+                //consulta
+                Query q = session.createSQLQuery("select empleado.id_empleado, empleado.nombre as empleado,puestos.nombre as puesto from empleado inner join puestos on puestos.id_puestos=empleado.id_puesto where empleado.id_empleado="+t_id_empleado.getText()+";");
+                q.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+                List lista = q.list();
+                
+                for(int i=0; i<lista.size(); i++){
+                    java.util.HashMap map=(java.util.HashMap)lista.get(i);
+                    empleado=(String) map.get("empleado");
+                    puesto =(String) map.get("puesto");
+                }
+
+                Date fecha = new Date();
+                DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
+                String Mes[]={"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"};
+                Calendar fecha1 = new GregorianCalendar();
+                int anio = fecha1.get(Calendar.YEAR);
+                int mes = fecha1.get(Calendar.MONTH);
+                int dia = fecha1.get(Calendar.DAY_OF_MONTH);
+                //DateFormat dateFormat1 = new SimpleDateFormat("dd-MM-yyyy");//YYYY-MM-DD HH:MM:SS
+                String valor = dateFormat.format(fecha);
+                File folder = new File("reportes/Responsivas");
+                folder.mkdirs();
+                PdfReader reader = new PdfReader("imagenes/CartaResponsiva.pdf");
+                PdfStamper stamp = new PdfStamper(reader, new FileOutputStream("reportes/Responsivas/"+valor+"CartaResponsiva.pdf"));
+                PdfContentByte cb = stamp.getUnderContent(1);
+                PdfContentByte cb2 = stamp.getUnderContent(2);
+                AcroFields fdfDoc = stamp.getAcroFields();
+                // Creo una fuente
+                BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.EMBEDDED);
+
+                cb.beginText();
+                //dia
+                try{
+                    if(dia<9)
+                        fdfDoc.setField("Dia", "0"+String.valueOf(dia));
+                    else
+                        fdfDoc.setField("Dia", String.valueOf(dia));
+                }catch(Exception e){
+                    fdfDoc.setField("Dia", "error");
+                }
+                //mes
+                try{
+                    fdfDoc.setField("Mes", Mes[mes]);
+                }catch(Exception e){
+                    fdfDoc.setField("Mes", "");
+                }
+                //año
+                try{
+                    fdfDoc.setField("Anio", String.valueOf(anio));
+                }catch(Exception e){
+                    fdfDoc.setField("Anio", "");
+                }
+                //nombre
+                try{
+                    fdfDoc.setField("Nombre", empleado);
+                }catch(Exception e){
+                    fdfDoc.setField("Nombre", "");
+                }
+                //puesto
+                try{
+                    fdfDoc.setField("Puesto", puesto);
+                }catch(Exception e){
+                    fdfDoc.setField("Puesto", "");
+                }
+
+                //tabla de herramientas
+                float tam[]=new float[]{250,50,180};
+                Font font = new Font(Font.FontFamily.HELVETICA, 7, Font.BOLD);
+                        PDF reporte = new PDF();
+                        PdfPTable tabla=reporte.crearTabla(3, tam, 100, Element.ALIGN_LEFT);
+                        tabla.setTotalWidth(tam);
+                        BaseColor cabecera=BaseColor.GRAY;
+                        BaseColor contenido=BaseColor.WHITE;
+                        int centro=Element.ALIGN_CENTER;
+                        int izquierda=Element.ALIGN_LEFT;
+                        int derecha=Element.ALIGN_RIGHT;
+
+                        tabla.addCell(reporte.celda("HERRAMIENTA", font, cabecera, centro, 0, 1,Rectangle.RECTANGLE));
+                        tabla.addCell(reporte.celda("CANTIDAD", font, cabecera, centro, 0,1, Rectangle.RECTANGLE));
+                        tabla.addCell(reporte.celda("NOTAS", font, cabecera, centro, 0,1, Rectangle.RECTANGLE));
+
+
+                        for(int i=0; i<t_datos.getRowCount();i++){
+                            tabla.addCell(reporte.celda(t_datos.getValueAt(i, 1).toString(), font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
+                                
+                            tabla.addCell(reporte.celda(String.valueOf((double)t_datos.getValueAt(i, 2)), font, contenido, centro, 0,1,Rectangle.RECTANGLE));
+                            if(t_datos.getValueAt(i, 3)!=null)
+                                tabla.addCell(reporte.celda(t_datos.getValueAt(i, 3).toString(), font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
+                            else
+                                tabla.addCell(reporte.celda("", font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
+                        }
+                        
+                tabla.completeRow();
+                tabla.writeSelectedRows(0, -1, 70, 720, cb2);
+                cb.endText();
+                stamp.close();
+                reporte.cerrar();
+                reporte.visualizar("reportes/Responsivas/"+valor+"CartaResponsiva.pdf");            
+            }else{
+                JOptionPane.showMessageDialog(this, "No Existe Ninguna Responsiva");
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+            JOptionPane.showMessageDialog(this, "No se pudo realizar el reporte si el archivo esta abierto");
+        }
+        if (session != null) {
+            if (session.isOpen()) {
+                session.close();
+            }
+        }
+    }//GEN-LAST:event_b_imprimirActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

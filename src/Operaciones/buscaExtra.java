@@ -286,7 +286,7 @@ public class buscaExtra extends javax.swing.JDialog {
             t_datos.setModel(ModeloTablaReporte(0, columnas));
             for(int x=0; x<partidas.size(); x++)                            
             {           
-                java.util.HashMap map=(java.util.HashMap)partidas.get(0);
+                java.util.HashMap map=(java.util.HashMap)partidas.get(x);
                 model.addRow(new Object[]{map.get("id_adicional").toString(), map.get("id_empleado").toString(), map.get("nombre").toString(), map.get("fecha_destajo").toString()});
             }
             titulos();

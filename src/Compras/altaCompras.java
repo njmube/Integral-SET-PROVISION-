@@ -2635,7 +2635,7 @@ public class altaCompras extends javax.swing.JPanel {
                         try{
                             celda.setCellValue(t_datos.getValueAt(r, 14).toString());
                             hoja.addMergedRegion(new CellRangeAddress(ren,ren,1,7));
-                            celda1.setCellValue(t_titulos.getValueAt(r, 2).toString());
+                            celda1.setCellValue(t_titulos.getValueAt(r, 2).toString()+" "+t_datos.getValueAt(r, 21).toString());
                             //celda8.setCellValue("");
                         }catch(Exception e){
                             celda.setCellValue("");

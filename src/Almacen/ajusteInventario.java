@@ -429,7 +429,7 @@ public class ajusteInventario extends javax.swing.JPanel {
                     jTextField6.setText(orden_act.getCatalogo());
                     if(orden_act.getExistencias()!=null)
                     jTextField3.setText(orden_act.getExistencias().toString());
-                    if(orden_act.getComentario().toString().compareTo("")!=0){
+                    if(orden_act.getComentario()!=null){
                         t_comentario.setText(orden_act.getComentario());
                     }else{
                         t_comentario.setText("Sin Comentarios...");

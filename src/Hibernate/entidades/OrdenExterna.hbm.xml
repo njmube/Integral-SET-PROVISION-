@@ -33,10 +33,10 @@
             <column name="poliza" length="20" />
         </property>
         <property name="noReporte" type="string">
-            <column name="no_reporte" length="11" />
+            <column name="no_reporte" length="20" />
         </property>
         <property name="inciso" type="string">
-            <column name="inciso" length="10" />
+            <column name="inciso" length="13" />
         </property>
         <property name="noMotor" type="string">
             <column name="no_motor" length="15" />

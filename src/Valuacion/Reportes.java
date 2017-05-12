@@ -188,6 +188,8 @@ public class Reportes extends javax.swing.JPanel {
         cb_tot1 = new javax.swing.JCheckBox();
         cb_fecha_cliente = new javax.swing.JCheckBox();
         cb_comprador = new javax.swing.JCheckBox();
+        cb_a_compañia = new javax.swing.JCheckBox();
+        cb_ajustador = new javax.swing.JCheckBox();
         jButton4 = new javax.swing.JButton();
         scroll = new javax.swing.JScrollPane();
         t_datos = new javax.swing.JTable();
@@ -683,6 +685,22 @@ public class Reportes extends javax.swing.JPanel {
         cb_comprador.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         cb_comprador.setText("Comprador Refacciones");
 
+        cb_a_compañia.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        cb_a_compañia.setText("Autoriza Compañia");
+        cb_a_compañia.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cb_a_compañiaActionPerformed(evt);
+            }
+        });
+
+        cb_ajustador.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        cb_ajustador.setText("Ajustador");
+        cb_ajustador.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cb_ajustadorActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -715,22 +733,24 @@ public class Reportes extends javax.swing.JPanel {
                     .addComponent(cb_estatus))
                 .addGap(28, 28, 28)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cb_compras)
+                    .addComponent(cb_autorizado)
+                    .addComponent(cb_tot)
+                    .addComponent(cb_tot1)
+                    .addComponent(cb_autorizado_directo)
+                    .addComponent(cb_tot_directa)
+                    .addComponent(cb_compras))
+                .addGap(55, 55, 55)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cb_a_compañia)
+                    .addComponent(cb_comprador)
+                    .addComponent(cb_factura)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cb_autorizado)
-                            .addComponent(cb_tot)
-                            .addComponent(cb_tot1)
-                            .addComponent(cb_autorizado_directo)
-                            .addComponent(cb_tot_directa))
-                        .addGap(55, 55, 55)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cb_comprador)
-                            .addComponent(cb_factura)
-                            .addComponent(cb_fecha_entrada)
-                            .addComponent(cb_tipo)
-                            .addComponent(cb_fecha_cliente))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(cb_fecha_entrada)
+                        .addGap(69, 69, 69)
+                        .addComponent(cb_ajustador))
+                    .addComponent(cb_tipo)
+                    .addComponent(cb_fecha_cliente))
+                .addGap(114, 114, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -765,7 +785,9 @@ public class Reportes extends javax.swing.JPanel {
                                     .addComponent(cb_interna)
                                     .addComponent(cb_tot)))
                             .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(cb_fecha_entrada)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(cb_fecha_entrada)
+                                    .addComponent(cb_ajustador))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(cb_factura)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -792,7 +814,8 @@ public class Reportes extends javax.swing.JPanel {
                                 .addComponent(cb_anio)
                                 .addComponent(cb_cia)
                                 .addComponent(cb_cliente))
-                            .addComponent(cb_compras))))
+                            .addComponent(cb_compras)
+                            .addComponent(cb_a_compañia))))
                 .addGap(0, 39, Short.MAX_VALUE))
         );
 
@@ -1665,6 +1688,23 @@ public class Reportes extends javax.swing.JPanel {
                     tam.add(150);
                     tam_pdf.add(25);
                 }
+                
+                if(cb_a_compañia.isSelected()==true)
+                {
+                    tipos.add(java.lang.String.class);
+                    col.add("A.Compañia");
+                    tam.add(80);
+                    tam_pdf.add(15);
+                }
+                
+                if(cb_ajustador.isSelected()==true)
+                {
+                    tipos.add(java.lang.String.class);
+                    col.add("Ajustador");
+                    tam.add(120);
+                    tam_pdf.add(30);
+                }
+                
                 model=new MyModel(resultList.size(), (String[])col.toArray(new String[0]), (Class[])tipos.toArray(new Class[0]));
                 t_datos.setModel(model);
                 t_datos.setDefaultRenderer(String.class, formato);
@@ -1968,6 +2008,24 @@ public class Reportes extends javax.swing.JPanel {
                     {
                         if(orden.getEmpleadoByRRefacciones()!=null)
                             t_datos.setValueAt(orden.getEmpleadoByRRefacciones().getNombre(), ren, columna);
+                        else
+                            t_datos.setValueAt("", ren, columna);
+                        columna++;
+                    }
+                    
+                    if(cb_a_compañia.isSelected()==true)
+                    {
+                        if(orden.getAutorizaCompania()!=null)
+                            t_datos.setValueAt(orden.getAutorizaCompania().toString(), ren, columna);
+                        else
+                            t_datos.setValueAt("", ren, columna);
+                        columna++;
+                    }
+                    
+                    if(cb_ajustador.isSelected()==true)
+                    {
+                        if(orden.getAgente()!=null)
+                            t_datos.setValueAt(orden.getAgente().getNombre(), ren, columna);
                         else
                             t_datos.setValueAt("", ren, columna);
                         columna++;
@@ -2401,6 +2459,14 @@ public class Reportes extends javax.swing.JPanel {
         t_orden.setText("");
     }//GEN-LAST:event_b_busca_cliente1ActionPerformed
 
+    private void cb_a_compañiaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_a_compañiaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cb_a_compañiaActionPerformed
+
+    private void cb_ajustadorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_ajustadorActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cb_ajustadorActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton b_busca_cliente;
@@ -2413,6 +2479,8 @@ public class Reportes extends javax.swing.JPanel {
     private javax.swing.JComboBox c_levantamiento;
     private javax.swing.JComboBox c_tipo_fecha;
     private javax.swing.JComboBox c_valuacion;
+    private javax.swing.JCheckBox cb_a_compañia;
+    private javax.swing.JCheckBox cb_ajustador;
     private javax.swing.JCheckBox cb_anio;
     private javax.swing.JCheckBox cb_autorizado;
     private javax.swing.JCheckBox cb_autorizado_directo;

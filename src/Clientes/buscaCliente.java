@@ -12,6 +12,7 @@ package Clientes;
 
 import Integral.Render1;
 import Hibernate.Util.HibernateUtil;
+import Hibernate.entidades.Acceso;
 import java.util.List;
 import java.util.Vector;
 import javax.swing.InputMap;
@@ -29,6 +30,7 @@ import javax.swing.table.TableColumnModel;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
 
 /**
  *
@@ -107,7 +109,7 @@ public class buscaCliente extends javax.swing.JDialog {
 
     
     private void doClose(Clientes o) {
-        returnStatus = o;
+        returnStatus = o;       
         setVisible(false);
         dispose();
     }
@@ -335,10 +337,12 @@ public class buscaCliente extends javax.swing.JDialog {
                 try{
                     cli.setNextel(t_datos.getValueAt(t_datos.getSelectedRow(), 11).toString());
                 }catch(Exception e){}
+                
                 doClose(cli);
             }
-            else
+            else{
                 JOptionPane.showMessageDialog(null, "¡No hay un Cliente seleccionado!");
+            }
         }
     }//GEN-LAST:event_jButton5ActionPerformed
 

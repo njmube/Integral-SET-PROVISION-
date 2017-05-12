@@ -898,26 +898,27 @@
                           </Group>
                           <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="cb_compras" min="-2" max="-2" attributes="0"/>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="cb_autorizado" min="-2" max="-2" attributes="0"/>
-                                      <Component id="cb_tot" min="-2" max="-2" attributes="0"/>
-                                      <Component id="cb_tot1" alignment="0" min="-2" max="-2" attributes="0"/>
-                                      <Component id="cb_autorizado_directo" min="-2" max="-2" attributes="0"/>
-                                      <Component id="cb_tot_directa" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                                  <EmptySpace min="-2" pref="55" max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="cb_comprador" min="-2" max="-2" attributes="0"/>
-                                      <Component id="cb_factura" min="-2" max="-2" attributes="0"/>
-                                      <Component id="cb_fecha_entrada" min="-2" max="-2" attributes="0"/>
-                                      <Component id="cb_tipo" min="-2" max="-2" attributes="0"/>
-                                      <Component id="cb_fecha_cliente" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                              </Group>
+                              <Component id="cb_autorizado" min="-2" max="-2" attributes="0"/>
+                              <Component id="cb_tot" min="-2" max="-2" attributes="0"/>
+                              <Component id="cb_tot1" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="cb_autorizado_directo" min="-2" max="-2" attributes="0"/>
+                              <Component id="cb_tot_directa" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="cb_compras" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace min="192" max="32767" attributes="0"/>
+                          <EmptySpace min="-2" pref="55" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="cb_a_compañia" min="-2" max="-2" attributes="0"/>
+                              <Component id="cb_comprador" min="-2" max="-2" attributes="0"/>
+                              <Component id="cb_factura" min="-2" max="-2" attributes="0"/>
+                              <Group type="102" attributes="0">
+                                  <Component id="cb_fecha_entrada" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="69" max="-2" attributes="0"/>
+                                  <Component id="cb_ajustador" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <Component id="cb_tipo" min="-2" max="-2" attributes="0"/>
+                              <Component id="cb_fecha_cliente" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace min="192" pref="114" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -960,7 +961,10 @@
                                           </Group>
                                       </Group>
                                       <Group type="102" attributes="0">
-                                          <Component id="cb_fecha_entrada" min="-2" max="-2" attributes="0"/>
+                                          <Group type="103" groupAlignment="3" attributes="0">
+                                              <Component id="cb_fecha_entrada" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="cb_ajustador" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          </Group>
                                           <EmptySpace max="-2" attributes="0"/>
                                           <Component id="cb_factura" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace max="-2" attributes="0"/>
@@ -996,6 +1000,7 @@
                                           <Component id="cb_cliente" alignment="3" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                       <Component id="cb_compras" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="cb_a_compañia" alignment="0" min="-2" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                           </Group>
@@ -1236,6 +1241,28 @@
                     </Property>
                     <Property name="text" type="java.lang.String" value="Comprador Refacciones"/>
                   </Properties>
+                </Component>
+                <Component class="javax.swing.JCheckBox" name="cb_a_compa&#xf1;ia">
+                  <Properties>
+                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                      <Font name="Tahoma" size="10" style="0"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="Autoriza Compa&#xf1;ia"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cb_a_compa&#xf1;iaActionPerformed"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JCheckBox" name="cb_ajustador">
+                  <Properties>
+                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                      <Font name="Tahoma" size="10" style="0"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="Ajustador"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cb_ajustadorActionPerformed"/>
+                  </Events>
                 </Component>
               </SubComponents>
             </Container>

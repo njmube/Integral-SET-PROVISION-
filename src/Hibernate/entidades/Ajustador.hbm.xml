@@ -3,7 +3,7 @@
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated 10/12/2016 11:06:29 AM by Hibernate Tools 3.6.0 -->
 <hibernate-mapping>
-    <class name="Hibernate.entidades.Ajustador" table="ajustador" catalog="mydb">
+    <class name="Hibernate.entidades.Ajustador" table="ajustador">
         <id name="idAjustador" type="java.lang.Integer">
             <column name="id_ajustador" />
             <generator class="identity" />

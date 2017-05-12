@@ -93,7 +93,7 @@ public class buscaEjemplarAlmacen extends javax.swing.JDialog {
 
         jLabel1.setText("Contiene:");
 
-        cb_tipo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Catalogo", "clave", " " }));
+        cb_tipo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Catalogo", "clave" }));
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -254,7 +254,7 @@ public class buscaEjemplarAlmacen extends javax.swing.JDialog {
                         t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString(),
                         t_datos.getValueAt(t_datos.getSelectedRow(), 1).toString(),
                         t_datos.getValueAt(t_datos.getSelectedRow(), 2).toString(),
-                        t_datos.getValueAt(t_datos.getSelectedRow(), 3).toString(),
+                        Double.parseDouble(t_datos.getValueAt(t_datos.getSelectedRow(), 3).toString()),
                         t_datos.getValueAt(t_datos.getSelectedRow(), 4).toString(),
                         t_datos.getValueAt(t_datos.getSelectedRow(), 5).toString(),
                         Double.parseDouble(t_datos.getValueAt(t_datos.getSelectedRow(), 6).toString()),
@@ -316,7 +316,7 @@ public class buscaEjemplarAlmacen extends javax.swing.JDialog {
             }
             else
             {
-                String aux="", aux1="";
+                String aux="", aux1="", aux2="";
                 if(trabajo.compareTo("")!=0)
                     aux=" and almacen.id_trabajo="+trabajo;
                 else
@@ -324,30 +324,38 @@ public class buscaEjemplarAlmacen extends javax.swing.JDialog {
                 switch(especialidad){
                     case "HOJALATERIA":
                         aux1=" and almacen.especialidad='H'";
+                        aux2="and esp_hoj=true";
                         break;
                     case "MECANICA":
                         aux1=" and almacen.especialidad='M'";
+                        aux2="and esp_mec=true";
                         break;
                     case "SUSPENSION":
                         aux1=" and almacen.especialidad='S'";
+                        aux2="and esp_sus=true";
                         break;
                     case "ELECTRICO":
                         aux1=" and almacen.especialidad='E'";
+                        aux2="and esp_ele=true";
                         break;
                     case "PINTURA":
                         aux1=" and almacen.especialidad='P'";
+                        aux2="and esp_pin=true";
                         break;
-                    /*case "ADICIONAL":
-                        aux1="and almacen.especialidad='A'";
-                        break;    */
+                    case "ADICIONAL":
+                        aux2="and consumible.tipo='A'";
+                        break;
+                    case "SELECCIONAR":
+                        aux2="and consumible.tipo='A'";
+                        break;    
                 }
                 
-                texto="select ejemplar.id_Parte as id, if(modelo is null,'', modelo) as modelo, if(id_marca is null, '', id_marca) as marca, if(tipo_nombre is null,'', tipo_nombre) as tipo, id_catalogo, medida, 0.0 as cero, " +
+                texto="select ejemplar.id_Parte as id, if(modelo is null,'', modelo) as modelo, if(id_marca is null, '', id_marca) as marca, ejemplar.existencias, id_catalogo, ejemplar.medida, 0.0 as cero, " +
                       "( (select if(sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) from ejemplar left join movimiento on ejemplar.id_Parte=movimiento.id_Parte " +
                       "left join almacen on movimiento.id_almacen=almacen.id_almacen where ejemplar.id_Parte=id and almacen.id_orden="+orden+" and almacen.tipo_movimiento=2 and almacen.operacion=8 "+aux+aux1+") - " +
                       "(select if(sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) from ejemplar left join movimiento on ejemplar.id_Parte=movimiento.id_Parte " +
-                      "left join almacen on movimiento.id_almacen=almacen.id_almacen where ejemplar.id_Parte=id and almacen.id_orden="+orden+" and almacen.tipo_movimiento=1 and almacen.operacion=8 "+aux+aux1+") )as operario, existencias, precio " +
-                      "from ejemplar where inventario=1 and ";
+                      "left join almacen on movimiento.id_almacen=almacen.id_almacen where ejemplar.id_Parte=id and almacen.id_orden="+orden+" and almacen.tipo_movimiento=1 and almacen.operacion=8 "+aux+aux1+") )as operario, consumible.cantidad as tipo, ejemplar.precio " +
+                      "from consumible left join ejemplar on consumible.id_Parte=ejemplar.id_Parte where inventario=1 "+aux2+" and id_orden="+orden+" and ";
             }
             if(cb_tipo.getSelectedItem().toString().compareTo("clave")==0)
                 texto+="ejemplar.id_Parte like '"+t_busca.getText()+"%'";
@@ -402,16 +410,16 @@ public class buscaEjemplarAlmacen extends javax.swing.JDialog {
                     column.setPreferredWidth(100);
                     break;
                 case 1:
-                    column.setPreferredWidth(10);
+                    column.setPreferredWidth(1);
                     break;
                 case 2:
-                    column.setPreferredWidth(10);
+                    column.setPreferredWidth(1);
                     break;      
                 case 3:
-                    column.setPreferredWidth(10);
+                    column.setPreferredWidth(1);
                     break; 
                 case 4:
-                    column.setPreferredWidth(150);
+                    column.setPreferredWidth(380);
                     break; 
                 case 5:
                     column.setPreferredWidth(50);

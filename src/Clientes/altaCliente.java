@@ -6,6 +6,7 @@
 package Clientes;
 
 import Hibernate.Util.HibernateUtil;
+import Hibernate.entidades.Acceso;
 import Hibernate.entidades.Clientes;
 import Hibernate.entidades.Usuario;
 import java.util.List;
@@ -146,6 +147,7 @@ public class altaCliente extends javax.swing.JDialog {
         });
 
         jLabel12.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        jLabel12.setForeground(new java.awt.Color(36, 116, 227));
         jLabel12.setText("R.F.C.");
 
         t_rfc_cliente.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -167,7 +169,7 @@ public class altaCliente extends javax.swing.JDialog {
         jLabel14.setForeground(new java.awt.Color(36, 116, 227));
         jLabel14.setText("Estado");
 
-        c_estado_cliente.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "AGUASCALIENTES", "BAJA CALIFORNIA", "BAJA CALIFORNIA SUR", "CAMPECHE", "CHIAPAS", "CHIHUAHUA", "COAHUILA", "COLIMA", "DISTRITO FEDERAL", "DURANGO", "ESTADO DE MEXICO", "GUANAJUATO", "GUERRERO", "HIDALGO", "JALISCO", "MICHOACAN", "MORELOS", "NAYARIT", "NUEVO LEON", "OAXACA", "PUEBLA", "QUERETARO", "QUINTANA ROO", "SAN LUIS POTOSI", "SINALOA", "SONORA", "TABASCO", "TAMAULIPAS", "TLAXCALA", "VERACRUZ", "YUCATAN", "ZACATECAS" }));
+        c_estado_cliente.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "AGUASCALIENTES", "BAJA CALIFORNIA", "BAJA CALIFORNIA SUR", "CAMPECHE", "CHIAPAS", "CHIHUAHUA", "COAHUILA", "COLIMA", "CIUDAD DE MÉXICO", "DURANGO", "ESTADO DE MÉXICO", "GUANAJUATO", "GUERRERO", "HIDALGO", "JALISCO", "MICHOACAN", "MORELOS", "NAYARIT", "NUEVO LEON", "OAXACA", "PUEBLA", "QUERETARO", "QUINTANA ROO", "SAN LUIS POTOSI", "SINALOA", "SONORA", "TABASCO", "TAMAULIPAS", "TLAXCALA", "VERACRUZ", "YUCATAN", "ZACATECAS" }));
         c_estado_cliente.setName(""); // NOI18N
 
         jLabel15.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
@@ -494,55 +496,61 @@ public class altaCliente extends javax.swing.JDialog {
         {
             if(t_email_cliente.getText().trim().compareTo("")!=0)
             {
-                if(consultaCliente(t_nombre_cliente.getText())==false)
+                if(t_rfc_cliente.getText().trim().compareTo("")!=0)
                 {
-                    Clientes nuevoCliente = new Clientes();
-                    if(t_nombre_cliente.getText().compareTo("")!=0)
-                        nuevoCliente.setNombre(t_nombre_cliente.getText());
-                    if(t_direccion_cliente.getText().compareTo("")!=0)
-                        nuevoCliente.setDireccion(t_direccion_cliente.getText());
-                    if(t_colonia_cliente.getText().compareTo("")!=0)
-                        nuevoCliente.setColonia(t_colonia_cliente.getText());
-                    if(t_cp_cliente.getText().compareTo("")!=0)
-                        nuevoCliente.setCp(Integer.parseInt(t_cp_cliente.getText()));
-                    if(t_rfc_cliente.getText().compareTo("")!=0)
-                        nuevoCliente.setRfc(t_rfc_cliente.getText());
-                    if(t_poblacion_cliente.getText().compareTo("")!=0)
-                        nuevoCliente.setPoblacion(t_poblacion_cliente.getText());
-                    if(c_estado_cliente.getSelectedItem().toString().compareTo("")!=0)
-                        nuevoCliente.setEstado(c_estado_cliente.getSelectedItem().toString());
-                    if(t_telefono_cliente.getText().compareTo("")!=0)
-                        nuevoCliente.setTelefono(t_telefono_cliente.getText());
-                    if(t_email_cliente.getText().compareTo("")!=0)
-                        nuevoCliente.setEmail(t_email_cliente.getText());
-                    if(t_contacto.getText().compareTo("")!=0)
-                        nuevoCliente.setContacto(t_contacto.getText());
-                    if(t_nextel.getText().compareTo("")!=0)
-                        nuevoCliente.setNextel(t_nextel.getText());
-                    if(t_municipio.getText().compareTo("")!=0)
-                        nuevoCliente.setMunicipio(t_municipio.getText());
-                    if(t_numero.getText().compareTo("")!=0)
-                        nuevoCliente.setNumeroExterior(t_numero.getText());
-                    nuevoCliente.setPais("MX");
-                    nuevoCliente.setReceptor(t_receptor.getText());
-                    nuevoCliente.setEmailReceptor(t_email_receptor.getText());
-                    Integer respuesta=guardarCliente(nuevoCliente);
-                    if(respuesta==null)
+                    if(consultaCliente(t_nombre_cliente.getText())==false)
                     {
-                        b_guardar.setEnabled(true);
+                        Clientes nuevoCliente = new Clientes();
+                        if(t_nombre_cliente.getText().compareTo("")!=0)
+                            nuevoCliente.setNombre(t_nombre_cliente.getText());
+                        if(t_direccion_cliente.getText().compareTo("")!=0)
+                            nuevoCliente.setDireccion(t_direccion_cliente.getText());
+                        if(t_colonia_cliente.getText().compareTo("")!=0)
+                            nuevoCliente.setColonia(t_colonia_cliente.getText());
+                        if(t_cp_cliente.getText().compareTo("")!=0)
+                            nuevoCliente.setCp(Integer.parseInt(t_cp_cliente.getText()));
+                        if(t_rfc_cliente.getText().compareTo("")!=0)
+                            nuevoCliente.setRfc(t_rfc_cliente.getText());
+                        if(t_poblacion_cliente.getText().compareTo("")!=0)
+                            nuevoCliente.setPoblacion(t_poblacion_cliente.getText());
+                        if(c_estado_cliente.getSelectedItem().toString().compareTo("")!=0)
+                            nuevoCliente.setEstado(c_estado_cliente.getSelectedItem().toString());
+                        if(t_telefono_cliente.getText().compareTo("")!=0)
+                            nuevoCliente.setTelefono(t_telefono_cliente.getText());
+                        if(t_email_cliente.getText().compareTo("")!=0)
+                            nuevoCliente.setEmail(t_email_cliente.getText());
+                        if(t_contacto.getText().compareTo("")!=0)
+                            nuevoCliente.setContacto(t_contacto.getText());
+                        if(t_nextel.getText().compareTo("")!=0)
+                            nuevoCliente.setNextel(t_nextel.getText());
+                        if(t_municipio.getText().compareTo("")!=0)
+                            nuevoCliente.setMunicipio(t_municipio.getText());
+                        if(t_numero.getText().compareTo("")!=0)
+                            nuevoCliente.setNumeroExterior(t_numero.getText());
+                        nuevoCliente.setPais("MX");
+                        nuevoCliente.setReceptor(t_receptor.getText());
+                        nuevoCliente.setEmailReceptor(t_email_receptor.getText());
+                        Integer respuesta=guardarCliente(nuevoCliente);
+                        if(respuesta==null)
+                        {
+                            b_guardar.setEnabled(true);
+                        }
+                        else
+                        {   
+                            JOptionPane.showMessageDialog(null, "Registro almacenado con la clave:  " +respuesta);
+                            this.borra_cajas();
+                            t_nombre_cliente.requestFocus();
+                        }
                     }
                     else
                     {
-                        JOptionPane.showMessageDialog(null, "Registro almacenado con la clave:  " +respuesta);
+                        JOptionPane.showMessageDialog(null, "¡El nombre del cliente ya existe!");
                         this.borra_cajas();
                         t_nombre_cliente.requestFocus();
                     }
-                }
-                else
-                {
-                    JOptionPane.showMessageDialog(null, "¡El nombre del cliente ya existe!");
-                    this.borra_cajas();
-                    t_nombre_cliente.requestFocus();
+                }else{
+                    JOptionPane.showMessageDialog(null, "¡Debe introducir el rfc del cliente!");
+                    t_rfc_cliente.requestFocus();
                 }
             }
             else
@@ -665,9 +673,20 @@ public class altaCliente extends javax.swing.JDialog {
         Integer IdClientes = null;
         try 
         {
+            
             session.beginTransaction();
+            
+            //datos acceso smlogistics
+            Acceso datos = new Acceso();
+            datos.setIdAcceso(t_rfc_cliente.getText());
+            datos.setClave("1234");
+            datos.setToken(null);
+            datos.setClientes(obj);
+            
             IdClientes=(Integer) session.save(obj);
             session.save(obj);
+            
+            session.save(datos);
             session.getTransaction().commit();
             return null;
         } 

@@ -7,6 +7,7 @@
 package Servicios;
 
 import Hibernate.Util.HibernateUtil;
+import Hibernate.entidades.Acceso;
 import Hibernate.entidades.Configuracion;
 import Hibernate.entidades.Cuenta;
 import Hibernate.entidades.Foto;
@@ -35,6 +36,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.ImageIcon;
@@ -102,6 +104,9 @@ public class formatos extends javax.swing.JPanel {
         b_salida1 = new javax.swing.JButton();
         b_hoja_unidad1 = new javax.swing.JButton();
         b_salida2 = new javax.swing.JButton();
+        b_checklist_entrega = new javax.swing.JButton();
+        b_proceso_pago = new javax.swing.JButton();
+        b_desgaste = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
@@ -273,6 +278,42 @@ public class formatos extends javax.swing.JPanel {
             }
         });
 
+        b_checklist_entrega.setBackground(new java.awt.Color(2, 135, 242));
+        b_checklist_entrega.setForeground(new java.awt.Color(255, 255, 255));
+        b_checklist_entrega.setIcon(new ImageIcon("imagenes/pdf_icon.png"));
+        b_checklist_entrega.setText("Check List de Entrega");
+        b_checklist_entrega.setToolTipText("Generar reporte");
+        b_checklist_entrega.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        b_checklist_entrega.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_checklist_entregaActionPerformed(evt);
+            }
+        });
+
+        b_proceso_pago.setBackground(new java.awt.Color(2, 135, 242));
+        b_proceso_pago.setForeground(new java.awt.Color(255, 255, 255));
+        b_proceso_pago.setIcon(new ImageIcon("imagenes/pdf_icon.png"));
+        b_proceso_pago.setText("Proceso de Pago");
+        b_proceso_pago.setToolTipText("Generar reporte");
+        b_proceso_pago.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        b_proceso_pago.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_proceso_pagoActionPerformed(evt);
+            }
+        });
+
+        b_desgaste.setBackground(new java.awt.Color(2, 135, 242));
+        b_desgaste.setForeground(new java.awt.Color(255, 255, 255));
+        b_desgaste.setIcon(new ImageIcon("imagenes/pdf_icon.png"));
+        b_desgaste.setText("Desgaste no Atribuible Siniestro");
+        b_desgaste.setToolTipText("Generar reporte");
+        b_desgaste.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        b_desgaste.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_desgasteActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -296,7 +337,12 @@ public class formatos extends javax.swing.JPanel {
                     .addComponent(b_salida, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(b_salida1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(b_salida2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(409, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(b_desgaste, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(b_proceso_pago, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(b_checklist_entrega, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(206, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -308,8 +354,11 @@ public class formatos extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(b_hoja_unidad)
-                            .addComponent(b_fecha_promesa1)))
-                    .addComponent(b_fecha_promesa))
+                            .addComponent(b_fecha_promesa1)
+                            .addComponent(b_proceso_pago)))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(b_fecha_promesa)
+                        .addComponent(b_desgaste)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -322,7 +371,9 @@ public class formatos extends javax.swing.JPanel {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(b_autorizacion)
                             .addComponent(b_salida)))
-                    .addComponent(b_encuenta))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(b_encuenta)
+                        .addComponent(b_checklist_entrega)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(b_encuesta_interna)
@@ -1738,6 +1789,7 @@ public class formatos extends javax.swing.JPanel {
         {
             Orden ord=(Orden)session.get(Orden.class, Integer.parseInt(orden));
             Configuracion con = (Configuracion) session.get(Configuracion.class, 1);
+            Acceso datos = (Acceso)session.createCriteria(Acceso.class).add(Restrictions.eq("clientes.idClientes", Integer.parseInt(ord.getClientes().getIdClientes().toString()))).setMaxResults(1).uniqueResult();
             Date fecha = new Date();
             DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
             String valor=dateFormat.format(fecha);
@@ -1747,7 +1799,6 @@ public class formatos extends javax.swing.JPanel {
             PdfStamper stamp = new PdfStamper(reader, new FileOutputStream("reportes/"+ ord.getIdOrden() +"/"+ valor +"-OrdenServicio.pdf"));
             PdfContentByte cb = stamp.getUnderContent(1);
             AcroFields fdfDoc = stamp.getAcroFields();
-            
             cb.beginText();
                 //IMAGEN
                 try{
@@ -1872,6 +1923,9 @@ public class formatos extends javax.swing.JPanel {
                 fdfDoc.setField("Email1", "atencionaclientes@tractoservicio.com");
                 fdfDoc.setField("Wat1", "722 299 240 25");
                 
+                //DATOS DE CUENTA DE SMLOGISTICS
+                if(datos!=null)
+                    fdfDoc.setField("usuario", datos.getIdAcceso().toString());
                 
                 //datos del Tecnico Asignado
                 if(ord.getEmpleadoByRTecnico()!=null)
@@ -1929,9 +1983,334 @@ public class formatos extends javax.swing.JPanel {
                 session.close();
     }//GEN-LAST:event_b_salida2ActionPerformed
 
+    private void b_checklist_entregaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_checklist_entregaActionPerformed
+        // TODO add your handling code here:
+        h=new Herramientas(usr, 0);
+        h.session(sessionPrograma);
+        
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try
+        {
+            Orden ord=(Orden)session.get(Orden.class, Integer.parseInt(orden));
+            Configuracion con= (Configuracion)session.get(Configuracion.class, 1);
+            Date fecha = new Date();
+            DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
+            String valor=dateFormat.format(fecha);
+            File folder = new File("reportes/"+ord.getIdOrden());
+            folder.mkdirs();
+            PdfReader reader = new PdfReader("imagenes/PlantillaEntrega.pdf");
+            PdfStamper stamp = new PdfStamper(reader, new FileOutputStream("reportes/"+ ord.getIdOrden() +"/"+ valor +"-entrega.pdf"));
+            PdfContentByte cb = stamp.getUnderContent(1);
+            AcroFields fdfDoc = stamp.getAcroFields();
+            BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.EMBEDDED);
+           
+            cb.beginText();
+               fdfDoc.setField("Orden de Trabajo", String.valueOf(ord.getIdOrden()));
+               
+               //MARCA
+               if(ord.getMarca().getMarcaNombre()!=null)
+                   fdfDoc.setField("Marca", ord.getMarca().getMarcaNombre());
+               
+               //MODELO
+               if(ord.getModelo()!=null)
+                   fdfDoc.setField("Modelo", String.valueOf(ord.getModelo()));
+               
+               //PLACAS
+               if(ord.getNoPlacas()!=null)
+                   fdfDoc.setField("Placas", String.valueOf(ord.getNoPlacas()));
+                   
+               //CLIENTE
+               if(ord.getClientes().getNombre()!=null)
+                   fdfDoc.setField("Cliente", ord.getClientes().getNombre());
+               
+               //TECNICO
+               if(ord.getEmpleadoByRTecnico()!=null){
+                   if(ord.getEmpleadoByRTecnico().getNombre()!=null){
+                       fdfDoc.setField("Técnico", ord.getEmpleadoByRTecnico().getNombre());
+                   }
+               }
+               
+               //FECHA INGRESO
+                if(ord.getFecha()!=null)
+                {
+                    fdfDoc.setField("Fecha", ord.getFecha().toString());
+                }
+               
+            cb.endText();
+            stamp.close();
+            PDF reporte = new PDF();
+            reporte.cerrar();
+            reporte.visualizar2("reportes/"+ord.getIdOrden()+"/"+valor+"-entrega.pdf");
+           
+        }catch(Exception e)
+        {
+            System.out.println(e);
+            JOptionPane.showMessageDialog(this, "No se pudo realizar el reporte si el archivo esta abierto");
+        }
+        if(session!=null)
+            if(session.isOpen())
+                session.close();
+    }//GEN-LAST:event_b_checklist_entregaActionPerformed
+
+    private void b_proceso_pagoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_proceso_pagoActionPerformed
+        // TODO add your handling code here:
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try
+        {
+            Orden ord=(Orden)session.get(Orden.class, Integer.parseInt(orden));
+            Configuracion con = (Configuracion) session.get(Configuracion.class, 1);
+            Date fecha = new Date();
+            DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
+            String valor=dateFormat.format(fecha);
+            
+            String formato=ord.getCompania().getFormatoPago();
+            File folder = new File("reportes/"+ord.getIdOrden());
+            folder.mkdirs();
+            
+            PdfReader reader = new PdfReader("imagenes/"+formato);
+            PdfStamper stamp = new PdfStamper(reader, new FileOutputStream("reportes/"+ ord.getIdOrden() +"/"+ valor +"-Pago.pdf"));
+            PdfContentByte cb = stamp.getUnderContent(1);
+            AcroFields fdfDoc = stamp.getAcroFields();
+            
+            cb.beginText();
+                //IMAGEN
+                try{
+                    Image img = Image.getInstance("imagenes/"+con.getLogo());
+                    img.setAbsolutePosition(25, 710);
+                    img.scaleAbsoluteWidth(75);
+                    img.scaleAbsoluteHeight(50);
+                    cb.addImage(img, true);
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                try{
+                    Image img_1 = Image.getInstance(ord.getCompania().getFoto());
+                    img_1.setAbsolutePosition(500, 735);
+                    img_1.scaleAbsoluteWidth(80);
+                    img_1.scaleAbsoluteHeight(50);
+                    cb.addImage(img_1, true);
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                Foto foto = (Foto)session.createCriteria(Foto.class).add(Restrictions.eq("orden.idOrden", ord.getIdOrden())).addOrder(Order.desc("fecha")).setMaxResults(1).uniqueResult();
+                if(foto!=null){
+                    try{
+                    Image img_2 = Image.getInstance("ordenes/"+ord.getIdOrden()+"/miniatura/"+foto.getDescripcion());
+                    img_2.setAbsolutePosition(480, 558);
+                    img_2.scaleAbsoluteWidth(90);
+                    img_2.scaleAbsoluteHeight(50);
+                    cb.addImage(img_2, true);
+                    }catch(Exception e){}
+                }
+                
+                //NOMBRE DEL TALLER
+                if(con.getEmpresa()!=null)
+                    fdfDoc.setField("NombreEmpresa", con.getEmpresa());
+                
+                //DIRECCION DEL TALLER 
+                String direccion="";
+                if(con.getDireccion()!=null)
+                    direccion+=con.getDireccion()+" ";
+                if(con.getNo()!=null)
+                    direccion+=con.getNo()+" ";
+                if(con.getColonia()!=null)
+                    direccion+=con.getColonia();
+                direccion=direccion.toUpperCase();
+                fdfDoc.setField("DireccionEmpresa", direccion);
+                
+                //Municipio, Estado, CP
+                String municipio="";
+                if(con.getMunicipio()!=null)
+                    municipio+=con.getMunicipio()+" ";
+                if(con.getEstado()!=null)
+                    municipio+=con.getEstado()+" ";
+                if(con.getCp()!=null)
+                    municipio+=con.getCp();
+                municipio=municipio.toUpperCase();
+                fdfDoc.setField("ColoniaEmpresa", municipio);
+                
+                //Pagina Web y Telefonos
+                fdfDoc.setField("SitioEmpresa", "tracto.ddns.net");
+                fdfDoc.setField("TelefonoEmpresa", "(722) 199 24 04 / 275 19 45");
+                
+                //Datos de la compañia
+                fdfDoc.setField("Aseguradora1", ord.getCompania().getSocial());
+                if(ord.getCompania().getDireccion()!=null)
+                    fdfDoc.setField("Aseguradora2", ord.getCompania().getDireccion());
+                if(ord.getCompania().getColonia()!=null)
+                    fdfDoc.setField("Aseguradora3", ord.getCompania().getColonia());
+                /*if(ord.getCompania().getComentarios()!=null)
+                    fdfDoc.setField("Extra", ord.getCompania().getComentarios());*/
+                
+                //Orden de trabajo
+                fdfDoc.setField("Orden", ""+ord.getIdOrden());
+                
+                //FECHA INGRESO
+                if(ord.getFecha()!=null)
+                    fdfDoc.setField("FechaRecepcion", ord.getFecha().toString());
+                
+                //Marca
+                fdfDoc.setField("Marca", ord.getMarca().getMarcaNombre());
+                
+                //Tipo
+                fdfDoc.setField("Modelo", ""+ord.getTipo().getTipoNombre());
+                
+                //Placas
+                if(ord.getNoPlacas()!=null)
+                    fdfDoc.setField("Placas", ""+ord.getNoPlacas());
+                
+                //Poliza
+                if(ord.getPoliza()!=null)
+                    fdfDoc.setField("Poliza", ""+ord.getPoliza());
+                
+                //Siniestro
+                if(ord.getSiniestro()!=null)
+                    fdfDoc.setField("Siniestro", ""+ord.getSiniestro());
+                
+                //Datos cliente
+                if(ord.getClientes()!=null)
+                {
+                    fdfDoc.setField("Nombre", ord.getClientes().getNombre());
+                    if(ord.getClientes().getContacto()!=null)
+                        fdfDoc.setField("Contacto", ord.getClientes().getContacto());
+                }
+                
+                //Datos de atencion a clientes
+                fdfDoc.setField("Tel1", "722 299 240 25");
+                fdfDoc.setField("Id1", "52*167862*13");
+                fdfDoc.setField("Email1", "atencionaclientes@tractoservicio.com");
+                fdfDoc.setField("Wat1", "722 299 240 25");
+                
+                float tam[]=new float[]{160,80,130,170};
+                Font font = new Font(Font.FontFamily.HELVETICA, 7, Font.BOLD);
+                PDF reporte = new PDF();
+                PdfPTable tabla=reporte.crearTabla(4, tam, 100, Element.ALIGN_LEFT);
+                tabla.setTotalWidth(tam);
+                    
+                BaseColor cabecera=BaseColor.GRAY;
+                BaseColor contenido=BaseColor.WHITE;
+                int centro=Element.ALIGN_CENTER;
+                int izquierda=Element.ALIGN_LEFT;
+                int derecha=Element.ALIGN_RIGHT;
+                    
+                if(formato.compareToIgnoreCase("PagoAXA.pdf")!=0)
+                {
+                    tabla.addCell(reporte.celda("BANCO", font, cabecera, centro, 0, 1,Rectangle.RECTANGLE));
+                    tabla.addCell(reporte.celda("NO° CONVENIO", font, cabecera, centro, 0,1, Rectangle.RECTANGLE));
+                    tabla.addCell(reporte.celda("N° DE CUENTA", font, cabecera, centro, 0,1, Rectangle.RECTANGLE));
+                    tabla.addCell(reporte.celda("NOMBRE DE LA COMPAÑIA", font, cabecera, centro, 0,1, Rectangle.RECTANGLE));
+
+                    Cuenta[] cuentas = (Cuenta[]) ord.getCompania().getCuentas().toArray(new Cuenta[0]);
+                    if(cuentas.length>0)
+                    {
+                        for(int i=0; i<cuentas.length; i++)
+                        {
+                            tabla.addCell(reporte.celda(cuentas[i].getBanco(), font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
+                            tabla.addCell(reporte.celda(cuentas[i].getConvenio().toString(), font, contenido, izquierda, 0,1, Rectangle.RECTANGLE));
+                            tabla.addCell(reporte.celda(cuentas[i].getTransferencia(), font, contenido, izquierda, 0,1, Rectangle.RECTANGLE));
+                            tabla.addCell(reporte.celda(cuentas[i].getNombre(), font, contenido, izquierda, 0,1, Rectangle.RECTANGLE));
+                        }
+                    }
+
+                    tabla.completeRow();
+                    tabla.writeSelectedRows(0, -1, 40, 420, cb);
+                }
+            DecimalFormat formatoPorcentaje = new DecimalFormat("#,##0.00");
+            formatoPorcentaje.setMinimumFractionDigits(2);
+            
+            cb.setTextMatrix(160, 466);
+            BaseFont bf = BaseFont.createFont();
+            cb.setFontAndSize(bf, 9);
+            cb.showText(""+formatoPorcentaje.format(ord.getDeducible()));
+            
+            cb.setTextMatrix(450, 466);
+            cb.showText(""+formatoPorcentaje.format(ord.getDemerito()));
+            cb.endText();
+            
+            stamp.close();
+            reporte.cerrar();
+            reporte.visualizar2("reportes/"+ord.getIdOrden()+"/"+valor+"-Pago.pdf");
+           
+        }catch(Exception e)
+        {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "No se pudo realizar el reporte si el archivo esta abierto");
+        }
+        if(session!=null)
+            if(session.isOpen())
+                session.close();
+    }//GEN-LAST:event_b_proceso_pagoActionPerformed
+
+    private void b_desgasteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_desgasteActionPerformed
+        // TODO add your handling code here:
+        h=new Herramientas(usr, 0);
+        h.session(sessionPrograma);
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try
+        {
+            Orden ord=(Orden)session.get(Orden.class, Integer.parseInt(orden));
+            
+            Date fecha = new Date();
+            DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
+            String valor=dateFormat.format(fecha);
+            File folder = new File("reportes/"+ord.getIdOrden());
+            folder.mkdirs();
+            PdfReader reader = new PdfReader("imagenes/Desgaste.pdf");
+            PdfStamper stamp = new PdfStamper(reader, new FileOutputStream("reportes/"+ ord.getIdOrden() +"/"+ valor +"-DESGASTE.pdf"));
+            PdfContentByte cb = stamp.getUnderContent(1);
+            AcroFields fdfDoc = stamp.getAcroFields();
+            BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.EMBEDDED);
+            Image img;
+            cb.beginText();
+                
+                try{
+                    fdfDoc.setField("CLIENTE", ord.getClientes().getNombre());
+                }catch(Exception e){
+                    fdfDoc.setField("NOMBRE", "");
+                }
+                try{
+                    fdfDoc.setField("ORDEN", ""+ord.getIdOrden());
+                }catch(Exception e){
+                    fdfDoc.setField("ORDEN", "");
+                }
+                try{
+                    fdfDoc.setField("ECO", ord.getNoEconomico());
+                }catch(Exception e){
+                    fdfDoc.setField("ECO", "");
+                }
+                try{
+                    fdfDoc.setField("SERIE", ord.getNoMotor());
+                }catch(Exception e){
+                    fdfDoc.setField("SERIE", "");
+                }
+                try{
+                    fdfDoc.setField("VIN", ord.getNoSerie());
+                }catch(Exception e){
+                    fdfDoc.setField("VIN", "");
+                }
+            cb.endText();
+            stamp.close();
+            PDF reporte = new PDF();
+            reporte.visualizar2("reportes/"+ord.getIdOrden()+"/"+valor+"-DESGASTE.pdf");
+            reporte.cerrar();
+        }catch(Exception e)
+        {
+            System.out.println(e);
+            JOptionPane.showMessageDialog(this, "No se pudo realizar el reporte si el archivo esta abierto");
+        }
+        finally
+        {
+            if(session!=null)
+                if(session.isOpen())
+                    session.close();
+        }
+    }//GEN-LAST:event_b_desgasteActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton b_autorizacion;
+    private javax.swing.JButton b_checklist_entrega;
+    private javax.swing.JButton b_desgaste;
     private javax.swing.JButton b_encuenta;
     private javax.swing.JButton b_encuenta1;
     private javax.swing.JButton b_encuesta_interna;
@@ -1942,6 +2321,7 @@ public class formatos extends javax.swing.JPanel {
     private javax.swing.JButton b_hoja_unidad1;
     private javax.swing.JButton b_inv_caja;
     private javax.swing.JButton b_inv_tracto;
+    private javax.swing.JButton b_proceso_pago;
     private javax.swing.JButton b_salida;
     private javax.swing.JButton b_salida1;
     private javax.swing.JButton b_salida2;

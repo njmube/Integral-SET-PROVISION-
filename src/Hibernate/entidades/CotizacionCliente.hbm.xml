@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 14/12/2016 10:27:22 AM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.CotizacionCliente" table="cotizacion_cliente">
+        <id name="idCotizacionCliente" type="java.lang.Integer">
+            <column name="id_cotizacion_cliente" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="orden" class="Hibernate.entidades.Orden" fetch="select">
+            <column name="id_orden" />
+        </many-to-one>
+        <property name="descripcion" type="string">
+            <column name="descripcion" length="150" />
+        </property>
+        <property name="codigo" type="string">
+            <column name="codigo" length="30" />
+        </property>
+        <property name="op" type="string">
+            <column name="op" length="1" />
+        </property>
+        <property name="cantidad" type="java.lang.Double">
+            <column name="cantidad" precision="22" scale="0" />
+        </property>
+        <property name="medida" type="string">
+            <column name="medida" length="10" />
+        </property>
+        <property name="costo" type="java.lang.Double">
+            <column name="costo" precision="22" scale="0" />
+        </property>
+        <property name="autorizado" type="integer">
+            <column name="autorizado" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>

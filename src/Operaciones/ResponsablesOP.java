@@ -137,6 +137,8 @@ public class ResponsablesOP extends javax.swing.JPanel {
         jButton1 = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
         t_estatus = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
+        t_supervisor = new javax.swing.JTextField();
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -560,6 +562,14 @@ public class ResponsablesOP extends javax.swing.JPanel {
 
         t_estatus.setEditable(false);
 
+        jLabel8.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        jLabel8.setText("Supervisor:");
+        jLabel8.setMaximumSize(new java.awt.Dimension(210, 15));
+        jLabel8.setMinimumSize(new java.awt.Dimension(210, 15));
+        jLabel8.setPreferredSize(new java.awt.Dimension(210, 15));
+
+        t_supervisor.setEditable(false);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -681,9 +691,13 @@ public class ResponsablesOP extends javax.swing.JPanel {
                             .addComponent(e_fecha, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(28, 28, 28))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel6)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(t_estatus, javax.swing.GroupLayout.PREFERRED_SIZE, 420, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(t_estatus, javax.swing.GroupLayout.PREFERRED_SIZE, 420, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(t_supervisor, javax.swing.GroupLayout.PREFERRED_SIZE, 420, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
@@ -797,11 +811,15 @@ public class ResponsablesOP extends javax.swing.JPanel {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(p_fecha, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(2, 2, 2)))
-                .addGap(27, 27, 27)
+                .addGap(35, 35, 35)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(t_supervisor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(t_estatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(175, Short.MAX_VALUE))
+                .addContainerGap(129, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -987,7 +1005,6 @@ public class ResponsablesOP extends javax.swing.JPanel {
         try{
             if(orden_act!=null)
             {
-                t_estatus.setText(orden_act.getEstatus().getEstatusNombre());
                 if(orden_act.getFechaCierre()==null)
                 {
                     //h= new Herramientas(usr, 0);
@@ -1003,7 +1020,7 @@ public class ResponsablesOP extends javax.swing.JPanel {
                             buscaApertura();
                         }
                         else
-                        orden_act=null;
+                            orden_act=null;
                         /*}
                     else
                     {
@@ -1032,7 +1049,7 @@ public class ResponsablesOP extends javax.swing.JPanel {
                 b_buscaro.requestFocus();
                 t_estatus.setText("");
             }
-        }catch(Exception e){}
+        }catch(Exception e){e.printStackTrace();}
     }//GEN-LAST:event_b_buscaroActionPerformed
 
     private void b_buscarpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_buscarpActionPerformed
@@ -1073,50 +1090,60 @@ public class ResponsablesOP extends javax.swing.JPanel {
     private void t_ordenFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_ordenFocusLost
         // TODO add your handling code here:
         Session session = HibernateUtil.getSessionFactory().openSession();
-        try
+        if(t_orden.getText().compareTo("")!=0)
         {
-            session.beginTransaction().begin();
-            orden_act = (Orden)session.get(Orden.class, Integer.parseInt(t_orden.getText()));
-            if(orden_act!=null)
+            try
             {
-                t_estatus.setText(orden_act.getEstatus().getEstatusNombre());
-                if(orden_act.getFechaCierre()==null)
+                session.beginTransaction().begin();
+                orden_act = (Orden)session.get(Orden.class, Integer.parseInt(t_orden.getText()));
+                if(orden_act!=null)
                 {
-                    t_orden.setText(""+orden_act.getIdOrden());
-                    if(t_orden.getText().compareTo("")!=0)
+                    if(orden_act.getFechaCierre()==null)
                     {
                         t_orden.setText(""+orden_act.getIdOrden());
-                        permisos(true, true, true, true, true);
-                        buscaApertura();
+                        if(t_orden.getText().compareTo("")!=0)
+                        {
+                            t_orden.setText(""+orden_act.getIdOrden());
+                            permisos(true, true, true, true, true);
+                            buscaApertura();
+                        }
+                        else
+                            orden_act=null;
                     }
                     else
-                        orden_act=null;
+                    {
+                        t_orden.setText(""+orden_act.getIdOrden());
+                        if(t_orden.getText().compareTo("")!=0)
+                        {
+                            t_orden.setText(""+orden_act.getIdOrden());
+                            buscaApertura();
+                            permisos(false, false, false, false, false);
+                            JOptionPane.showMessageDialog(null, "¡Orden cerrada!");
+                        }
+                        else
+                            orden_act=null;
+                    }
                 }
                 else
                 {
-                    t_orden.setText(""+orden_act.getIdOrden());
-                    if(t_orden.getText().compareTo("")!=0)
-                    {
-                        t_orden.setText(""+orden_act.getIdOrden());
-                        buscaApertura();
-                        permisos(false, false, false, false, false);
-                        JOptionPane.showMessageDialog(null, "¡Orden cerrada!");
-                    }
-                    else
-                        orden_act=null;
+                    t_supervisor.setText("");
+                    t_estatus.setText("");
+                    h= new Herramientas(usr, 0);
+                    h.desbloqueaOrden();
+                    b_buscaro.requestFocus();
                 }
-            }
-            else
-            {
-                t_estatus.setText("");
-                h= new Herramientas(usr, 0);
-                h.desbloqueaOrden();
-                b_buscaro.requestFocus();
-            }
-        }catch(Exception e){e.printStackTrace();}
-        if(session!=null)
-        if(session.isOpen())
-        session.close();
+            }catch(Exception e){e.printStackTrace();}
+            if(session!=null)
+            if(session.isOpen())
+            session.close();
+        }
+        else
+        {
+            t_estatus.setText("");
+            h= new Herramientas(usr, 0);
+            h.desbloqueaOrden();
+            b_buscaro.requestFocus();
+        }
     }//GEN-LAST:event_t_ordenFocusLost
 
     private void h_fechaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_h_fechaActionPerformed
@@ -1297,7 +1324,7 @@ public class ResponsablesOP extends javax.swing.JPanel {
             File folder = new File("reportes/"+ord.getIdOrden());
             folder.mkdirs();
             PdfReader reader = new PdfReader("imagenes/PlantillaHojaAsignacion.pdf");
-            PdfStamper stamp = new PdfStamper(reader, new FileOutputStream(ruta+"reportes/"+ ord.getIdOrden() +"/"+ valor +"-HojaAsignacion.pdf"));
+            PdfStamper stamp = new PdfStamper(reader, new FileOutputStream("reportes/"+ ord.getIdOrden() +"/"+ valor +"-HojaAsignacion.pdf"));
             PdfContentByte cb = stamp.getUnderContent(1);
             AcroFields fdfDoc = stamp.getAcroFields();
             BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.EMBEDDED);
@@ -1543,7 +1570,7 @@ public class ResponsablesOP extends javax.swing.JPanel {
             
             PDF reporte = new PDF();
             reporte.cerrar();
-            reporte.visualizar("reportes/"+ord.getIdOrden()+"/"+valor+"-HojaAsignacion.pdf");
+            reporte.visualizar2("reportes/"+ord.getIdOrden()+"/"+valor+"-HojaAsignacion.pdf");
        }catch(Exception e)
         {
             System.out.println(e);
@@ -1583,6 +1610,7 @@ public class ResponsablesOP extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel l_autorizoe;
     private javax.swing.JLabel l_autorizoh;
@@ -1612,6 +1640,7 @@ public class ResponsablesOP extends javax.swing.JPanel {
     private javax.swing.JTextField t_rmecanica;
     private javax.swing.JTextField t_rpintura;
     private javax.swing.JTextField t_rsuspension;
+    private javax.swing.JTextField t_supervisor;
     private javax.swing.JTextField t_suspension;
     // End of variables declaration//GEN-END:variables
 
@@ -1683,6 +1712,11 @@ public class ResponsablesOP extends javax.swing.JPanel {
                 for (Object o : resultList) 
                 {
                     Orden actor = (Orden) o;
+                    t_estatus.setText(actor.getEstatus().getEstatusNombre());
+                    if(actor.getEmpleadoByRTecnico()!=null)
+                        t_supervisor.setText(actor.getEmpleadoByRTecnico().getNombre());
+                    else
+                        t_supervisor.setText("");
                     //****Hojalateria**************************************************
                     if(actor.getEmpleadoByRHojalateria()!=null)
                         t_hojalateria.setText(""+actor.getEmpleadoByRHojalateria().getIdEmpleado());
@@ -1869,7 +1903,7 @@ public class ResponsablesOP extends javax.swing.JPanel {
                 permisos(false, false, false, false, false);
             }
         }
-        catch(Exception e){}
+        catch(Exception e){e.printStackTrace();}
         if(session!=null)
             if(session.isOpen())
                 session.close();

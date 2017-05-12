@@ -3129,9 +3129,9 @@ public class nuevoPedido extends javax.swing.JPanel {
                         }
                         px.setCantidad((double) t_datos.getValueAt(ren, 7));
                         px.setCosto((double) t_datos.getValueAt(ren, 8));
-                        if(ej.getPrecio()>0)
-                            ej.setPrecio((ej.getPrecio()+px.getCosto())/2);
-                        else
+                        /*if(ej.getPrecio()>0)
+                            ej.setPrecio(px.getCosto());
+                        else*/
                             ej.setPrecio(px.getCosto());
                         session.update(ej);
                         px.setPedido(obj);

@@ -58,7 +58,7 @@ public class Inventarios extends javax.swing.JPanel {
             //session.beginTransaction().commit();
         }catch(Exception e)
         {
-            e.printStackTrace();
+           // e.printStackTrace();
             //session.beginTransaction().rollback();
         }
         finally{

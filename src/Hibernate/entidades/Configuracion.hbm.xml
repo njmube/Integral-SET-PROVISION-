@@ -71,5 +71,29 @@
         <property name="sucursal" type="string">
             <column name="sucursal" length="45" />
         </property>
+        <property name="emailFinkok" type="string">
+            <column name="email_finkok" length="45" />
+        </property>
+        <property name="claveFinkok" type="string">
+            <column name="clave_finkok" length="12" />
+        </property>
+        <property name="pac" type="string">
+            <column name="pac" length="15" />
+        </property>
+        <property name="cer" type="string">
+            <column name="cer" length="40" />
+        </property>
+        <property name="llave" type="string">
+            <column name="llave" length="40" />
+        </property>
+        <property name="clave" type="string">
+            <column name="clave" length="40" />
+        </property>
+        <property name="serie" type="string">
+            <column name="serie" length="3" />
+        </property>
+        <property name="serie1" type="string">
+            <column name="serie1" length="3" />
+        </property>
     </class>
 </hibernate-mapping>

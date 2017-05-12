@@ -14,13 +14,15 @@ public class Agente  implements java.io.Serializable {
      private Integer idAgente;
      private String nombre;
      private Set ordens = new HashSet(0);
+     private Set accesos = new HashSet(0);
 
     public Agente() {
     }
 
-    public Agente(String nombre, Set ordens) {
+    public Agente(String nombre, Set ordens, Set accesos) {
        this.nombre = nombre;
        this.ordens = ordens;
+       this.accesos = accesos;
     }
    
     public Integer getIdAgente() {
@@ -45,6 +47,13 @@ public class Agente  implements java.io.Serializable {
         this.ordens = ordens;
     }
 
+    public Set getAccesos() {
+        return this.accesos;
+    }
+    
+    public void setAccesos(Set accesos) {
+        this.accesos = accesos;
+    }
 
 
 

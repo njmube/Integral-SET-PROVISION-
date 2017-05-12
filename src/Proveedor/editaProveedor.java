@@ -176,7 +176,7 @@ public class editaProveedor extends javax.swing.JPanel {
         l_estado.setText("Estado");
 
         t_estado.setBackground(new java.awt.Color(204, 255, 255));
-        t_estado.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "-------", "Aguascalientes", "Baja California", "Baja California Sur", "Campeche", "Chiapas", "Chihuahua", "Coahuila", "Colima", "Distrito Federal", "Durango", "Estado de México", "Guanajuato", "Guerrero", "Hidalgo", "Jalisco", "Michoacán", "Morelos", "Nayarit", "Nuevo León", "Oaxaca", "Puebla", "Querétaro", "Quintana Roo", "San Luis Potosí", "Sinaloa", "Sonora", "Tabasco", "Tamaulipas", "Tlaxcala", "Veracruz", "Yucatán", "Zacatecas" }));
+        t_estado.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "-------", "Aguascalientes", "Baja California", "Baja California Sur", "Campeche", "Chiapas", "Chihuahua", "Coahuila", "Colima", "Ciudad de México", "Durango", "Estado de México", "Guanajuato", "Guerrero", "Hidalgo", "Jalisco", "Michoacán", "Morelos", "Nayarit", "Nuevo León", "Oaxaca", "Puebla", "Querétaro", "Quintana Roo", "San Luis Potosí", "Sinaloa", "Sonora", "Tabasco", "Tamaulipas", "Tlaxcala", "Veracruz", "Yucatán", "Zacatecas" }));
 
         l_nombre.setForeground(new java.awt.Color(51, 0, 255));
         l_nombre.setText("Nombre:");
@@ -952,12 +952,19 @@ public class editaProveedor extends javax.swing.JPanel {
                                                 Cuentas conp=(Cuentas)session.get(Cuentas.class, cuenta_concepto.getText());
                                                 registro.setCuentasByCtaGasto(conp);
                                                 }
-                                                if(usuario1.getText().compareTo("")!=0)
+                                                
+                                                if(usuario1.getText().compareTo("")!=0){
                                                     registro.setUsuario(usuario1.getText());
-
-                                                if(password.getText().compareTo("")!=0)
+                                                }else{
+                                                    registro.setUsuario("");
+                                                }
+                                                
+                                                if(password.getText().compareTo("")!=0){
                                                     registro.setClave(password.getText());
-
+                                                }else{
+                                                    registro.setClave("");
+                                                }
+                                                
                                                 session.update(registro);
                                                 session.getTransaction().commit();
                                                 borracheck();

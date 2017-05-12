@@ -117,13 +117,15 @@ public class FacturarOrdenLogis extends javax.swing.JPanel {
         addendas = new javax.swing.JDialog();
         jLabel24 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         medida = new javax.swing.JComboBox();
         t_receptor = new javax.swing.JTextField();
         t_email = new javax.swing.JTextField();
         aviso = new javax.swing.JFileChooser();
+        l_deducible = new javax.swing.JLabel();
+        t_deducible = new javax.swing.JFormattedTextField();
+        jButton2 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         p_cliente = new javax.swing.JPanel();
         Selecciona2 = new javax.swing.JButton();
@@ -179,6 +181,13 @@ public class FacturarOrdenLogis extends javax.swing.JPanel {
         l_marca = new javax.swing.JTextField();
         t_km = new javax.swing.JTextField();
         jLabel25 = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        b_mas = new javax.swing.JButton();
+        b_menos = new javax.swing.JButton();
+        jLabel22 = new javax.swing.JLabel();
+        t_noFactura = new javax.swing.JTextField();
+        l_iva1 = new javax.swing.JLabel();
+        t_descuento = new javax.swing.JFormattedTextField();
         p_totales = new javax.swing.JPanel();
         b_guardar = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
@@ -186,18 +195,14 @@ public class FacturarOrdenLogis extends javax.swing.JPanel {
         t_subtotal = new javax.swing.JFormattedTextField();
         t_iva = new javax.swing.JFormattedTextField();
         l_iva = new javax.swing.JLabel();
+        t_iva1 = new javax.swing.JFormattedTextField();
         l_total = new javax.swing.JLabel();
         t_total = new javax.swing.JFormattedTextField();
-        t_iva1 = new javax.swing.JFormattedTextField();
-        t_descuento = new javax.swing.JFormattedTextField();
-        l_iva1 = new javax.swing.JLabel();
-        jLabel22 = new javax.swing.JLabel();
-        t_noFactura = new javax.swing.JTextField();
-        b_mas = new javax.swing.JButton();
-        b_menos = new javax.swing.JButton();
         l_iva2 = new javax.swing.JLabel();
         t_extra = new javax.swing.JTextField();
         jButton3 = new javax.swing.JButton();
+        c_emisor = new javax.swing.JComboBox();
+        jLabel26 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         t_datos = new javax.swing.JTable();
 
@@ -235,26 +240,18 @@ public class FacturarOrdenLogis extends javax.swing.JPanel {
         addendas.setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
 
         jLabel24.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
-        jLabel24.setText("Selecciona el tipo de Addenda a utilizar para facturar");
+        jLabel24.setText("Selecciona la Addenda a utilizar para facturar");
 
         jButton1.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
-        jButton1.setText("Qualitas Talleres");
+        jButton1.setText("Qualitas");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
 
-        jButton2.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
-        jButton2.setText("Axa Talleres");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-
         jButton4.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
-        jButton4.setText("GNP Talleres");
+        jButton4.setText("GNP");
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton4ActionPerformed(evt);
@@ -275,18 +272,15 @@ public class FacturarOrdenLogis extends javax.swing.JPanel {
             addendasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(addendasLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(addendasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(addendasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel24)
                     .addGroup(addendasLayout.createSequentialGroup()
-                        .addGap(42, 42, 42)
-                        .addGroup(addendasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jButton2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton1, javax.swing.GroupLayout.Alignment.LEADING))
+                        .addComponent(jButton1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(addendasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(13, Short.MAX_VALUE))
+                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         addendasLayout.setVerticalGroup(
             addendasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -296,12 +290,9 @@ public class FacturarOrdenLogis extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(addendasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
-                    .addComponent(jButton5))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(addendasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2)
+                    .addComponent(jButton5)
                     .addComponent(jButton4))
-                .addContainerGap(22, Short.MAX_VALUE))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
 
         addendas.getAccessibleContext().setAccessibleParent(null);
@@ -315,6 +306,35 @@ public class FacturarOrdenLogis extends javax.swing.JPanel {
 
         aviso.setDialogType(javax.swing.JFileChooser.SAVE_DIALOG);
         aviso.setDialogTitle("Examinar");
+
+        l_deducible.setFont(new java.awt.Font("Arial", 0, 9)); // NOI18N
+        l_deducible.setForeground(new java.awt.Color(255, 255, 255));
+        l_deducible.setText("Deducible:");
+
+        t_deducible.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        t_deducible.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.00"))));
+        t_deducible.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        t_deducible.setToolTipText("Total neto");
+        t_deducible.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
+        t_deducible.setValue(0.0);
+        t_deducible.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                t_deducibleFocusLost(evt);
+            }
+        });
+        t_deducible.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                t_deducibleActionPerformed(evt);
+            }
+        });
+
+        jButton2.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
+        jButton2.setText("Axa Talleres");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         setLayout(new java.awt.BorderLayout());
 
@@ -427,7 +447,7 @@ public class FacturarOrdenLogis extends javax.swing.JPanel {
         jLabel8.setForeground(new java.awt.Color(13, 132, 254));
         jLabel8.setText("Pais:");
 
-        c_estado.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "AGUASCALIENTES", "BAJA CALIFORNIA", "BAJA CALIFORNIA SUR", "CAMPECHE", "CHIAPAS", "CHIHUAHUA", "COAHUILA", "COLIMA", "DISTRITO FEDERAL", "DURANGO", "ESTADO DE MEXICO", "GUANAJUATO", "GUERRERO", "HIDALGO", "JALISCO", "MICHOACAN", "MORELOS", "NAYARIT", "NUEVO LEON", "OAXACA", "PUEBLA", "QUERETARO", "QUINTANA ROO", "SAN LUIS POTOSI", "SINALOA", "SONORA", "TABASCO", "TAMAULIPAS", "TLAXCALA", "VERACRUZ", "YUCATAN", "ZACATECAS" }));
+        c_estado.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "AGUASCALIENTES", "BAJA CALIFORNIA", "BAJA CALIFORNIA SUR", "CAMPECHE", "CHIAPAS", "CHIHUAHUA", "COAHUILA", "COLIMA", "CIUDAD DE MÉXICO", "DURANGO", "ESTADO DE MÉXICO", "GUANAJUATO", "GUERRERO", "HIDALGO", "JALISCO", "MICHOACAN", "MORELOS", "NAYARIT", "NUEVO LEON", "OAXACA", "PUEBLA", "QUERETARO", "QUINTANA ROO", "SAN LUIS POTOSI", "SINALOA", "SONORA", "TABASCO", "TAMAULIPAS", "TLAXCALA", "VERACRUZ", "YUCATAN", "ZACATECAS" }));
         c_estado.setToolTipText("Estado del receptor");
 
         jLabel7.setForeground(new java.awt.Color(13, 132, 254));
@@ -827,7 +847,7 @@ public class FacturarOrdenLogis extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel20)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(t_inc, javax.swing.GroupLayout.DEFAULT_SIZE, 58, Short.MAX_VALUE)
+                        .addComponent(t_inc, javax.swing.GroupLayout.DEFAULT_SIZE, 65, Short.MAX_VALUE)
                         .addGap(18, 18, 18)
                         .addComponent(jLabel25)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -931,6 +951,89 @@ public class FacturarOrdenLogis extends javax.swing.JPanel {
                 .addContainerGap())
         );
 
+        jPanel2.setBackground(new java.awt.Color(2, 135, 242));
+
+        b_mas.setBackground(new java.awt.Color(2, 135, 242));
+        b_mas.setForeground(new java.awt.Color(255, 255, 255));
+        b_mas.setIcon(new ImageIcon("imagenes/boton_mas.png"));
+        b_mas.setToolTipText("Agrega un concepto");
+        b_mas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_masActionPerformed(evt);
+            }
+        });
+
+        b_menos.setBackground(new java.awt.Color(2, 135, 242));
+        b_menos.setForeground(new java.awt.Color(255, 255, 255));
+        b_menos.setIcon(new ImageIcon("imagenes/boton_menos.png"));
+        b_menos.setToolTipText("Eliminar un concepto");
+        b_menos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_menosActionPerformed(evt);
+            }
+        });
+
+        jLabel22.setFont(new java.awt.Font("Arial", 0, 9)); // NOI18N
+        jLabel22.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel22.setText("No Factura:");
+
+        t_noFactura.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
+        t_noFactura.setToolTipText("Numero de factura");
+        t_noFactura.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        t_noFactura.setEnabled(false);
+
+        l_iva1.setFont(new java.awt.Font("Arial", 0, 9)); // NOI18N
+        l_iva1.setForeground(new java.awt.Color(255, 255, 255));
+        l_iva1.setText("Agregar Descuento:");
+
+        t_descuento.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        t_descuento.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("0.00"))));
+        t_descuento.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        t_descuento.setToolTipText("Agregar descuento general");
+        t_descuento.setEnabled(false);
+        t_descuento.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
+        t_descuento.setNextFocusableComponent(t_datos);
+        t_descuento.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                t_descuentoFocusLost(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(b_mas, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(b_menos, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(l_iva1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(t_descuento, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(605, 605, 605)
+                .addComponent(jLabel22)
+                .addGap(18, 18, 18)
+                .addComponent(t_noFactura, javax.swing.GroupLayout.DEFAULT_SIZE, 88, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(t_descuento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(l_iva1))
+                    .addComponent(b_mas, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(b_menos, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(t_noFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel22)))
+                .addContainerGap())
+        );
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -939,11 +1042,16 @@ public class FacturarOrdenLogis extends javax.swing.JPanel {
                 .addComponent(p_orden, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(p_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(p_cliente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(p_orden, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(p_cliente, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(p_orden, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         add(jPanel1, java.awt.BorderLayout.PAGE_START);
@@ -966,7 +1074,7 @@ public class FacturarOrdenLogis extends javax.swing.JPanel {
         l_subtotal.setFont(new java.awt.Font("Arial", 0, 9)); // NOI18N
         l_subtotal.setForeground(new java.awt.Color(255, 255, 255));
         l_subtotal.setText("Subtotal:");
-        jPanel5.add(l_subtotal, new org.netbeans.lib.awtextra.AbsoluteConstraints(52, 4, -1, -1));
+        jPanel5.add(l_subtotal, new org.netbeans.lib.awtextra.AbsoluteConstraints(54, 4, -1, -1));
 
         t_subtotal.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         t_subtotal.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.00"))));
@@ -989,21 +1097,7 @@ public class FacturarOrdenLogis extends javax.swing.JPanel {
         l_iva.setFont(new java.awt.Font("Arial", 0, 9)); // NOI18N
         l_iva.setForeground(new java.awt.Color(255, 255, 255));
         l_iva.setText("% I.V.A.:");
-        jPanel5.add(l_iva, new org.netbeans.lib.awtextra.AbsoluteConstraints(49, 23, -1, -1));
-
-        l_total.setFont(new java.awt.Font("Arial", 0, 9)); // NOI18N
-        l_total.setForeground(new java.awt.Color(255, 255, 255));
-        l_total.setText("Total:");
-        jPanel5.add(l_total, new org.netbeans.lib.awtextra.AbsoluteConstraints(62, 44, -1, -1));
-
-        t_total.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_total.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.00"))));
-        t_total.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        t_total.setText("0.00");
-        t_total.setToolTipText("Total neto");
-        t_total.setEnabled(false);
-        t_total.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
-        jPanel5.add(t_total, new org.netbeans.lib.awtextra.AbsoluteConstraints(105, 41, 88, -1));
+        jPanel5.add(l_iva, new org.netbeans.lib.awtextra.AbsoluteConstraints(54, 23, -1, -1));
 
         t_iva1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         t_iva1.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
@@ -1028,51 +1122,19 @@ public class FacturarOrdenLogis extends javax.swing.JPanel {
         });
         jPanel5.add(t_iva1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1, 20, 40, -1));
 
-        t_descuento.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_descuento.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("0.00"))));
-        t_descuento.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        t_descuento.setToolTipText("Agregar descuento general");
-        t_descuento.setEnabled(false);
-        t_descuento.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
-        t_descuento.setNextFocusableComponent(t_datos);
-        t_descuento.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                t_descuentoFocusLost(evt);
-            }
-        });
+        l_total.setFont(new java.awt.Font("Arial", 0, 9)); // NOI18N
+        l_total.setForeground(new java.awt.Color(255, 255, 255));
+        l_total.setText("Total:");
+        jPanel5.add(l_total, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 45, -1, -1));
 
-        l_iva1.setFont(new java.awt.Font("Arial", 0, 9)); // NOI18N
-        l_iva1.setForeground(new java.awt.Color(255, 255, 255));
-        l_iva1.setText("Agregar Descuento:");
-
-        jLabel22.setFont(new java.awt.Font("Arial", 0, 9)); // NOI18N
-        jLabel22.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel22.setText("No Factura:");
-
-        t_noFactura.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
-        t_noFactura.setToolTipText("Numero de factura");
-        t_noFactura.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_noFactura.setEnabled(false);
-
-        b_mas.setBackground(new java.awt.Color(2, 135, 242));
-        b_mas.setForeground(new java.awt.Color(255, 255, 255));
-        b_mas.setIcon(new ImageIcon("imagenes/boton_mas.png"));
-        b_mas.setToolTipText("Agrega un concepto");
-        b_mas.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                b_masActionPerformed(evt);
-            }
-        });
-
-        b_menos.setBackground(new java.awt.Color(2, 135, 242));
-        b_menos.setForeground(new java.awt.Color(255, 255, 255));
-        b_menos.setIcon(new ImageIcon("imagenes/boton_menos.png"));
-        b_menos.setToolTipText("Eliminar un concepto");
-        b_menos.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                b_menosActionPerformed(evt);
-            }
-        });
+        t_total.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        t_total.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.00"))));
+        t_total.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        t_total.setText("0.00");
+        t_total.setToolTipText("Total neto");
+        t_total.setEnabled(false);
+        t_total.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
+        jPanel5.add(t_total, new org.netbeans.lib.awtextra.AbsoluteConstraints(105, 40, 88, -1));
 
         l_iva2.setFont(new java.awt.Font("Arial", 0, 9)); // NOI18N
         l_iva2.setForeground(new java.awt.Color(255, 255, 255));
@@ -1092,35 +1154,31 @@ public class FacturarOrdenLogis extends javax.swing.JPanel {
             }
         });
 
+        c_emisor.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "SELECCIONAR", "SET", "TBS " }));
+
+        jLabel26.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel26.setText("Emisor:");
+
         javax.swing.GroupLayout p_totalesLayout = new javax.swing.GroupLayout(p_totales);
         p_totales.setLayout(p_totalesLayout);
         p_totalesLayout.setHorizontalGroup(
             p_totalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(p_totalesLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(b_mas, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(b_menos, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
                 .addGroup(p_totalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, p_totalesLayout.createSequentialGroup()
-                        .addComponent(b_guardar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 69, Short.MAX_VALUE)
+                    .addGroup(p_totalesLayout.createSequentialGroup()
+                        .addComponent(jLabel26)
+                        .addGap(18, 18, 18)
+                        .addComponent(c_emisor, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(l_iva2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(t_extra, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(t_extra, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(p_totalesLayout.createSequentialGroup()
+                        .addComponent(b_guardar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(l_iva1)
-                        .addGap(15, 15, 15))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, p_totalesLayout.createSequentialGroup()
-                        .addComponent(jLabel22)
-                        .addGap(18, 18, 18)))
-                .addGroup(p_totalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(t_noFactura)
-                    .addComponent(t_descuento, javax.swing.GroupLayout.DEFAULT_SIZE, 88, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton3)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(6, 6, 6))
         );
@@ -1129,32 +1187,18 @@ public class FacturarOrdenLogis extends javax.swing.JPanel {
             .addGroup(p_totalesLayout.createSequentialGroup()
                 .addGroup(p_totalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(p_totalesLayout.createSequentialGroup()
-                        .addGroup(p_totalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(p_totalesLayout.createSequentialGroup()
-                                .addGap(6, 6, 6)
-                                .addGroup(p_totalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(t_descuento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(p_totalesLayout.createSequentialGroup()
-                                        .addGap(7, 7, 7)
-                                        .addGroup(p_totalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(l_iva1)
-                                            .addGroup(p_totalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                                .addComponent(l_iva2)
-                                                .addComponent(t_extra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, p_totalesLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(p_totalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(b_mas, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(b_menos, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(p_totalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(b_guardar)
-                                        .addComponent(jButton3)))))
+                        .addGap(12, 12, 12)
+                        .addGroup(p_totalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(l_iva2)
+                            .addComponent(t_extra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(c_emisor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel26))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(p_totalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(t_noFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel22)))
+                            .addComponent(b_guardar)
+                            .addComponent(jButton3)))
                     .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(2, 2, 2))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         add(p_totales, java.awt.BorderLayout.PAGE_END);
@@ -1360,216 +1404,223 @@ public class FacturarOrdenLogis extends javax.swing.JPanel {
         // TODO add your handling code here:
         if(t_datos.getRowCount()>0)
         {
-            if(t_orden.getText().compareTo("")!=0)
+            if(c_emisor.getSelectedIndex()!=0)
             {
-                if(t_cliente.getText().trim().compareTo("")!=0)
+                if(t_orden.getText().compareTo("")!=0)
                 {
-                    if(t_rfc.getText().compareTo("")!=0)
+                    if(t_cliente.getText().trim().compareTo("")!=0)
                     {
-                        if(t_direccion.getText().trim().compareTo("")!=0)
+                        if(t_rfc.getText().compareTo("")!=0)
                         {
-                            if(t_numero_exterior.getText().compareTo("")!=0)
+                            if(t_direccion.getText().trim().compareTo("")!=0)
                             {
-                                if(t_cp.getText().compareTo("")!=0)
+                                if(t_numero_exterior.getText().compareTo("")!=0)
                                 {
-                                    if(t_municipio.getText().compareTo("")!=0)
+                                    if(t_cp.getText().compareTo("")!=0)
                                     {
-
-                                        Session session = HibernateUtil.getSessionFactory().openSession();
-                                        try
+                                        if(t_municipio.getText().compareTo("")!=0)
                                         {
-                                            Calendar c1 = Calendar.getInstance();
-                                            //Calendar c2 = new GregorianCalendar();
-                                            session.beginTransaction().begin();
-                                            /*orden_act=(Orden)session.get(Orden.class, orden_act.getIdOrden());
-                                            if(orden_act.getAutorizadoFacturar()==true)
-                                            {*/
-                                                OrdenExterna ordenx=new OrdenExterna();
-                                                ordenx.setAsegurado(this.t_asegurado.getText());
-                                                if(this.t_marca.getText().compareTo("")!=0)//agregamos la marca
-                                                {
-                                                    Marca mar=(Marca)session.get(Marca.class, l_marca.getText());
-                                                    if(mar!=null)
-                                                    {
-                                                        ordenx.setMarca(mar);
-                                                    }
-                                                    else
-                                                    {
-                                                        Marca aux=new Marca();
-                                                        aux.setIdMarca(l_marca.getText());
-                                                        aux.setMarcaNombre(t_marca.getText());
-                                                        session.save(aux);
-                                                        mar=(Marca)session.get(Marca.class, l_marca.getText());
-                                                        ordenx.setMarca(mar);
-                                                    }
-                                                }
-                                                if(this.t_tipo.getText().compareTo("")!=0)//agregamos el tipo
-                                                {
-                                                    Tipo tip=(Tipo)session.get(Tipo.class, t_tipo.getText());
-                                                    if(tip!=null)
-                                                    {
-                                                        ordenx.setTipo(tip);
-                                                    }
-                                                    else
-                                                    {
-                                                        Tipo t=new Tipo();
-                                                        t.setTipoNombre(t_tipo.getText());
-                                                        t.setEPesado(0);
-                                                        session.save(t);
-                                                        tip=(Tipo)session.get(Tipo.class, t_tipo.getText());
-                                                        ordenx.setTipo(tip);
-                                                    }
-                                                }
-                                                ordenx.setNoSerie(t_serie.getText());
-                                                if(this.t_modelo.getText().compareTo("")!=0)//agregamos el modelo
-                                                    ordenx.setModelo(Integer.parseInt(this.t_modelo.getText()));
-                                                ordenx.setNoPlacas(t_placas.getText());
-                                                ordenx.setPoliza(t_poliza.getText());
-                                                ordenx.setSiniestro(t_siniestro.getText());
-                                                ordenx.setNoReporte(t_reporte.getText());
-                                                ordenx.setKm(t_km.getText());
-                                                
-                                                int nOrd=(int)session.save(ordenx);
-                                                ordenx=(OrdenExterna)session.get(OrdenExterna.class, nOrd);
-                                                
-                                                Configuracion con =(Configuracion)session.get(Configuracion.class, 1);
-                                                Factura nuevaFactura=new Factura();
-                                                nuevaFactura.setOrden(orden_act);
-                                                nuevaFactura.setOrdenExterna(ordenx);
-                                                nuevaFactura.setFecha(c1.getTime());// fecha de emision
-                                                nuevaFactura.setRfcEmisor(con.getRfc());//RFC emisor
-                                                nuevaFactura.setNombreEmisor(con.getNombre());//nombre emisor
-                                                nuevaFactura.setCalleEmisor(con.getDireccion());//calle emisor
-                                                nuevaFactura.setColoniaEmisor(con.getColonia());//Colonia emisor
-                                                nuevaFactura.setNumeroExteriorEmisor(con.getNo());//numero exteerior emisor
-                                                nuevaFactura.setMunicipioEmisor(con.getMunicipio());//municipio emisor
-                                                nuevaFactura.setEstadoEmisor(con.getEstado());//estado emisor
-                                                nuevaFactura.setPaisEmisor(con.getPais());//pais emisor
-                                                nuevaFactura.setCpEmisor(con.getCp());//cp emisor
-                                                nuevaFactura.setRfcReceptor(t_rfc.getText());
-                                                nuevaFactura.setNombreReceptor(t_cliente.getText());
-                                                nuevaFactura.setCalleReceptor(t_direccion.getText());
-                                                nuevaFactura.setNumeroExteriorReceptor(t_numero_exterior.getText());
-                                                nuevaFactura.setColoniaReceptor(t_colonia.getText());
-                                                nuevaFactura.setMunicipioReceptor(t_municipio.getText());
-                                                nuevaFactura.setEstadoReceptor(c_estado.getSelectedItem().toString());
-                                                nuevaFactura.setPaisReceptor(c_pais.getSelectedItem().toString());
-                                                nuevaFactura.setCpReceptor(t_cp.getText());
-                                                //DEDUCIBLE
-                                                nuevaFactura.setEstadoFactura("Pendiente");
-                                                nuevaFactura.setEstatus("PENDIENTE");
-                                                //f_fiscal
-                                                //fecha_fiscal
-                                                //serie
-                                                //folio
-                                                nuevaFactura.setMetodoPago("99");
-                                                nuevaFactura.setCuentaPago("");
-                                                nuevaFactura.setMoneda("MXN");
-                                                nuevaFactura.setFactorCambio(1.0d);
-                                                nuevaFactura.setArea("Talleres");
-                                                nuevaFactura.setTipoPoliza("AUTOS");
-                                                nuevaFactura.setTipoEmisor("MATRIZ");
-                                                nuevaFactura.setContactoEmisor(con.getContacto());
-                                                nuevaFactura.setCorreoEmisor(con.getMail());
-                                                nuevaFactura.setTelefonoEmisor(con.getTel());
-                                                nuevaFactura.setTipoReceptor("COORDINADOR");
-                                                nuevaFactura.setContactoReceptor(t_receptor.getText());
-                                                nuevaFactura.setCorreoReceptor(t_email.getText());
-                                                nuevaFactura.setTelefonoReceptor("");
-                                                nuevaFactura.setCodigoOficina("");
-                                                nuevaFactura.setFoliosElectronicos("");
-                                                nuevaFactura.setUsuarioByGenero(user);
-                                                //AUTORIZO
-                                                //NPOMBRE DE DOCUMENTO
-                                                //ERROR
-                                                //ADDENDA
-                                                //RI_EMOSOR
-                                                //RI_RECEPTOR
-                                                //PROVEEDOR
-                                                nuevaFactura.setCondicionesPago("UNA SOLA EXHIBICION");
-                                                //TIPO FACTURACION
-                                                //DESCRIPCION EMISOR
-                                                nuevaFactura.setMedioPago("NO IDENTIFICADO");
-                                                nuevaFactura.setFechaMedioPago(c1.getTime());
-                                                //FECHA CONDICIONES DE PAGO
-                                                //RIESGO
-                                                //ID ORDEN
-                                                nuevaFactura.setIva(Integer.parseInt(t_iva1.getValue().toString()));
-                                                nuevaFactura.setExtra(t_extra.getText());
 
-                                                int noFactura=(Integer)session.save(nuevaFactura);
-                                                factura=(Factura)session.get(Factura.class, noFactura);
-                                                
-                                                //crear los conceptos
-                                                for(int a=0; a<t_datos.getRowCount(); a++)
-                                                {
-                                                    Concepto renglon=new Concepto();
-                                                    renglon.setFactura(nuevaFactura);
-                                                    renglon.setCantidad((double)t_datos.getValueAt(a, 0));
-                                                    renglon.setMedida(t_datos.getValueAt(a, 1).toString());
-                                                    renglon.setDescripcion(t_datos.getValueAt(a, 2).toString());
-                                                    renglon.setPrecio((double)t_datos.getValueAt(a, 4));
-                                                    renglon.setDescuento((double)t_datos.getValueAt(a, 5));
-                                                    renglon.setFactura(factura);
-                                                    session.save(renglon);
-                                                    //nuevaFactura.getConceptos().add(renglon);
-                                                }
-                                                
-                                                logis(noFactura);
-                                                
-                                                session.beginTransaction().commit();
-                                                habilita(false);
-                                                t_noFactura.setText(""+noFactura);
-                                                JOptionPane.showMessageDialog(this, "La factura se ha guardado con el número:"+noFactura);
-                                                addendas.setSize(324, 135);
-                                                Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-                                                addendas.setLocation((d.width/2)-(addendas.getWidth()/2), (d.height/2)-(addendas.getHeight()/2));
-                                                addendas.setVisible(true);
-                                            /*}
-                                            else
+                                            Session session = HibernateUtil.getSessionFactory().openSession();
+                                            try
                                             {
-                                                t_orden.setText("");
-                                                orden_act=null;
-                                                borra_cajas();
-                                                habilita(false);
-                                                t_orden.requestFocus();      
-                                                JOptionPane.showMessageDialog(this, "La factura no esta lista para facturar");
-                                            }*/
+                                                Calendar c1 = Calendar.getInstance();
+                                                //Calendar c2 = new GregorianCalendar();
+                                                session.beginTransaction().begin();
+                                                /*orden_act=(Orden)session.get(Orden.class, orden_act.getIdOrden());
+                                                if(orden_act.getAutorizadoFacturar()==true)
+                                                {*/
+                                                    OrdenExterna ordenx=new OrdenExterna();
+                                                    ordenx.setAsegurado(this.t_asegurado.getText());
+                                                    if(this.t_marca.getText().compareTo("")!=0)//agregamos la marca
+                                                    {
+                                                        Marca mar=(Marca)session.get(Marca.class, l_marca.getText());
+                                                        if(mar!=null)
+                                                        {
+                                                            ordenx.setMarca(mar);
+                                                        }
+                                                        else
+                                                        {
+                                                            Marca aux=new Marca();
+                                                            aux.setIdMarca(l_marca.getText());
+                                                            aux.setMarcaNombre(t_marca.getText());
+                                                            session.save(aux);
+                                                            mar=(Marca)session.get(Marca.class, l_marca.getText());
+                                                            ordenx.setMarca(mar);
+                                                        }
+                                                    }
+                                                    if(this.t_tipo.getText().compareTo("")!=0)//agregamos el tipo
+                                                    {
+                                                        Tipo tip=(Tipo)session.get(Tipo.class, t_tipo.getText());
+                                                        if(tip!=null)
+                                                        {
+                                                            ordenx.setTipo(tip);
+                                                        }
+                                                        else
+                                                        {
+                                                            Tipo t=new Tipo();
+                                                            t.setTipoNombre(t_tipo.getText());
+                                                            t.setEPesado(0);
+                                                            session.save(t);
+                                                            tip=(Tipo)session.get(Tipo.class, t_tipo.getText());
+                                                            ordenx.setTipo(tip);
+                                                        }
+                                                    }
+                                                    ordenx.setNoSerie(t_serie.getText());
+                                                    if(this.t_modelo.getText().compareTo("")!=0)//agregamos el modelo
+                                                        ordenx.setModelo(Integer.parseInt(this.t_modelo.getText()));
+                                                    ordenx.setNoPlacas(t_placas.getText());
+                                                    ordenx.setPoliza(t_poliza.getText());
+                                                    ordenx.setSiniestro(t_siniestro.getText());
+                                                    ordenx.setNoReporte(t_reporte.getText());
+                                                    ordenx.setKm(t_km.getText());
 
+                                                    int nOrd=(int)session.save(ordenx);
+                                                    ordenx=(OrdenExterna)session.get(OrdenExterna.class, nOrd);
+
+                                                    Configuracion con =(Configuracion)session.get(Configuracion.class, c_emisor.getSelectedIndex());
+                                                    Factura nuevaFactura=new Factura();
+                                                    nuevaFactura.setOrden(orden_act);
+                                                    nuevaFactura.setOrdenExterna(ordenx);
+                                                    nuevaFactura.setFecha(c1.getTime());// fecha de emision
+                                                    nuevaFactura.setRfcEmisor(con.getRfc());//RFC emisor
+                                                    nuevaFactura.setNombreEmisor(con.getNombre());//nombre emisor
+                                                    nuevaFactura.setCalleEmisor(con.getDireccion());//calle emisor
+                                                    nuevaFactura.setColoniaEmisor(con.getColonia());//Colonia emisor
+                                                    nuevaFactura.setNumeroExteriorEmisor(con.getNo());//numero exteerior emisor
+                                                    nuevaFactura.setMunicipioEmisor(con.getMunicipio());//municipio emisor
+                                                    nuevaFactura.setEstadoEmisor(con.getEstado());//estado emisor
+                                                    nuevaFactura.setPaisEmisor(con.getPais());//pais emisor
+                                                    nuevaFactura.setCpEmisor(con.getCp());//cp emisor
+                                                    nuevaFactura.setRfcReceptor(t_rfc.getText());
+                                                    nuevaFactura.setNombreReceptor(t_cliente.getText());
+                                                    nuevaFactura.setCalleReceptor(t_direccion.getText());
+                                                    nuevaFactura.setNumeroExteriorReceptor(t_numero_exterior.getText());
+                                                    nuevaFactura.setColoniaReceptor(t_colonia.getText());
+                                                    nuevaFactura.setMunicipioReceptor(t_municipio.getText());
+                                                    nuevaFactura.setEstadoReceptor(c_estado.getSelectedItem().toString());
+                                                    nuevaFactura.setPaisReceptor(c_pais.getSelectedItem().toString());
+                                                    nuevaFactura.setCpReceptor(t_cp.getText());
+                                                    //DEDUCIBLE
+                                                    nuevaFactura.setEstadoFactura("Pendiente");
+                                                    nuevaFactura.setEstatus("PENDIENTE");
+                                                    nuevaFactura.setDeducible(0.00d);
+                                                    nuevaFactura.setDescDeducible(((Number)t_deducible.getValue()).doubleValue());
+                                                    //f_fiscal
+                                                    //fecha_fiscal
+                                                    //serie
+                                                    //folio
+                                                    nuevaFactura.setMetodoPago("99");
+                                                    nuevaFactura.setCuentaPago("");
+                                                    nuevaFactura.setMoneda("MXN");
+                                                    nuevaFactura.setFactorCambio(1.0d);
+                                                    nuevaFactura.setArea("Talleres");
+                                                    nuevaFactura.setTipoPoliza("AUTOS");
+                                                    nuevaFactura.setTipoEmisor("MATRIZ");
+                                                    nuevaFactura.setContactoEmisor(con.getContacto());
+                                                    nuevaFactura.setCorreoEmisor(con.getMail());
+                                                    nuevaFactura.setTelefonoEmisor(con.getTel());
+                                                    nuevaFactura.setTipoReceptor("COORDINADOR");
+                                                    nuevaFactura.setContactoReceptor(t_receptor.getText());
+                                                    nuevaFactura.setCorreoReceptor(t_email.getText());
+                                                    nuevaFactura.setTelefonoReceptor("");
+                                                    nuevaFactura.setCodigoOficina("");
+                                                    nuevaFactura.setFoliosElectronicos("");
+                                                    nuevaFactura.setUsuarioByGenero(user);
+                                                    //AUTORIZO
+                                                    //NPOMBRE DE DOCUMENTO
+                                                    //ERROR
+                                                    //ADDENDA
+                                                    //RI_EMOSOR
+                                                    //RI_RECEPTOR
+                                                    //PROVEEDOR
+                                                    nuevaFactura.setCondicionesPago("UNA SOLA EXHIBICION");
+                                                    //TIPO FACTURACION
+                                                    //DESCRIPCION EMISOR
+                                                    nuevaFactura.setMedioPago("NO IDENTIFICADO");
+                                                    nuevaFactura.setFechaMedioPago(c1.getTime());
+                                                    //FECHA CONDICIONES DE PAGO
+                                                    //RIESGO
+                                                    //ID ORDEN
+                                                    nuevaFactura.setIva(Integer.parseInt(t_iva1.getValue().toString()));
+                                                    nuevaFactura.setExtra(t_extra.getText());
+
+                                                    int noFactura=(Integer)session.save(nuevaFactura);
+                                                    factura=(Factura)session.get(Factura.class, noFactura);
+
+                                                    //crear los conceptos
+                                                    for(int a=0; a<t_datos.getRowCount(); a++)
+                                                    {
+                                                        Concepto renglon=new Concepto();
+                                                        renglon.setFactura(nuevaFactura);
+                                                        renglon.setCantidad((double)t_datos.getValueAt(a, 0));
+                                                        renglon.setMedida(t_datos.getValueAt(a, 1).toString());
+                                                        renglon.setDescripcion(t_datos.getValueAt(a, 2).toString());
+                                                        renglon.setPrecio((double)t_datos.getValueAt(a, 4));
+                                                        renglon.setDescuento((double)t_datos.getValueAt(a, 5));
+                                                        renglon.setFactura(factura);
+                                                        session.save(renglon);
+                                                        //nuevaFactura.getConceptos().add(renglon);
+                                                    }
+
+                                                    logis(noFactura);
+
+                                                    session.beginTransaction().commit();
+                                                    habilita(false);
+                                                    t_noFactura.setText(""+noFactura);
+                                                    JOptionPane.showMessageDialog(this, "La factura se ha guardado con el número:"+noFactura);
+                                                    addendas.setSize(324, 135);
+                                                    Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+                                                    addendas.setLocation((d.width/2)-(addendas.getWidth()/2), (d.height/2)-(addendas.getHeight()/2));
+                                                    addendas.setVisible(true);
+                                                /*}
+                                                else
+                                                {
+                                                    t_orden.setText("");
+                                                    orden_act=null;
+                                                    borra_cajas();
+                                                    habilita(false);
+                                                    t_orden.requestFocus();      
+                                                    JOptionPane.showMessageDialog(this, "La factura no esta lista para facturar");
+                                                }*/
+
+                                            }
+                                            catch(Exception e)
+                                            {
+                                                session.beginTransaction().rollback();
+                                                e.printStackTrace();
+                                                JOptionPane.showMessageDialog(this, "No se pudo guardar la factura.");
+                                            }
+                                            finally
+                                            {
+                                                if(session!=null)
+                                                    if(session.isOpen())
+                                                        session.close();
+                                            }
                                         }
-                                        catch(Exception e)
-                                        {
-                                            session.beginTransaction().rollback();
-                                            e.printStackTrace();
-                                            JOptionPane.showMessageDialog(this, "No se pudo guardar la factura.");
-                                        }
-                                        finally
-                                        {
-                                            if(session!=null)
-                                                if(session.isOpen())
-                                                    session.close();
-                                        }
+                                        else
+                                            JOptionPane.showMessageDialog(this, "Ingrese el Municipio del cliente");
                                     }
                                     else
-                                        JOptionPane.showMessageDialog(this, "Ingrese el Municipio del cliente");
+                                        JOptionPane.showMessageDialog(this, "Ingrese el CP del cliente");
                                 }
                                 else
-                                    JOptionPane.showMessageDialog(this, "Ingrese el CP del cliente");
+                                    JOptionPane.showMessageDialog(this, "Ingrese el Número exterior del cliente");
                             }
                             else
-                                JOptionPane.showMessageDialog(this, "Ingrese el Número exterior del cliente");
+                                JOptionPane.showMessageDialog(this, "Ingrese la calle del cliente");
                         }
                         else
-                            JOptionPane.showMessageDialog(this, "Ingrese la calle del cliente");
+                            JOptionPane.showMessageDialog(this, "Ingrese el RFC del cliente");
                     }
                     else
-                        JOptionPane.showMessageDialog(this, "Ingrese el RFC del cliente");
+                        JOptionPane.showMessageDialog(this, "Ingrese en nombre de la razón social");
                 }
                 else
-                    JOptionPane.showMessageDialog(this, "Ingrese en nombre de la razón social");
+                    JOptionPane.showMessageDialog(this, "Ingrese el número de orden a facturar");
             }
             else
-                JOptionPane.showMessageDialog(this, "Ingrese el número de orden a facturar");
+                JOptionPane.showMessageDialog(this, "Seleleccione el emisor para facturar");
         }
         else
             JOptionPane.showMessageDialog(this, "Ingrese conceptos a facturar");
@@ -1752,9 +1803,9 @@ public class FacturarOrdenLogis extends javax.swing.JPanel {
 
     private void t_incFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_incFocusLost
         // TODO add your handling code here:
-        if(t_inc.getText().length()>10)
+        if(t_inc.getText().length()>13)
         {
-            t_inc.setText(t_inc.getText().substring(0, 10));
+            t_inc.setText(t_inc.getText().substring(0, 13));
         }
     }//GEN-LAST:event_t_incFocusLost
 
@@ -1765,7 +1816,7 @@ public class FacturarOrdenLogis extends javax.swing.JPanel {
     private void t_incKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_incKeyTyped
         // TODO add your handling code here:
         char car = evt.getKeyChar();
-        if(t_inc.getText().length()>=10) 
+        if(t_inc.getText().length()>=13) 
             evt.consume();
     }//GEN-LAST:event_t_incKeyTyped
 
@@ -1889,7 +1940,7 @@ public class FacturarOrdenLogis extends javax.swing.JPanel {
     private void t_siniestroKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_siniestroKeyTyped
         // TODO add your handling code here:
         char car = evt.getKeyChar();
-        if(t_siniestro.getText().length()>=10) 
+        if(t_siniestro.getText().length()>=20) 
             evt.consume();
     }//GEN-LAST:event_t_siniestroKeyTyped
 
@@ -1899,16 +1950,16 @@ public class FacturarOrdenLogis extends javax.swing.JPanel {
 
     private void t_reporteFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_reporteFocusLost
         // TODO add your handling code here:
-        if(t_reporte.getText().length()>10)
+        if(t_reporte.getText().length()>20)
         {
-            t_reporte.setText(t_reporte.getText().substring(0, 10));
+            t_reporte.setText(t_reporte.getText().substring(0, 20));
         }
     }//GEN-LAST:event_t_reporteFocusLost
 
     private void t_reporteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_reporteKeyTyped
         // TODO add your handling code here:
         char car = evt.getKeyChar();
-        if(t_reporte.getText().length()>=10) 
+        if(t_reporte.getText().length()>=20) 
             evt.consume();
     }//GEN-LAST:event_t_reporteKeyTyped
 
@@ -2387,6 +2438,24 @@ public class FacturarOrdenLogis extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_jButton3ActionPerformed
 
+    private void t_deducibleFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_deducibleFocusLost
+        // TODO add your handling code here:
+        try
+        {
+            t_deducible.commitEdit();
+        }catch(Exception e){}
+        this.sumaTotales();
+    }//GEN-LAST:event_t_deducibleFocusLost
+
+    private void t_deducibleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_deducibleActionPerformed
+        // TODO add your handling code here:
+        try
+        {
+            t_deducible.commitEdit();
+        }catch(Exception e){}
+        this.sumaTotales();
+    }//GEN-LAST:event_t_deducibleActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Selecciona2;
@@ -2402,6 +2471,7 @@ public class FacturarOrdenLogis extends javax.swing.JPanel {
     private javax.swing.JButton b_orden;
     private javax.swing.JButton b_tipo;
     private javax.swing.JComboBox c_cliente;
+    private javax.swing.JComboBox c_emisor;
     private javax.swing.JComboBox c_estado;
     private javax.swing.JComboBox c_pais;
     private javax.swing.JButton jButton1;
@@ -2426,6 +2496,7 @@ public class FacturarOrdenLogis extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel25;
+    private javax.swing.JLabel jLabel26;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -2434,9 +2505,11 @@ public class FacturarOrdenLogis extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel l_asegurado;
+    private javax.swing.JLabel l_deducible;
     private javax.swing.JLabel l_iva;
     private javax.swing.JLabel l_iva1;
     private javax.swing.JLabel l_iva2;
@@ -2453,6 +2526,7 @@ public class FacturarOrdenLogis extends javax.swing.JPanel {
     private javax.swing.JTextField t_colonia;
     private javax.swing.JTextField t_cp;
     private javax.swing.JTable t_datos;
+    private javax.swing.JFormattedTextField t_deducible;
     private javax.swing.JFormattedTextField t_descuento;
     private javax.swing.JTextField t_direccion;
     private javax.swing.JTextField t_email;
@@ -2527,6 +2601,7 @@ public class FacturarOrdenLogis extends javax.swing.JPanel {
         c_pais.setSelectedItem("MX");
         t_subtotal.setValue(0);
         t_iva.setValue(0);
+        t_deducible.setValue(0);
         t_total.setValue(0);
         t_descuento.setValue(0);
         t_noFactura.setText("");
@@ -2536,6 +2611,7 @@ public class FacturarOrdenLogis extends javax.swing.JPanel {
         t_km.setText("");
         t_datos.setModel(ModeloTablaReporte(0, columnas));
         formatoTabla();
+        c_emisor.setSelectedIndex(0);
     }
     
     public void consultaOrden(String dato)
@@ -3005,6 +3081,8 @@ public class FacturarOrdenLogis extends javax.swing.JPanel {
             t_iva.setText(""+iva);
             t_iva.setValue(new Double(valor_iva));
             total+=valor_iva;
+            iva=Integer.parseInt(t_iva1.getValue().toString());
+            total=total-((Number)t_deducible.getValue()).doubleValue();
             t_total.setValue(total);
         }catch(Exception e){e.printStackTrace();}
     }

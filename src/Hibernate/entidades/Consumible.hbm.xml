@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 13/02/2017 09:18:05 AM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.Consumible" table="consumible">
+        <id name="idConsumible" type="int">
+            <column name="id_consumible" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="ejemplar" class="Hibernate.entidades.Ejemplar" fetch="select">
+            <column name="id_Parte" length="35" />
+        </many-to-one>
+        <many-to-one name="orden" class="Hibernate.entidades.Orden" fetch="select">
+            <column name="id_orden" />
+        </many-to-one>
+        <property name="medida" type="string">
+            <column name="medida" length="10" />
+        </property>
+        <property name="cantidad" type="double">
+            <column name="cantidad" precision="22" scale="0" not-null="true" />
+        </property>
+        <property name="precio" type="double">
+            <column name="precio" precision="22" scale="0" not-null="true" />
+        </property>
+        <property name="espHoj" type="boolean">
+            <column name="esp_hoj" not-null="true" />
+        </property>
+        <property name="espMec" type="boolean">
+            <column name="esp_mec" not-null="true" />
+        </property>
+        <property name="espSus" type="boolean">
+            <column name="esp_sus" not-null="true" />
+        </property>
+        <property name="espEle" type="boolean">
+            <column name="esp_ele" not-null="true" />
+        </property>
+        <property name="espPin" type="boolean">
+            <column name="esp_pin" not-null="true" />
+        </property>
+        <property name="tipo" type="string">
+            <column name="tipo" length="1" />
+        </property>
+    </class>
+</hibernate-mapping>

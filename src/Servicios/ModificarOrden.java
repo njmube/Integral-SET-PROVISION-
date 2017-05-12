@@ -30,9 +30,11 @@ import Compras.altaCompras;
 import Compras.avanceSurtido;
 import Compras.generaCotizacion;
 import Empleados.buscaEmpleado;
+import Hibernate.entidades.Acceso;
 import Hibernate.entidades.Agente;
 import Hibernate.entidades.Ajustador;
 import Hibernate.entidades.Empleado;
+import Hibernate.entidades.Notificacion;
 import Hibernate.entidades.Reparacion;
 import Marca.buscaMarca;
 import Tipo.buscaTipo;
@@ -59,12 +61,25 @@ import java.util.Random;
 import org.hibernate.criterion.Restrictions;
 import Integral.Herramientas;
 import Integral.HorizontalBarUI;
+import Integral.PeticionPost;
 import Integral.VerticalBarUI;
 import Operaciones.Destajo;
 import Valuacion.Autorizacion;
 import Valuacion.PreFactura;
 import Valuacion.valuacion;
 import Valuacion.valuacionDirecta;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Properties;
+import javax.mail.BodyPart;
+import javax.mail.Message;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
 /**
  *
@@ -666,7 +681,7 @@ public class ModificarOrden extends javax.swing.JPanel {
         jLabel14.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         jLabel14.setText("Edo:");
 
-        c_estado_cliente.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "AGUASCALIENTES", "BAJA CALIFORNIA", "BAJA CALIFORNIA SUR", "CAMPECHE", "CHIAPAS", "CHIHUAHUA", "COAHUILA", "COLIMA", "DISTRITO FEDERAL", "DURANGO", "ESTADO DE MEXICO", "GUANAJUATO", "GUERRERO", "HIDALGO", "JALISCO", "MICHOACAN", "MORELOS", "NAYARIT", "NUEVO LEON", "OAXACA", "PUEBLA", "QUERETARO", "QUINTANA ROO", "SAN LUIS POTOSI", "SINALOA", "SONORA", "TABASCO", "TAMAULIPAS", "TLAXCALA", "VERACRUZ", "YUCATAN", "ZACATECAS" }));
+        c_estado_cliente.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "AGUASCALIENTES", "BAJA CALIFORNIA", "BAJA CALIFORNIA SUR", "CAMPECHE", "CHIAPAS", "CHIHUAHUA", "COAHUILA", "COLIMA", "CIUDAD DE MÉXICO", "DURANGO", "ESTADO DE MÉXICO", "GUANAJUATO", "GUERRERO", "HIDALGO", "JALISCO", "MICHOACAN", "MORELOS", "NAYARIT", "NUEVO LEON", "OAXACA", "PUEBLA", "QUERETARO", "QUINTANA ROO", "SAN LUIS POTOSI", "SINALOA", "SONORA", "TABASCO", "TAMAULIPAS", "TLAXCALA", "VERACRUZ", "YUCATAN", "ZACATECAS" }));
         c_estado_cliente.setEnabled(false);
         c_estado_cliente.setNextFocusableComponent(b_guardar_cliente);
         c_estado_cliente.addActionListener(new java.awt.event.ActionListener() {
@@ -1414,7 +1429,7 @@ public class ModificarOrden extends javax.swing.JPanel {
 
         b_buscarh.setBackground(new java.awt.Color(2, 135, 242));
         b_buscarh.setForeground(new java.awt.Color(255, 255, 255));
-        b_buscarh.setText("Tecnico");
+        b_buscarh.setText("Supervisor");
         b_buscarh.setToolTipText("Consultar empleados");
         b_buscarh.setEnabled(false);
         b_buscarh.setMaximumSize(new java.awt.Dimension(32, 8));
@@ -1441,10 +1456,6 @@ public class ModificarOrden extends javax.swing.JPanel {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, p_unidadLayout.createSequentialGroup()
                         .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, p_unidadLayout.createSequentialGroup()
-                                .addComponent(b_buscarh, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(t_tecnico))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, p_unidadLayout.createSequentialGroup()
                                 .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(b_ajustador, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
                                     .addComponent(b_agente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -1466,13 +1477,19 @@ public class ModificarOrden extends javax.swing.JPanel {
                                         .addComponent(t_tipo, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(0, 0, Short.MAX_VALUE))))
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, p_unidadLayout.createSequentialGroup()
-                                .addComponent(b_fecha_interna, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(t_fecha_interna, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(b_fecha_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(t_fecha_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addGroup(p_unidadLayout.createSequentialGroup()
+                                        .addComponent(b_buscarh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(t_tecnico, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, p_unidadLayout.createSequentialGroup()
+                                        .addComponent(b_fecha_interna, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(t_fecha_interna, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(b_fecha_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(t_fecha_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addGap(0, 0, Short.MAX_VALUE)))
                         .addGap(99, 99, 99)
                         .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -3009,7 +3026,7 @@ public class ModificarOrden extends javax.swing.JPanel {
     }//GEN-LAST:event_t_economicoActionPerformed
 
     private void t_economicoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_economicoKeyTyped
-        if(t_economico.getText().length()>=5)
+        if(t_economico.getText().length()>=6)
             evt.consume();
     }//GEN-LAST:event_t_economicoKeyTyped
 
@@ -3032,6 +3049,10 @@ public class ModificarOrden extends javax.swing.JPanel {
             String mes = Integer.toString(miCalendario.get(Calendar.MONTH)+1);
             String anio = Integer.toString(miCalendario.get(Calendar.YEAR));
             t_fecha_cliente.setText(dia+"-"+mes+"-"+anio);
+            if(guardaFecha()==true)
+            {
+                JOptionPane.showMessageDialog(null, "¡Se envió notificación al cliente!");
+            }
         }
         else
             t_fecha_cliente.setText("DD-MM-AAAA");
@@ -3128,9 +3149,9 @@ public class ModificarOrden extends javax.swing.JPanel {
 
     private void t_economicoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_economicoFocusLost
         // TODO add your handling code here:
-        if(t_economico.getText().length()>5)
+        if(t_economico.getText().length()>6)
         {
-            t_economico.setText(t_economico.getText().substring(0, 5));
+            t_economico.setText(t_economico.getText().substring(0, 6));
         }
     }//GEN-LAST:event_t_economicoFocusLost
 
@@ -3529,6 +3550,80 @@ public class ModificarOrden extends javax.swing.JPanel {
     private javax.swing.JTextField t_tipo;
     // End of variables declaration//GEN-END:variables
 
+    private boolean guardaFecha()
+    {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        boolean ID = false;
+        try 
+        {
+            session.beginTransaction().begin();
+            registro = (Orden)session.get(Orden.class, Integer.parseInt(t_orden.getText()));
+            if(t_fecha_cliente.getText().compareTo("DD-MM-AAAA")!=0)
+            {
+                String [] campos = t_fecha_cliente.getText().split("-");
+
+                Calendar calendario2 = Calendar.getInstance();
+                calendario2.set(Calendar.MONTH, Integer.parseInt(campos[1])-1);
+                calendario2.set(Calendar.YEAR, Integer.parseInt(campos[2]));
+                calendario2.set(Calendar.DAY_OF_MONTH, Integer.parseInt(campos[0]));
+
+                registro.setFechaCliente(calendario2.getTime());
+            }
+            else
+                registro.setFechaCliente(null);
+            session.update(registro);
+            //*********Enviar la notificación***********
+            orden_act=(Orden)session.get(Orden.class, orden_act.getIdOrden());
+            ArrayList<Acceso> accesos=new ArrayList();
+            Acceso [] aux1 = (Acceso[])orden_act.getClientes().getAccesos().toArray(new Acceso[0]);
+            accesos.addAll(Arrays.asList(aux1));
+            aux1 = (Acceso[])orden_act.getCompania().getAccesos().toArray(new Acceso[0]);
+            accesos.addAll(Arrays.asList(aux1));
+            aux1 = (Acceso[])orden_act.getAgente().getAccesos().toArray(new Acceso[0]);
+            accesos.addAll(Arrays.asList(aux1));
+            
+            String notificaciones="{\"NOTIFICACIONES\":[";
+            for(int a=0; a<accesos.size(); a++)
+            {
+                Notificacion nueva=new Notificacion();
+                nueva.setMensaje("OT:"+orden_act.getIdOrden()+" Fecha Promesa");
+                nueva.setExtra("");
+                nueva.setIntentos(0);
+                nueva.setVisto(false);
+                nueva.setAcceso(accesos.get(a));
+                Integer id = (Integer)session.save(nueva);
+                nueva=(Notificacion)session.get(Notificacion.class, id);
+                nueva.setExtra("{\"VENTANA\":\"Solicitudes_des\",\"ID_ORDEN\":\""+orden_act.getIdOrden()+"\",\"ID_NOTIFICACION\":\""+id+"\",\"ID_USUARIO\":\""+accesos.get(a).getIdAcceso()+"\"}");
+                session.update(nueva);
+                notificaciones+="{\"ID\":\""+id+"\"}";
+                if(a+1 < accesos.size())
+                    notificaciones+=",";
+            }
+            notificaciones+="]}";
+            session.beginTransaction().commit();
+            
+            PeticionPost service=new PeticionPost("http://tracto.ddns.net:8085/integral/service/api.php");
+            service.add("METODO", "NOTIFICACION.MENSAJE");
+            service.add("NOTIFICACIONES", notificaciones);
+            System.out.println(service.getRespueta());
+            //******************************************
+            ID=true;
+        }catch (Exception he) 
+        {
+            he.printStackTrace();
+            session.getTransaction().rollback();
+            ID=false;
+        }
+        if(session!=null)
+            if(session.isOpen())
+            {
+                session.flush();
+                session.clear();
+                session.close();    
+            }
+        return ID;
+    }
+    
     private boolean guardarOrden()
     {
         Session session = HibernateUtil.getSessionFactory().openSession();
@@ -3752,7 +3847,19 @@ public class ModificarOrden extends javax.swing.JPanel {
 
                     session.update(registro);
                     session.getTransaction().commit();
+                    int valor= orden_act.getIdOrden();
                     orden_act=null;
+                    Orden aux=(Orden)session.get(Orden.class, ID);
+                    Empleado emp1=aux.getEmpleadoByRTecnico();
+                    if(emp1!=null)
+                    {
+                        emp1=(Empleado)session.get(Empleado.class, emp1.getIdEmpleado());
+                        if(emp1.getEmail()!=null)
+                        {
+                            String mensaje="<p>Asignaci&oacute;n de Orden De Taller <strong>"+valor+"</strong></p><p>Saludos. </p>";
+                            enviaCorreo("Asignaci&oacute;n OT("+valor+")", mensaje, emp1.getEmail()); 
+                        }
+                    }
                     ID=true;
                 }
             }
@@ -3772,6 +3879,18 @@ public class ModificarOrden extends javax.swing.JPanel {
                     registro.setReparacion(null);
                 session.update(registro);
                 session.getTransaction().commit();
+                int valor= orden_act.getIdOrden();
+                Orden aux=(Orden)session.get(Orden.class, valor);
+                Empleado emp1=aux.getEmpleadoByRTecnico();
+                if(emp1!=null)
+                {
+                    emp1=(Empleado)session.get(Empleado.class, emp1.getIdEmpleado());
+                    if(emp1.getEmail()!=null)
+                    {
+                        String mensaje="<p>Asignaci&oacute;n de Orden De Taller <strong>"+valor+"</strong></p><p>Saludos. </p>";
+                        enviaCorreo("Asignaci&oacute;n OT("+valor+")", mensaje, emp1.getEmail()); 
+                    }
+                }
                 ID=true;
             }
             //return ID;   
@@ -4532,4 +4651,101 @@ public class ModificarOrden extends javax.swing.JPanel {
         }
     }
 
+    
+    public void enviaCorreo(String asunto, String mensaje, String from)
+    {
+        String smtp="";
+        boolean ttl=false;
+        String puerto="";
+        String envia="";
+        String clave="";
+        //String from="";
+        String cc="";
+        String texto = null;
+        
+        try
+        {
+            FileReader f = new FileReader("correo.ml");
+            BufferedReader b = new BufferedReader(f);
+            int renglon=0;
+            while((texto = b.readLine())!=null)
+            {
+                switch(renglon)
+                {
+                    case 1://smtp
+                        smtp=texto.trim();
+                        break;
+                    case 2://ttl
+                        if(texto.compareToIgnoreCase("true")==0)
+                            ttl=true;
+                        else
+                            ttl=false;
+                        break;
+                    case 3://puerto
+                        puerto=texto.trim();
+                        break;
+                    case 4://cuenta
+                        envia=texto.trim();
+                        break;
+                    case 5://contraseña
+                        clave=texto.trim();
+                        break;
+                }
+                renglon+=1;
+            }
+            b.close();
+        }catch(Exception e){e.printStackTrace();}
+        
+        try
+        {
+            // se obtiene el objeto Session.
+            Properties props = new Properties();
+            props.put("mail.smtp.host", smtp);
+            props.setProperty("mail.smtp.starttls.enable", ""+ttl);
+            props.setProperty("mail.smtp.port", puerto);
+            props.setProperty("mail.smtp.user", envia);
+            props.setProperty("mail.smtp.auth", "true");
+
+            javax.mail.Session session = javax.mail.Session.getDefaultInstance(props, null);
+            // session.setDebug(true);
+
+            // Se compone la parte del texto
+            BodyPart texto_mensaje = new MimeBodyPart();
+            texto_mensaje.setContent(mensaje, "text/html");
+
+            // Una MultiParte para agrupar texto e imagen.
+            MimeMultipart multiParte = new MimeMultipart();
+            multiParte.addBodyPart(texto_mensaje);
+
+            // Se compone el correo, dando to, from, subject y el contenido.
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(envia));
+
+            String [] direcciones=from.split(";");
+            for(int x=0; x<direcciones.length; x++)
+            {
+                if(direcciones[x].compareTo("")!=0)
+                    message.addRecipient(Message.RecipientType.TO, new InternetAddress(direcciones[x].replace(" ","")));
+            }
+
+            String [] dirCC=cc.split(";");
+            for(int y=0; y<dirCC.length; y++)
+            {
+                if(dirCC[y].compareTo("")!=0)
+                    message.addRecipient(Message.RecipientType.CC, new InternetAddress(dirCC[y].replace(" ","")));
+            }
+
+            message.setSubject(asunto);
+            message.setContent(multiParte);
+
+            Transport t = session.getTransport("smtp");
+            t.connect(envia, clave);
+            t.sendMessage(message, message.getAllRecipients());
+            t.close();
+        }
+        catch (Exception e)
+        {
+            JOptionPane.showMessageDialog(null, "¡No se pudo enviar el correo error de red!"); 
+        }
+    }
 }

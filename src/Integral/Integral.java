@@ -97,6 +97,7 @@ import Empleados.modificaEmpleado;
 import Grupo.editaGrupo;
 import Herramientas.buscaHerramienta;
 import Herramientas.editaHerramienta;
+import Hibernate.entidades.Acceso;
 import Hibernate.entidades.Herramienta;
 import Operaciones.ResponsablesOP;
 import java.awt.AWTEvent;
@@ -118,6 +119,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.JFrame;
+import org.hibernate.criterion.Restrictions;
 
 /**
  *
@@ -2355,6 +2357,12 @@ public class Integral extends javax.swing.JFrame {
                     else
                         eCliente.t_email_receptor.setText("");
                     eCliente.cajas(true);
+                   
+                    Acceso datos = (Acceso)session.createCriteria(Acceso.class).add(Restrictions.eq("clientes.idClientes",Integer.parseInt(orden_act.getIdClientes().toString()))).setMaxResults(1).uniqueResult();
+                    if(datos!=null){
+                        eCliente.usuario.setText(datos.getIdAcceso());
+                        eCliente.contrasenia.setText(datos.getClave());
+                    }
                 }
             }
             else
@@ -3458,6 +3466,10 @@ public class Integral extends javax.swing.JFrame {
                         eEjemplar.t_comentario.setText(orden_act.getComentario());
                     else
                         eEjemplar.t_comentario.setText("");
+                    eEjemplar.medida.setSelectedItem(orden_act.getMedida());
+                    eEjemplar.t_precio.setText(orden_act.getPrecio().toString());
+                    eEjemplar.t_maximo.setText(orden_act.getMaximo().toString());
+                    eEjemplar.t_minimo.setText(orden_act.getMinimo().toString());
                 }
             }
             else
@@ -4847,18 +4859,22 @@ public class Integral extends javax.swing.JFrame {
                     eEjemplar.t_numero.setText(orden_act.getIdParte());
                     eEjemplar.NS=""+orden_act.getIdParte();
                     if(orden_act.getModelo()!=null)
-                    eEjemplar.t_modelo.setText(""+orden_act.getModelo());
+                        eEjemplar.t_modelo.setText(""+orden_act.getModelo());
                     else
-                    eEjemplar.t_modelo.setText("");
+                        eEjemplar.t_modelo.setText("");
                     if(orden_act.getMarca()!=null)
-                    eEjemplar.c_marca.setSelectedItem(""+orden_act.getMarca().getIdMarca());
+                        eEjemplar.c_marca.setSelectedItem(""+orden_act.getMarca().getIdMarca());
                     if(orden_act.getMarca()!=null)
-                    eEjemplar.c_tipo.setSelectedItem(""+orden_act.getTipo().getTipoNombre());
+                        eEjemplar.c_tipo.setSelectedItem(""+orden_act.getTipo().getTipoNombre());
                     eEjemplar.t_catalogo.setText(""+orden_act.getCatalogo());
                     if(orden_act.getComentario()!=null)
-                    eEjemplar.t_comentario.setText(orden_act.getComentario());
+                        eEjemplar.t_comentario.setText(orden_act.getComentario());
                     else
-                    eEjemplar.t_comentario.setText("");
+                        eEjemplar.t_comentario.setText("");
+                    eEjemplar.medida.setSelectedItem(orden_act.getMedida());
+                    eEjemplar.t_precio.setText(orden_act.getPrecio().toString());
+                    eEjemplar.t_maximo.setText(orden_act.getMaximo().toString());
+                    eEjemplar.t_minimo.setText(orden_act.getMinimo().toString());
                 }
             }
             else

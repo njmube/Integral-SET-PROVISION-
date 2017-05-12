@@ -251,6 +251,32 @@
         <property name="texto" type="string">
             <column name="texto" length="200" />
         </property>        
+        <property name="serieExterno" type="string">
+            <column name="serie_externo" length="3" />
+        </property>
+        <property name="folioExterno" type="java.lang.Integer">
+            <column name="folio_externo" />
+        </property>
+        <property name="Pac" type="string">
+            <column name="PAC" length="1" />
+        </property>
+        <property name="selloSat" type="string">
+            <column name="sello_sat" length="400" />
+        </property>
+        <property name="selloCfdi" type="string">
+            <column name="sello_cfdi" length="600" />
+        </property>
+        <property name="certificadoSat" type="string">
+            <column name="certificado_sat" length="25" />
+        </property>
+        <property name="certificadoEmisor" type="string">
+            <column name="certificado_emisor" length="25" />
+        </property>
+        <property name="descDeducible" type="java.lang.Double">
+            <column name="desc_deducible" precision="22" scale="0">
+                <comment>monto del deducible a descontar factura</comment>
+            </column>
+        </property>
         <set name="conceptos" table="concepto" inverse="true" lazy="true" fetch="select" cascade="all">
             <key>
                 <column name="id_factura" />

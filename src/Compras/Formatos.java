@@ -11,7 +11,9 @@ import Hibernate.entidades.Adicionales;
 import Hibernate.entidades.Concepto;
 import Hibernate.entidades.Configuracion;
 import Hibernate.entidades.Factura;
+import Hibernate.entidades.Nota;
 import Hibernate.entidades.Orden;
+import Hibernate.entidades.OrdenExterna;
 import Hibernate.entidades.Partida;
 import Hibernate.entidades.PartidaExterna;
 import Hibernate.entidades.Pedido;
@@ -38,22 +40,47 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import Integral.Herramientas;
 import Integral.PDF;
+import Integral.numeroLetra;
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Phrase;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
+
+import java.io.IOException;
+import javax.imageio.ImageIO; 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.Writer;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.itextpdf.text.Image;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.math.BigDecimal;
+import java.util.EnumMap;
 /**
  *
  * @author salvador
  */
 public class Formatos {
     
+    public static final String[] ITEMS = {
+        "Insurance system", "Agent", "Agency", "Agent Enrollment", "Agent Settings",
+        "Appointment", "Continuing Education", "Hierarchy", "Recruiting", "Contract",
+        "Message", "Correspondence", "Licensing", "Party"
+    };
     private Session session;
     Herramientas h;
     String sessionPrograma="";
     Usuario usr;
     public Orden ord;
     public Factura factura=null;
+    public Nota nota=null;
     String no_ped="";
     public Formatos(Usuario u, String ses, Orden o, String p)
     {
@@ -69,7 +96,302 @@ public class Formatos {
         usr=u;
         ord=o;
     }
+    
+    public Formatos(Usuario u, String ses, Factura f)
+    {
+        sessionPrograma=ses;
+        usr=u;
+        factura=f;
+    }
+    
+    public Formatos(Usuario u, String ses, Nota f)
+    {
+        sessionPrograma=ses;
+        usr=u;
+        nota=f;
+    }
+    
+    public void factura()
+    {
+        h=new Herramientas(usr, 0);
+        h.session(sessionPrograma);
+        session = HibernateUtil.getSessionFactory().openSession();
+        factura=(Factura)session.get(Factura.class, factura.getIdFactura());
+        
+        String ruta="";
+        try
+        {
+            ruta="";
+            FileReader f = new FileReader("config.txt");
+            BufferedReader b = new BufferedReader(f);
+            if((ruta = b.readLine())==null)
+                ruta="";
+            b.close();
+        }
+        catch(IOException e)
+        {
+            e.printStackTrace();
+        }
+        try
+        {
+            DecimalFormat formatoPorcentaje = new DecimalFormat("#,##0.00");
+            formatoPorcentaje.setMinimumFractionDigits(2);
+            BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.WINANSI, BaseFont.NOT_EMBEDDED);
 
+            PDF reporte = new PDF();
+            Date fecha = new Date();
+            DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
+            String valor=dateFormat.format(fecha);
+            File folder = new File(ruta+"xml-timbrados/");
+            folder.mkdirs();
+            String fi="xml-timbrados/"+factura.getRfcEmisor()+"_"+factura.getSerieExterno()+"_"+factura.getFolioExterno()+"_"+factura.getRfcReceptor()+".pdf";
+            reporte.Abrir(PageSize.LETTER, "Pedido", "xml-timbrados/"+factura.getRfcEmisor()+"_"+factura.getSerieExterno()+"_"+factura.getFolioExterno()+"_"+factura.getRfcReceptor()+".pdf");
+            Font font = new Font(Font.FontFamily.HELVETICA, 6, Font.BOLD);
+            BaseColor contenido=BaseColor.WHITE;
+            int centro=Element.ALIGN_CENTER;
+            int izquierda=Element.ALIGN_LEFT;
+            int derecha=Element.ALIGN_RIGHT;
+            float tam[]=new float[]{40,40,350,70,70};
+            PdfPTable tabla=reporte.crearTabla(5, tam, 100, Element.ALIGN_LEFT);
+
+            this.cabeceraFac(reporte, bf, tabla, factura);
+
+            Concepto[] concepto = (Concepto[])session.createCriteria(Concepto.class).add(Restrictions.eq("factura.idFactura", factura.getIdFactura())).addOrder(Order.asc("idConcepto")).list().toArray(new Concepto[0]);
+
+            int ren=0;
+            double total=0.0;
+            double descuento=0.0d;
+            if(concepto.length>0)
+            {
+                for(int i=0; i<concepto.length; i++)
+                {
+                    tabla.addCell(reporte.celda(""+concepto[i].getCantidad(), font, contenido, derecha, 0,1,12));
+                    tabla.addCell(reporte.celda(concepto[i].getMedida(), font, contenido, izquierda, 0,1,12));
+                    tabla.addCell(reporte.celda(concepto[i].getDescripcion().toUpperCase(), font, contenido, izquierda, 0,1,12));
+                    tabla.addCell(reporte.celda(""+formatoPorcentaje.format(concepto[i].getPrecio()), font, contenido, derecha, 0,1,12));
+                    double tot=concepto[i].getPrecio()*concepto[i].getCantidad();
+                    total+=tot;
+                    tabla.addCell(reporte.celda(""+formatoPorcentaje.format(tot), font, contenido, derecha, 0,1,12));
+                    if(concepto[i].getDescuento()>0)
+                    {
+                        double desc=concepto[i].getDescuento()/100;
+                        descuento+=tot*desc;
+                    }
+                }
+            }
+            PdfPTable tabla1=reporte.crearTabla(5, tam, 100, Element.ALIGN_LEFT);
+            tabla1.addCell(reporte.celda("Metodo de Pago:"+factura.getMetodoPago(), font, contenido, izquierda, 3,1,Rectangle.TOP));
+            tabla1.addCell(reporte.celda("TOTAL BRUTO:", font, contenido, derecha, 0,1,Rectangle.TOP+Rectangle.BOTTOM+12));
+            tabla1.addCell(reporte.celda(formatoPorcentaje.format(total), font, contenido, derecha, 0,1,Rectangle.TOP+Rectangle.BOTTOM+12));
+            tabla1.addCell(reporte.celda("Lugar de Expedición: "+factura.getMunicipioEmisor()+", "+factura.getEstadoEmisor(), font, contenido, izquierda, 3,1,Rectangle.NO_BORDER));
+            tabla1.addCell(reporte.celda("DESCUENTO(S):", font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
+            //Configuracion con=(Configuracion)session.get(Configuracion.class, 1);
+            double iva=0.0;
+            double neto=0.0;
+            double sub=total-descuento;
+            if(factura.getIva()>0){
+                iva=sub*(factura.getIva()*0.01);
+                neto=sub+iva;
+            }else{
+                neto=sub;
+            }
+            tabla1.addCell(reporte.celda(formatoPorcentaje.format(descuento), font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
+            tabla1.addCell(reporte.celda("(CANTIDAD CON LETRA)", font, contenido, izquierda, 3,1,Rectangle.NO_BORDER));
+            tabla1.addCell(reporte.celda("SUBTOTAL:", font, contenido, derecha, 0,1,Rectangle.RECTANGLE));            
+            tabla1.addCell(reporte.celda(formatoPorcentaje.format(sub), font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
+            tabla1.addCell(reporte.celda(numeroLetra.convertNumberToLetter(formatoPorcentaje.format(neto))+" M.N.", font, contenido, izquierda, 3,1,Rectangle.NO_BORDER));
+            tabla1.addCell(reporte.celda("IMPUESTOS:", font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
+            tabla1.addCell(reporte.celda(formatoPorcentaje.format(iva), font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
+            tabla1.addCell(reporte.celda("PAGO EN UNA SOLA EXHIBICIÓN", font, contenido, izquierda, 3,1,Rectangle.NO_BORDER));
+            tabla1.addCell(reporte.celda("TOTAL:", font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
+            tabla1.addCell(reporte.celda(formatoPorcentaje.format(neto), font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
+            //Deducible
+            tabla1.addCell(reporte.celda("", font, contenido, izquierda, 3,1,Rectangle.NO_BORDER));
+            tabla1.addCell(reporte.celda("DEDUCIBLE:", font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
+            double dd=0.0d, neto2=0.0d;
+            if(factura.getDescDeducible()!=null)
+                dd=factura.getDescDeducible();
+            neto2=neto-dd;
+            tabla1.addCell(reporte.celda(formatoPorcentaje.format(dd), font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
+            tabla1.addCell(reporte.celda("", font, contenido, izquierda, 3,1,Rectangle.NO_BORDER));
+            tabla1.addCell(reporte.celda("TOTAL NETO:", font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
+            tabla1.addCell(reporte.celda(formatoPorcentaje.format(neto2), font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
+            
+            tabla1.addCell(reporte.celda("", font, contenido, izquierda, 3,1,Rectangle.NO_BORDER));
+            tabla1.addCell(reporte.celda("EFECTOS FISCALES AL PAGO", font, contenido, centro, 2,1,Rectangle.NO_BORDER));
+            session.beginTransaction().rollback();
+
+            tabla.setHeaderRows(2);
+            reporte.agregaObjeto(tabla);
+            float tam1[]=new float[]{190,180,180,170};
+            PdfPTable tabla2=reporte.crearTabla(4, tam1, 100, Element.ALIGN_LEFT);
+            //Codigo RQ********
+            BigDecimal numero= new BigDecimal(neto);
+            System.out.println("?re="+factura.getRfcEmisor()+"&rr="+factura.getRfcReceptor()+"&tt="+formatoPorcentaje.format(neto)+"0000&id="+factura.getFFiscal());
+            BufferedImage bufferedImage=createQR("?re="+factura.getRfcEmisor()+"&rr="+factura.getRfcReceptor()+"&tt="+formatoPorcentaje.format(neto)+"0000&id="+factura.getFFiscal());
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(bufferedImage, "png", baos);
+            Image iTextImage = Image.getInstance(baos.toByteArray());
+            tabla2.addCell(reporte.celda(iTextImage, contenido, centro, 0,9,Rectangle.NO_BORDER));
+            //******************
+            tabla2.addCell(reporte.celda("Regimen Fiscal:REGIMEN GENERAL DE LEY DE PERSONAS MORALES", font, contenido, centro, 3,1,Rectangle.BOTTOM));
+            tabla2.addCell(reporte.celda("NÚMERO DE SERIE DEL CERTIFICADO DEL SAT:"+factura.getCertificadoSat(), font, contenido, izquierda, 3,1,12));
+            tabla2.addCell(reporte.celda("NÚMERO DE SERIE DEL CSD DEL EMISOR:"+factura.getCertificadoEmisor(), font, contenido, izquierda, 3,1,12));
+            tabla2.addCell(reporte.celda("SELLO DIGITAL DEL SAT:", font, contenido, izquierda, 3,1,12));
+            if(factura.getSelloSat()!=null)
+                tabla2.addCell(reporte.celda(factura.getSelloSat(), font, contenido, izquierda, 3,1,12));
+            tabla2.addCell(reporte.celda("SELLO DIGITAL DEL CFDI:", font, contenido, izquierda, 3,1,12));
+            tabla2.addCell(reporte.celda(factura.getSelloCfdi(), font, contenido, izquierda, 3,1,12));
+            tabla2.addCell(reporte.celda("CADENA ORIGINAL DEL COMPLEMENTO DE CERTIFICACIÓN DIGITAL DEL SAT:", font, contenido, izquierda, 3,1,12));
+            tabla2.addCell(reporte.celda("||1.0|"+factura.getFFiscal()+"|"+factura.getFechaFiscal().substring(0, 19)+"|"+factura.getSelloCfdi()+"|"+factura.getCertificadoSat()+"||", font, contenido, izquierda, 3,1,12));
+            tabla2.addCell(reporte.celda("Este documento es una representación impresa de un CFDI", font, contenido, izquierda, 2,1,Rectangle.TOP));
+            if(factura.getPac().compareTo("F")==0)
+                tabla2.addCell(reporte.celda("CFDI emitido por Finkok S.A. de C.V. Proveedor Autorizado de Certificación (PAC)10852", font, contenido, izquierda, 2,1,Rectangle.TOP));
+            else
+                tabla2.addCell(reporte.celda("CFDI emitido por MySuite Services S.A. de C.V. Proveedor. Autorizado. de Cert.(55270)", font, contenido, izquierda, 2,1,Rectangle.TOP));
+            tabla2.setKeepTogether(true);
+            reporte.agregaObjeto(tabla1);
+            reporte.agregaObjeto(tabla2);
+            reporte.cerrar();
+            reporte.visualizar(fi);
+
+        }catch(Exception e)
+        {
+            System.out.println(e);
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "No se pudo realizar el reporte si el archivo esta abierto.");
+        }
+    }
+    
+    public void nota()
+    {
+        h=new Herramientas(usr, 0);
+        h.session(sessionPrograma);
+        session = HibernateUtil.getSessionFactory().openSession();
+        nota=(Nota)session.get(Nota.class, nota.getIdNota());
+        
+        String ruta="";
+        try
+        {
+            ruta="";
+            FileReader f = new FileReader("config.txt");
+            BufferedReader b = new BufferedReader(f);
+            if((ruta = b.readLine())==null)
+                ruta="";
+            b.close();
+        }
+        catch(IOException e)
+        {
+            e.printStackTrace();
+        }
+        try
+        {
+            DecimalFormat formatoPorcentaje = new DecimalFormat("#,##0.00");
+            formatoPorcentaje.setMinimumFractionDigits(2);
+            BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.WINANSI, BaseFont.NOT_EMBEDDED);
+
+            PDF reporte = new PDF();
+            Date fecha = new Date();
+            DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
+            String valor=dateFormat.format(fecha);
+            File folder = new File(ruta+"xml-timbrados/");
+            folder.mkdirs();
+            String fi="xml-timbrados/"+nota.getRfcEmisor()+"_"+nota.getSerieExterno()+"_"+nota.getFolioExterno()+"_"+nota.getRfcReceptor()+".pdf";
+            reporte.Abrir(PageSize.LETTER, "Pedido", "xml-timbrados/"+nota.getRfcEmisor()+"_"+nota.getSerieExterno()+"_"+nota.getFolioExterno()+"_"+nota.getRfcReceptor()+".pdf");
+            Font font = new Font(Font.FontFamily.HELVETICA, 6, Font.BOLD);
+            BaseColor contenido=BaseColor.WHITE;
+            int centro=Element.ALIGN_CENTER;
+            int izquierda=Element.ALIGN_LEFT;
+            int derecha=Element.ALIGN_RIGHT;
+            float tam[]=new float[]{40,40,350,70,70};
+            PdfPTable tabla=reporte.crearTabla(5, tam, 100, Element.ALIGN_LEFT);
+
+            this.cabeceraNot(reporte, bf, tabla, nota);
+
+            Concepto[] concepto = (Concepto[])session.createCriteria(Concepto.class).add(Restrictions.eq("nota.idNota", nota.getIdNota())).addOrder(Order.asc("idConcepto")).list().toArray(new Concepto[0]);
+
+            int ren=0;
+            double total=0.0;
+            double descuento=0.0d;
+            if(concepto.length>0)
+            {
+                for(int i=0; i<concepto.length; i++)
+                {
+                    tabla.addCell(reporte.celda(""+concepto[i].getCantidad(), font, contenido, derecha, 0,1,12));
+                    tabla.addCell(reporte.celda(concepto[i].getMedida(), font, contenido, izquierda, 0,1,12));
+                    tabla.addCell(reporte.celda(concepto[i].getDescripcion().toUpperCase(), font, contenido, izquierda, 0,1,12));
+                    tabla.addCell(reporte.celda(""+formatoPorcentaje.format(concepto[i].getPrecio()), font, contenido, derecha, 0,1,12));
+                    double tot=concepto[i].getPrecio()*concepto[i].getCantidad();
+                    total+=tot;
+                    tabla.addCell(reporte.celda(""+formatoPorcentaje.format(tot), font, contenido, derecha, 0,1,12));
+                    if(concepto[i].getDescuento()>0)
+                    {
+                        double desc=concepto[i].getDescuento()/100;
+                        descuento+=tot*desc;
+                    }
+                }
+            }
+            PdfPTable tabla1=reporte.crearTabla(5, tam, 100, Element.ALIGN_LEFT);
+            tabla1.addCell(reporte.celda("Metodo de Pago:"+nota.getMetodoPago(), font, contenido, izquierda, 3,1,Rectangle.TOP));
+            tabla1.addCell(reporte.celda("SUBTOTAL BRUTO:", font, contenido, derecha, 0,1,Rectangle.TOP+Rectangle.BOTTOM+12));
+            tabla1.addCell(reporte.celda(formatoPorcentaje.format(total), font, contenido, derecha, 0,1,Rectangle.TOP+Rectangle.BOTTOM+12));
+            tabla1.addCell(reporte.celda("Lugar de Expedición: "+nota.getMunicipioEmisor()+", "+nota.getEstadoEmisor(), font, contenido, izquierda, 3,1,Rectangle.NO_BORDER));
+            tabla1.addCell(reporte.celda("DESCUENTO(S):", font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
+            Configuracion con=(Configuracion)session.get(Configuracion.class, 1);
+            double sub=total-descuento;
+            double iva=sub*(con.getIva()*0.01);
+            double neto=sub+iva;
+            tabla1.addCell(reporte.celda(formatoPorcentaje.format(descuento), font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
+            tabla1.addCell(reporte.celda("(CANTIDAD CON LETRA)", font, contenido, izquierda, 3,1,Rectangle.NO_BORDER));
+            tabla1.addCell(reporte.celda("SUBTOTAL:", font, contenido, derecha, 0,1,Rectangle.RECTANGLE));            
+            tabla1.addCell(reporte.celda(formatoPorcentaje.format(sub), font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
+            tabla1.addCell(reporte.celda(numeroLetra.convertNumberToLetter(formatoPorcentaje.format(neto))+" M.N.", font, contenido, izquierda, 3,1,Rectangle.NO_BORDER));
+            tabla1.addCell(reporte.celda("IMPUESTOS:", font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
+            tabla1.addCell(reporte.celda(formatoPorcentaje.format(iva), font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
+            tabla1.addCell(reporte.celda("", font, contenido, izquierda, 3,2,Rectangle.NO_BORDER));
+            tabla1.addCell(reporte.celda("TOTAL", font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
+            tabla1.addCell(reporte.celda(formatoPorcentaje.format(neto), font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
+            tabla1.addCell(reporte.celda("PAGO EN UNA SOLA EXHIBICIóN", font, contenido, izquierda, 3,1,Rectangle.NO_BORDER));
+            tabla1.addCell(reporte.celda("EFECTOS FISCALES AL PAGO", font, contenido, centro, 2,1,Rectangle.NO_BORDER));
+            session.beginTransaction().rollback();
+
+            tabla.setHeaderRows(2);
+            reporte.agregaObjeto(tabla);
+            float tam1[]=new float[]{190,180,180,170};
+            PdfPTable tabla2=reporte.crearTabla(4, tam1, 100, Element.ALIGN_LEFT);
+            //Codigo RQ********
+            BigDecimal numero= new BigDecimal(neto);
+            BufferedImage bufferedImage=createQR("?re="+nota.getRfcEmisor()+"&rr="+nota.getRfcReceptor()+"&tt="+formatoPorcentaje.format(neto)+"0000&id="+nota.getFFiscal());
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(bufferedImage, "png", baos);
+            Image iTextImage = Image.getInstance(baos.toByteArray());
+            tabla2.addCell(reporte.celda(iTextImage, contenido, centro, 0,9,Rectangle.NO_BORDER));
+            //******************
+            tabla2.addCell(reporte.celda("Regimen Fiscal:REGIMEN GENERAL DE LEY DE PERSONAS MORALES", font, contenido, centro, 3,1,Rectangle.BOTTOM));
+            tabla2.addCell(reporte.celda("NÚMERO DE SERIE DEL CERTIFICADO DEL SAT:"+nota.getCertificadoSat(), font, contenido, izquierda, 3,1,12));
+            tabla2.addCell(reporte.celda("NÚMERO DE SERIE DEL CSD DEL EMISOR:"+nota.getCertificadoEmisor(), font, contenido, izquierda, 3,1,12));
+            tabla2.addCell(reporte.celda("SELLO DIGITAL DEL SAT:", font, contenido, izquierda, 3,1,12));
+            tabla2.addCell(reporte.celda(nota.getSelloSat(), font, contenido, izquierda, 3,1,12));
+            tabla2.addCell(reporte.celda("SELLO DIGITAL DEL CFDI:", font, contenido, izquierda, 3,1,12));
+            tabla2.addCell(reporte.celda(nota.getSelloCfdi(), font, contenido, izquierda, 3,1,12));
+            tabla2.addCell(reporte.celda("CADENA ORIGINAL DEL COMPLEMENTO DE CERTIFICACIÓN DIGITAL DEL SAT:", font, contenido, izquierda, 3,1,12));
+            tabla2.addCell(reporte.celda("||1.0|"+nota.getFFiscal()+"|"+nota.getFFiscal()+"|"+nota.getSelloCfdi()+"|"+nota.getCertificadoSat()+"||", font, contenido, izquierda, 3,1,12));
+            tabla2.addCell(reporte.celda("Este documento es una representación impresa de un CFDI", font, contenido, izquierda, 2,1,Rectangle.TOP));
+            tabla2.addCell(reporte.celda("CFDI emitido por Finkok S.A. de C.V. Proveedor Autorizado de Certificación (PAC)10852", font, contenido, izquierda, 2,1,Rectangle.TOP));
+            
+            reporte.agregaObjeto(tabla1);
+            reporte.agregaObjeto(tabla2);
+            reporte.cerrar();
+            reporte.visualizar(fi);
+
+        }catch(Exception e)
+        {
+            System.out.println(e);
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "No se pudo realizar el reporte si el archivo esta abierto.");
+        }
+    }
+    
     public void prefactura()
     {
         h=new Herramientas(usr, 0);
@@ -246,10 +568,11 @@ public class Formatos {
             Pedido ped = (Pedido)session.get(Pedido.class, Integer.parseInt(this.no_ped));
             if(/*ped.getUsuarioByAutorizo()!=null &&*/ ped.getUsuarioByAutorizo2()!=null)
             {
-                reporte.estatusAutoriza(/*ped.getUsuarioByAutorizo().getEmpleado().getNombre()*/"", ped.getUsuarioByAutorizo2().getEmpleado().getNombre());
+                //reporte.estatusAutoriza(/*ped.getUsuarioByAutorizo().getEmpleado().getNombre()*/"", ped.getUsuarioByAutorizo2().getEmpleado().getNombre());
+                reporte.estatusAutoriza(ped.getEmpleado().getNombre(), ped.getUsuarioByAutorizo2().getEmpleado().getNombre());
             }
             else
-                reporte.estatusAutoriza("","       NO AUTORIZADO");
+                reporte.estatusAutoriza(ped.getEmpleado().getNombre(),"       NO AUTORIZADO");
             cabecera(reporte, bf, tabla, ped);
 
             Partida[] cuentas =(Partida[]) session.createCriteria(Partida.class).add(Restrictions.eq("ordenByIdOrden.idOrden", ord.getIdOrden())).add(Restrictions.eq("pedido.idPedido", Integer.parseInt(no_ped))).addOrder(Order.asc("idEvaluacion")).addOrder(Order.asc("subPartida")).list().toArray(new Partida[0]);
@@ -370,10 +693,10 @@ public class Formatos {
 
                 if(/*ped.getUsuarioByAutorizo()!=null &&*/ ped.getUsuarioByAutorizo2()!=null)
                 {
-                    reporte.estatusAutoriza(/*ped.getUsuarioByAutorizo().getEmpleado().getNombre()*/"", ped.getUsuarioByAutorizo2().getEmpleado().getNombre());
+                    reporte.estatusAutoriza(ped.getEmpleado().getNombre(), ped.getUsuarioByAutorizo2().getEmpleado().getNombre());
                 }
                 else
-                    reporte.estatusAutoriza("","       NO AUTORIZADO");
+                    reporte.estatusAutoriza(ped.getEmpleado().getNombre(),"       NO AUTORIZADO");
                 cabecera(reporte, bf, tabla, ped);
 
                 PartidaExterna[] cuentas =(PartidaExterna[]) session.createCriteria(PartidaExterna.class).
@@ -489,10 +812,10 @@ public class Formatos {
                 Pedido ped = (Pedido)session.get(Pedido.class, Integer.parseInt(no_ped));
                 if(/*ped.getUsuarioByAutorizo()!=null &&*/ ped.getUsuarioByAutorizo2()!=null)
                 {
-                    reporte.estatusAutoriza(/*ped.getUsuarioByAutorizo().getEmpleado().getNombre()*/"", ped.getUsuarioByAutorizo2().getEmpleado().getNombre());
+                    reporte.estatusAutoriza(ped.getEmpleado().getNombre(), ped.getUsuarioByAutorizo2().getEmpleado().getNombre());
                 }
                 else
-                    reporte.estatusAutoriza("","       NO AUTORIZADO");
+                    reporte.estatusAutoriza(ped.getEmpleado().getNombre(),"       NO AUTORIZADO");
                 cabeceraCompra(reporte, bf, tabla, ped);
 
                 Partida[] cuentas =(Partida[]) session.createCriteria(Partida.class).add(Restrictions.eq("ordenByIdOrden.idOrden", ord.getIdOrden())).add(Restrictions.eq("pedido.idPedido", Integer.parseInt(no_ped))).addOrder(Order.asc("idEvaluacion")).addOrder(Order.asc("subPartida")).list().toArray(new Partida[0]);
@@ -606,7 +929,7 @@ public class Formatos {
                 PdfPTable tabla=reporte.crearTabla(7, tam, 100, Element.ALIGN_LEFT);
 
                 Pedido ped = (Pedido)session.get(Pedido.class, Integer.parseInt(no_ped));
-                reporte.estatusAutoriza("","");
+                reporte.estatusAutoriza(ped.getEmpleado().getNombre(),"");
                 cabeceraCompraDCG(reporte, bf, tabla, ped, tipo);
 
                 Partida[] cuentas =(Partida[]) session.createCriteria(Partida.class).add(Restrictions.eq("ordenByIdOrden.idOrden", ord.getIdOrden())).add(Restrictions.eq("pedido.idPedido", Integer.parseInt(no_ped))).addOrder(Order.asc("idEvaluacion")).addOrder(Order.asc("subPartida")).list().toArray(new Partida[0]);
@@ -721,7 +1044,7 @@ public class Formatos {
 
                 Pedido ped = (Pedido)session.get(Pedido.class, pedido);
                 
-                reporte.estatusAutoriza("","");
+                reporte.estatusAutoriza(ped.getEmpleado().getNombre(),"");
                 if(/*ped.getUsuarioByAutorizo()!=null &&*/ ped.getUsuarioByAutorizo2()!=null)
                 {
                     reporte.estatusAutoriza(/*ped.getUsuarioByAutorizo().getEmpleado().getNombre()*/"", ped.getUsuarioByAutorizo2().getEmpleado().getNombre());
@@ -833,10 +1156,10 @@ public class Formatos {
                 
                 if(/*ped.getUsuarioByAutorizo()!=null &&*/ ped.getUsuarioByAutorizo2()!=null)
                 {
-                    reporte.estatusAutoriza(/*ped.getUsuarioByAutorizo().getEmpleado().getNombre()*/"", ped.getUsuarioByAutorizo2().getEmpleado().getNombre());
+                    reporte.estatusAutoriza(ped.getEmpleado().getNombre(), ped.getUsuarioByAutorizo2().getEmpleado().getNombre());
                 }
                 else
-                    reporte.estatusAutoriza("","       NO AUTORIZADO");
+                    reporte.estatusAutoriza(ped.getEmpleado().getNombre(),"       NO AUTORIZADO");
                 if(ped.getTipoPedido().compareToIgnoreCase("Externo")==0 || ped.getTipoPedido().compareToIgnoreCase("Inventario")==0)
                     cabeceraCompraEx(reporte, bf, tabla, ped);
                 if(ped.getTipoPedido().compareToIgnoreCase("Adicional")==0)
@@ -1818,172 +2141,178 @@ public class Formatos {
     }
     
     
-    public void factura()
+    private void cabeceraFac(PDF reporte, BaseFont bf, PdfPTable tabla, Factura fac) throws DocumentException, IOException
     {
-        h=new Herramientas(usr, 0);
-        h.session(sessionPrograma);
-        session = HibernateUtil.getSessionFactory().openSession();
-        factura=(Factura)session.get(Factura.class, factura.getIdFactura());
-        
-        String ruta="";
-        try
-        {
-            ruta="";
-            FileReader f = new FileReader("config.txt");
-            BufferedReader b = new BufferedReader(f);
-            if((ruta = b.readLine())==null)
-                ruta="";
-            b.close();
-        }
-        catch(IOException e)
-        {
-            e.printStackTrace();
-        }
-        try
-        {
-            DecimalFormat formatoPorcentaje = new DecimalFormat("#,##0.000");
-            formatoPorcentaje.setMinimumFractionDigits(2);
-            BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.WINANSI, BaseFont.NOT_EMBEDDED);
-
-            PDF reporte = new PDF();
-            Date fecha = new Date();
-            DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
-            String valor=dateFormat.format(fecha);
-            File folder = new File(ruta+"xml-timbrados/");
-            folder.mkdirs();
-            String fi="xml-timbrados/"+factura.getRfcEmisor()+"_"+factura.getSerie()+"_"+factura.getFolio()+"_"+factura.getRfcReceptor()+".pdf";
-            reporte.Abrir(PageSize.LETTER, "Pedido", "xml-timbrados/"+factura.getRfcEmisor()+"_"+factura.getSerie()+"_"+factura.getFolio()+"_"+factura.getRfcReceptor()+".pdf");
-            Font font = new Font(Font.FontFamily.HELVETICA, 6, Font.BOLD);
-            BaseColor contenido=BaseColor.WHITE;
-            int centro=Element.ALIGN_CENTER;
-            int izquierda=Element.ALIGN_LEFT;
-            int derecha=Element.ALIGN_RIGHT;
-            float tam[]=new float[]{40,40,350,70,70};
-            PdfPTable tabla=reporte.crearTabla(5, tam, 100, Element.ALIGN_LEFT);
-
-            this.cabeceraFac(reporte, bf, tabla, factura);
-
-            Concepto[] concepto = (Concepto[])session.createCriteria(Concepto.class).add(Restrictions.eq("factura.idFactura", factura.getIdFactura())).addOrder(Order.asc("idConcepto")).list().toArray(new Concepto[0]);
-
-            int ren=0;
-            double total=0.0;
-            if(concepto.length>0)
-            {
-                for(int i=0; i<concepto.length; i++)
-                {
-                    tabla.addCell(reporte.celda(""+concepto[i].getCantidad(), font, contenido, derecha, 0,1,12));
-                    tabla.addCell(reporte.celda(concepto[i].getMedida(), font, contenido, izquierda, 0,1,12));
-                    tabla.addCell(reporte.celda(concepto[i].getDescripcion().toUpperCase(), font, contenido, izquierda, 0,1,12));
-                    tabla.addCell(reporte.celda(""+formatoPorcentaje.format(concepto[i].getPrecio()), font, contenido, derecha, 0,1,12));
-                    double tot=concepto[i].getPrecio()*concepto[i].getCantidad();
-                    total+=tot;
-                    tabla.addCell(reporte.celda(""+formatoPorcentaje.format(tot), font, contenido, derecha, 0,1,12));
-                }
-            }
-            PdfPTable tabla1=reporte.crearTabla(5, tam, 100, Element.ALIGN_LEFT);
-            tabla1.addCell(reporte.celda("Metodo de Pago:"+factura.getMetodoPago(), font, contenido, izquierda, 3,1,Rectangle.TOP));
-            tabla1.addCell(reporte.celda("SUB-TOTAL:", font, contenido, derecha, 0,1,Rectangle.TOP+Rectangle.BOTTOM+12));
-            tabla1.addCell(reporte.celda(formatoPorcentaje.format(total), font, contenido, derecha, 0,1,Rectangle.TOP+Rectangle.BOTTOM+12));
-            tabla1.addCell(reporte.celda("Lugar de Expedición: "+factura.getMunicipioEmisor()+", "+factura.getEstadoEmisor(), font, contenido, izquierda, 3,1,Rectangle.NO_BORDER));
-            tabla1.addCell(reporte.celda("IVA:", font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
-            Configuracion con=(Configuracion)session.get(Configuracion.class, 1);
-            double iva=total*(con.getIva()*0.01);
-            tabla1.addCell(reporte.celda(formatoPorcentaje.format(iva), font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
-            tabla1.addCell(reporte.celda("(CANTIDAD CON LETRA)", font, contenido, izquierda, 3,2,Rectangle.NO_BORDER));
-            tabla1.addCell(reporte.celda("DEDUCIBLE:", font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
-            tabla1.addCell(reporte.celda(""+factura.getDeducible(), font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
-            tabla1.addCell(reporte.celda("TOTAL:", font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
-            total+=iva;
-            tabla1.addCell(reporte.celda(formatoPorcentaje.format(total), font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
-            tabla1.addCell(reporte.celda("PAGO EN UNA SOLA EXHIBICIóN", font, contenido, izquierda, 3,1,Rectangle.NO_BORDER));
-            tabla1.addCell(reporte.celda("EFECTOS FISCALES AL PAGO", font, contenido, centro, 2,1,Rectangle.NO_BORDER));
-            session.beginTransaction().rollback();
-
-            tabla.setHeaderRows(2);
-            reporte.agregaObjeto(tabla);
-            float tam1[]=new float[]{180,180,180,180};
-            PdfPTable tabla2=reporte.crearTabla(4, tam1, 100, Element.ALIGN_LEFT);
-            tabla2.addCell(reporte.celda(reporte.Imagen("imagenes/rq.png"), contenido, centro, 0,8,Rectangle.NO_BORDER));
-            tabla2.addCell(reporte.celda("Regimen Fiscal:REGIMEN GENERAL DE LEY DE PERSONAS MORALES", font, contenido, centro, 3,1,Rectangle.BOTTOM));
-            tabla2.addCell(reporte.celda("Sello Digital del SAT:", font, contenido, izquierda, 3,1,12));
-            tabla2.addCell(reporte.celda(" ", font, contenido, izquierda, 3,1,12));
-            tabla2.addCell(reporte.celda("Sello Digital del Emisor:", font, contenido, izquierda, 3,1,12));
-            tabla2.addCell(reporte.celda(" ", font, contenido, izquierda, 3,1,12));
-            tabla2.addCell(reporte.celda("Cadena original del complemento de certificación digital del SAT:", font, contenido, izquierda, 3,1,12));
-            tabla2.addCell(reporte.celda(" ", font, contenido, izquierda, 3,1,12));
-            tabla2.addCell(reporte.celda("Este documento es una representación impresa de un CFDI", font, contenido, izquierda, 3,1,Rectangle.TOP));
-            
-            reporte.agregaObjeto(tabla1);
-            reporte.agregaObjeto(tabla2);
-            reporte.cerrar();
-            reporte.visualizar(fi);
-
-        }catch(Exception e)
-        {
-            System.out.println(e);
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "No se pudo realizar el reporte si el archivo esta abierto.");
-        }
-    }
-    
-    private void cabeceraFac(PDF reporte, BaseFont bf, PdfPTable tabla, Factura fac)
-    {
+        BaseFont negrita = BaseFont.createFont(BaseFont.HELVETICA_BOLD, BaseFont.WINANSI, BaseFont.NOT_EMBEDDED);
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");//YYYY-MM-DD HH:MM:SS
         reporte.contenido.setLineWidth(0.5f);
         reporte.contenido.setColorFill(new GrayColor(0.9f));
-        reporte.contenido.roundRectangle(35, 660, 543, 40, 5);//cuadro cliente
-        reporte.contenido.roundRectangle(35, 618, 543, 40, 5);//cuadro unidad
+        reporte.contenido.roundRectangle(35, 648, 543, 12, 0);//encabezado cliente
+        reporte.contenido.roundRectangle(35, 608, 543, 40, 0);//cuadro cliente
+        reporte.contenido.roundRectangle(35, 588, 543, 12, 0);//encabezado unidad
+        reporte.contenido.roundRectangle(35, 548, 543, 40, 0);//cuadro unidad
         
-        reporte.contenido.roundRectangle(353, 738, 223, 10, 0);//cuadro fecha
-        reporte.contenido.roundRectangle(353, 728, 223, 10, 0);//cuadro F.Fiscal
-        reporte.contenido.roundRectangle(353, 718, 223, 10, 0);//cuadro C. SAT
-        reporte.contenido.roundRectangle(353, 708, 223, 10, 0);//cuadro C. Emisor
+        reporte.contenido.roundRectangle(353, 757, 223, 18, 0);//cuadro fecha
+        /*reporte.contenido.roundRectangle(353, 728, 223, 10, 0);//cuadro F.Fiscal
+        reporte.contenido.roundRectangle(353, 718, 223, 10, 0);//cuadro C. SAT*/
+        reporte.contenido.roundRectangle(353, 670, 223, 87, 0);//cuadro C. Emisor
 
-        Configuracion con= (Configuracion)session.get(Configuracion.class, 1);
+        //Configuracion con= (Configuracion)session.get(Configuracion.class, 1);
         
         reporte.inicioTexto();
-        reporte.agregaObjeto(reporte.crearImagen("imagenes/factura300115.jpg", 00, -32, 40));
-        reporte.contenido.setFontAndSize(bf, 10);
+        if(factura.getRfcEmisor().compareTo("SET0806255W2")==0)
+            reporte.agregaObjeto(reporte.crearImagen("imagenes/empresa3666.jpg", 00, -75, 40));
+        else
+            reporte.agregaObjeto(reporte.crearImagen("imagenes/tbs.jpg", 00, -75, 40));
+        
+        //****************Datos de Emisor
+        reporte.contenido.setFontAndSize(negrita, 8);
         reporte.contenido.setColorFill(BaseColor.BLACK);
-        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_CENTER, "FACTURA", 520, 765, 0);
-        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_CENTER, fac.getFolio(), 520, 755, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, fac.getNombreEmisor(), 120, 765, 0);
         reporte.contenido.setFontAndSize(bf, 8);
-        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "Fecha:", 425, 740, 0);
-        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, fac.getFechaFiscal()/*new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date())*/, 430, 740, 0);
-        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "Folio Fiscal:", 425, 730, 0);
-        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT,fac.getFFiscal(), 430, 730, 0);
-        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "Certificado SAT:", 425, 720, 0);
-        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "Certificado Emisor:", 425, 710, 0);
-        reporte.contenido.setFontAndSize(bf, 6);
-        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "2a. DE LA CADENA S/N COL. SAN PEDRO TOTOLTEPEC MEXICO CP 50200", 40, 702, 0);
-        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "Tel. (01 722) 199-24- 04", 570, 702, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "RFC: "+fac.getRfcEmisor(), 120, 755, 0);
+        
+        reporte.contenido.setFontAndSize(negrita, 8);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "DOMICILIO FISCAL ", 120, 740, 0);
+        reporte.contenido.setFontAndSize(bf, 8);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, fac.getCalleEmisor()+" "+fac.getNumeroExteriorEmisor(), 120, 730, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, fac.getColoniaEmisor()+", "+fac.getMunicipioEmisor(), 120, 720, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, fac.getEstadoEmisor()+", "+fac.getPaisEmisor()+" "+fac.getCpEmisor(), 120, 710, 0);
+        
+        reporte.contenido.setFontAndSize(negrita, 8);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "LUGAR Y FECHA DE EXPEDICIÓN", 120, 695, 0);
+        reporte.contenido.setFontAndSize(bf, 8);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "TOLUCA, Estado de México.", 120, 685, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, dateFormat.format(fac.getFecha()), 120, 675, 0);
+        
+        reporte.contenido.setFontAndSize(negrita, 8);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "FACTURA", 440, 764, 0);
+        reporte.contenido.setFontAndSize(bf, 7);
+        if(fac.getFolio()!=null)
+        {
+            reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "FOLIO:"+fac.getFolio(), 360, 745, 0);
+            reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "SERIE:"+fac.getSerie(), 470, 745, 0);
+        }
+        else
+        {
+            reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "FOLIO: "+fac.getFolioExterno(), 360, 745, 0);
+            reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "SERIE: "+fac.getSerieExterno(), 470, 745, 0);
+        }
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "FOLIO FISCAL: "+fac.getFFiscal(), 360, 735, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "FECHA CERTIFICACIÓN: "+fac.getFechaFiscal().substring(0, 19), 360, 725, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "MÉTODO DE PAGO: "+fac.getMetodoPago(), 360, 715, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "N° CTA. DE PAGO: "+fac.getCuentaPago(), 360, 705, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "TIPO DE COMPROBANTE: ingreso", 360, 695, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "NÚMERO INTERNO: "+fac.getIdFactura(), 360, 685, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "RÉG.FIS: REGIMEN GENERAL DE LEY DE PERSONAS MORALES", 360, 675, 0);
         
         reporte.contenido.setFontAndSize(bf, 8);
         //************************datos del cliente****************************
-        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");//YYYY-MM-DD HH:MM:SS
-        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "Cliente: "+fac.getNombreReceptor(), 80, 692, 0);
-        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, fac.getNombreReceptor(), 85, 692, 0);
-        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "Direccion: ", 80, 682, 0);
-        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, fac.getCalleReceptor()+" "+fac.getNumeroExteriorReceptor()+" Col:"+fac.getColoniaReceptor(), 85, 682, 0);
-        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "Ciudad: ", 80, 672, 0);
-        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, fac.getMunicipioReceptor()+" "+fac.getMunicipioReceptor(), 85, 672, 0);
-        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "R.F.C.: ", 80, 662, 0);
-        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, fac.getRfcReceptor(), 85, 662, 0);
+        DateFormat dateFormat1 = new SimpleDateFormat("dd-MM-yyyy");//YYYY-MM-DD HH:MM:SS
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "NOMBRE: "+fac.getNombreReceptor(), 40, 635, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "RFC: "+fac.getRfcReceptor(), 400, 635, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "DOMICILIO FISCAL:    CALLE "+fac.getCalleReceptor()+" "+fac.getNumeroExteriorReceptor()+" COL. "+fac.getColoniaReceptor(), 40, 625, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "MPIO./DEL. "+fac.getMunicipioReceptor()+" ESTADO "+fac.getEstadoReceptor()+" pais "+fac.getPaisReceptor()+" CP "+fac.getCpReceptor(), 120, 615, 0);
         
         //**********************datos de la unidad*****************************
-        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "Marca: ", 80, 650, 0);
-        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "Tipo: ", 80, 640, 0);
-        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "No. Serie: ", 80, 630, 0);
-        //reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "asegurado: ", 80, 620, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "MARCA: ", 80, 580, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "TIPO: ", 80, 570, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "NO.SERIE: ", 80, 560, 0);
+        //reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "ORDEN: ", 80, 550, 0);
         
-        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "Modelo: ", 350, 650, 0);
-        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "Placas: ", 350, 640, 0);
-        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "Poliza: ", 350, 630, 0);
-        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "Km: ", 350, 620, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "MODELO: ", 350, 580, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "PLACAS: ", 350, 570, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "POLIZA: ", 350, 560, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "KM: ", 350, 550, 0);
         
-        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "Sinisestro: ", 490, 650, 0);
-        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "INC: ", 490, 640, 0);
-        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "Reporte: ", 490, 630, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "SINIESTRO: ", 490, 580, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "INC: ", 490, 570, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "REPORTE: ", 490, 560, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "COLOR: ", 490, 550, 0);
 
+        if(fac.getOrden()!=null)
+        {
+            Orden ord=fac.getOrden();
+            if(ord.getMarca()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ord.getMarca().getMarcaNombre(), 80, 580, 0);
+            if(ord.getTipo()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ord.getTipo().getTipoNombre(), 80, 570, 0);
+            if(ord.getNoSerie()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ord.getNoSerie(), 80, 560, 0);
+            reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ""+ord.getIdOrden(), 80, 550, 0);
+
+            if(ord.getModelo()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ""+ord.getModelo(), 350, 580, 0);
+            if(ord.getNoPlacas()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ord.getNoPlacas(), 350, 570, 0);
+            if(ord.getPoliza()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ord.getPoliza(), 350, 560, 0);
+            if(ord.getKm()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ord.getKm(), 350, 550, 0);
+
+            if(ord.getSiniestro()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ord.getSiniestro(), 490, 580, 0);
+            if(ord.getInciso()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ord.getInciso(), 490, 570, 0);
+            if(ord.getNoReporte()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ord.getNoReporte(), 490, 560, 0);
+            if(ord.getColor()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ord.getColor(), 490, 550, 0);
+        }
+        else
+        {
+            OrdenExterna ord=fac.getOrdenExterna();
+            if(ord.getMarca()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ord.getMarca().getMarcaNombre(), 80, 580, 0);
+            if(ord.getTipo()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ord.getTipo().getTipoNombre(), 80, 570, 0);
+            
+            if(ord.getNoSerie()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ord.getNoSerie(), 80, 560, 0);
+            if(fac.getExtra()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, fac.getExtra(), 40, 550, 0);
+                //reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ""+ord.getIdOrden(), 80, 550, 0);
+
+            if(ord.getModelo()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ""+ord.getModelo(), 350, 580, 0);
+            if(ord.getNoPlacas()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ord.getNoPlacas(), 350, 570, 0);
+            if(ord.getPoliza()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ord.getPoliza(), 350, 560, 0);
+            if(ord.getKm()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ord.getKm(), 350, 550, 0);
+
+            if(ord.getSiniestro()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ord.getSiniestro(), 490, 580, 0);
+            if(ord.getInciso()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ord.getInciso(), 490, 570, 0);
+            if(ord.getNoReporte()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ord.getNoReporte(), 490, 560, 0);
+            if(ord.getColor()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ord.getColor(), 490, 550, 0);
+        }
+        
+        if(fac.getAddenda().compareTo("qualitas")==0)
+        {
+            reporte.contenido.roundRectangle(35, 528, 543, 12, 0);//encabezado Agente Proveedor
+            reporte.contenido.roundRectangle(35, 478, 543, 50, 0);//cuadro Agente Proveedor
+            reporte.agregaObjeto(new Paragraph(" "));
+            reporte.agregaObjeto(new Paragraph(" "));
+            reporte.agregaObjeto(new Paragraph(" "));
+            reporte.agregaObjeto(new Paragraph(" "));
+            reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "NO.PROV:22194", 40, 515, 0);
+            reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "CONT. EMISOR:"+fac.getContactoEmisor(), 150, 515, 0);
+            reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "TIPO:"+fac.getTipoEmisor(), 445, 515, 0);
+
+            reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "AREA:"+fac.getArea(), 40, 505, 0);
+            reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "E-MAIL:"+fac.getCorreoEmisor(), 150, 505, 0);
+            reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "TEL:"+fac.getTelefonoEmisor(), 445, 505, 0);
+
+            reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "CONT. RECEP:"+fac.getContactoReceptor(), 40, 495, 0);
+            reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "TIPO:"+fac.getTipoReceptor(), 270, 495, 0);
+            reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "E-MAIL:"+fac.getCorreoReceptor(), 370, 495, 0);
+            reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "NOTAS:"+fac.getFoliosElectronicos(), 40, 485, 0);
+        }
         reporte.finTexto();
         
         //agregamos renglones vacios para dejar un espacio
@@ -1995,6 +2324,12 @@ public class Formatos {
         reporte.agregaObjeto(new Paragraph(" "));
         reporte.agregaObjeto(new Paragraph(" "));
         reporte.agregaObjeto(new Paragraph(" "));
+        reporte.agregaObjeto(new Paragraph(" "));
+        reporte.agregaObjeto(new Paragraph(" "));
+        reporte.agregaObjeto(new Paragraph(" "));
+        reporte.agregaObjeto(new Paragraph(" "));
+        
+        
             
             Font font = new Font(Font.FontFamily.HELVETICA, 6, Font.BOLD);
             Font font_mini = new Font(Font.FontFamily.HELVETICA, 1, Font.BOLD);
@@ -2010,5 +2345,230 @@ public class Formatos {
             tabla.addCell(reporte.celda("Precio c/u", font, contenido, centro, 0, 1, Rectangle.RECTANGLE+Rectangle.TOP));
             tabla.addCell(reporte.celda("T O T A L", font, contenido, centro, 0, 1,Rectangle.RECTANGLE+Rectangle.TOP));
             tabla.addCell(reporte.celda(" ", font_mini, null, centro, 5, 1,Rectangle.BOTTOM));
+    }
+    
+    private void cabeceraNot(PDF reporte, BaseFont bf, PdfPTable tabla, Nota fac) throws DocumentException, IOException
+    {
+        BaseFont negrita = BaseFont.createFont(BaseFont.HELVETICA_BOLD, BaseFont.WINANSI, BaseFont.NOT_EMBEDDED);
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");//YYYY-MM-DD HH:MM:SS
+        reporte.contenido.setLineWidth(0.5f);
+        reporte.contenido.setColorFill(new GrayColor(0.9f));
+        reporte.contenido.roundRectangle(35, 648, 543, 12, 0);//encabezado cliente
+        reporte.contenido.roundRectangle(35, 608, 543, 40, 0);//cuadro cliente
+        reporte.contenido.roundRectangle(35, 588, 543, 12, 0);//encabezado unidad
+        reporte.contenido.roundRectangle(35, 548, 543, 40, 0);//cuadro unidad
+        
+        reporte.contenido.roundRectangle(353, 757, 223, 18, 0);//cuadro fecha
+        /*reporte.contenido.roundRectangle(353, 728, 223, 10, 0);//cuadro F.Fiscal
+        reporte.contenido.roundRectangle(353, 718, 223, 10, 0);//cuadro C. SAT*/
+        reporte.contenido.roundRectangle(353, 670, 223, 87, 0);//cuadro C. Emisor
+
+        //Configuracion con= (Configuracion)session.get(Configuracion.class, 1);
+        
+        reporte.inicioTexto();
+        if(fac.getRfcEmisor().compareTo("SET0806255W2")==0)
+            reporte.agregaObjeto(reporte.crearImagen("imagenes/empresa3666.jpg", 00, -75, 40));
+        else
+            reporte.agregaObjeto(reporte.crearImagen("imagenes/tbs.jpg", 00, -75, 40));
+        
+        //****************Datos de Emisor
+        reporte.contenido.setFontAndSize(negrita, 8);
+        reporte.contenido.setColorFill(BaseColor.BLACK);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, fac.getNombreEmisor(), 120, 765, 0);
+        reporte.contenido.setFontAndSize(bf, 8);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "RFC: "+fac.getRfcEmisor(), 120, 755, 0);
+        
+        reporte.contenido.setFontAndSize(negrita, 8);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "DOMICILIO FISCAL ", 120, 740, 0);
+        reporte.contenido.setFontAndSize(bf, 8);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, fac.getCalleEmisor()+" "+fac.getNumeroExteriorEmisor(), 120, 730, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, fac.getColoniaEmisor()+", "+fac.getMunicipioEmisor(), 120, 720, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, fac.getEstadoEmisor()+", "+fac.getPaisEmisor()+" "+fac.getCpEmisor(), 120, 710, 0);
+        
+        reporte.contenido.setFontAndSize(negrita, 8);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "LUGAR Y FECHA DE EXPEDICIÓN", 120, 695, 0);
+        reporte.contenido.setFontAndSize(bf, 8);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "TOLUCA, Estado de México.", 120, 685, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, dateFormat.format(fac.getFecha()), 120, 675, 0);
+        
+        reporte.contenido.setFontAndSize(negrita, 8);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "NOTA DE CREDITO", 440, 764, 0);
+        reporte.contenido.setFontAndSize(bf, 7);
+        if(fac.getFolio()!=null)
+        {
+            reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "FOLIO:"+fac.getFolio(), 360, 745, 0);
+            reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "SERIE:"+fac.getSerie(), 470, 745, 0);
+        }
+        else
+        {
+            reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "FOLIO: "+fac.getFolioExterno(), 360, 745, 0);
+            reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "SERIE: "+fac.getSerieExterno(), 470, 745, 0);
+        }
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "FOLIO FISCAL: "+fac.getFFiscal(), 360, 735, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "FECHA CERTIFICACIÓN: "+fac.getFechaFiscal().substring(0, 19), 360, 725, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "MÉTODO DE PAGO: "+fac.getMetodoPago(), 360, 715, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "N° CTA. DE PAGO: "+fac.getCuentaPago(), 360, 705, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "TIPO DE COMPROBANTE: egreso", 360, 695, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "NÚMERO INTERNO: "+fac.getIdNota(), 360, 685, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "RÉG.FIS: REGIMEN GENERAL DE LEY DE PERSONAS MORALES", 360, 675, 0);
+        
+        reporte.contenido.setFontAndSize(bf, 8);
+        //************************datos del cliente****************************
+        DateFormat dateFormat1 = new SimpleDateFormat("dd-MM-yyyy");//YYYY-MM-DD HH:MM:SS
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "NOMBRE: "+fac.getNombreReceptor(), 40, 635, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "RFC: "+fac.getRfcReceptor(), 400, 635, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "DOMICILIO FISCAL:    CALLE "+fac.getCalleReceptor()+" "+fac.getNumeroExteriorReceptor()+" COL. "+fac.getColoniaReceptor(), 40, 625, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "MPIO./DEL. "+fac.getMunicipioReceptor()+" ESTADO "+fac.getEstadoReceptor()+" pais "+fac.getPaisReceptor()+" CP "+fac.getCpReceptor(), 120, 615, 0);
+        
+        //**********************datos de la unidad*****************************
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "MARCA: ", 80, 580, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "TIPO: ", 80, 570, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "NO.SERIE: ", 80, 560, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "ORDEN: ", 80, 550, 0);
+        
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "MODELO: ", 350, 580, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "PLACAS: ", 350, 570, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "POLIZA: ", 350, 560, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "KM: ", 350, 550, 0);
+        
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "SINIESTRO: ", 490, 580, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "INC: ", 490, 570, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "REPORTE: ", 490, 560, 0);
+        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "COLOR: ", 490, 550, 0);
+
+        if(fac.getOrden()!=null)
+        {
+            Orden ord=fac.getOrden();
+            if(ord.getMarca()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ord.getMarca().getMarcaNombre(), 80, 580, 0);
+            if(ord.getTipo()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ord.getTipo().getTipoNombre(), 80, 570, 0);
+            if(ord.getNoSerie()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ord.getNoSerie(), 80, 560, 0);
+            reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ""+ord.getIdOrden(), 80, 550, 0);
+
+            if(ord.getModelo()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ""+ord.getModelo(), 350, 580, 0);
+            if(ord.getNoPlacas()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ord.getNoPlacas(), 350, 570, 0);
+            if(ord.getPoliza()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ord.getPoliza(), 350, 560, 0);
+            if(ord.getKm()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ord.getKm(), 350, 550, 0);
+
+            if(ord.getSiniestro()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ord.getSiniestro(), 490, 580, 0);
+            if(ord.getInciso()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ord.getInciso(), 490, 570, 0);
+            if(ord.getNoReporte()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ord.getNoReporte(), 490, 560, 0);
+            if(ord.getColor()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ord.getColor(), 490, 550, 0);
+        }
+        else
+        {
+            OrdenExterna ord=fac.getOrdenExterna();
+            if(ord.getMarca()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ord.getMarca().getMarcaNombre(), 80, 580, 0);
+            if(ord.getTipo()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ord.getTipo().getTipoNombre(), 80, 570, 0);
+            
+            if(ord.getNoSerie()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ord.getNoSerie(), 80, 560, 0);
+            if(ord.getIdOrden()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ""+ord.getIdOrden(), 80, 550, 0);
+
+            if(ord.getModelo()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ""+ord.getModelo(), 350, 580, 0);
+            if(ord.getNoPlacas()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ord.getNoPlacas(), 350, 570, 0);
+            if(ord.getPoliza()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ord.getPoliza(), 350, 560, 0);
+            if(ord.getKm()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ord.getKm(), 350, 550, 0);
+
+            if(ord.getSiniestro()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ord.getSiniestro(), 490, 580, 0);
+            if(ord.getInciso()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ord.getInciso(), 490, 570, 0);
+            if(ord.getNoReporte()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ord.getNoReporte(), 490, 560, 0);
+            if(ord.getColor()!=null)
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, ord.getColor(), 490, 550, 0);
+        }
+        
+        if(fac.getAddenda().compareTo("qualitas")==0)
+        {
+            reporte.contenido.roundRectangle(35, 528, 543, 12, 0);//encabezado Agente Proveedor
+            reporte.contenido.roundRectangle(35, 478, 543, 50, 0);//cuadro Agente Proveedor
+            reporte.agregaObjeto(new Paragraph(" "));
+            reporte.agregaObjeto(new Paragraph(" "));
+            reporte.agregaObjeto(new Paragraph(" "));
+            reporte.agregaObjeto(new Paragraph(" "));
+            reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "NO.PROV:22194", 40, 515, 0);
+            reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "CONT. EMISOR:"+fac.getContactoEmisor(), 150, 515, 0);
+            reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "TIPO:"+fac.getTipoEmisor(), 445, 515, 0);
+
+            reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "AREA:"+fac.getArea(), 40, 505, 0);
+            reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "E-MAIL:"+fac.getCorreoEmisor(), 150, 505, 0);
+            reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "TEL:"+fac.getTelefonoEmisor(), 445, 505, 0);
+
+            reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "CONT. RECEP:"+fac.getContactoReceptor(), 40, 495, 0);
+            reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "TIPO:"+fac.getTipoReceptor(), 270, 495, 0);
+            reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "E-MAIL:"+fac.getCorreoReceptor(), 370, 495, 0);
+            reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "NOTAS:"+fac.getFoliosElectronicos(), 40, 485, 0);
+        }
+        reporte.finTexto();
+        
+        //agregamos renglones vacios para dejar un espacio
+        reporte.agregaObjeto(new Paragraph(" "));
+        reporte.agregaObjeto(new Paragraph(" "));
+        reporte.agregaObjeto(new Paragraph(" "));
+        reporte.agregaObjeto(new Paragraph(" "));
+        reporte.agregaObjeto(new Paragraph(" "));
+        reporte.agregaObjeto(new Paragraph(" "));
+        reporte.agregaObjeto(new Paragraph(" "));
+        reporte.agregaObjeto(new Paragraph(" "));
+        reporte.agregaObjeto(new Paragraph(" "));
+        reporte.agregaObjeto(new Paragraph(" "));
+        reporte.agregaObjeto(new Paragraph(" "));
+        reporte.agregaObjeto(new Paragraph(" "));
+        
+        
+            
+            Font font = new Font(Font.FontFamily.HELVETICA, 6, Font.BOLD);
+            Font font_mini = new Font(Font.FontFamily.HELVETICA, 1, Font.BOLD);
+            BaseColor cabecera=BaseColor.GRAY;
+            BaseColor contenido=BaseColor.WHITE;
+            int centro=Element.ALIGN_CENTER;
+            int izquierda=Element.ALIGN_LEFT;
+            int derecha=Element.ALIGN_RIGHT;
+        
+            tabla.addCell(reporte.celda("Cant", font, contenido, centro, 0, 1, Rectangle.RECTANGLE+Rectangle.TOP));
+            tabla.addCell(reporte.celda("U/Med", font, contenido, centro, 0, 1, Rectangle.RECTANGLE+Rectangle.TOP));
+            tabla.addCell(reporte.celda("D E S C R I P C I O N", font, contenido, centro, 0, 1,Rectangle.RECTANGLE+Rectangle.TOP));
+            tabla.addCell(reporte.celda("Precio c/u", font, contenido, centro, 0, 1, Rectangle.RECTANGLE+Rectangle.TOP));
+            tabla.addCell(reporte.celda("T O T A L", font, contenido, centro, 0, 1,Rectangle.RECTANGLE+Rectangle.TOP));
+            tabla.addCell(reporte.celda(" ", font_mini, null, centro, 5, 1,Rectangle.BOTTOM));
+    }
+    public BufferedImage createQR(String data)
+    {
+        BitMatrix matrix;
+        Writer writer = new MultiFormatWriter();
+        try {            
+            EnumMap<EncodeHintType,String> hints = new EnumMap<EncodeHintType,String>(EncodeHintType.class);
+            hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");            
+            matrix = writer.encode(data, BarcodeFormat.QR_CODE, 136, 136, hints);
+            ByteArrayOutputStream output = new ByteArrayOutputStream();
+            MatrixToImageWriter.writeToStream(matrix, "PNG", output);
+            byte[] data_array = output.toByteArray();
+            ByteArrayInputStream input = new ByteArrayInputStream(data_array);
+            return ImageIO.read(input);            
+        } catch (com.google.zxing.WriterException ex) {
+            System.err.println(ex.getMessage());
+        } catch (IOException ex) {
+            System.err.println(ex.getMessage());
+        }
+        return null;
     }
 }

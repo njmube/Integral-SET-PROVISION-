@@ -14,24 +14,21 @@ import Integral.FormatoTabla;
 import Integral.Herramientas;
 import Integral.Render1;
 import Hibernate.Util.HibernateUtil;
-import java.util.List;
 import java.util.Vector;
 import javax.swing.InputMap;
 import javax.swing.JOptionPane;
-import Hibernate.entidades.Concepto;
 import Hibernate.entidades.Configuracion;
+import Hibernate.entidades.Factura;
 import Hibernate.entidades.Nota;
+import Hibernate.entidades.Orden;
 import Hibernate.entidades.Usuario;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.PrintWriter;
-import java.math.BigDecimal;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.KeyStroke;
@@ -40,14 +37,12 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import javax.xml.datatype.XMLGregorianCalendar;
-import mx.com.fact.schema.ws.RequestTransaction;
-import mx.com.fact.schema.ws.RequestTransactionResponse;
 import org.hibernate.Criteria;
-import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+import timbrar.ApiFinkok;
+import timbrar.ApiMysuite;
 
 /**
  *
@@ -64,8 +59,9 @@ public class buscaNota extends javax.swing.JDialog {
     Usuario usr;
     FormatoTabla formato;
     Nota factura=new Nota();
-    String idBuscar="";
+    String idBuscar="", ruta="";
     int opcion=1;
+    boolean bandera=true;
     
     /** Creates new form acceso */
     public buscaNota(java.awt.Frame parent, boolean modal, String ses, Usuario usuario, int op) {
@@ -74,6 +70,16 @@ public class buscaNota extends javax.swing.JDialog {
         sessionPrograma=ses;
         usr=usuario;
         initComponents();
+        try{
+            FileReader fil = new FileReader("config.txt");
+            BufferedReader b = new BufferedReader(fil);
+            if((ruta = b.readLine())==null)
+                ruta="";
+            b.close();
+            fil.close();
+            fil=null;
+            b=null;
+        }catch(Exception e){}
         getRootPane().setDefaultButton(b_seleccionar);
         formato =new FormatoTabla();
         t_datos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -435,24 +441,212 @@ public class buscaNota extends javax.swing.JDialog {
                             progreso.setString("Conectando al servidor SAT Espere");
                             progreso.setIndeterminate(true);
                             if(idBuscar.compareTo("")!=0)
-                            {
+                            { 
                                 session.beginTransaction().begin();
-                                Configuracion config=(Configuracion)session.get(Configuracion.class, 1);
-                                //factura=(Factura)session.get(Factura.class, factura.getIdFactura());
                                 factura=(Nota) session.get(Nota.class, Integer.parseInt(t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString()));
-                                RequestTransaction rq=new RequestTransaction();
-                                rq.setRequestor(config.getRequestor());//Lo proporcionará MySuite
-                                rq.setTransaction("CANCEL_XML");//Tipo de Transaccion
-                                rq.setCountry("MX");//Codigo de pais
-                                rq.setUser(config.getRequestor());//igual que Requestor
-                                rq.setUserName(config.getUsuario_1());//Country.Entity.nombre_usuario
-                                rq.setEntity(config.getRfc());
-                                rq.setData1(idBuscar);//GUIID.
-                                rq.setData2("");
-                                rq.setData3("");
-                                 if(session.isOpen())
-                                    session.close();
-                                llamarSoapCancela(rq);
+                                switch(factura.getPac())
+                                {
+                                    case "M":
+                                        Configuracion config=(Configuracion)session.createCriteria(Configuracion.class).add(Restrictions.eq("empresa", factura.getNombreEmisor())).setMaxResults(1).uniqueResult();
+
+                                        factura=(Nota) session.get(Nota.class, Integer.parseInt(t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString()));
+                                        ArrayList rq=new ArrayList();
+                                        rq.add(config.getRequestor());//Lo proporcionará MySuite
+                                        rq.add("CANCEL_XML");//Tipo de Transaccion
+                                        rq.add("MX");//Codigo de pais
+                                        rq.add(config.getRequestor());//igual que Requestor
+                                        rq.add(config.getUsuario_1());//Country.Entity.nombre_usuario
+                                        rq.add(config.getRfc());
+                                        rq.add(idBuscar);//GUIID.
+                                        rq.add("");
+                                        rq.add("");
+                                        ApiMysuite timbrar=new ApiMysuite(ruta);
+                                        ArrayList respuesta=timbrar.llamarSoapCancela(rq);
+                                        if(respuesta.size()>0)
+                                        {
+                                            switch(respuesta.get(0).toString())
+                                            {
+                                                case "1"://Se Canceló
+                                                    factura=(Nota) session.createCriteria(Nota.class).add(Restrictions.eq("FFiscal", idBuscar)).uniqueResult();
+                                                    if(factura!=null)
+                                                    {
+                                                        factura.setOrden(null);
+                                                        factura.setEstadoFactura("Cancelado");
+                                                        session.update(factura);
+                                                        session.beginTransaction().commit();
+                                                        t_datos.setValueAt("Cancelado", t_datos.getSelectedRow(), 8);
+                                                        habilita(true);
+                                                        progreso.setString("Listo");
+                                                        progreso.setIndeterminate(false);
+                                                        JOptionPane.showMessageDialog(null, "El UUID ya esta cancelado");
+                                                    }
+                                                    else
+                                                    {
+                                                        habilita(true);
+                                                        progreso.setString("Listo");
+                                                        progreso.setIndeterminate(false);
+                                                        JOptionPane.showMessageDialog(null, "El UUID ya esta cancelado pero no pudo actualizarse la base de datos");
+                                                    }
+                                                    break;
+
+                                                case "-1":
+                                                    habilita(true);
+                                                    progreso.setString("Listo");
+                                                    progreso.setIndeterminate(false);
+                                                    JOptionPane.showMessageDialog(null, respuesta.get(1).toString());
+                                                    break;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            habilita(true);
+                                            progreso.setString("Listo");
+                                            progreso.setIndeterminate(false);
+                                            JOptionPane.showMessageDialog(null, "Error al consultar la base de datos");
+                                        }
+                                        break;
+                                    case "F":
+                                            Configuracion config1=(Configuracion)session.createCriteria(Configuracion.class).add(Restrictions.eq("empresa", factura.getNombreEmisor())).setMaxResults(1).uniqueResult();
+                                            ApiFinkok api1=new ApiFinkok(ruta);
+                                            //"clave", "key", "cer", "rita destino", "claveFinkok", "uuid a cancelar", "usuario finkok"
+                                            ArrayList datos=new ArrayList();
+                                            datos.add(config1.getClave());
+                                            datos.add(ruta+"config/"+config1.getLlave());
+                                            datos.add(ruta+"config/"+config1.getCer());
+                                            datos.add("pom/");
+                                            datos.add(config1.getClaveFinkok());
+                                            datos.add(idBuscar);
+                                            datos.add(config1.getEmailFinkok());
+                                            datos.add(factura.getRfcEmisor());
+                                            ArrayList guarda=api1.llamarSoapElimina(datos);
+                                            switch(guarda.get(0).toString())
+                                            {
+                                                case "0":
+                                                    habilita(true);
+                                                    progreso.setString("Listo");
+                                                    progreso.setIndeterminate(false);
+                                                    bandera=true;
+                                                    JOptionPane.showMessageDialog(null, "Error: "+guarda.get(1).toString());
+                                                    break;
+
+                                                case "1"://se cancelo correcto
+                                                    ArrayList resp=(ArrayList)guarda.get(1);
+                                                    ArrayList arr=(ArrayList)guarda.get(1);
+                                                    ArrayList aq=(ArrayList)arr.get(0);
+                                                    switch(aq.get(1).toString())
+                                                    {
+                                                        case "201":
+                                                        factura=(Nota) session.createCriteria(Nota.class).add(Restrictions.eq("FFiscal", idBuscar)).uniqueResult();
+                                                        if(factura!=null)
+                                                        {
+                                                            Orden aux=factura.getOrden();
+                                                            if(aux!=null)
+                                                            {
+                                                                aux.setNoFactura(null);
+                                                                session.update(aux);
+                                                            }
+                                                            factura.setOrden(null);
+                                                            factura.setEstadoFactura("Cancelado");
+                                                            session.update(factura);
+                                                            session.beginTransaction().commit();
+                                                            t_datos.setValueAt("Cancelado", t_datos.getSelectedRow(), 8);
+                                                            habilita(true);
+                                                            progreso.setString("Listo");
+                                                            progreso.setIndeterminate(false);
+                                                            bandera=true;
+                                                            JOptionPane.showMessageDialog(null, "El UUID ya esta cancelado");
+                                                        }
+                                                        else
+                                                        {
+                                                            habilita(true);
+                                                            progreso.setString("Listo");
+                                                            progreso.setIndeterminate(false);
+                                                            bandera=true;
+                                                            JOptionPane.showMessageDialog(null, "El UUID ya esta cancelado pero no pudo actualizarse la base de datos");
+                                                        }
+                                                        break;
+
+                                                        case "202":
+                                                            factura=(Nota) session.createCriteria(Nota.class).add(Restrictions.eq("FFiscal", idBuscar)).uniqueResult();
+                                                            if(factura!=null)
+                                                            {
+                                                                factura.setOrden(null);
+                                                                factura.setEstadoFactura("Cancelado");
+                                                                session.update(factura);
+                                                                session.beginTransaction().commit();
+                                                                t_datos.setValueAt("Cancelado", t_datos.getSelectedRow(), 8);
+                                                                habilita(true);
+                                                                progreso.setString("Listo");
+                                                                progreso.setIndeterminate(false);
+                                                                bandera=true;
+                                                                JOptionPane.showMessageDialog(null, "El UUID ya esta cancelado");
+                                                            }
+                                                            else
+                                                            {
+                                                                habilita(true);
+                                                                progreso.setString("Listo");
+                                                                progreso.setIndeterminate(false);
+                                                                bandera=true;
+                                                                JOptionPane.showMessageDialog(null, "El UUID ya esta cancelado pero no pudo actualizarse la base de datos");
+                                                            }
+                                                            break;
+                                                        case "300":
+                                                            habilita(true);
+                                                            progreso.setString("Listo");
+                                                            progreso.setIndeterminate(false);
+                                                            bandera=true;
+                                                            JOptionPane.showMessageDialog(null, "Usuario y contraseña inválidos ");
+                                                            break;
+                                                        case "203":
+                                                            habilita(true);
+                                                            progreso.setString("Listo");
+                                                            progreso.setIndeterminate(false);
+                                                            bandera=true;
+                                                            JOptionPane.showMessageDialog(null, "No corresponde el RFC del Emisor y de quien solicita la cancelación");
+                                                            break;
+                                                        case "205":
+                                                            habilita(true);
+                                                            progreso.setString("Listo");
+                                                            progreso.setIndeterminate(false);
+                                                            bandera=true;
+                                                            JOptionPane.showMessageDialog(null, "UUID No existe");
+                                                            break;
+                                                        case "704":
+                                                            habilita(true);
+                                                            progreso.setString("Listo");
+                                                            progreso.setIndeterminate(false);
+                                                            bandera=true;
+                                                            JOptionPane.showMessageDialog(null, "Error con la contraseña de la llave Privada");
+                                                        case "708":
+                                                            habilita(true);
+                                                            progreso.setString("Listo");
+                                                            progreso.setIndeterminate(false);
+                                                            bandera=true;
+                                                            JOptionPane.showMessageDialog(null, "No se pudo conectar al SAT");
+                                                        case "711":
+                                                            habilita(true);
+                                                            progreso.setString("Listo");
+                                                            progreso.setIndeterminate(false);
+                                                            bandera=true;
+                                                            JOptionPane.showMessageDialog(null, "Error con el certificado al cancelar");
+                                                        case "712":
+                                                            habilita(true);
+                                                            progreso.setString("Listo");
+                                                            progreso.setIndeterminate(false);
+                                                            bandera=true;
+                                                            JOptionPane.showMessageDialog(null, "El número de 'noCertificado' es diferente al del número de certificado del atributo 'certificado'");
+                                                        default:
+                                                            habilita(true);
+                                                            progreso.setString("Listo");
+                                                            progreso.setIndeterminate(false);
+                                                            bandera=true;
+                                                            JOptionPane.showMessageDialog(null, "Error.- "+aq.get(1).toString());
+                                                            break;
+                                                    }
+                                                    break;
+                                            }
+                                    break;
+                                }
                             }
                             else
                             {
@@ -544,7 +738,7 @@ public class buscaNota extends javax.swing.JDialog {
     private void buscaDato()
     {
         //ID, RFC, Razon Social, Folio Fiscal, Serie, Folio, Estado
-        String consulta="select id_nota as id, rfc_receptor, nombre_receptor, f_fiscal, serie, folio, estado_factura, (select sum(if(descuento=0, (precio*cantidad), (precio-(precio*(descuento/100)))*cantidad )) as total from concepto where id_nota=id) as tot, fecha from nota ";
+        String consulta="select id_nota as id, rfc_receptor, nombre_receptor, f_fiscal, serie, folio, estado_factura, (select sum(if(descuento=0, (precio*cantidad), (precio-(precio*(descuento/100)))*cantidad )) as total from concepto where id_nota=id) as tot, fecha, folio_externo, serie_externo from nota ";
         if(c_filtro.getSelectedItem().toString().compareTo("ID")==0)
             consulta+="where id_nota like '%" + t_busca.getText() +"%'";
         if(c_filtro.getSelectedItem().toString().compareTo("RFC")==0)
@@ -556,7 +750,9 @@ public class buscaNota extends javax.swing.JDialog {
         if(c_filtro.getSelectedItem().toString().compareTo("Serie")==0)
             consulta+="where serie like '%" + t_busca.getText() +"%'";
         if(c_filtro.getSelectedItem().toString().compareTo("Folio")==0)
-            consulta+="where folio like '%" + t_busca.getText() +"%'";
+        {
+            consulta+="where folio like '%" + t_busca.getText() +"%' OR folio_externo like '%" + t_busca.getText() +"%'";
+        }
         if(c_filtro.getSelectedItem().toString().compareTo("Estado")==0)
             consulta+="where estado_factura like '%" + t_busca.getText() +"%'";
         consulta+=" order by id_nota desc";
@@ -574,8 +770,16 @@ public class buscaNota extends javax.swing.JDialog {
                 for (int x=0; x<resultList.size(); x++) 
                 {
                     java.util.HashMap map=(java.util.HashMap)resultList.get(x);
-                    Object[] renglon=new Object[]{map.get("id"),map.get("fecha").toString(),map.get("rfc_receptor"),map.get("nombre_receptor"),map.get("f_fiscal"),map.get("serie"),map.get("folio"),map.get("tot"),map.get("estado_factura")};
-                    model.addRow(renglon);
+                    if(map.get("folio_externo")==null)
+                    {
+                        Object[] renglon=new Object[]{map.get("id"),map.get("fecha").toString(),map.get("rfc_receptor"),map.get("nombre_receptor"),map.get("f_fiscal"),map.get("serie"),map.get("folio"),map.get("tot"),map.get("estado_factura")};
+                        model.addRow(renglon);
+                    }
+                    else
+                    {
+                        Object[] renglon=new Object[]{map.get("id"),map.get("fecha").toString(),map.get("rfc_receptor"),map.get("nombre_receptor"),map.get("f_fiscal"),map.get("serie_externo"),map.get("folio_externo"),map.get("tot"),map.get("estado_factura")};
+                        model.addRow(renglon);
+                    }
                     i++;
                 }
             }
@@ -644,7 +848,7 @@ public class buscaNota extends javax.swing.JDialog {
         header.setForeground(Color.white);
     }
      
-     public void formatoTabla()
+    public void formatoTabla()
     {
         Color c1 = new java.awt.Color(2, 135, 242);   
         for(int x=0; x<t_datos.getColumnModel().getColumnCount(); x++)
@@ -656,241 +860,6 @@ public class buscaNota extends javax.swing.JDialog {
         t_datos.setDefaultRenderer(String.class, formato);
         t_datos.setDefaultRenderer(Boolean.class, formato);
         t_datos.setDefaultRenderer(Integer.class, formato);
-    }
-     
-     public void llamarSoapCancela(RequestTransaction rq)
-    {
-        System.setProperty("javax.net.ssl.keyStore", "cacerts");
-        System.setProperty("javax.net.ssl.keyStorePassword", "changeit");
-        System.setProperty("javax.net.ssl.trustStore", "cacerts");
-        try 
-        { // Call Web Service Operation(async. callback)
-            if(rq!=null)
-            {
-                mx.com.fact.schema.ws.FactWSFront service = new mx.com.fact.schema.ws.FactWSFront();
-                mx.com.fact.schema.ws.FactWSFrontSoap port = service.getFactWSFrontSoap();
-                
-                // TODO initialize WS operation arguments here
-                java.lang.String requestor = rq.getRequestor();
-                java.lang.String transaction = rq.getTransaction();
-                java.lang.String country = rq.getCountry();
-                java.lang.String entity = rq.getEntity();
-                java.lang.String userSAP = rq.getUser();
-                java.lang.String userName = rq.getUserName();
-                java.lang.String data1 = rq.getData1();
-                java.lang.String data2 = rq.getData2();
-                java.lang.String data3 = rq.getData3();
-                javax.xml.ws.AsyncHandler<mx.com.fact.schema.ws.RequestTransactionResponse> asyncHandler = new javax.xml.ws.AsyncHandler<mx.com.fact.schema.ws.RequestTransactionResponse>() {
-                    public void handleResponse(final javax.xml.ws.Response<mx.com.fact.schema.ws.RequestTransactionResponse> response) 
-                    {
-                        try 
-                        {
-                            // TODO process asynchronous response here
-                            RequestTransactionResponse rtr=response.get();
-                            if(rtr.getRequestTransactionResult().getResponse().isResult()==true)//la transaccion se genero
-                            {
-                                XMLGregorianCalendar fecha_ingreso=rtr.getRequestTransactionResult().getResponse().getTimeStamp();
-                                Session session = HibernateUtil.getSessionFactory().openSession();
-                                try 
-                                {
-                                    session.beginTransaction().begin();
-                                    Nota resp=(Nota) session.createCriteria(Nota.class).add(Restrictions.eq("FFiscal", idBuscar)).uniqueResult();
-                                    if(resp!=null)
-                                    {
-                                        resp.setOrden(null);
-                                        resp.setEstadoFactura("Cancelado");
-                                        resp.setEstatus("CANCELADO");
-                                        session.update(resp);
-                                        session.beginTransaction().commit();
-                                        t_datos.setValueAt("Cancelado", t_datos.getSelectedRow(), 8);
-                                    }
-                                    habilita(true);
-                                    progreso.setString("Listo");
-                                    progreso.setIndeterminate(false);
-                                    JOptionPane.showMessageDialog(null, "El UUID ya esta cancelado");
-                                }catch(Exception e)
-                                {
-                                    session.beginTransaction().rollback();
-                                    e.printStackTrace();
-                                    habilita(true);
-                                    progreso.setString("Listo");
-                                    progreso.setIndeterminate(false);
-                                    JOptionPane.showMessageDialog(null, "El UUID ya esta cancelado, pero no se pudo almacenar en la base de datos");
-                                }
-                                finally
-                                {
-                                    if(session!=null)
-                                        if(session.isOpen())
-                                            session.close();
-                                }
-                            }
-                            else
-                            {
-                                String error=rtr.getRequestTransactionResult().getResponseData().getResponseData2();
-                                String codigo=""+rtr.getRequestTransactionResult().getResponse().getCode();
-                                String desccripcion=rtr.getRequestTransactionResult().getResponse().getDescription();
-                                String aux="";
-                                String numeros="0123456789";
-                                if(error.length()==0)
-                                    error=codigo;
-                                for(int pal=0; pal<error.length(); pal++)
-                                {
-                                    if(numeros.contains(""+error.charAt(pal)))
-                                        aux+=""+error.charAt(pal);
-                                }
-                                if(aux.length()>0)
-                                {
-                                    switch(aux)
-                                    {
-                                        case "201"://UUID Cancelado 
-                                            Session session = HibernateUtil.getSessionFactory().openSession();
-                                            try 
-                                            {
-                                                session.beginTransaction().begin();
-                                                Nota resp=(Nota) session.createCriteria(Nota.class).add(Restrictions.eq("FFiscal", idBuscar)).uniqueResult();
-                                                if(resp!=null)
-                                                {
-                                                    resp.setOrden(null);
-                                                    resp.setEstadoFactura("Cancelado");
-                                                    resp.setEstatus("CANCELADO");
-                                                    session.update(resp);
-                                                    session.beginTransaction().commit();
-                                                    t_datos.setValueAt("Cancelado", t_datos.getSelectedRow(), 8);
-                                                }
-                                                habilita(true);
-                                                progreso.setString("Listo");
-                                                progreso.setIndeterminate(false);
-                                                JOptionPane.showMessageDialog(null, "El UUID ya esta Cancelado");
-                                            }catch(Exception e)
-                                            {
-                                                session.beginTransaction().rollback();
-                                                e.printStackTrace();
-                                                habilita(true);
-                                                progreso.setString("Listo");
-                                                progreso.setIndeterminate(false);
-                                                JOptionPane.showMessageDialog(null, "El UUID ya esta cancelado, pero no se pudo almacenar en la base de datos");
-                                            }
-                                            finally
-                                            {
-                                                if(session!=null)
-                                                    if(session.isOpen())
-                                                        session.close();
-                                            }
-                                            break;
-                                        case "202"://UUID Previamente cancelado
-                                        case "3027"://UUID Previamente cancelado
-                                            Session session1 = HibernateUtil.getSessionFactory().openSession();
-                                            try 
-                                            {
-                                                session1.beginTransaction().begin();
-                                                Nota resp=(Nota) session1.createCriteria(Nota.class).add(Restrictions.eq("FFiscal", idBuscar)).uniqueResult();
-                                                if(resp!=null)
-                                                {
-                                                    resp.setOrden(null);
-                                                    resp.setEstadoFactura("Cancelado");
-                                                    resp.setEstatus("CANCELADO");
-                                                    session1.update(resp);
-                                                    session1.beginTransaction().commit();
-                                                    t_datos.setValueAt("Cancelado", t_datos.getSelectedRow(), 8);
-                                                }
-                                                habilita(true);
-                                                progreso.setString("Listo");
-                                                progreso.setIndeterminate(false);
-                                                JOptionPane.showMessageDialog(null, "El UUID ya esta previamente cancelado");
-                                            }catch(Exception e)
-                                            {
-                                                session1.beginTransaction().rollback();
-                                                e.printStackTrace();
-                                                habilita(true);
-                                                progreso.setString("Listo");
-                                                progreso.setIndeterminate(false);
-                                                JOptionPane.showMessageDialog(null, "El UUID ya esta cancelado, pero no se pudo almacenar en la base de datos");
-                                            }
-                                            finally
-                                            {
-                                                if(session1!=null)
-                                                    if(session1.isOpen())
-                                                        session1.close();
-                                            }
-                                            break;
-                                        case "203"://UUID No corresponde al emisor
-                                            habilita(true);
-                                            progreso.setString("Listo");
-                                            progreso.setIndeterminate(false);
-                                            JOptionPane.showMessageDialog(null, "No corresponde al emisor");
-                                            break;
-                                        case "204"://UUID No aplicable para cancelación
-                                            habilita(true);
-                                            progreso.setString("Listo");
-                                            progreso.setIndeterminate(false);
-                                            JOptionPane.showMessageDialog(null, "La nota no corresponde al emisor");
-                                            break;
-                                        case "205"://UUID No existe
-                                            habilita(true);
-                                            progreso.setString("Listo");
-                                            progreso.setIndeterminate(false);
-                                            JOptionPane.showMessageDialog(null, "La noota no existe en el SAT");
-                                            break;
-                                        case "3000"://UUID No corresponde al emisor
-                                            habilita(true);
-                                            progreso.setString("Listo");
-                                            progreso.setIndeterminate(false);
-                                            JOptionPane.showMessageDialog(null, "Intermitencia en el Servidor Sat intente mas tarde");
-                                            break;
-                                        default:
-                                            habilita(true);
-                                            progreso.setString("Listo");
-                                            progreso.setIndeterminate(false);
-                                            JOptionPane.showMessageDialog(null, "Error al cancelar en SAT Error: "+error+"\n"+desccripcion);
-                                            break;
-                                    }
-                                    try
-                                    {
-                                        String fecha=rtr.getRequestTransactionResult().getResponse().getTimeStamp().toXMLFormat();
-                                        File f = new File("errores/"+fecha+".txt");
-                                        FileWriter w = new FileWriter(f);
-                                        BufferedWriter bw = new BufferedWriter(w);
-                                        PrintWriter wr = new PrintWriter(bw);  
-                                        wr.write(rtr.getRequestTransactionResult().getResponse().getDescription());
-                                        wr.write(rtr.getRequestTransactionResult().getResponse().getHint());
-                                        wr.write(rtr.getRequestTransactionResult().getResponse().getData());
-                                        wr.write(rtr.getRequestTransactionResult().getResponseData().getResponseData1());
-                                        wr.write(rtr.getRequestTransactionResult().getResponseData().getResponseData2());
-                                        wr.write(rtr.getRequestTransactionResult().getResponseData().getResponseData3());
-                                        wr.close();
-                                        bw.close();
-                                    } catch (Exception e)
-                                    {
-                                        e.printStackTrace();
-                                    }
-                                }
-                                else
-                                {
-                                    habilita(true);
-                                    progreso.setString("Listo");
-                                    progreso.setIndeterminate(false);
-                                    JOptionPane.showMessageDialog(null, "Error al cancelar en SAT");
-                                }
-                            }
-                        } catch(Exception ex) 
-                        {
-                            habilita(true);
-                            progreso.setString("Listo");
-                            progreso.setIndeterminate(false);
-                            JOptionPane.showMessageDialog(null, "Error en la conexión con el SAP:"+ex);
-                        }
-                    }
-                };
-                java.util.concurrent.Future<? extends java.lang.Object> result = port.requestTransactionAsync(requestor, transaction, country, entity, userSAP, userName, data1, data2, data3, asyncHandler);
-            }
-        } catch (Exception ex) 
-        {
-            System.out.println("Error en la conexión con el SAP:"+ex);
-            habilita(true);
-            progreso.setString("Listo");
-            progreso.setIndeterminate(false);
-            JOptionPane.showMessageDialog(null, "Error en la conexión con el SAP:"+ex);
-        }
     }
      
      public void habilita(boolean op)

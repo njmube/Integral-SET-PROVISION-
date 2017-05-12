@@ -530,7 +530,7 @@ public class muestraAlmacen extends javax.swing.JPanel {
         if(actual.getOperacion()==1 || actual.getOperacion()==2  || actual.getOperacion()==3 || actual.getOperacion()==6)
         {
             formatosPedido f1=new formatosPedido(this.usr, this.sessionPrograma, this.actual);
-            f1.formato();
+            f1.formato(false);//chava
         }
         else
         {

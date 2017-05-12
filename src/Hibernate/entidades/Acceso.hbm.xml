@@ -3,9 +3,9 @@
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated 10/12/2016 11:06:29 AM by Hibernate Tools 3.6.0 -->
 <hibernate-mapping>
-    <class name="Hibernate.entidades.Acceso" table="acceso" catalog="mydb">
+    <class name="Hibernate.entidades.Acceso" table="acceso">
         <id name="idAcceso" type="string">
-            <column name="id_acceso" length="10" />
+            <column name="id_acceso" length="13" />
             <generator class="assigned" />
         </id>
         <many-to-one name="clientes" class="Hibernate.entidades.Clientes" fetch="select">

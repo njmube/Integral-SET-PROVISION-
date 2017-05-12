@@ -87,7 +87,7 @@
             <column name="numero_exterior" length="10" />
         </property>
         <property name="formatoPago" type="string">
-            <column name="formato_pago" length="20" />
+            <column name="formato_pago" length="25" />
         </property>
         <set name="ordenExternas" table="ordenExterna" inverse="true" lazy="true" fetch="select">
             <key>
@@ -114,6 +114,12 @@
                 </column>
             </key>
             <one-to-many class="Hibernate.entidades.Orden" />
+        </set>
+        <set name="accesos" table="acceso" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_compania" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Acceso" />
         </set>
     </class>
 </hibernate-mapping>

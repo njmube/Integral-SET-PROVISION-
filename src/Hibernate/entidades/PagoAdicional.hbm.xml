@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 21/12/2016 12:54:17 PM by Hibernate Tools 3.6.0 -->
+<!-- Generated 21/12/2016 09:17:42 AM by Hibernate Tools 3.6.0 -->
 <hibernate-mapping>
-    <class name="Hibernate.entidades.PagoAdicional" table="pago_adicional" catalog="mydb">
+    <class name="Hibernate.entidades.PagoAdicional" table="pago_adicional" >
         <id name="idPagoAdicional" type="java.lang.Integer">
             <column name="id_pago_adicional" />
             <generator class="identity" />
@@ -17,8 +17,8 @@
         <property name="porcentaje" type="java.lang.Double">
             <column name="porcentaje" precision="22" scale="0" />
         </property>
-        <property name="impote" type="java.lang.Double">
-            <column name="impote" precision="22" scale="0" />
+        <property name="importe" type="java.lang.Double">
+            <column name="importe" precision="22" scale="0" />
         </property>
         <property name="nota" type="string">
             <column name="nota" length="100" />
@@ -26,11 +26,5 @@
         <property name="total" type="java.lang.Double">
             <column name="total" precision="22" scale="0" />
         </property>
-        <set name="almacens" table="almacen" inverse="true" lazy="true" fetch="select">
-            <key>
-                <column name="id_pago_adicional" />
-            </key>
-            <one-to-many class="Hibernate.entidades.Almacen" />
-        </set>
     </class>
 </hibernate-mapping>

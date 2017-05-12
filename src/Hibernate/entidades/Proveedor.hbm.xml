@@ -17,6 +17,12 @@
         <property name="nombre" type="string">
             <column name="nombre" length="150" not-null="true" />
         </property>
+        <property name="usuario" type="string">
+            <column name="usuario" length="12" not-null="true" />
+        </property>
+        <property name="clave" type="string">
+            <column name="clave" length="12" not-null="true" />
+        </property>
         <property name="direccion" type="string">
             <column name="direccion" length="250" />
         </property>

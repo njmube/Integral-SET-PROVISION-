@@ -34,7 +34,7 @@ public class Cuentas extends javax.swing.JPanel {
     String sessionPrograma;
     Factura factura=null;
     Nota nota=null;
-    String edo="", edo_factura="";
+    String edo="", edo_factura="", tipo="";
     /**
      * Creates new form Cuentas
      */
@@ -61,7 +61,10 @@ public class Cuentas extends javax.swing.JPanel {
                 //factura = (Factura)session.get(Factura.class, Integer.parseInt(t_factura.getText()));
                 if(cb.getSelectedItem().toString().compareTo("FACTURA")==0)
                 {
-                    factura = (Factura)session.createCriteria(Factura.class).add(Restrictions.eq("folio", t_factura.getText())).uniqueResult();
+                    if(tipo.compareTo("M")==0)
+                        factura = (Factura)session.createCriteria(Factura.class).add(Restrictions.eq("folio", t_factura.getText())).uniqueResult();
+                    else
+                        factura = (Factura)session.createCriteria(Factura.class).add(Restrictions.eq("folioExterno", Integer.parseInt(t_factura.getText()))).uniqueResult();
                     if(factura!=null)
                     {
                         this.tf.setText(this.cb.getSelectedItem().toString());
@@ -70,8 +73,16 @@ public class Cuentas extends javax.swing.JPanel {
                         this.t_rfc.setText(factura.getRfcReceptor());
                         this.t_social.setText(factura.getNombreReceptor());
                         this.t_fiscal.setText(factura.getFFiscal());
-                        this.t_serie.setText(factura.getSerie());
-                        this.t_folio.setText(factura.getFolio());
+                        if(tipo.compareTo("M")==0)
+                        {
+                            this.t_serie.setText(factura.getSerie());
+                            this.t_folio.setText(factura.getFolio());
+                        }
+                        else
+                        {
+                            this.t_serie.setText(factura.getSerieExterno());
+                            this.t_folio.setText(""+factura.getFolioExterno());
+                        }
                         edo_factura=factura.getEstadoFactura();
                         try{
                             Concepto[] renglon=(Concepto[])factura.getConceptos().toArray(new Concepto[0]);
@@ -116,6 +127,7 @@ public class Cuentas extends javax.swing.JPanel {
                     else
                     {
                         t_factura.setText("");
+                        tipo="";
                         borra_cajas();
                         estado(false);
                         t_factura.requestFocus();
@@ -125,7 +137,10 @@ public class Cuentas extends javax.swing.JPanel {
                 }
                 else
                 {
-                    nota = (Nota)session.createCriteria(Nota.class).add(Restrictions.eq("folio", t_factura.getText())).uniqueResult();
+                    if(tipo.compareTo("M")==0)
+                        nota = (Nota)session.createCriteria(Nota.class).add(Restrictions.eq("folio", t_factura.getText())).uniqueResult();
+                    else
+                        nota = (Nota)session.createCriteria(Nota.class).add(Restrictions.eq("folioExterno", Integer.parseInt(t_factura.getText()))).uniqueResult();
                     if(nota!=null)
                     {
                         this.tf.setText(this.cb.getSelectedItem().toString());
@@ -134,8 +149,16 @@ public class Cuentas extends javax.swing.JPanel {
                         this.t_rfc.setText(nota.getRfcReceptor());
                         this.t_social.setText(nota.getNombreReceptor());
                         this.t_fiscal.setText(nota.getFFiscal());
-                        this.t_serie.setText(nota.getSerie());
-                        this.t_folio.setText(nota.getFolio());
+                        if(tipo.compareTo("M")==0)
+                        {
+                            this.t_serie.setText(nota.getSerie());
+                            this.t_folio.setText(nota.getFolio());
+                        }
+                        else
+                        {
+                            this.t_serie.setText(nota.getSerieExterno());
+                            this.t_folio.setText(""+nota.getFolioExterno());
+                        }
                         edo_factura=nota.getEstadoFactura();
                         try{
                             Concepto[] renglon=(Concepto[])nota.getConceptos().toArray(new Concepto[0]);
@@ -286,6 +309,7 @@ public class Cuentas extends javax.swing.JPanel {
 
         jLabel1.setText("Folio:");
 
+        t_factura.setEditable(false);
         t_factura.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 t_facturaActionPerformed(evt);
@@ -635,6 +659,7 @@ public class Cuentas extends javax.swing.JPanel {
                 else
                 {
                     t_factura.setText("");
+                    tipo="";
                     borra_cajas();
                     estado(false);
                     t_factura.requestFocus();
@@ -665,6 +690,7 @@ public class Cuentas extends javax.swing.JPanel {
                 else
                 {
                     t_factura.setText("");
+                    tipo="";
                     borra_cajas();
                     estado(false);
                     t_factura.requestFocus();
@@ -736,8 +762,18 @@ public class Cuentas extends javax.swing.JPanel {
             obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
             obj.setVisible(true);
             Factura fac=obj.getReturnStatus();
-            if(fac!=null)
-                t_factura.setText(""+fac.getFolio());
+            if(fac!=null){
+                if(fac.getFolio()!=null)
+                {
+                    t_factura.setText(""+fac.getFolio());
+                    tipo="M";
+                }
+                else
+                {
+                    t_factura.setText(""+fac.getFolioExterno());
+                    tipo="F";
+                }
+            }
             obj=null;
             buscaDato();
         }

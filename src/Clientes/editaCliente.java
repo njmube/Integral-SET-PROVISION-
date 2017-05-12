@@ -6,6 +6,7 @@
 package Clientes;
 
 import Hibernate.Util.HibernateUtil;
+import Hibernate.entidades.Acceso;
 import Hibernate.entidades.Clientes;
 import Hibernate.entidades.Usuario;
 import Integral.ExtensionFileFilter;
@@ -33,6 +34,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.hibernate.criterion.Restrictions;
 /**
  *
  * @author ESPECIALIZADO TOLUCA
@@ -167,6 +169,10 @@ public class editaCliente extends javax.swing.JPanel {
         t_busca = new javax.swing.JTextField();
         b_busca = new javax.swing.JButton();
         bt_actualiza2 = new javax.swing.JButton();
+        jLabel17 = new javax.swing.JLabel();
+        usuario = new javax.swing.JTextField();
+        jLabel18 = new javax.swing.JLabel();
+        contrasenia = new javax.swing.JPasswordField();
 
         nombre2.setEnabled(false);
         nombre2.setNextFocusableComponent(Direccion);
@@ -320,10 +326,11 @@ public class editaCliente extends javax.swing.JPanel {
         jLabel9.setForeground(new java.awt.Color(36, 116, 227));
         jLabel9.setText("Estado");
 
-        Estado.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "AGUASCALIENTES", "BAJA CALIFORNIA", "BAJA CALIFORNIA SUR", "CAMPECHE", "CHIAPAS", "CHIHUAHUA", "COAHUILA", "COLIMA", "DISTRITO FEDERAL", "DURANGO", "ESTADO DE MEXICO", "GUANAJUATO", "GUERRERO", "HIDALGO", "JALISCO", "MICHOACAN", "MORELOS", "NAYARIT", "NUEVO LEON", "OAXACA", "PUEBLA", "QUERETARO", "QUINTANA ROO", "SAN LUIS POTOSI", "SINALOA", "SONORA", "TABASCO", "TAMAULIPAS", "TLAXCALA", "VERACRUZ", "YUCATAN", "ZACATECAS" }));
+        Estado.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "AGUASCALIENTES", "BAJA CALIFORNIA", "BAJA CALIFORNIA SUR", "CAMPECHE", "CHIAPAS", "CHIHUAHUA", "COAHUILA", "COLIMA", "CIUDAD DE MÉXICO", "DURANGO", "ESTADO DE MÉXICO", "GUANAJUATO", "GUERRERO", "HIDALGO", "JALISCO", "MICHOACAN", "MORELOS", "NAYARIT", "NUEVO LEON", "OAXACA", "PUEBLA", "QUERETARO", "QUINTANA ROO", "SAN LUIS POTOSI", "SINALOA", "SONORA", "TABASCO", "TAMAULIPAS", "TLAXCALA", "VERACRUZ", "YUCATAN", "ZACATECAS" }));
         Estado.setEnabled(false);
 
         jLabel8.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        jLabel8.setForeground(new java.awt.Color(36, 116, 227));
         jLabel8.setText("R.F.C");
 
         Rfc.setEnabled(false);
@@ -483,6 +490,23 @@ public class editaCliente extends javax.swing.JPanel {
             }
         });
 
+        jLabel17.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        jLabel17.setForeground(new java.awt.Color(36, 116, 227));
+        jLabel17.setText("Usuario:");
+
+        usuario.setEnabled(false);
+        usuario.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                usuarioKeyTyped(evt);
+            }
+        });
+
+        jLabel18.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        jLabel18.setForeground(new java.awt.Color(36, 116, 227));
+        jLabel18.setText("Contraseña:");
+
+        contrasenia.setEnabled(false);
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -567,18 +591,30 @@ public class editaCliente extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(Selecciona2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(b_cancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel22)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(t_receptor, javax.swing.GroupLayout.PREFERRED_SIZE, 392, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(b_cancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(b_actualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(b_actualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel22)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(t_receptor, javax.swing.GroupLayout.PREFERRED_SIZE, 392, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel23)
-                        .addGap(18, 18, 18)
-                        .addComponent(t_email_receptor)))
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel17)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(usuario, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(contrasenia, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel23)
+                                .addGap(18, 18, 18)
+                                .addComponent(t_email_receptor)))))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -642,9 +678,15 @@ public class editaCliente extends javax.swing.JPanel {
                         .addComponent(jLabel22, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(t_receptor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(b_cancelar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(b_actualizar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(b_cancelar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(b_actualizar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel17))
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(usuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel18)
+                        .addComponent(contrasenia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -738,6 +780,12 @@ public class editaCliente extends javax.swing.JPanel {
                 numero.setText(t_datos.getValueAt(t_datos.getSelectedRow(), 13).toString());
                 t_receptor.setText(t_datos.getValueAt(t_datos.getSelectedRow(), 14).toString());
                 t_email_receptor.setText(t_datos.getValueAt(t_datos.getSelectedRow(), 15).toString());
+                
+                Acceso datos = (Acceso)session.createCriteria(Acceso.class).add(Restrictions.eq("clientes.idClientes", Integer.parseInt(t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString()))).setMaxResults(1).uniqueResult();
+                if(datos!=null){
+                    usuario.setText(datos.getIdAcceso());
+                    contrasenia.setText(datos.getClave());
+                }
                 cajas(true);
             }
             else
@@ -821,12 +869,30 @@ public class editaCliente extends javax.swing.JPanel {
             {
                 if(Email.getText().trim().compareTo("")!=0)
                 {
-                    boolean respuesta=modifica();
-                    if(respuesta==true)
+                    if(Rfc.getText().trim().compareTo("")!=0)
                     {
-                        JOptionPane.showMessageDialog(null, "Registro modificado");
-                        this.borra_cajas();
-                        buscaDato();
+                        if(usuario.getText().compareTo("")!=0)
+                        {
+                            if(contrasenia.getText().compareTo("")!=0)
+                            {
+                                boolean respuesta=modifica();
+                                if(respuesta==true)
+                                {
+                                    JOptionPane.showMessageDialog(null, "Registro modificado");
+                                    this.borra_cajas();
+                                    buscaDato();
+                                }
+                            }else{
+                                JOptionPane.showMessageDialog(null, "Ingrese la contraseña del cliente");
+                                contrasenia.requestFocus();
+                            }
+                        }else{
+                            JOptionPane.showMessageDialog(null, "Ingrese el usuario del cliente");
+                            usuario.requestFocus();
+                        }
+                    }else{
+                        JOptionPane.showMessageDialog(null, "Ingrese el RFC del cliente");
+                        Rfc.requestFocus();
                     }
                 }
                 else
@@ -1034,6 +1100,13 @@ public class editaCliente extends javax.swing.JPanel {
         } 
     }//GEN-LAST:event_bt_actualiza2ActionPerformed
 
+    private void usuarioKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_usuarioKeyTyped
+        // TODO add your handling code here:-
+        evt.setKeyChar(Character.toUpperCase(evt.getKeyChar()));
+        if(usuario.getText().length()>=13)
+        evt.consume();
+    }//GEN-LAST:event_usuarioKeyTyped
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JTextField Colonia;
     public javax.swing.JTextField Cp;
@@ -1053,6 +1126,7 @@ public class editaCliente extends javax.swing.JPanel {
     private javax.swing.JButton bt_actualiza1;
     private javax.swing.JButton bt_actualiza2;
     public javax.swing.JTextField contacto;
+    public javax.swing.JPasswordField contrasenia;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
@@ -1060,6 +1134,8 @@ public class editaCliente extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
@@ -1082,6 +1158,7 @@ public class editaCliente extends javax.swing.JPanel {
     private javax.swing.JTable t_datos;
     public javax.swing.JTextField t_email_receptor;
     public javax.swing.JTextField t_receptor;
+    public javax.swing.JTextField usuario;
     // End of variables declaration//GEN-END:variables
 
     private List<Object[]> executeHQLQuery(String hql) 
@@ -1187,6 +1264,7 @@ public class editaCliente extends javax.swing.JPanel {
             if(resp==null)
             {
                 Clientes objeto = (Clientes)session.get(Clientes.class, Integer.parseInt(IdClientes.getText()));
+                
                 objeto.setNombre(nombre.getText());
                 objeto.setDireccion(Direccion.getText());
                 objeto.setColonia(Colonia.getText());
@@ -1206,6 +1284,16 @@ public class editaCliente extends javax.swing.JPanel {
                 objeto.setReceptor(t_receptor.getText());
                 objeto.setEmailReceptor(t_email_receptor.getText());
                 session.update(objeto);
+                
+                Acceso datos = (Acceso)session.createCriteria(Acceso.class).add(Restrictions.eq("clientes.idClientes", Integer.parseInt(IdClientes.getText()))).setMaxResults(1).uniqueResult();
+                if(datos!=null){
+                    Query query = session.createSQLQuery("update acceso set id_acceso='"+usuario.getText()+"', clave='"+contrasenia.getText()+"' where id_clientes="+Integer.parseInt(IdClientes.getText()));
+                    query.executeUpdate();
+                }else{
+                   Query query = session.createSQLQuery("insert into acceso(id_acceso, clave,token, id_clientes) values('"+usuario.getText()+"','"+contrasenia.getText()+"',null, "+Integer.parseInt(IdClientes.getText())+")");
+                   query.executeUpdate();
+                }
+
                 session.getTransaction().commit();
                 cajas(false);
                 return true;
@@ -1245,6 +1333,8 @@ public class editaCliente extends javax.swing.JPanel {
             }
             else
             {
+                Query query = session.createSQLQuery("delete from acceso where id_clientes="+actor.getIdClientes());
+                query.executeUpdate();
                 session.delete(actor);
                 session.getTransaction().commit();
                 return true;
@@ -1281,6 +1371,8 @@ public class editaCliente extends javax.swing.JPanel {
         this.numero.setEnabled(edo);
         this.t_receptor.setEnabled(edo);
         this.t_email_receptor.setEnabled(edo);
+        this.usuario.setEnabled(edo);
+        this.contrasenia.setEnabled(edo);
     }
     
     public void borra_cajas()
@@ -1301,6 +1393,8 @@ public class editaCliente extends javax.swing.JPanel {
         this.numero.setText("");
         this.t_receptor.setText("");
         this.t_email_receptor.setText("");
+        this.usuario.setText("");
+        this.contrasenia.setText("");
     }
     public void tabla_tamaños()
     {

@@ -9,6 +9,7 @@ package Servicios;
 import Hibernate.Util.HibernateUtil;
 import Hibernate.entidades.Acceso;
 import Hibernate.entidades.Configuracion;
+import Hibernate.entidades.CotizacionCliente;
 import Hibernate.entidades.Cuenta;
 import Hibernate.entidades.Foto;
 import Hibernate.entidades.Notificacion;
@@ -33,6 +34,8 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
 import java.awt.Desktop;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -46,12 +49,17 @@ import java.nio.file.Files;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
@@ -82,6 +90,8 @@ public class SmLogistics extends javax.swing.JPanel {
         this.sessionPrograma=sessionPrograma;
         ruta=carpeta;
         buscaDatos();
+        cargaCotizacionAutorizado();
+        cargaCotizacionNoAutorizado();
         selector=new JFileChooser();
         selector.setFileFilter(new ExtensionFileFilter("Documentos(PDF y DOCX)", new String[] { "PDF", "DOCX" }));
         selector.setAcceptAllFileFilterUsed(false);
@@ -824,24 +834,36 @@ public class SmLogistics extends javax.swing.JPanel {
                                 session.saveOrUpdate(orden_act);
                                 
                                 //creamos las notificaciones**************
-                                Acceso [] accesos=(Acceso[])orden_act.getClientes().getAccesos().toArray(new Acceso[0]);
+                                ArrayList<Acceso> accesos=new ArrayList();
+                                Acceso [] aux1 = (Acceso[])orden_act.getClientes().getAccesos().toArray(new Acceso[0]);
+                                accesos.addAll(Arrays.asList(aux1));
+                                if(orden_act.getCompania()!=null)
+                                {
+                                    aux1 = (Acceso[])orden_act.getCompania().getAccesos().toArray(new Acceso[0]);
+                                    accesos.addAll(Arrays.asList(aux1));
+                                }
+                                if(orden_act.getAgente()!=null)
+                                {
+                                    aux1 = (Acceso[])orden_act.getAgente().getAccesos().toArray(new Acceso[0]);
+                                    accesos.addAll(Arrays.asList(aux1));
+                                }
                                 if(accesos!=null)
                                 {
                                     String notificaciones="{\"NOTIFICACIONES\":[";
-                                    for(int a=0; a<accesos.length; a++)
+                                    for(int a=0; a<accesos.size(); a++)
                                     {
                                         Notificacion nueva=new Notificacion();
                                         nueva.setMensaje("OT:"+orden_act.getIdOrden()+" Inventario de Ingreso");
                                         nueva.setExtra("");
                                         nueva.setIntentos(0);
                                         nueva.setVisto(false);
-                                        nueva.setAcceso(accesos[0]);
+                                        nueva.setAcceso(accesos.get(a));
                                         Integer id = (Integer)session.save(nueva);
                                         nueva=(Notificacion)session.get(Notificacion.class, id);
-                                        nueva.setExtra("{\"VENTANA\":\"MuestraPDF\",\"ID_ORDEN\":\""+orden_act.getIdOrden()+"\",\"ID_NOTIFICACION\":\""+id+"\",\"ID_USUARIO\":\""+accesos[0].getIdAcceso()+"\",\"ARCHIVO\":\""+nom+"\"}");
+                                        nueva.setExtra("{\"VENTANA\":\"MuestraPDF\",\"ID_ORDEN\":\""+orden_act.getIdOrden()+"\",\"ID_NOTIFICACION\":\""+id+"\",\"ID_USUARIO\":\""+accesos.get(a).getIdAcceso()+"\",\"ARCHIVO\":\""+nom+"\"}");
                                         session.update(nueva);
                                         notificaciones+="{\"ID\":\""+id+"\"}";
-                                        if(a+1 < accesos.length)
+                                        if(a+1 < accesos.size())
                                             notificaciones+=",";
                                     }
                                     notificaciones+="]}";
@@ -885,6 +907,11 @@ public class SmLogistics extends javax.swing.JPanel {
 
     private void b_cotizacion_cargaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_cotizacion_cargaActionPerformed
         // TODO add your handling code here:
+        buscaExcel obj = new buscaExcel(new javax.swing.JFrame(), true, usr, sessionPrograma, orden_act);
+        obj.t_busca.requestFocus();
+        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+        obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
+        obj.setVisible(true);        
     }//GEN-LAST:event_b_cotizacion_cargaActionPerformed
 
     private void b_desgaste_formatoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_desgaste_formatoActionPerformed
@@ -1008,28 +1035,39 @@ public class SmLogistics extends javax.swing.JPanel {
                                 out.close();
                                 session.beginTransaction().begin();
                                 orden_act = (Orden)session.get(Orden.class, orden_act.getIdOrden()); 
-                                orden_act.setInventario(nom);
+                                orden_act.setDesgaste(nom);
                                 session.saveOrUpdate(orden_act);
                                 
                                 //creamos las notificaciones**************
-                                Acceso [] accesos=(Acceso[])orden_act.getClientes().getAccesos().toArray(new Acceso[0]);
-                                if(accesos!=null)
+                                ArrayList<Acceso> accesos=new ArrayList();
+                                Acceso [] aux1 = (Acceso[])orden_act.getClientes().getAccesos().toArray(new Acceso[0]);
+                                accesos.addAll(Arrays.asList(aux1));
+                                if(orden_act.getCompania()!=null)
                                 {
+                                    aux1 = (Acceso[])orden_act.getCompania().getAccesos().toArray(new Acceso[0]);
+                                    accesos.addAll(Arrays.asList(aux1));
+                                }
+                                if(orden_act.getAgente()!=null)
+                                {
+                                    aux1 = (Acceso[])orden_act.getAgente().getAccesos().toArray(new Acceso[0]);
+                                    accesos.addAll(Arrays.asList(aux1));
+                                }
+                                
                                     String notificaciones="{\"NOTIFICACIONES\":[";
-                                    for(int a=0; a<accesos.length; a++)
+                                    for(int a=0; a<accesos.size(); a++)
                                     {
                                         Notificacion nueva=new Notificacion();
                                         nueva.setMensaje("OT:"+orden_act.getIdOrden()+" Desgaste no atribuible al siniestro");
                                         nueva.setExtra("");
                                         nueva.setIntentos(0);
                                         nueva.setVisto(false);
-                                        nueva.setAcceso(accesos[0]);
+                                        nueva.setAcceso(accesos.get(a));
                                         Integer id = (Integer)session.save(nueva);
                                         nueva=(Notificacion)session.get(Notificacion.class, id);
-                                        nueva.setExtra("{\"VENTANA\":\"MuestraPDF\",\"ID_ORDEN\":\""+orden_act.getIdOrden()+"\",\"ID_NOTIFICACION\":\""+id+"\",\"ID_USUARIO\":\""+accesos[0].getIdAcceso()+"\",\"ARCHIVO\":\""+nom+"\"}");
+                                        nueva.setExtra("{\"VENTANA\":\"MuestraPDF\",\"ID_ORDEN\":\""+orden_act.getIdOrden()+"\",\"ID_NOTIFICACION\":\""+id+"\",\"ID_USUARIO\":\""+accesos.get(a).getIdAcceso()+"\",\"ARCHIVO\":\""+nom+"\"}");
                                         session.update(nueva);
                                         notificaciones+="{\"ID\":\""+id+"\"}";
-                                        if(a+1 < accesos.length)
+                                        if(a+1 < accesos.size())
                                             notificaciones+=",";
                                     }
                                     notificaciones+="]}";
@@ -1040,13 +1078,10 @@ public class SmLogistics extends javax.swing.JPanel {
                                     service.add("NOTIFICACIONES", notificaciones);
                                     System.out.println(service.getRespueta());
                                     JOptionPane.showMessageDialog(this, "El archivo fue cargado con exito y se notificó al Cliente.");
-                                    }catch(Exception e){System.out.println("error");}
-                                    JOptionPane.showMessageDialog(this, "El archivo fue cargado con exito pero no se pudo notificar al cliente.");
-                                }
-                                else{
-                                    session.beginTransaction().commit();
-                                    JOptionPane.showMessageDialog(this, "Se archivo fue cargado con exito");
-                                }
+                                    }catch(Exception e){
+                                        System.out.println("error");
+                                        JOptionPane.showMessageDialog(this, "El archivo fue cargado con exito pero no se pudo notificar al cliente.");
+                                    }
                                 
                                 //****************************************
                                 agregaArchivo(nom, b_desgaste);
@@ -1080,7 +1115,7 @@ public class SmLogistics extends javax.swing.JPanel {
             DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
             String valor=dateFormat.format(fecha);
             
-            String formato="PagoAXA.pdf";//ord.getCompania().getFormatoPago();
+            String formato=ord.getCompania().getFormatoPago();
             File folder = new File("reportes/"+ord.getIdOrden());
             folder.mkdirs();
             
@@ -1314,28 +1349,40 @@ public class SmLogistics extends javax.swing.JPanel {
                                 out.close();
                                 session.beginTransaction().begin();
                                 orden_act = (Orden)session.get(Orden.class, orden_act.getIdOrden()); 
-                                orden_act.setInventario(nom);
+                                orden_act.setPago(nom);
                                 session.saveOrUpdate(orden_act);
                                 
                                 //creamos las notificaciones**************
-                                Acceso [] accesos=(Acceso[])orden_act.getClientes().getAccesos().toArray(new Acceso[0]);
+                                ArrayList<Acceso> accesos=new ArrayList();
+                                Acceso [] aux1 = (Acceso[])orden_act.getClientes().getAccesos().toArray(new Acceso[0]);
+                                accesos.addAll(Arrays.asList(aux1));
+                                if(orden_act.getCompania()!=null)
+                                {
+                                    aux1 = (Acceso[])orden_act.getCompania().getAccesos().toArray(new Acceso[0]);
+                                    accesos.addAll(Arrays.asList(aux1));
+                                }
+                                if(orden_act.getAgente()!=null)
+                                {
+                                    aux1 = (Acceso[])orden_act.getAgente().getAccesos().toArray(new Acceso[0]);
+                                    accesos.addAll(Arrays.asList(aux1));
+                                }
                                 if(accesos!=null)
                                 {
                                     String notificaciones="{\"NOTIFICACIONES\":[";
-                                    for(int a=0; a<accesos.length; a++)
+                                    for(int a=0; a<accesos.size(); a++)
                                     {
                                         Notificacion nueva=new Notificacion();
                                         nueva.setMensaje("OT:"+orden_act.getIdOrden()+" Proceso de Pago");
                                         nueva.setExtra("");
                                         nueva.setIntentos(0);
                                         nueva.setVisto(false);
-                                        nueva.setAcceso(accesos[0]);
+                                        nueva.setAcceso(accesos.get(a));
                                         Integer id = (Integer)session.save(nueva);
                                         nueva=(Notificacion)session.get(Notificacion.class, id);
-                                        nueva.setExtra("{\"VENTANA\":\"MuestraPDF\",\"ID_ORDEN\":\""+orden_act.getIdOrden()+"\",\"ID_NOTIFICACION\":\""+id+"\",\"ID_USUARIO\":\""+accesos[0].getIdAcceso()+"\",\"ARCHIVO\":\""+nom+"\"}");
+                                        nueva.setExtra("{\"VENTANA\":\"MuestraPDF\",\"ID_ORDEN\":\""+orden_act.getIdOrden()+"\",\"ID_NOTIFICACION\":\""+id+"\",\"ID_USUARIO\":\""+accesos.get(a).getIdAcceso()+"\",\"ARCHIVO\":\""+nom+"\"}");
                                         session.update(nueva);
                                         notificaciones+="{\"ID\":\""+id+"\"}";
-                                        if(a+1 < accesos.length)
+                                        if(a+1 < accesos.size())
                                             notificaciones+=",";
                                     }
                                     notificaciones+="]}";
@@ -1346,8 +1393,10 @@ public class SmLogistics extends javax.swing.JPanel {
                                     service.add("NOTIFICACIONES", notificaciones);
                                     System.out.println(service.getRespueta());
                                     JOptionPane.showMessageDialog(this, "El archivo fue cargado con exito y se notificó al Cliente.");
-                                    }catch(Exception e){System.out.println("error");}
-                                    JOptionPane.showMessageDialog(this, "El archivo fue cargado con exito pero no se pudo notificar al cliente.");
+                                    }catch(Exception e){
+                                        System.out.println("error");
+                                        JOptionPane.showMessageDialog(this, "El archivo fue cargado con exito pero no se pudo notificar al cliente.");
+                                    }
                                 }
                                 else{
                                     session.beginTransaction().commit();
@@ -1377,6 +1426,71 @@ public class SmLogistics extends javax.swing.JPanel {
 
     private void b_entrega_formatoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_entrega_formatoActionPerformed
         // TODO add your handling code here:
+        h=new Herramientas(usr, 0);
+        h.session(sessionPrograma);
+        
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try
+        {
+            Orden ord=(Orden)session.get(Orden.class, orden_act.getIdOrden());
+            Date fecha = new Date();
+            DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
+            String valor=dateFormat.format(fecha);
+            File folder = new File("reportes/"+ord.getIdOrden());
+            folder.mkdirs();
+            PdfReader reader = new PdfReader("imagenes/PlantillaEntrega.pdf");
+            PdfStamper stamp = new PdfStamper(reader, new FileOutputStream("reportes/"+ ord.getIdOrden() +"/"+ valor +"-ENTREGA.pdf"));
+            PdfContentByte cb = stamp.getUnderContent(1);
+            AcroFields fdfDoc = stamp.getAcroFields();
+            BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.EMBEDDED);
+           
+            cb.beginText();
+               fdfDoc.setField("Orden de Trabajo", String.valueOf(ord.getIdOrden()));
+               
+               //MARCA
+               if(ord.getMarca().getMarcaNombre()!=null)
+                   fdfDoc.setField("Marca", ord.getMarca().getMarcaNombre());
+               
+               //MODELO
+               if(ord.getModelo()!=null)
+                   fdfDoc.setField("Modelo", String.valueOf(ord.getModelo()));
+               
+               //PLACAS
+               if(ord.getNoPlacas()!=null)
+                   fdfDoc.setField("Placas", String.valueOf(ord.getNoPlacas()));
+                   
+               //CLIENTE
+               if(ord.getClientes().getNombre()!=null)
+                   fdfDoc.setField("Cliente", ord.getClientes().getNombre());
+               
+               //TECNICO
+               if(ord.getEmpleadoByRTecnico()!=null){
+                   if(ord.getEmpleadoByRTecnico().getNombre()!=null){
+                       fdfDoc.setField("Técnico", ord.getEmpleadoByRTecnico().getNombre());
+                   }
+               }
+               
+               //FECHA INGRESO
+                if(ord.getFecha()!=null)
+                {
+                    fdfDoc.setField("Fecha", ord.getFecha().toString());
+                }
+               
+            cb.endText();
+            stamp.close();
+            PDF reporte = new PDF();
+            reporte.cerrar();
+            reporte.visualizar2("reportes/"+ord.getIdOrden()+"/"+valor+"-ENTREGA.pdf");
+           
+        }catch(Exception e)
+        {
+            System.out.println(e);
+            JOptionPane.showMessageDialog(this, "No se pudo realizar el reporte si el archivo esta abierto");
+        }
+        if(session!=null)
+            if(session.isOpen())
+                session.close();
+        
     }//GEN-LAST:event_b_entrega_formatoActionPerformed
 
     private void b_entrega_cargaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_entrega_cargaActionPerformed
@@ -1435,28 +1549,40 @@ public class SmLogistics extends javax.swing.JPanel {
                                 out.close();
                                 session.beginTransaction().begin();
                                 orden_act = (Orden)session.get(Orden.class, orden_act.getIdOrden()); 
-                                orden_act.setInventario(nom);
+                                orden_act.setEntrega(nom);
                                 session.saveOrUpdate(orden_act);
                                 
                                 //creamos las notificaciones**************
-                                Acceso [] accesos=(Acceso[])orden_act.getClientes().getAccesos().toArray(new Acceso[0]);
+                                ArrayList<Acceso> accesos=new ArrayList();
+                                Acceso [] aux1 = (Acceso[])orden_act.getClientes().getAccesos().toArray(new Acceso[0]);
+                                accesos.addAll(Arrays.asList(aux1));
+                                if(orden_act.getCompania()!=null)
+                                {
+                                    aux1 = (Acceso[])orden_act.getCompania().getAccesos().toArray(new Acceso[0]);
+                                    accesos.addAll(Arrays.asList(aux1));
+                                }
+                                if(orden_act.getAgente()!=null)
+                                {
+                                    aux1 = (Acceso[])orden_act.getAgente().getAccesos().toArray(new Acceso[0]);
+                                    accesos.addAll(Arrays.asList(aux1));
+                                }
                                 if(accesos!=null)
                                 {
                                     String notificaciones="{\"NOTIFICACIONES\":[";
-                                    for(int a=0; a<accesos.length; a++)
+                                    for(int a=0; a<accesos.size(); a++)
                                     {
                                         Notificacion nueva=new Notificacion();
                                         nueva.setMensaje("OT:"+orden_act.getIdOrden()+" Check List de Entrega");
                                         nueva.setExtra("");
                                         nueva.setIntentos(0);
                                         nueva.setVisto(false);
-                                        nueva.setAcceso(accesos[0]);
+                                        nueva.setAcceso(accesos.get(a));
                                         Integer id = (Integer)session.save(nueva);
                                         nueva=(Notificacion)session.get(Notificacion.class, id);
-                                        nueva.setExtra("{\"VENTANA\":\"MuestraPDF\",\"ID_ORDEN\":\""+orden_act.getIdOrden()+"\",\"ID_NOTIFICACION\":\""+id+"\",\"ID_USUARIO\":\""+accesos[0].getIdAcceso()+"\",\"ARCHIVO\":\""+nom+"\"}");
+                                        nueva.setExtra("{\"VENTANA\":\"MuestraPDF\",\"ID_ORDEN\":\""+orden_act.getIdOrden()+"\",\"ID_NOTIFICACION\":\""+id+"\",\"ID_USUARIO\":\""+accesos.get(a).getIdAcceso()+"\",\"ARCHIVO\":\""+nom+"\"}");
                                         session.update(nueva);
                                         notificaciones+="{\"ID\":\""+id+"\"}";
-                                        if(a+1 < accesos.length)
+                                        if(a+1 < accesos.size())
                                             notificaciones+=",";
                                     }
                                     notificaciones+="]}";
@@ -1467,8 +1593,10 @@ public class SmLogistics extends javax.swing.JPanel {
                                     service.add("NOTIFICACIONES", notificaciones);
                                     System.out.println(service.getRespueta());
                                     JOptionPane.showMessageDialog(this, "El archivo fue cargado con exito y se notificó al Cliente.");
-                                    }catch(Exception e){System.out.println("error");}
-                                    JOptionPane.showMessageDialog(this, "El archivo fue cargado con exito pero no se pudo notificar al cliente.");
+                                    }catch(Exception e){
+                                        System.out.println("error");
+                                        JOptionPane.showMessageDialog(this, "El archivo fue cargado con exito pero no se pudo notificar al cliente.");
+                                    }
                                 }
                                 else{
                                     session.beginTransaction().commit();
@@ -1500,7 +1628,7 @@ public class SmLogistics extends javax.swing.JPanel {
         // TODO add your handling code here:
         try
         {
-            File archivo = new File(ruta+"ordenes/"+orden_act.getIdOrden()+"/archivos/"+b_inventario.getText());
+            File archivo = new File(ruta+"ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/"+b_inventario.getText());
             if(ruta.contains("http:")==true || ruta.contains("\\\\")==true || ruta.contains("//")==true || ruta.contains("////")==true)
                 Desktop.getDesktop().browse(getFileURI(ruta+"ordenes\\"+orden_act.getIdOrden()+"\\archivos\\sm-logistics\\"+b_inventario.getText()));
             else
@@ -1522,7 +1650,7 @@ public class SmLogistics extends javax.swing.JPanel {
         // TODO add your handling code here:
         try
         {
-            File archivo = new File(ruta+"ordenes/"+orden_act.getIdOrden()+"/archivos/"+b_desgaste.getText());
+            File archivo = new File(ruta+"ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/"+b_desgaste.getText());
             if(ruta.contains("http:")==true || ruta.contains("\\\\")==true || ruta.contains("//")==true || ruta.contains("////")==true)
                 Desktop.getDesktop().browse(getFileURI(ruta+"ordenes\\"+orden_act.getIdOrden()+"\\archivos\\sm-logistics\\"+b_desgaste.getText()));
             else
@@ -1544,7 +1672,7 @@ public class SmLogistics extends javax.swing.JPanel {
         // TODO add your handling code here:
         try
         {
-            File archivo = new File(ruta+"ordenes/"+orden_act.getIdOrden()+"/archivos/"+b_pago.getText());
+            File archivo = new File(ruta+"ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/"+b_pago.getText());
             if(ruta.contains("http:")==true || ruta.contains("\\\\")==true || ruta.contains("//")==true || ruta.contains("////")==true)
                 Desktop.getDesktop().browse(getFileURI(ruta+"ordenes\\"+orden_act.getIdOrden()+"\\archivos\\sm-logistics\\"+b_pago.getText()));
             else
@@ -1566,7 +1694,7 @@ public class SmLogistics extends javax.swing.JPanel {
         // TODO add your handling code here:
         try
         {
-            File archivo = new File(ruta+"ordenes/"+orden_act.getIdOrden()+"/archivos/"+b_entrega.getText());
+            File archivo = new File(ruta+"ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/"+b_entrega.getText());
             if(ruta.contains("http:")==true || ruta.contains("\\\\")==true || ruta.contains("//")==true || ruta.contains("////")==true)
                 Desktop.getDesktop().browse(getFileURI(ruta+"ordenes\\"+orden_act.getIdOrden()+"\\archivos\\sm-logistics\\"+b_entrega.getText()));
             else
@@ -1597,24 +1725,31 @@ public class SmLogistics extends javax.swing.JPanel {
                 System.out.println(resp.get("ESTADO"));
                 if(resp.get("ESTADO").toString().compareTo("1")==0)
                 {
-                     /*Session session = HibernateUtil.getSessionFactory().openSession();
+                     Session session = HibernateUtil.getSessionFactory().openSession();
                      try
                      {
-                        File f;
+                        session.beginTransaction().begin();
                         orden_act = (Orden)session.get(Orden.class, orden_act.getIdOrden());
-                        orden_act.setIdSm();
-                        session.update(orden_act);*/
+                        orden_act.setIdSm(t_solicitud.getText());
+                        session.update(orden_act);
+                        session.beginTransaction().commit();   
                         JOptionPane.showMessageDialog(this, "La solicitud se enlazo a la orden!");
-                     /*}catch(Exception e){
+                     }catch(Exception e){
+                         session.beginTransaction().rollback();
                          JOptionPane.showMessageDialog(this, "Error en la conexión al servidor, intente mas tarde.");
-                     }*/
+                     }
                 }
-                else
+                else{
+                    t_solicitud.setText(orden_act.getIdSm());
                     JOptionPane.showMessageDialog(this, "No fue posible encontrar la solicitud en el servidor");
+                }
             }catch(Exception e){
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(this, "Error en la conexión al servidor, intente mas tarde.");
             }
+        }else{
+            JOptionPane.showMessageDialog(this, "Ingrese un Número de Solicitud");
+            t_solicitud.requestFocus();
         }
       
     }//GEN-LAST:event_b_guardarActionPerformed
@@ -1674,6 +1809,11 @@ public class SmLogistics extends javax.swing.JPanel {
                   t_solicitud.setEnabled(true);
               }
               orden_act = (Orden)session.get(Orden.class, Integer.parseInt(ord));
+              
+              if(orden_act.getIdSm()!=null){
+                  t_solicitud.setText(orden_act.getIdSm());
+              }
+              
               if(usr.getVerFechaCliente())
               {
                 if(orden_act.getFechaCliente()!=null)
@@ -1698,8 +1838,7 @@ public class SmLogistics extends javax.swing.JPanel {
                   }catch(Exception e){}
               }
 
-              if(orden_act.getDesgaste()!=null)
-              {
+              if(orden_act.getDesgaste()!=null){
                   try{
                       String nombre=orden_act.getDesgaste();
                       agregaArchivo(nombre, b_desgaste);
@@ -1776,5 +1915,63 @@ public class SmLogistics extends javax.swing.JPanel {
         }
         bt.setText(nombre);
   }
-}
+  
+  public void cargaCotizacionAutorizado(){
+    String consulta = "from CotizacionCliente where id_orden =  " + orden_act.getIdOrden()  +" and autorizado = 1";
+    List<Object[]> resultList = executeHQLQuery(consulta);
+    if (resultList.size() > 0) {
+        int i = 0;
+        double suma = 0;
+        for (Object o : resultList) {
+            CotizacionCliente actor = (CotizacionCliente) o;
+            suma += actor.getCosto();
+            i++;
+        }
+        DecimalFormat formatea = new DecimalFormat("###,###.##");
+        double costo = Double.valueOf(suma);
+        String cos = formatea.format(costo);
+       t_cotizacion_autorizado.setText(cos);
+    } else {
+    }
+  }
+  public void cargaCotizacionNoAutorizado(){
+        String consulta = "from CotizacionCliente where id_orden =  " + orden_act.getIdOrden()  +" and autorizado = 0";
+        List<Object[]> resultList = executeHQLQuery(consulta);
+        if (resultList.size() > 0) {
+            int i = 0;
+            double suma = 0;
+            
+            for (Object o : resultList) {
+                CotizacionCliente actor = (CotizacionCliente) o;
+                
+                suma += actor.getCosto();
+                i++;
+            }
+            DecimalFormat formatea = new DecimalFormat("###,###.##");
+            double costo = Double.valueOf(suma);
+            String cos = formatea.format(costo);
+            t_cotizacion_taller.setText(cos);
+        } else {
+        }
+    }
+    private List<Object[]> executeHQLQuery(String hql) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try {
+            session.beginTransaction();
+            Query q = session.createQuery(hql);
+            List resultList = q.list();
+            session.getTransaction().commit();
+            session.disconnect();
+            return resultList;
+        } catch (HibernateException he) {
+            he.printStackTrace();
+            List lista = null;
+            return lista;
+        } finally {
+            if (session.isOpen()) {
+                session.close();
+            }
+        }
+    }
+ }
 

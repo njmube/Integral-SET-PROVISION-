@@ -67,8 +67,8 @@ public class asiento1 extends javax.swing.JPanel {
         t_datos.setModel(ModeloTablaReporte(0, columnas));
         formato = new FormatoTabla();
         consultaAsiento();
-        t_datos1.setValueAt("Total Factura:", 0, 0);
-        t_datos1.setValueAt(t_datos1.getValueAt(0, 5), 0, 1);
+        //t_datos1.setValueAt("Total Factura:", 0, 0);
+        //t_datos1.setValueAt(t_datos1.getValueAt(0, 5), 0, 1);
         formatoTabla();
         formatoTabla1();
     }
@@ -737,8 +737,9 @@ public class asiento1 extends javax.swing.JPanel {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
+        
         if ((double) t_datos1.getValueAt(0, 5) == (double) t_datos1.getValueAt(0, 6)) {
-            if ((double) t_datos1.getValueAt(0, 1) == (double) t_datos1.getValueAt(0, 5)) {
+            //if ((double) t_datos1.getValueAt(0, 1) == (double) t_datos1.getValueAt(0, 5)) {
                 Session session = HibernateUtil.getSessionFactory().openSession();
                 try {
                     session.beginTransaction().begin();
@@ -798,9 +799,9 @@ public class asiento1 extends javax.swing.JPanel {
                 }
                 JOptionPane.showMessageDialog(null, "Datos Actualizados Correctamente.");
                 }
-            } else {
+            /*} else {
                 JOptionPane.showMessageDialog(null, "El total Debe y Haber debe ser Igual a Total Factura.");
-            }
+            }*/
         } else {
             JOptionPane.showMessageDialog(null, "El total Debe y Haber debe ser Igual.");
         }

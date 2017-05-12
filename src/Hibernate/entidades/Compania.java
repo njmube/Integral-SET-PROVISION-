@@ -43,6 +43,7 @@ public class Compania  implements java.io.Serializable {
      private Set cuentas = new HashSet(0);
      private Set documentoses = new HashSet(0);
      private Set ordens = new HashSet(0);
+     private Set accesos = new HashSet(0);
 
     public Compania() {
     }
@@ -51,7 +52,7 @@ public class Compania  implements java.io.Serializable {
     public Compania(String nombre) {
         this.nombre = nombre;
     }
-    public Compania(String nombre, String direccion, String colonia, String poblacion, String estado, String cp, String telefono, String fax, String email, String representante1, String r1Puesto, String representante2, String r2Puesto, Float importeHora, Float importeMax, String tipoPago, Integer plazo, String programaReporte, String comentarios, String grupoEjecutivo, String foto, String rfc, String municipio, String pais, String numeroExterior, String social, String formatoPago, Set ordenExternas, Set cuentas, Set documentoses, Set ordens) {
+    public Compania(String nombre, String direccion, String colonia, String poblacion, String estado, String cp, String telefono, String fax, String email, String representante1, String r1Puesto, String representante2, String r2Puesto, Float importeHora, Float importeMax, String tipoPago, Integer plazo, String programaReporte, String comentarios, String grupoEjecutivo, String foto, String rfc, String municipio, String pais, String numeroExterior, String social, String formatoPago, Set ordenExternas, Set cuentas, Set documentoses, Set ordens, Set accesos) {
        this.nombre = nombre;
        this.social = social;
        this.direccion = direccion;
@@ -83,6 +84,7 @@ public class Compania  implements java.io.Serializable {
        this.cuentas = cuentas;
        this.documentoses = documentoses;
        this.ordens = ordens;
+       this.accesos = accesos;
     }
    
     public Integer getIdCompania() {
@@ -314,6 +316,14 @@ public class Compania  implements java.io.Serializable {
         this.ordens = ordens;
     }
 
+    public Set getAccesos() {
+        return this.accesos;
+    }
+    
+    public void setAccesos(Set accesos) {
+        this.accesos = accesos;
+    }
+    
     public boolean eliminaCuenta(Cuenta cue) {
         return this.cuentas.remove(cue);
     }

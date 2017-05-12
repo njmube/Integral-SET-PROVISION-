@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 21/08/2015 05:39:12 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.CotConsumible" table="cot_consumible">
+        <id name="idSolicitud" type="java.lang.Integer">
+            <column name="id_solicitud"/>
+            <generator class="identity" />
+        </id>
+        <property name="fechaSolicitud" type="timestamp">
+            <column name="fecha" length="19" not-null="true">
+                <comment>fecha del solicitud</comment>
+            </column>
+        </property>
+        <many-to-one name="proveedor" class="Hibernate.entidades.Proveedor" fetch="select">
+            <column name="id_proveedor" />
+        </many-to-one>
+        <many-to-one name="empleado" class="Hibernate.entidades.Empleado" fetch="select">
+            <column name="id_empleado" />
+        </many-to-one>
+    </class>
+</hibernate-mapping>
+

@@ -765,7 +765,7 @@ public class valuacionDirecta extends javax.swing.JPanel {
             String valor=dateFormat.format(fecha);
             File folder = new File("reportes/"+ord.getIdOrden());
             folder.mkdirs();
-            reporte.Abrir(PageSize.LETTER.rotate(), "Valuación", "reportes/"+ord.getIdOrden()+"/"+valor+"-levantamiento.pdf");
+            reporte.Abrir2(PageSize.LETTER.rotate(), "Valuación", "reportes/"+ord.getIdOrden()+"/"+valor+"-levantamiento.pdf");
             Font font = new Font(Font.FontFamily.HELVETICA, 6, Font.BOLD);
             BaseColor contenido=BaseColor.WHITE;
             int centro=Element.ALIGN_CENTER;
@@ -915,7 +915,7 @@ public class valuacionDirecta extends javax.swing.JPanel {
             tabla.setHeaderRows(3);
             reporte.agregaObjeto(tabla);
             reporte.cerrar();
-            reporte.visualizar("reportes/"+ord.getIdOrden()+"/"+valor+"-levantamiento.pdf");
+            reporte.visualizar2("reportes/"+ord.getIdOrden()+"/"+valor+"-levantamiento.pdf");
             
         }catch(Exception e)
         {

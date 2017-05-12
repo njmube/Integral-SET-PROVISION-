@@ -19,28 +19,18 @@ import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.Vector;
-import java.util.concurrent.ExecutionException;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import mx.com.fact.schema.ws.RequestTransaction;
-import mx.com.fact.schema.ws.RequestTransactionResponse;
 import mysuite.TAllowanceChargeType;
 import mysuite.TComprobanteEx;
 import mysuite.TConceptoEx;
@@ -64,28 +54,44 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import Integral.Comprimir;
 import Integral.FormatoTabla;
 import Integral.Herramientas;
 import Integral.Render1;
 import Integral.numeroLetra;
+import finkok.Comprobante.Addenda;
 import java.io.BufferedReader;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import mysuite.TFactDocMX.Conceptos.Concepto.Opciones;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.apache.poi.hssf.record.crypto.Biff8EncryptionKey;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import timbrar.ApiMysuite;
+
+import finkok.Comprobante.Emisor;
+import finkok.Comprobante.Emisor.RegimenFiscal;
+import finkok.Comprobante.Impuestos;
+import finkok.Comprobante.Impuestos.Traslados;
+import finkok.Comprobante.Impuestos.Traslados.Traslado;
+import finkok.Comprobante.Receptor;
+import finkok.TUbicacion;
+import finkok.TUbicacionFiscal;
+import java.text.Normalizer;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.regex.Pattern;
+import javax.xml.datatype.DatatypeFactory;
+import org.hibernate.Criteria;
+import org.hibernate.Query;
+import timbrar.ApiFinkok;
+import timbrar.Constantes;
+import timbrar.GeneradorSelloDigital;
 
 /**
  *
@@ -94,6 +100,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 public class General extends javax.swing.JDialog {
 
     private Usuario user;
+    Date fecha_factura=new Date();
     String error="";
     String sessionPrograma=null;
     FormatoTabla formato;
@@ -116,6 +123,9 @@ public class General extends javax.swing.JDialog {
     //private Factura returnStatus = RET_CANCEL;
     private Factura returnStatus = null;
     String ruta="";
+    finkok.Comprobante comprobante;
+    String PAC="";
+    boolean bandera=true;
     /**
      * Creates new form QUALITAS
      */
@@ -131,7 +141,7 @@ public class General extends javax.swing.JDialog {
             fil.close();
             fil=null;
             b=null;
-        }catch(Exception e){};
+        }catch(Exception e){}
         factura = fac;
         user=u;
         sessionPrograma=ses;
@@ -161,6 +171,7 @@ public class General extends javax.swing.JDialog {
         aviso = new javax.swing.JFileChooser();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
+        l_emisor = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         b_salir = new javax.swing.JButton();
         b_generar = new javax.swing.JButton();
@@ -273,9 +284,6 @@ public class General extends javax.swing.JDialog {
         t_motor_vehiculo = new javax.swing.JTextField();
         jLabel59 = new javax.swing.JLabel();
         t_km = new javax.swing.JTextField();
-        jLabel87 = new javax.swing.JLabel();
-        t_condiciones = new javax.swing.JTextField();
-        jLabel88 = new javax.swing.JLabel();
         t_codigo = new javax.swing.JTextField();
         jLabel48 = new javax.swing.JLabel();
         jLabel37 = new javax.swing.JLabel();
@@ -387,6 +395,8 @@ public class General extends javax.swing.JDialog {
         jLabel1.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jLabel1.setText("Emisión de facturas Generales");
 
+        l_emisor.setText("jLabel30");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -394,11 +404,15 @@ public class General extends javax.swing.JDialog {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(355, 355, 355)
                 .addComponent(jLabel1)
-                .addContainerGap(529, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 489, Short.MAX_VALUE)
+                .addComponent(l_emisor)
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(jLabel1)
+                .addComponent(l_emisor))
         );
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.PAGE_START);
@@ -525,7 +539,7 @@ public class General extends javax.swing.JDialog {
                 .addComponent(t_rfc, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(4, 4, 4)
                 .addComponent(jLabel4)
-                .addContainerGap(130, Short.MAX_VALUE))
+                .addContainerGap(171, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -606,7 +620,7 @@ public class General extends javax.swing.JDialog {
 
         jLabel16.setText("Edo:");
 
-        c_estado.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "AGUASCALIENTES", "BAJA CALIFORNIA", "BAJA CALIFORNIA SUR", "CAMPECHE", "CHIAPAS", "CHIHUAHUA", "COAHUILA", "COLIMA", "DISTRITO FEDERAL", "DURANGO", "ESTADO DE MEXICO", "GUANAJUATO", "GUERRERO", "HIDALGO", "JALISCO", "MICHOACAN", "MORELOS", "NAYARIT", "NUEVO LEON", "OAXACA", "PUEBLA", "QUERETARO", "QUINTANA ROO", "SAN LUIS POTOSI", "SINALOA", "SONORA", "TABASCO", "TAMAULIPAS", "TLAXCALA", "VERACRUZ", "YUCATAN", "ZACATECAS" }));
+        c_estado.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "AGUASCALIENTES", "BAJA CALIFORNIA", "BAJA CALIFORNIA SUR", "CAMPECHE", "CHIAPAS", "CHIHUAHUA", "COAHUILA", "COLIMA", "CIUDAD DE MEXICO", "DURANGO", "ESTADO DE MEXICO", "GUANAJUATO", "GUERRERO", "HIDALGO", "JALISCO", "MICHOACAN", "MORELOS", "NAYARIT", "NUEVO LEON", "OAXACA", "PUEBLA", "QUERETARO", "QUINTANA ROO", "SAN LUIS POTOSI", "SINALOA", "SONORA", "TABASCO", "TAMAULIPAS", "TLAXCALA", "VERACRUZ", "YUCATAN", "ZACATECAS" }));
 
         jLabel17.setText("Pais");
 
@@ -636,7 +650,7 @@ public class General extends javax.swing.JDialog {
                         .addComponent(t_no_exterior, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(3, 3, 3)
                         .addComponent(jLabel9)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 177, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 231, Short.MAX_VALUE)
                         .addComponent(jLabel10)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(t_cp, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -723,7 +737,7 @@ public class General extends javax.swing.JDialog {
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(258, Short.MAX_VALUE))
+                .addContainerGap(266, Short.MAX_VALUE))
         );
 
         contenedor.addTab("Receptor", jPanel3);
@@ -831,10 +845,15 @@ public class General extends javax.swing.JDialog {
         jLabel22.setText("Forma de Pago:");
 
         t_forma_pago.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
-        t_forma_pago.setText("PAGO EN UNA SOLA EXHIBICION");
+        t_forma_pago.setText("UNA SOLA EXHIBICION");
         t_forma_pago.setToolTipText("Forama de pago de la factura");
         t_forma_pago.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         t_forma_pago.setEnabled(false);
+        t_forma_pago.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                t_forma_pagoActionPerformed(evt);
+            }
+        });
 
         jLabel23.setForeground(new java.awt.Color(254, 254, 254));
         jLabel23.setText("Moneda:");
@@ -916,7 +935,7 @@ public class General extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel20)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(t_metodo_pago, javax.swing.GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE)
+                        .addComponent(t_metodo_pago, javax.swing.GroupLayout.DEFAULT_SIZE, 351, Short.MAX_VALUE)
                         .addGap(2, 2, 2)
                         .addComponent(jLabel25)
                         .addGap(18, 18, 18)
@@ -1090,7 +1109,7 @@ public class General extends javax.swing.JDialog {
                 .addComponent(jLabel89)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(t_contratante, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(60, Short.MAX_VALUE))
+                .addContainerGap(157, Short.MAX_VALUE))
         );
         jPanel10Layout.setVerticalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1251,7 +1270,7 @@ public class General extends javax.swing.JDialog {
                         .addComponent(t_nombre_receptor, javax.swing.GroupLayout.PREFERRED_SIZE, 453, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel41)))
-                .addGap(0, 265, Short.MAX_VALUE))
+                .addGap(0, 291, Short.MAX_VALUE))
         );
         jPanel12Layout.setVerticalGroup(
             jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1347,7 +1366,7 @@ public class General extends javax.swing.JDialog {
                     .addGroup(jPanel13Layout.createSequentialGroup()
                         .addComponent(jLabel50)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(t_modelo_vehiculo, javax.swing.GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE))
+                        .addComponent(t_modelo_vehiculo, javax.swing.GroupLayout.DEFAULT_SIZE, 485, Short.MAX_VALUE))
                     .addGroup(jPanel13Layout.createSequentialGroup()
                         .addComponent(jLabel52)
                         .addGap(5, 5, 5)
@@ -1404,18 +1423,6 @@ public class General extends javax.swing.JDialog {
                         .addComponent(t_marca_vehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-
-        jLabel87.setText("condiciones de Pago:");
-
-        t_condiciones.setToolTipText("Condiciones de pago de la factura");
-        t_condiciones.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_condiciones.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                t_condicionesKeyTyped(evt);
-            }
-        });
-
-        jLabel88.setText("*");
 
         t_codigo.setToolTipText("Folio interno de la factura");
         t_codigo.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -1479,12 +1486,7 @@ public class General extends javax.swing.JDialog {
                                 .addComponent(jLabel49)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(t_orden, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel87)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(t_condiciones, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(4, 4, 4)
-                        .addComponent(jLabel88)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
@@ -1506,16 +1508,12 @@ public class General extends javax.swing.JDialog {
                     .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel48)
                         .addComponent(t_codigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel37))
-                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel87)
-                        .addComponent(t_condiciones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel88)))
+                        .addComponent(jLabel37)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(t_extra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel51))
-                .addContainerGap(69, Short.MAX_VALUE))
+                .addContainerGap(93, Short.MAX_VALUE))
         );
 
         contenedor.addTab("Datos de addenda", jPanel5);
@@ -1610,11 +1608,13 @@ public class General extends javax.swing.JDialog {
         jPanel14Layout.setHorizontalGroup(
             jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel14Layout.createSequentialGroup()
-                .addGap(325, 325, 325)
                 .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(jLabel79)
-                        .addGroup(jPanel14Layout.createSequentialGroup()
+                    .addGroup(jPanel14Layout.createSequentialGroup()
+                        .addGap(401, 401, 401)
+                        .addComponent(jLabel79))
+                    .addGroup(jPanel14Layout.createSequentialGroup()
+                        .addGap(323, 323, 323)
+                        .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                 .addGroup(jPanel14Layout.createSequentialGroup()
                                     .addComponent(jLabel86)
@@ -1627,32 +1627,32 @@ public class General extends javax.swing.JDialog {
                                     .addGap(18, 18, 18)
                                     .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(t_folio_factura, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(t_serie_factura, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                            .addGap(45, 45, 45)))
-                    .addGroup(jPanel14Layout.createSequentialGroup()
-                        .addGap(4, 4, 4)
-                        .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel82)
-                            .addComponent(jLabel83))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(t_serie_factura, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGap(1, 1, 1)))
                             .addGroup(jPanel14Layout.createSequentialGroup()
-                                .addComponent(t_pdf, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(b_pdf))
-                            .addGroup(jPanel14Layout.createSequentialGroup()
-                                .addComponent(t_xml, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(b_xml))
-                            .addComponent(b_email))))
-                .addContainerGap(510, Short.MAX_VALUE))
+                                .addGap(4, 4, 4)
+                                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel82)
+                                    .addComponent(jLabel83))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel14Layout.createSequentialGroup()
+                                        .addComponent(t_pdf, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(b_pdf))
+                                    .addGroup(jPanel14Layout.createSequentialGroup()
+                                        .addComponent(t_xml, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(b_xml))
+                                    .addComponent(b_email))))))
+                .addContainerGap(507, Short.MAX_VALUE))
         );
         jPanel14Layout.setVerticalGroup(
             jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel14Layout.createSequentialGroup()
-                .addGap(97, 97, 97)
+                .addGap(106, 106, 106)
                 .addComponent(jLabel79)
-                .addGap(18, 18, 18)
+                .addGap(43, 43, 43)
                 .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel80)
                     .addComponent(t_serie_factura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -1676,7 +1676,7 @@ public class General extends javax.swing.JDialog {
                     .addComponent(b_pdf))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(b_email)
-                .addContainerGap(195, Short.MAX_VALUE))
+                .addContainerGap(180, Short.MAX_VALUE))
         );
 
         contenedor.addTab("Factura Electrónica", jPanel14);
@@ -1722,18 +1722,22 @@ public class General extends javax.swing.JDialog {
                                                                     {
                                                                         if(t_correo_receptor.getText().trim().compareTo("")!=0)
                                                                         {
-                                                                            if(t_condiciones.getText().trim().compareTo("")!=0)
+                                                                            if(t_forma_pago.getText().trim().compareTo("")!=0)
                                                                             {
-                                                                                habilita(false, false);
-                                                                                progreso.setIndeterminate(true);
-                                                                                progreso.setString("Conectando al servidor SAT Espere");
-                                                                                facturaElectronica();
+                                                                                if(bandera==true)
+                                                                                {
+                                                                                    bandera=false;
+                                                                                    habilita(false, false);
+                                                                                    progreso.setIndeterminate(true);
+                                                                                    progreso.setString("Conectando al servidor SAT Espere");
+                                                                                    facturaElectronica();
+                                                                                }
                                                                             }
                                                                             else
                                                                             {
                                                                                 contenedor.setSelectedIndex(2);
-                                                                                JOptionPane.showMessageDialog(null, "Debe ingresar las condiciones de pago");
-                                                                                t_condiciones.requestFocus();
+                                                                                JOptionPane.showMessageDialog(null, "Debe ingresar la forma de pago");
+                                                                                t_forma_pago.requestFocus();
                                                                             }
                                                                         }
                                                                         else
@@ -1921,7 +1925,7 @@ public class General extends javax.swing.JDialog {
     private void t_incisoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_incisoKeyTyped
         // TODO add your handling code here:
         evt.setKeyChar(Character.toUpperCase(evt.getKeyChar()));
-        if(t_inciso.getText().length()>=10)
+        if(t_inciso.getText().length()>=13)
             evt.consume();
     }//GEN-LAST:event_t_incisoKeyTyped
 
@@ -2142,7 +2146,8 @@ public class General extends javax.swing.JDialog {
                 {
                     e.printStackTrace();
                 }
-                Configuracion config=(Configuracion)session.get(Configuracion.class, 1);
+                Configuracion config=(Configuracion)session.createCriteria(Configuracion.class).add(Restrictions.eq("nombre", factura.getNombreEmisor())).uniqueResult();
+                
                 if(t_xml.getText().compareTo("")==0)
                     t_xml.setText(config.getRfc()+"_"+t_serie_factura.getText()+"_"+t_folio_factura.getText()+"_"+t_rfc.getText()+".xml");
                 File xml=new File(ruta+"xml-timbrados/"+t_xml.getText());
@@ -2150,19 +2155,43 @@ public class General extends javax.swing.JDialog {
                     Desktop.getDesktop().open(xml);
                 else//descargar el archivo del SAP
                 {
-                    factura=(Factura)session.get(Factura.class, factura.getIdFactura());
-                    RequestTransaction rq=new RequestTransaction();
-                    rq.setRequestor(config.getRequestor());//Lo proporcionará MySuite
-                    rq.setTransaction("GET_DOCUMENT");//Tipo de Transaccion
-                    rq.setCountry("MX");//Codigo de pais
-                    rq.setUser(config.getRequestor());//igual que Requestor
-                    rq.setUserName(config.getUsuario_1());//Country.Entity.nombre_usuario
-                    rq.setEntity(config.getRfc());
-                    rq.setData1(t_serie_factura.getText());//serie del documento.
-                    rq.setData2(t_folio_factura.getText());//folio
-                    rq.setData3("PDF XML");//documentos
-                    abrir="xml";
-                    llamarSoapDocumento(rq);
+                    if(PAC.compareTo("M")==0)
+                    {
+                        factura=(Factura)session.get(Factura.class, factura.getIdFactura());
+                        ArrayList aux=new ArrayList();
+                        aux.add(config.getRequestor());//Lo proporcionará MySuite
+                        aux.add("GET_DOCUMENT");//Tipo de Transaccion
+                        aux.add("MX");//Codigo de pais
+                        aux.add(config.getRequestor());//igual que Requestor
+                        aux.add(config.getUsuario_1());//Country.Entity.nombre_usuario
+                        aux.add(factura.getRfcEmisor());
+                        aux.add(t_serie_factura.getText());//serie del documento.
+                        aux.add(t_folio_factura.getText());//folio
+                        aux.add("PDF XML");//documentos
+                        abrir="xml";
+
+                        progreso.setIndeterminate(true);
+                        progreso.setString("Descargando archivo espere");
+                        ApiMysuite timbrar=new ApiMysuite(ruta);
+                        ArrayList resp=timbrar.llamarSoapDocumento(aux);
+                        switch(resp.get(0).toString())
+                        {
+                            case "1"://Se descargo el documento
+                                Desktop.getDesktop().open(xml);
+                                break;
+                            case "-1"://Error al descargar
+                                JOptionPane.showMessageDialog(null, resp.get(1).toString());
+                                break;
+                        }
+                        progreso.setString("Listo");
+                        progreso.setIndeterminate(false);
+                    }
+                    else
+                    {
+                        progreso.setIndeterminate(true);
+                        progreso.setString("Descargando archivo espere");
+                        consultaFacturaElectronica(xml);
+                    }
                 }
             }catch(Exception e)
             {
@@ -2204,7 +2233,7 @@ public class General extends javax.swing.JDialog {
                 {
                     e.printStackTrace();
                 }
-                Configuracion config=(Configuracion)session.get(Configuracion.class, 1);
+                Configuracion config=(Configuracion)session.createCriteria(Configuracion.class).add(Restrictions.eq("nombre", factura.getNombreEmisor())).uniqueResult();
                 if(t_pdf.getText().compareTo("")==0)
                     t_pdf.setText(config.getRfc()+"_"+t_serie_factura.getText()+"_"+t_folio_factura.getText()+"_"+t_rfc.getText()+".pdf");
                 File xml=new File(ruta+"xml-timbrados/"+t_pdf.getText());
@@ -2212,19 +2241,45 @@ public class General extends javax.swing.JDialog {
                     Desktop.getDesktop().open(xml);
                 else//descargar el archivo del SAP
                 {
-                    factura=(Factura)session.get(Factura.class, factura.getIdFactura());
-                    RequestTransaction rq=new RequestTransaction();
-                    rq.setRequestor(config.getRequestor());//Lo proporcionará MySuite
-                    rq.setTransaction("GET_DOCUMENT");//Tipo de Transaccion
-                    rq.setCountry("MX");//Codigo de pais
-                    rq.setUser(config.getRequestor());//igual que Requestor
-                    rq.setUserName(config.getUsuario_1());//Country.Entity.nombre_usuario
-                    rq.setEntity(config.getRfc());
-                    rq.setData1(t_serie_factura.getText());//serie del documento.
-                    rq.setData2(t_folio_factura.getText());//folio
-                    rq.setData3("PDF XML");//documentos
-                    abrir="pdf";
-                    llamarSoapDocumento(rq);
+                    if(PAC.compareTo("M")==0)
+                    {
+                        factura=(Factura)session.get(Factura.class, factura.getIdFactura());
+                        ArrayList aux=new ArrayList();
+                        aux.add(config.getRequestor());//Lo proporcionará MySuite
+                        aux.add("GET_DOCUMENT");//Tipo de Transaccion
+                        aux.add("MX");//Codigo de pais
+                        aux.add(config.getRequestor());//igual que Requestor
+                        aux.add(config.getUsuario_1());//Country.Entity.nombre_usuario
+                        aux.add(config.getRfc());
+                        aux.add(t_serie_factura.getText());//serie del documento.
+                        aux.add(t_folio_factura.getText());//folio
+                        aux.add("PDF XML");//documentos
+                        abrir="pdf";
+
+                        progreso.setIndeterminate(true);
+                        progreso.setString("Descargando archivo espere");
+                        ApiMysuite timbrar=new ApiMysuite(ruta);
+                        ArrayList resp=timbrar.llamarSoapDocumento(aux);
+                        switch(resp.get(0).toString())
+                        {
+                            case "1"://Se descargo el documento
+                                Desktop.getDesktop().open(xml);
+                                break;
+                            case "-1"://Error al descargar
+                                JOptionPane.showMessageDialog(null, resp.get(1).toString());
+                                break;
+                        }
+                        progreso.setString("Listo");
+                        progreso.setIndeterminate(false);
+                    }
+                    else
+                    {
+                        //progreso.setIndeterminate(true);
+                        //progreso.setString("Descargando archivo espere");
+                        factura=(Factura)session.get(Factura.class, factura.getIdFactura());
+                        Formatos formato = new Formatos(this.user, this.sessionPrograma, factura);
+                        formato.factura();
+                    }
                 }
             }catch(Exception e)
             {
@@ -2248,27 +2303,38 @@ public class General extends javax.swing.JDialog {
         // TODO add your handling code here:
         if(t_facturas.getSelectedRow()>-1)
         {
-            habilita2(false);
-            progreso.setString("Conectando al servidor SAT Espere");
-            progreso.setIndeterminate(true);
             Session session = HibernateUtil.getSessionFactory().openSession();
             try
             {
                 session.beginTransaction().begin();
-                Configuracion config=(Configuracion)session.get(Configuracion.class, 1);
                 factura=(Factura)session.get(Factura.class, factura.getIdFactura());
-                RequestTransaction rq=new RequestTransaction();
-                rq.setRequestor(config.getRequestor());//Lo proporcionará MySuite
-                rq.setTransaction("GET_DOCUMENT");//Tipo de Transaccion
-                rq.setCountry("MX");//Codigo de pais
-                rq.setUser(config.getRequestor());//igual que Requestor
-                rq.setUserName(config.getUsuario_1());//Country.Entity.nombre_usuario
-                rq.setEntity(config.getRfc());
-                rq.setData1(t_facturas.getValueAt(t_facturas.getSelectedRow(), 3).toString());//serie del documento.
-                rq.setData2(t_facturas.getValueAt(t_facturas.getSelectedRow(), 4).toString());//folio
-                rq.setData3("PDF XML");//documentos
+                Configuracion config=(Configuracion)session.createCriteria(Configuracion.class).add(Restrictions.eq("empresa", factura.getNombreEmisor())).setMaxResults(1).uniqueResult();
+                factura=(Factura)session.get(Factura.class, factura.getIdFactura());
+                
+                ArrayList aux=new ArrayList();
+                aux.add(config.getRequestor());//Lo proporcionará MySuite
+                aux.add("GET_DOCUMENT");//Tipo de Transaccion
+                aux.add("MX");//Codigo de pais
+                aux.add(config.getRequestor());//igual que Requestor
+                aux.add(config.getUsuario_1());//Country.Entity.nombre_usuario
+                aux.add(config.getRfc());
+                aux.add(t_facturas.getValueAt(t_facturas.getSelectedRow(), 3).toString());//serie del documento.
+                aux.add(t_facturas.getValueAt(t_facturas.getSelectedRow(), 4).toString());//folio
+                aux.add("PDF XML");//documentos
                 abrir="pdf";
-                llamarSoapDocumento1(rq);
+                ApiMysuite timbrar=new ApiMysuite(ruta);
+                ArrayList resp=timbrar.llamarSoapDocumento(aux);
+                switch(resp.get(0).toString())
+                {
+                    case "1"://Se descargo el documento
+                        System.out.println(resp.get(6).toString());
+                        File xml=new File(ruta+"xml-timbrados/"+config.getRfc()+"_"+t_serie_factura.getText()+"_"+t_folio_factura.getText()+"_"+t_rfc.getText()+".pdf");
+                        Desktop.getDesktop().open(xml);
+                        break;
+                    case "-1"://Error al descargar
+                        JOptionPane.showMessageDialog(null, resp.get(1).toString());
+                        break;
+                }
             }catch(Exception e)
             {
                 habilita2(true);
@@ -2299,19 +2365,65 @@ public class General extends javax.swing.JDialog {
             try
             {
                 session.beginTransaction().begin();
-                Configuracion config=(Configuracion)session.get(Configuracion.class, 1);
                 factura=(Factura)session.get(Factura.class, factura.getIdFactura());
-                RequestTransaction rq=new RequestTransaction();
-                rq.setRequestor(config.getRequestor());//Lo proporcionará MySuite
-                rq.setTransaction("CANCEL_XML");//Tipo de Transaccion
-                rq.setCountry("MX");//Codigo de pais
-                rq.setUser(config.getRequestor());//igual que Requestor
-                rq.setUserName(config.getUsuario_1());//Country.Entity.nombre_usuario
-                rq.setEntity(config.getRfc());
-                rq.setData1(idBuscar);//GUIID.
-                rq.setData2("");
-                rq.setData3("");
-                llamarSoapCancela(rq);
+                Configuracion config=(Configuracion)session.createCriteria(Configuracion.class).add(Restrictions.eq("empresa", factura.getNombreEmisor())).setMaxResults(1).uniqueResult();
+                ArrayList rq=new ArrayList();
+                rq.add(config.getRequestor());//Lo proporcionará MySuite
+                rq.add("CANCEL_XML");//Tipo de Transaccion
+                rq.add("MX");//Codigo de pais
+                rq.add(config.getRequestor());//igual que Requestor
+                rq.add(config.getUsuario_1());//Country.Entity.nombre_usuario
+                rq.add(config.getRfc());
+                rq.add(idBuscar);//GUIID.
+                rq.add("");
+                rq.add("");
+                ApiMysuite timbrar=new ApiMysuite(ruta);
+                ArrayList respuesta=timbrar.llamarSoapCancela(rq);
+                if(respuesta.size()>0)
+                {
+                    switch(respuesta.get(0).toString())
+                    {
+                        case "1"://Se Canceló
+                            factura=(Factura) session.createCriteria(Factura.class).add(Restrictions.eq("FFiscal", idBuscar)).uniqueResult();
+                            if(factura!=null)
+                            {
+                                factura.setOrden(null);
+                                factura.setEstadoFactura("Cancelado");
+                                session.update(factura);
+                                session.beginTransaction().commit();
+                                DefaultTableModel modelElimina=(DefaultTableModel)t_facturas.getModel();
+                                modelElimina.removeRow(t_facturas.getSelectedRow());
+                                t_facturas.setModel(modelElimina);
+                                formatoTablafactura();
+                                habilita2(true);
+                                progreso.setString("Listo");
+                                progreso.setIndeterminate(false);
+                                JOptionPane.showMessageDialog(null, "El UUID ya esta cancelado");
+                            }
+                            else
+                            {
+                                habilita2(true);
+                                progreso.setString("Listo");
+                                progreso.setIndeterminate(false);
+                                JOptionPane.showMessageDialog(null, "El UUID ya esta cancelado pero no pudo actualizarse la base de datos");
+                            }
+                            break;
+                            
+                        case "-1":
+                            habilita2(true);
+                            progreso.setString("Listo");
+                            progreso.setIndeterminate(false);
+                            JOptionPane.showMessageDialog(null, respuesta.get(1).toString());
+                            break;
+                    }
+                }
+                else
+                {
+                    habilita2(true);
+                    progreso.setString("Listo");
+                    progreso.setIndeterminate(false);
+                    JOptionPane.showMessageDialog(null, "Error al consultar la base de datos");
+                }
             }catch(Exception e)
             {
                 habilita2(true);
@@ -2351,13 +2463,6 @@ public class General extends javax.swing.JDialog {
 
         }
     }//GEN-LAST:event_t_descuentoFocusLost
-
-    private void t_condicionesKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_condicionesKeyTyped
-        // TODO add your handling code here:
-        evt.setKeyChar(Character.toUpperCase(evt.getKeyChar()));
-        if(t_condiciones.getText().length()>=20)
-        evt.consume();
-    }//GEN-LAST:event_t_condicionesKeyTyped
 
     private void t_codigoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_codigoKeyTyped
         // TODO add your handling code here:
@@ -2509,6 +2614,10 @@ public class General extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void t_forma_pagoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_forma_pagoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_t_forma_pagoActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JFileChooser aviso;
@@ -2588,8 +2697,6 @@ public class General extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel82;
     private javax.swing.JLabel jLabel83;
     private javax.swing.JLabel jLabel86;
-    private javax.swing.JLabel jLabel87;
-    private javax.swing.JLabel jLabel88;
     private javax.swing.JLabel jLabel89;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
@@ -2609,6 +2716,7 @@ public class General extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JLabel l_emisor;
     private javax.swing.JLabel l_iva;
     private javax.swing.JLabel l_iva1;
     private javax.swing.JLabel l_subtotal;
@@ -2618,7 +2726,6 @@ public class General extends javax.swing.JDialog {
     private javax.swing.JTextField t_calle;
     private javax.swing.JTextField t_codigo;
     private javax.swing.JTextField t_colonia;
-    private javax.swing.JTextField t_condiciones;
     private javax.swing.JTextField t_contratante;
     private javax.swing.JTextField t_correo_emisor;
     private javax.swing.JTextField t_correo_receptor;
@@ -2672,25 +2779,52 @@ public void consulta()
             {
                 session.beginTransaction().begin();
                 factura = (Factura)session.get(Factura.class, factura.getIdFactura()); 
+                //Emisor
+                l_emisor.setText(factura.getNombreEmisor());
                 //Receptor
                 t_iva1.setValue(factura.getIva());
                 try{
                 t_iva1.commitEdit();}catch(Exception e){}
-                t_social.setText(factura.getNombreReceptor().trim());
+                t_social.setText(acentos(factura.getNombreReceptor().trim()));
                 t_rfc.setText(factura.getRfcReceptor().trim());
-                t_calle.setText(factura.getCalleReceptor().trim());
+                t_calle.setText(acentos(factura.getCalleReceptor().trim()));
                 t_no_exterior.setText(factura.getNumeroExteriorReceptor().trim());
                 t_cp.setText(factura.getCpReceptor().trim());
-                t_colonia.setText(factura.getColoniaReceptor().trim());
-                t_municipio.setText(factura.getMunicipioReceptor().trim());
-                c_estado.setSelectedItem(factura.getEstadoReceptor());
-                c_pais.setSelectedItem(factura.getPaisReceptor());
+                t_colonia.setText(acentos(factura.getColoniaReceptor().trim()));
+                t_municipio.setText(acentos(factura.getMunicipioReceptor().trim()));
+                c_estado.setSelectedItem(acentos(factura.getEstadoReceptor()));
+                c_pais.setSelectedItem(acentos(factura.getPaisReceptor()));
                 //Productos y servicios
                 t_metodo_pago.setText(factura.getMetodoPago().trim());
                 t_cuenta_pago.setText(factura.getCuentaPago().trim());
                 t_tipo_cambio.setText(""+factura.getFactorCambio());
                 t_tipo_cambio.setValue(factura.getFactorCambio());
                 c_moneda.setSelectedItem(factura.getMoneda().trim());
+                //PAC
+                PAC=factura.getPac();
+                //Fecha
+                if(factura.getFFiscal()==null)
+                {
+                    long mFactura, mActual, diff;
+                    Date actual=new Date();
+                    Calendar cFactura = Calendar.getInstance();
+                    Calendar cActual = Calendar.getInstance();
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
+                    cFactura.setTime(factura.getFecha());
+                    cActual.setTime(actual);
+                    mFactura = cFactura.getTimeInMillis();
+                    mActual = cActual.getTimeInMillis();
+                    diff = mActual-mFactura;
+                    long diffMinutos =  Math.abs (diff / (60 * 1000));
+                    if(diffMinutos > 4320)
+                        fecha_factura=new Date();
+                    else
+                        fecha_factura=factura.getFecha();
+                }
+                else
+                    fecha_factura=factura.getFecha();
+
                 //Addenda
                 t_codigo.setText(""+factura.getIdFactura());
                 if(factura.getOrden()!=null)
@@ -2723,16 +2857,16 @@ public void consulta()
                     else
                         t_siniestro.setText("");
                 }
-                Configuracion config=(Configuracion)session.get(Configuracion.class, 1);
+                Configuracion config=(Configuracion)session.createCriteria(Configuracion.class).add(Restrictions.eq("empresa", factura.getNombreEmisor())).setMaxResults(1).uniqueResult();
                 
                 if(factura.getContactoEmisor()!=null)
-                    t_nombre_emisor.setText(config.getContacto().trim());
-                else
                     t_nombre_emisor.setText(factura.getContactoEmisor().trim());
-                if(factura.getCorreoEmisor()!=null)
-                    t_correo_emisor.setText(config.getMail().trim());
                 else
+                    t_nombre_emisor.setText(config.getContacto().trim());
+                if(factura.getCorreoEmisor()!=null)
                     t_correo_emisor.setText(factura.getCorreoEmisor().trim());
+                else
+                    t_correo_emisor.setText(config.getMail().trim());
                 if(factura.getTelefonoEmisor()!=null)
                     t_tel_emisor.setText(factura.getTelefonoEmisor().trim());
                 else
@@ -2797,10 +2931,6 @@ public void consulta()
                     if(factura.getOrdenExterna().getContratante()!=null)
                         t_contratante.setText(factura.getOrdenExterna().getContratante().trim());
                 }
-                if(factura.getCondicionesPago()!=null)
-                    this.t_condiciones.setText(factura.getCondicionesPago().trim());
-                else
-                    this.t_condiciones.setText("");
 
                 //cargar las partidas
                 Concepto[] partidas = (Concepto[])session.createCriteria(Concepto.class).
@@ -2811,13 +2941,17 @@ public void consulta()
                     double total_lista=partidas[a].getPrecio()*partidas[a].getCantidad();
                     double descuento=partidas[a].getDescuento()/100;
                     double total=total_lista-(total_lista*descuento);
+                    String descripcion=partidas[a].getDescripcion();
+                    descripcion=descripcion.replaceAll(" +", " ");
+                    descripcion=descripcion.trim();
+                    
                     model.addRow(
                             new Object[]
                             {
                                 partidas[a].getIdConcepto(),
                                 partidas[a].getCantidad(), 
                                 partidas[a].getMedida(), 
-                                partidas[a].getDescripcion(), 
+                                acentos(descripcion), 
                                 partidas[a].getPrecio(),
                                 partidas[a].getDescuento(),
                                total
@@ -2832,8 +2966,12 @@ public void consulta()
                 {
                     if(factura.getSerie()!=null)
                         t_serie_factura.setText(factura.getSerie());
+                    if(factura.getSerieExterno()!=null)
+                        t_serie_factura.setText(factura.getSerieExterno());
                     if(factura.getFolio()!=null)
                         t_folio_factura.setText(factura.getFolio());
+                    if(factura.getFolioExterno()!=null)
+                        t_folio_factura.setText(""+factura.getFolioExterno());
                     if(factura.getNombreDocumento()!=null)
                     {
                         t_xml.setText(factura.getNombreDocumento()+".xml");
@@ -2854,8 +2992,12 @@ public void consulta()
                     {
                         if(factura.getSerie()!=null)
                             t_serie_factura.setText(factura.getSerie());
+                        if(factura.getSerieExterno()!=null)
+                            t_serie_factura.setText(factura.getSerieExterno());
                         if(factura.getFolio()!=null)
                             t_folio_factura.setText(factura.getFolio());
+                        if(factura.getFolioExterno()!=null)
+                            t_folio_factura.setText(""+factura.getFolioExterno());
                         if(factura.getNombreDocumento()!=null)
                         {
                             t_xml.setText(factura.getNombreDocumento()+".xml");
@@ -2936,7 +3078,6 @@ public void consulta()
         t_serie_vehiculo.setText("");
         t_placas_vehiculo.setText("");
         t_motor_vehiculo.setText("");
-        t_condiciones.setText("");
         t_contratante.setText("");
         t_orden.setText("");
         t_km.setText("");
@@ -2986,7 +3127,6 @@ public void consulta()
         t_serie_vehiculo.setEnabled(edo);
         t_placas_vehiculo.setEnabled(edo);
         t_motor_vehiculo.setEnabled(edo);
-        t_condiciones.setEnabled(edo);
         t_contratante.setEnabled(edo);
         t_descuento.setEnabled(edo);
         b_actualizar.setEnabled(edo);
@@ -3433,7 +3573,7 @@ public void consulta()
         return -1;
     }
     
-    public boolean generarXML(Orden ord, String nombre)
+    public boolean XML_MYSUITE(Orden ord, String nombre)
     {
         Session session = HibernateUtil.getSessionFactory().openSession();
         try
@@ -3441,7 +3581,7 @@ public void consulta()
             error="";
             session.beginTransaction().begin();
             factura=(Factura)session.get(Factura.class, factura.getIdFactura());
-            Configuracion config=(Configuracion)session.get(Configuracion.class, 1);
+            Configuracion config=(Configuracion)session.createCriteria(Configuracion.class).add(Restrictions.eq("empresa", factura.getNombreEmisor())).setMaxResults(1).uniqueResult();
             BigDecimal valorIva=new BigDecimal(""+t_iva1.getValue().toString());
             javaToXML miXML= new javaToXML();
             TFactDocMX documento=new TFactDocMX();
@@ -3726,7 +3866,7 @@ public void consulta()
                 comprobante_ex.setDatosDeNegocio(datos_del_negocio);
                 TComprobanteEx.TerminosDePago terminos_de_pago= new TComprobanteEx.TerminosDePago();
                     terminos_de_pago.setMetodoDePago(t_metodo_pago.getText().trim());
-                    terminos_de_pago.setCondicionesDePago(t_condiciones.getText().trim());
+                    terminos_de_pago.setCondicionesDePago(t_forma_pago.getText().trim());
                 comprobante_ex.setTerminosDePago(terminos_de_pago);
                 String linea1="";
                 if(t_orden.getText().trim().compareTo("")!=0)
@@ -3773,938 +3913,149 @@ public void consulta()
         }
     }
     
-    public void llamarSoapCancela(RequestTransaction rq)
+    public boolean XML_FINKOK(Orden ord, String folio, String serie)
     {
-        System.setProperty("javax.net.ssl.keyStore", "cacerts");
-        System.setProperty("javax.net.ssl.keyStorePassword", "changeit");
-        System.setProperty("javax.net.ssl.trustStore", "cacerts");
-        try 
-        { // Call Web Service Operation(async. callback)
-            if(rq!=null)
-            {
-                mx.com.fact.schema.ws.FactWSFront service = new mx.com.fact.schema.ws.FactWSFront();
-                mx.com.fact.schema.ws.FactWSFrontSoap port = service.getFactWSFrontSoap();
-                
-                // TODO initialize WS operation arguments here
-                java.lang.String requestor = rq.getRequestor();
-                java.lang.String transaction = rq.getTransaction();
-                java.lang.String country = rq.getCountry();
-                java.lang.String entity = rq.getEntity();
-                java.lang.String userSAP = rq.getUser();
-                java.lang.String userName = rq.getUserName();
-                java.lang.String data1 = rq.getData1();
-                java.lang.String data2 = rq.getData2();
-                java.lang.String data3 = rq.getData3();
-                javax.xml.ws.AsyncHandler<mx.com.fact.schema.ws.RequestTransactionResponse> asyncHandler = new javax.xml.ws.AsyncHandler<mx.com.fact.schema.ws.RequestTransactionResponse>() {
-                    public void handleResponse(final javax.xml.ws.Response<mx.com.fact.schema.ws.RequestTransactionResponse> response) 
-                    {
-                        try 
-                        {
-                            // TODO process asynchronous response here
-                            RequestTransactionResponse rtr=response.get();
-                            if(rtr.getRequestTransactionResult().getResponse().isResult()==true)//la transaccion se genero
-                            {
-                                XMLGregorianCalendar fecha_ingreso=rtr.getRequestTransactionResult().getResponse().getTimeStamp();
-                                Session session = HibernateUtil.getSessionFactory().openSession();
-                                try 
-                                {
-                                    session.beginTransaction().begin();
-                                    Factura resp=(Factura) session.createCriteria(Factura.class).add(Restrictions.eq("FFiscal", idBuscar)).uniqueResult();
-                                    if(resp!=null)
-                                    {
-                                        resp.setOrden(null);
-                                        resp.setEstadoFactura("Cancelado");
-                                        session.update(resp);
-                                        session.beginTransaction().commit();
-                                        DefaultTableModel modelElimina=(DefaultTableModel)t_facturas.getModel();
-                                        modelElimina.removeRow(t_facturas.getSelectedRow());
-                                        t_facturas.setModel(modelElimina);
-                                        formatoTablafactura();
-                                    }
-                                    habilita2(true);
-                                    progreso.setString("Listo");
-                                    progreso.setIndeterminate(false);
-                                    JOptionPane.showMessageDialog(null, "El UUID ya esta cancelado");
-                                }catch(Exception e)
-                                {
-                                    session.beginTransaction().rollback();
-                                    e.printStackTrace();
-                                    habilita2(true);
-                                    progreso.setString("Listo");
-                                    progreso.setIndeterminate(false);
-                                    JOptionPane.showMessageDialog(null, "El UUID ya esta cancelado, pero no se pudo almacenar en la base de datos");
-                                }
-                                finally
-                                {
-                                    if(session!=null)
-                                        if(session.isOpen())
-                                            session.close();
-                                }
-                            }
-                            else
-                            {
-                                String error=rtr.getRequestTransactionResult().getResponseData().getResponseData2();
-                                String aux="";
-                                String numeros="0123456789";
-                                for(int pal=0; pal<error.length(); pal++)
-                                {
-                                    if(numeros.contains(""+error.charAt(pal)))
-                                        aux+=""+error.charAt(pal);
-                                }
-                                if(aux.length()>0)
-                                {
-                                    switch(aux)
-                                    {
-                                        case "201"://UUID Cancelado 
-                                            Session session = HibernateUtil.getSessionFactory().openSession();
-                                            try 
-                                            {
-                                                session.beginTransaction().begin();
-                                                Factura resp=(Factura) session.createCriteria(Factura.class).add(Restrictions.eq("FFiscal", idBuscar)).uniqueResult();
-                                                if(resp!=null)
-                                                {
-                                                    resp.setOrden(null);
-                                                    resp.setEstadoFactura("Cancelado");
-                                                    session.update(resp);
-                                                    session.beginTransaction().commit();
-                                                }
-                                                habilita2(true);
-                                                progreso.setString("Listo");
-                                                progreso.setIndeterminate(false);
-                                                JOptionPane.showMessageDialog(null, "El UUID ya esta cancelado");
-                                            }catch(Exception e)
-                                            {
-                                                session.beginTransaction().rollback();
-                                                e.printStackTrace();
-                                                habilita2(true);
-                                                progreso.setString("Listo");
-                                                progreso.setIndeterminate(false);
-                                                JOptionPane.showMessageDialog(null, "El UUID ya esta cancelado, pero no se pudo almacenar en la base de datos");
-                                            }
-                                            finally
-                                            {
-                                                if(session!=null)
-                                                    if(session.isOpen())
-                                                        session.close();
-                                            }
-                                            break;
-                                        case "202"://UUID Previamente cancelado
-                                            session = HibernateUtil.getSessionFactory().openSession();
-                                            try 
-                                            {
-                                                session.beginTransaction().begin();
-                                                Factura resp=(Factura) session.createCriteria(Factura.class).add(Restrictions.eq("FFiscal", idBuscar)).uniqueResult();
-                                                if(resp!=null)
-                                                {
-                                                    resp.setOrden(null);
-                                                    resp.setEstadoFactura("Cancelado");
-                                                    session.update(resp);
-                                                    session.beginTransaction().commit();
-                                                }
-                                                habilita2(true);
-                                                progreso.setString("Listo");
-                                                progreso.setIndeterminate(false);
-                                                JOptionPane.showMessageDialog(null, "El UUID ya esta cancelado");
-                                            }catch(Exception e)
-                                            {
-                                                session.beginTransaction().rollback();
-                                                e.printStackTrace();
-                                                habilita2(true);
-                                                progreso.setString("Listo");
-                                                progreso.setIndeterminate(false);
-                                                JOptionPane.showMessageDialog(null, "El UUID ya esta cancelado, pero no se pudo almacenar en la base de datos");
-                                            }
-                                            finally
-                                            {
-                                                if(session!=null)
-                                                    if(session.isOpen())
-                                                        session.close();
-                                            }
-                                            break;
-                                        case "203"://UUID No corresponde al emisor
-                                            habilita2(true);
-                                            progreso.setString("Listo");
-                                            progreso.setIndeterminate(false);
-                                            JOptionPane.showMessageDialog(null, "no corresponde al emisor");
-                                            break;
-                                        case "204"://UUID No aplicable para cancelación
-                                            habilita2(true);
-                                            progreso.setString("Listo");
-                                            progreso.setIndeterminate(false);
-                                            JOptionPane.showMessageDialog(null, "La factura no corresponde al emisor");
-                                            break;
-                                        case "205"://UUID No existe
-                                            habilita2(true);
-                                            progreso.setString("Listo");
-                                            progreso.setIndeterminate(false);
-                                            JOptionPane.showMessageDialog(null, "La factura no existe en el SAT");
-                                            break;
-                                        default:
-                                            habilita2(true);
-                                            progreso.setString("Listo");
-                                            progreso.setIndeterminate(false);
-                                            JOptionPane.showMessageDialog(null, "error al cancelar en SAT");
-                                            break;
-                                    }
-                                    try
-                                    {
-                                        String fecha=rtr.getRequestTransactionResult().getResponse().getTimeStamp().toXMLFormat();
-                                        Calendar calendario = Calendar.getInstance();
-                                        File f = new File(ruta+"errores/"+sdf.format(calendario.getTime())+".txt");
-                                        FileWriter w = new FileWriter(f);
-                                        BufferedWriter bw = new BufferedWriter(w);
-                                        PrintWriter wr = new PrintWriter(bw);  
-                                        wr.write(rtr.getRequestTransactionResult().getResponse().getDescription());
-                                        wr.write(rtr.getRequestTransactionResult().getResponse().getHint());
-                                        wr.write(rtr.getRequestTransactionResult().getResponse().getData());
-                                        wr.write(rtr.getRequestTransactionResult().getResponseData().getResponseData1());
-                                        wr.write(rtr.getRequestTransactionResult().getResponseData().getResponseData2());
-                                        wr.write(rtr.getRequestTransactionResult().getResponseData().getResponseData3());
-                                        wr.close();
-                                        bw.close();
-                                    } catch (Exception e)
-                                    {
-                                        e.printStackTrace();
-                                    }
-                                }
-                                else
-                                {
-                                    habilita2(true);
-                                    progreso.setString("Listo");
-                                    progreso.setIndeterminate(false);
-                                    JOptionPane.showMessageDialog(null, "error al cancelar en SAT");
-                                }
-                            }
-                        } catch(Exception ex) 
-                        {
-                            System.out.println("Error en la conexión con el SAP:"+ex);
-                            habilita2(true);
-                            progreso.setString("Listo");
-                            progreso.setIndeterminate(false);
-                            JOptionPane.showMessageDialog(null, "Error en la conexión con el SAP:"+ex);
-                        }
-                    }
-                };
-                java.util.concurrent.Future<? extends java.lang.Object> result = port.requestTransactionAsync(requestor, transaction, country, entity, userSAP, userName, data1, data2, data3, asyncHandler);
-            }
-            else
-            {
-                habilita2(true);
-                progreso.setString("Listo");
-                progreso.setIndeterminate(false);
-            }
-        } catch (Exception ex) 
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try
         {
-            System.out.println("Error en la conexión con el SAP:"+ex);
-            habilita2(true);
-            progreso.setString("Listo");
-            progreso.setIndeterminate(false);
-            JOptionPane.showMessageDialog(null, "Error en la conexión con el SAP:"+ex);
-        }
-    }
-    
-    public void llamarSoapDocumento(RequestTransaction rq)
-    {
-        System.setProperty("javax.net.ssl.keyStore", "cacerts");
-        System.setProperty("javax.net.ssl.keyStorePassword", "changeit");
-        System.setProperty("javax.net.ssl.trustStore", "cacerts");
-        try 
-        { // Call Web Service Operation(async. callback)
-            if(rq!=null)
-            {
-                mx.com.fact.schema.ws.FactWSFront service = new mx.com.fact.schema.ws.FactWSFront();
-                mx.com.fact.schema.ws.FactWSFrontSoap port = service.getFactWSFrontSoap();
-                
-                // TODO initialize WS operation arguments here
-                java.lang.String requestor = rq.getRequestor();
-                java.lang.String transaction = rq.getTransaction();
-                java.lang.String country = rq.getCountry();
-                java.lang.String entity = rq.getEntity();
-                java.lang.String userSAP = rq.getUser();
-                java.lang.String userName = rq.getUserName();
-                java.lang.String data1 = rq.getData1();
-                java.lang.String data2 = rq.getData2();
-                java.lang.String data3 = rq.getData3();
-                javax.xml.ws.AsyncHandler<mx.com.fact.schema.ws.RequestTransactionResponse> asyncHandler = new javax.xml.ws.AsyncHandler<mx.com.fact.schema.ws.RequestTransactionResponse>() {
-                    public void handleResponse(final javax.xml.ws.Response<mx.com.fact.schema.ws.RequestTransactionResponse> response) 
-                    {
-                        try 
-                        {
-                            // TODO process asynchronous response here
-                            RequestTransactionResponse rtr=response.get();
-                            if(rtr.getRequestTransactionResult().getResponse().isResult()==true)//la transaccion se genero
-                            {
-                                String serie = rtr.getRequestTransactionResult().getResponse().getIdentifier().getBatch();
-                                String folio = rtr.getRequestTransactionResult().getResponse().getIdentifier().getSerial();
-                                String UUID = rtr.getRequestTransactionResult().getResponse().getIdentifier().getDocumentGUID();
-                                XMLGregorianCalendar fecha_ingreso=rtr.getRequestTransactionResult().getResponse().getTimeStamp();
-                                String nombre = rtr.getRequestTransactionResult().getResponse().getIdentifier().getSuggestedFileName();
-                                h=new Herramientas(user, 0);
-                                h.session(sessionPrograma);
-                                if (factura!=null)
-                                {
-                                    Session session = HibernateUtil.getSessionFactory().openSession();
-                                    try 
-                                    {
-                                        session.beginTransaction().begin();
-                                        factura = (Factura)session.get(Factura.class, factura.getIdFactura());
-
-                                        //Datos de timbrado
-                                        factura.setEstadoFactura("Facturado");
-                                        factura.setFFiscal(UUID);
-                                        factura.setFechaFiscal(fecha_ingreso.toXMLFormat());
-                                        factura.setSerie(serie);
-                                        factura.setFolio(folio);
-                                        factura.setNombreDocumento(nombre);
-                                        session.update(factura);
-                                        session.beginTransaction().commit();
-
-                                        if(rtr.getRequestTransactionResult().getResponseData().getResponseData1().compareTo("")!=0)
-                                        {
-                                            rtr.getRequestTransactionResult().getResponse().getIdentifier();
-                                            CodeBase64 codificador = new CodeBase64();
-                                            codificador.DecodeBase64(rtr.getRequestTransactionResult().getResponseData().getResponseData1(), "xml-timbrados/"+nombre+".xml");
-                                        }
-                                        if(rtr.getRequestTransactionResult().getResponseData().getResponseData3().compareTo("")!=0)
-                                        {
-                                            rtr.getRequestTransactionResult().getResponse().getIdentifier();
-                                            CodeBase64 codificador = new CodeBase64();
-                                            codificador.DecodeBase64(rtr.getRequestTransactionResult().getResponseData().getResponseData3(), "xml-timbrados/"+nombre+".pdf");
-                                        }
-                                        consulta();
-                                        try
-                                        {
-                                            File xml;
-                                            if(abrir.compareTo("xml")==0)
-                                                xml=new File("xml-timbrados/"+t_xml.getText());
-                                            else
-                                                xml=new File("xml-timbrados/"+t_pdf.getText());
-                                            Desktop.getDesktop().open(xml);
-                                        }catch(Exception e)
-                                        {
-                                            e.printStackTrace();
-                                            JOptionPane.showMessageDialog(null, "Error al abrir el archivo xml");
-                                        }
-                                    }catch(Exception e)
-                                    {
-                                        session.beginTransaction().rollback();
-                                        e.printStackTrace();
-                                        JOptionPane.showMessageDialog(null, "Error al almacenar los datos");
-                                    }
-                                    finally
-                                    {
-                                        if(session!=null)
-                                            if(session.isOpen())
-                                                session.close();
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                try
-                                {
-                                    String fecha=rtr.getRequestTransactionResult().getResponse().getTimeStamp().toXMLFormat();
-                                        Calendar calendario = Calendar.getInstance();
-                                        File f = new File(ruta+"errores/"+sdf.format(calendario.getTime())+".txt");
-                                    FileWriter w = new FileWriter(f);
-                                    BufferedWriter bw = new BufferedWriter(w);
-                                    PrintWriter wr = new PrintWriter(bw);  
-                                    wr.write(rtr.getRequestTransactionResult().getResponse().getDescription());
-                                    wr.write(rtr.getRequestTransactionResult().getResponse().getHint());
-                                    wr.write(rtr.getRequestTransactionResult().getResponse().getData());
-                                    wr.close();
-                                    bw.close();
-                                } catch (Exception e)
-                                {
-                                    e.printStackTrace();
-                                }
-                                JOptionPane.showMessageDialog(null, "Error al timbrar la factura:"+rtr.getRequestTransactionResult().getResponse().getDescription());
-                            }
-                        } catch(Exception ex) 
-                        {
-                            System.out.println("Error en la conexión con el SAP:"+ex);
-                        }
-                    }
-                };
-                java.util.concurrent.Future<? extends java.lang.Object> result = port.requestTransactionAsync(requestor, transaction, country, entity, userSAP, userName, data1, data2, data3, asyncHandler);
-                /*while(!result.isDone())
-                {
-                    Thread.sleep(100);
-                }*/
-            }
-        } catch (Exception ex) 
-        {
-            System.out.println("Error en la conexión con el SAP:"+ex);
-            JOptionPane.showMessageDialog(null, "Error en la conexión con el SAP:"+ex);
-        }
-    }
-    
-    public void llamarSoapDocumento1(RequestTransaction rq)
-    {
-        System.setProperty("javax.net.ssl.keyStore", "cacerts");
-        System.setProperty("javax.net.ssl.keyStorePassword", "changeit");
-        System.setProperty("javax.net.ssl.trustStore", "cacerts");
-        try 
-        { // Call Web Service Operation(async. callback)
-            if(rq!=null)
-            {
-                mx.com.fact.schema.ws.FactWSFront service = new mx.com.fact.schema.ws.FactWSFront();
-                mx.com.fact.schema.ws.FactWSFrontSoap port = service.getFactWSFrontSoap();
-                
-                // TODO initialize WS operation arguments here
-                java.lang.String requestor = rq.getRequestor();
-                java.lang.String transaction = rq.getTransaction();
-                java.lang.String country = rq.getCountry();
-                java.lang.String entity = rq.getEntity();
-                java.lang.String userSAP = rq.getUser();
-                java.lang.String userName = rq.getUserName();
-                java.lang.String data1 = rq.getData1();
-                java.lang.String data2 = rq.getData2();
-                java.lang.String data3 = rq.getData3();
-                javax.xml.ws.AsyncHandler<mx.com.fact.schema.ws.RequestTransactionResponse> asyncHandler = new javax.xml.ws.AsyncHandler<mx.com.fact.schema.ws.RequestTransactionResponse>() {
-                    public void handleResponse(final javax.xml.ws.Response<mx.com.fact.schema.ws.RequestTransactionResponse> response) 
-                    {
-                        try 
-                        {
-                            // TODO process asynchronous response here
-                            RequestTransactionResponse rtr=response.get();
-                            if(rtr.getRequestTransactionResult().getResponse().isResult()==true)//la transaccion se genero
-                            {
-                                String serie = rtr.getRequestTransactionResult().getResponse().getIdentifier().getBatch();
-                                String folio = rtr.getRequestTransactionResult().getResponse().getIdentifier().getSerial();
-                                String UUID = rtr.getRequestTransactionResult().getResponse().getIdentifier().getDocumentGUID();
-                                XMLGregorianCalendar fecha_ingreso=rtr.getRequestTransactionResult().getResponse().getTimeStamp();
-                                String nombre = rtr.getRequestTransactionResult().getResponse().getIdentifier().getSuggestedFileName2();
-                                h=new Herramientas(user, 0);
-                                h.session(sessionPrograma);
-                                if (factura!=null)
-                                {
-                                    Session session = HibernateUtil.getSessionFactory().openSession();
-                                    try 
-                                    {
-                                        session.beginTransaction().begin();
-                                        factura = (Factura)session.get(Factura.class, factura.getIdFactura());
-
-                                        //Datos de timbrado
-                                        factura.setEstadoFactura("Facturado");
-                                        factura.setFFiscal(UUID);
-                                        factura.setFechaFiscal(fecha_ingreso.toXMLFormat());
-                                        factura.setSerie(serie);
-                                        factura.setFolio(folio);
-                                        factura.setNombreDocumento(nombre);
-                                        session.update(factura);
-                                        session.beginTransaction().commit();
-
-                                        if(rtr.getRequestTransactionResult().getResponseData().getResponseData1().compareTo("")!=0)
-                                        {
-                                            rtr.getRequestTransactionResult().getResponse().getIdentifier();
-                                            CodeBase64 codificador = new CodeBase64();
-                                            codificador.DecodeBase64(rtr.getRequestTransactionResult().getResponseData().getResponseData1(), "xml-timbrados/"+nombre+".xml");
-                                        }
-                                        if(rtr.getRequestTransactionResult().getResponseData().getResponseData3().compareTo("")!=0)
-                                        {
-                                            rtr.getRequestTransactionResult().getResponse().getIdentifier();
-                                            CodeBase64 codificador = new CodeBase64();
-                                            codificador.DecodeBase64(rtr.getRequestTransactionResult().getResponseData().getResponseData3(), "xml-timbrados/"+nombre+".pdf");
-                                        }
-                                        try
-                                        {
-                                            File xml;
-                                            if(abrir.compareTo("xml")==0)
-                                                xml=new File("xml-timbrados/"+nombre+".xml");
-                                            else
-                                                xml=new File("xml-timbrados/"+nombre+".pdf");
-                                            Desktop.getDesktop().open(xml);
-                                            habilita2(true);
-                                            progreso.setString("Listo");
-                                            progreso.setIndeterminate(false);
-                                        }catch(Exception e)
-                                        {
-                                            e.printStackTrace();
-                                            habilita2(true);
-                                            progreso.setString("Listo");
-                                            progreso.setIndeterminate(false);
-                                            JOptionPane.showMessageDialog(null, "Error al abrir el archivo xml");
-                                        }
-                                    }catch(Exception e)
-                                    {
-                                        session.beginTransaction().rollback();
-                                        e.printStackTrace();
-                                        habilita2(true);
-                                        progreso.setString("Listo");
-                                        progreso.setIndeterminate(false);
-                                        JOptionPane.showMessageDialog(null, "Error al almacenar los datos");
-                                    }
-                                    finally
-                                    {
-                                        if(session!=null)
-                                            if(session.isOpen())
-                                                session.close();
-                                    }
-                                }
-                                else
-                                {
-                                    habilita2(true);
-                                    progreso.setString("Listo");
-                                    progreso.setIndeterminate(false);
-                                }
-                            }
-                            else
-                            {
-                                try
-                                {
-                                    String fecha=rtr.getRequestTransactionResult().getResponse().getTimeStamp().toXMLFormat();
-                                        Calendar calendario = Calendar.getInstance();
-                                        File f = new File(ruta+"errores/"+sdf.format(calendario.getTime())+".txt");
-                                    FileWriter w = new FileWriter(f);
-                                    BufferedWriter bw = new BufferedWriter(w);
-                                    PrintWriter wr = new PrintWriter(bw);  
-                                    wr.write(rtr.getRequestTransactionResult().getResponse().getDescription());
-                                    wr.write(rtr.getRequestTransactionResult().getResponse().getHint());
-                                    wr.write(rtr.getRequestTransactionResult().getResponse().getData());
-                                    wr.close();
-                                    bw.close();
-                                } catch (Exception e)
-                                {
-                                    e.printStackTrace();
-                                }
-                                habilita2(true);
-                                progreso.setString("Listo");
-                                progreso.setIndeterminate(false);
-                                JOptionPane.showMessageDialog(null, "Error al consultar la factura:"+rtr.getRequestTransactionResult().getResponse().getDescription());
-                            }
-                        } catch(Exception ex) 
-                        {
-                            System.out.println("Error en la conexión con el SAP:"+ex);
-                            habilita2(true);
-                            progreso.setString("Listo");
-                            progreso.setIndeterminate(false);
-                            JOptionPane.showMessageDialog(null, "Error en la conexión con el SAP:"+ex);
-                        }
-                    }
-                };
-                java.util.concurrent.Future<? extends java.lang.Object> result = port.requestTransactionAsync(requestor, transaction, country, entity, userSAP, userName, data1, data2, data3, asyncHandler);
-                /*while(!result.isDone())
-                {
-                    Thread.sleep(100);
-                }*/
-            }
-            else
-            {
-                habilita2(true);
-                progreso.setString("Listo");
-                progreso.setIndeterminate(false);
-            }
-        } catch (Exception ex) 
-        {
-            System.out.println("Error en la conexión con el SAP:"+ex);
-            habilita2(true);
-            progreso.setString("Listo");
-            progreso.setIndeterminate(false);
-            JOptionPane.showMessageDialog(null, "Error en la conexión con el SAP:"+ex);
-        }
-    }
-    
-    
-    public void llamarSoapTimbra(RequestTransaction rq)
-    {
-        System.setProperty("javax.net.ssl.keyStore", "cacerts");
-        System.setProperty("javax.net.ssl.keyStorePassword", "changeit");
-        System.setProperty("javax.net.ssl.trustStore", "cacerts");
-        try 
-        { // Call Web Service Operation(async. callback)
-            if(rq!=null)
-            {
-                mx.com.fact.schema.ws.FactWSFront service = new mx.com.fact.schema.ws.FactWSFront();
-                mx.com.fact.schema.ws.FactWSFrontSoap port = service.getFactWSFrontSoap();
-                
-                // TODO initialize WS operation arguments here
-                java.lang.String requestor = rq.getRequestor();
-                java.lang.String transaction = rq.getTransaction();
-                java.lang.String country = rq.getCountry();
-                java.lang.String entity = rq.getEntity();
-                java.lang.String userSAP = rq.getUser();
-                java.lang.String userName = rq.getUserName();
-                java.lang.String data1 = rq.getData1();
-                java.lang.String data2 = rq.getData2();
-                java.lang.String data3 = rq.getData3();
-                javax.xml.ws.AsyncHandler<mx.com.fact.schema.ws.RequestTransactionResponse> asyncHandler = new javax.xml.ws.AsyncHandler<mx.com.fact.schema.ws.RequestTransactionResponse>() {
-                    public void handleResponse(final javax.xml.ws.Response<mx.com.fact.schema.ws.RequestTransactionResponse> response) 
-                    {
-                        try 
-                        {
-                            // TODO process asynchronous response here
-                            RequestTransactionResponse rtr=response.get();
-                            if(rtr.getRequestTransactionResult().getResponse().isResult()==true)//la transaccion se genero
-                            {
-                                String serie = rtr.getRequestTransactionResult().getResponse().getIdentifier().getBatch();
-                                String folio = rtr.getRequestTransactionResult().getResponse().getIdentifier().getSerial();
-                                String UUID = rtr.getRequestTransactionResult().getResponse().getIdentifier().getDocumentGUID();
-                                XMLGregorianCalendar fecha_ingreso=rtr.getRequestTransactionResult().getResponse().getTimeStamp();
-                                String nombre = rtr.getRequestTransactionResult().getResponse().getIdentifier().getSuggestedFileName();
-                                
-                                if (factura!=null)
-                                {
-                                    Session session = HibernateUtil.getSessionFactory().openSession();
-                                    try 
-                                    {
-                                        session.beginTransaction().begin();
-                                        factura = (Factura)session.get(Factura.class, factura.getIdFactura());
-
-                                        //Datos de timbrado
-                                        factura.setEstadoFactura("Facturado");
-                                        factura.setEstatus("POR COBRAR");
-                                        factura.setFFiscal(UUID);
-                                        factura.setFechaFiscal(fecha_ingreso.toXMLFormat());
-                                        factura.setSerie(serie);
-                                        factura.setFolio(folio);
-                                        factura.setNombreDocumento(nombre);
-                                        session.update(factura);
-                                        session.beginTransaction().commit();
-                                        
-                                        if(rtr.getRequestTransactionResult().getResponseData().getResponseData1().compareTo("")!=0)
-                                        {
-                                            rtr.getRequestTransactionResult().getResponse().getIdentifier();
-                                            CodeBase64 codificador = new CodeBase64();
-                                            codificador.DecodeBase64(rtr.getRequestTransactionResult().getResponseData().getResponseData1(), ruta+"xml-timbrados/"+nombre+".xml");
-                                        }
-                                        if(rtr.getRequestTransactionResult().getResponseData().getResponseData3().compareTo("")!=0)
-                                        {
-                                            rtr.getRequestTransactionResult().getResponse().getIdentifier();
-                                            CodeBase64 codificador = new CodeBase64();
-                                            codificador.DecodeBase64(rtr.getRequestTransactionResult().getResponseData().getResponseData3(), ruta+"xml-timbrados/"+nombre+".pdf");
-                                        }
-                                        habilita(true, false);
-                                        progreso.setString("Listo");
-                                        progreso.setIndeterminate(false);
-                                        if(session.isOpen())
-                                            session.close();
-                                        guarda();
-                                        consulta();
-                                    }catch(Exception e)
-                                    {
-                                        session.beginTransaction().rollback();
-                                        e.printStackTrace();
-                                        habilita(true, false);
-                                        progreso.setString("Listo");
-                                        progreso.setIndeterminate(false);
-                                        JOptionPane.showMessageDialog(null, "Error al almacenar los datos");
-                                    }
-                                    finally
-                                    {
-                                        if(session!=null)
-                                            if(session.isOpen())
-                                                session.close();
-                                    }
-                                }
-                                else
-                                {
-                                    habilita(true, false);
-                                    progreso.setString("Listo");
-                                    progreso.setIndeterminate(false);
-                                    JOptionPane.showMessageDialog(null, "La factura se timbro pero no fue posible almacenar en la base de datos");
-                                }
-                            }
-                            else
-                            {
-                                try
-                                {
-                                    String fecha=rtr.getRequestTransactionResult().getResponse().getTimeStamp().toXMLFormat();
-                                        Calendar calendario = Calendar.getInstance();
-                                        File f = new File(ruta+"errores/"+sdf.format(calendario.getTime())+".txt");
-                                    FileWriter w = new FileWriter(f);
-                                    BufferedWriter bw = new BufferedWriter(w);
-                                    PrintWriter wr = new PrintWriter(bw);  
-                                    wr.write(rtr.getRequestTransactionResult().getResponse().getDescription());
-                                    wr.write(rtr.getRequestTransactionResult().getResponse().getHint());
-                                    wr.write(rtr.getRequestTransactionResult().getResponse().getData());
-                                    wr.close();
-                                    bw.close();
-                                } catch (Exception e)
-                                {
-                                    e.printStackTrace();
-                                }
-                                habilita(true, false);
-                                progreso.setString("Listo");
-                                progreso.setIndeterminate(false);
-                                JOptionPane.showMessageDialog(null, "Error al timbrar la factura:"+rtr.getRequestTransactionResult().getResponse().getDescription());
-                            }
-                        } catch(Exception ex) 
-                        {
-                            habilita(true, false);
-                            progreso.setString("Listo");
-                            progreso.setIndeterminate(false);
-                            JOptionPane.showMessageDialog(null, "Error en la conexión con el SAP:"+ex);
-                        }
-                    }
-                };
-                java.util.concurrent.Future<? extends java.lang.Object> result = port.requestTransactionAsync(requestor, transaction, country, entity, userSAP, userName, data1, data2, data3, asyncHandler);
-                /*while(!result.isDone())
-                {
-                    Thread.sleep(100);
-                }*/
-            }
-            else
-            {
-                habilita(true, false);
-                progreso.setString("Listo");
-                progreso.setIndeterminate(false);
-            }
-        } catch (Exception ex) 
-        {
-            habilita(true, false);
-            progreso.setString("Listo");
-            progreso.setIndeterminate(false);
-            JOptionPane.showMessageDialog(null, "Error en la conexión con el SAP:"+ex);
-        }
-    }
-    
-    public boolean llamarSoapConsulta(final RequestTransaction rq)
-    {
-        System.setProperty("javax.net.ssl.keyStore", "cacerts");
-        System.setProperty("javax.net.ssl.keyStorePassword", "changeit");
-        System.setProperty("javax.net.ssl.trustStore", "cacerts");
-        if(rq!=null)
-        {
-            mx.com.fact.schema.ws.FactWSFront service = new mx.com.fact.schema.ws.FactWSFront();
-            mx.com.fact.schema.ws.FactWSFrontSoap port = service.getFactWSFrontSoap();
+            error="";
+            GregorianCalendar GC = new GregorianCalendar();
+            GC.setTime(fecha_factura);
             
-            // TODO initialize WS operation arguments here
-            java.lang.String requestor = rq.getRequestor();
-            java.lang.String transaction = rq.getTransaction();
-            java.lang.String country = rq.getCountry();
-            java.lang.String entity = rq.getEntity();
-            java.lang.String userSAP = rq.getUser();
-            java.lang.String userName = rq.getUserName();
-            java.lang.String data1 = rq.getData1();
-            java.lang.String data2 = rq.getData2();
-            java.lang.String data3 = rq.getData3();
-           javax.xml.ws.AsyncHandler<mx.com.fact.schema.ws.RequestTransactionResponse> asyncHandler = new javax.xml.ws.AsyncHandler<mx.com.fact.schema.ws.RequestTransactionResponse>()
+            session.beginTransaction().begin();
+            factura=(Factura)session.get(Factura.class, factura.getIdFactura());
+            //Configuracion config=(Configuracion)session.get(Configuracion.class, 2);
+            BigDecimal valorIva=new BigDecimal(""+t_iva1.getValue().toString());
+            
+            //************************
+            finkok.ObjectFactory objeto = new finkok.ObjectFactory();
+            comprobante = objeto.createComprobante();
+
+            comprobante.setVersion(Constantes.VERSION_COMPROBANTE_TRES);
+            comprobante.setFecha(DatatypeFactory.newInstance().newXMLGregorianCalendar(GC));
+            comprobante.setSello(null);//Falta
+            comprobante.setFormaDePago(t_forma_pago.getText());
+            comprobante.setNoCertificado(null);//Falta
+            comprobante.setCertificado(null);//Falta
+            comprobante.setCondicionesDePago(t_forma_pago.getText().trim());
+            comprobante.setTipoCambio(BigDecimal.valueOf(((Number)t_tipo_cambio.getValue()).doubleValue() ).setScale(3, BigDecimal.ROUND_HALF_UP).toString());
+            comprobante.setMoneda(c_moneda.getSelectedItem().toString());
+            comprobante.setTipoDeComprobante("ingreso");
+            comprobante.setMetodoDePago(t_metodo_pago.getText());
+            comprobante.setLugarExpedicion("TOLUCA, ESTADO DE MEXICO");
+            comprobante.setSerie(serie);
+            comprobante.setFolio(folio);//Falta
+                Emisor emisor= objeto.createComprobanteEmisor();
+                emisor.setRfc(factura.getRfcEmisor());//Cambiar por config.getRfc()
+                emisor.setNombre(acentos(factura.getNombreEmisor()));
+                    TUbicacionFiscal miUbicacion =objeto.createTUbicacionFiscal();
+                    miUbicacion.setCalle(acentos(factura.getCalleEmisor()));
+                    miUbicacion.setNoExterior(factura.getNumeroExteriorEmisor());
+                    miUbicacion.setColonia(acentos(factura.getColoniaEmisor()));
+                    miUbicacion.setMunicipio(acentos(factura.getMunicipioEmisor()));
+                    miUbicacion.setEstado(acentos(factura.getEstadoEmisor()));
+                    miUbicacion.setPais(acentos(factura.getPaisEmisor()));
+                    miUbicacion.setCodigoPostal(factura.getCpEmisor());
+                    RegimenFiscal miRegimen= objeto.createComprobanteEmisorRegimenFiscal();
+                    miRegimen.setRegimen("REGIMEN GENERAL DE LEY DE PERSONAS MORALES");
+                emisor.getRegimenFiscal().add(miRegimen);
+                emisor.setDomicilioFiscal(miUbicacion);
+            comprobante.setEmisor(emisor);
+                Receptor receptor=objeto.createComprobanteReceptor();
+                receptor.setRfc(t_rfc.getText());
+                receptor.setNombre(acentos(t_social.getText()));
+                    TUbicacion sUbicacion = objeto.createTUbicacion();
+                    sUbicacion.setCalle(acentos(t_calle.getText()));
+                    sUbicacion.setColonia(acentos(t_colonia.getText()));
+                    sUbicacion.setMunicipio(acentos(t_municipio.getText()));
+                    sUbicacion.setEstado(acentos(c_estado.getSelectedItem().toString()));
+                    sUbicacion.setPais(c_pais.getSelectedItem().toString());
+                    sUbicacion.setCodigoPostal(t_cp.getText());
+                receptor.setDomicilio(sUbicacion);
+            comprobante.setReceptor(receptor);
+                finkok.Comprobante.Conceptos misConceptos = objeto.createComprobanteConceptos();
+                    BigDecimal big_total_bruto= new BigDecimal("0.0");
+                    BigDecimal big_sub_total=new BigDecimal("0.0");
+                    
+                    for(int ren=0; ren<t_datos.getRowCount(); ren++)
+                    {
+                        //descuento
+                        BigDecimal big_descuento=new BigDecimal(t_datos.getValueAt(ren, 5).toString());
+                        BigDecimal big_porciento_dectuento=big_descuento.divide(new BigDecimal("100"));
+                        //cantidades de lista
+                        BigDecimal big_cantidad=new BigDecimal(t_datos.getValueAt(ren, 1).toString());
+                        BigDecimal big_precio_lista=new BigDecimal(t_datos.getValueAt(ren, 4).toString());
+                        BigDecimal big_total_lista=big_precio_lista.multiply(big_cantidad);
+                        big_total_bruto = big_total_bruto.add(big_total_lista);
+                        //cantidades netas
+                        BigDecimal big_precio_neto=big_precio_lista.subtract(big_precio_lista.multiply(big_porciento_dectuento));
+                        BigDecimal big_total_neto=big_precio_neto.multiply(big_cantidad);
+                        big_sub_total = big_sub_total.add(big_total_neto);
+
+                        finkok.Comprobante.Conceptos.Concepto renglon= objeto.createComprobanteConceptosConcepto();
+                        renglon.setCantidad(big_cantidad.setScale(2, BigDecimal.ROUND_HALF_UP));
+                        renglon.setUnidad(t_datos.getValueAt(ren, 2).toString().trim());
+                        renglon.setDescripcion(t_datos.getValueAt(ren, 3).toString().trim());
+                        
+                        renglon.setValorUnitario(big_precio_lista.setScale(2, BigDecimal.ROUND_HALF_UP));
+                        renglon.setImporte(big_total_neto.setScale(2, BigDecimal.ROUND_HALF_UP));
+                        misConceptos.getConcepto().add(renglon);
+                    }
+                                       
+            comprobante.setConceptos(misConceptos);
+                Impuestos impuestos =objeto.createComprobanteImpuestos();
+                BigDecimal porc=valorIva.divide(new BigDecimal("100.0")).setScale(2, BigDecimal.ROUND_HALF_UP);
+                BigDecimal monto=big_sub_total.multiply(porc).setScale(2, BigDecimal.ROUND_HALF_UP);
+                impuestos.setTotalImpuestosTrasladados(monto.setScale(2, BigDecimal.ROUND_HALF_UP));
+                    Traslados misTrasladados=objeto.createComprobanteImpuestosTraslados();
+                        Traslado traslado= objeto.createComprobanteImpuestosTrasladosTraslado();
+                        traslado.setImpuesto("IVA");
+                        traslado.setTasa(valorIva.setScale(0, BigDecimal.ROUND_HALF_UP));
+                        traslado.setImporte(monto.setScale(6, BigDecimal.ROUND_HALF_UP));
+                    misTrasladados.getTraslado().add(traslado);
+                impuestos.setTraslados(misTrasladados);
+            comprobante.setImpuestos(impuestos);
+            
+            comprobante.setSubTotal(big_total_bruto.setScale(2, BigDecimal.ROUND_HALF_UP));
+            BigDecimal big_descuento=big_total_bruto.subtract(big_sub_total);
+            if(big_descuento.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue()>0)
             {
-                public final List error=new ArrayList();
-                @Override
-                public void handleResponse(final javax.xml.ws.Response<mx.com.fact.schema.ws.RequestTransactionResponse> response) {
-                    Session session = HibernateUtil.getSessionFactory().openSession();
-                    try
-                    {
-                        // TODO process asynchronous response here
-                        System.out.println(rq.getUser());
-                        session.beginTransaction().begin();
-                        factura = (Factura)session.get(Factura.class, factura.getIdFactura());
-                        RequestTransactionResponse rtr=response.get();
-                        String numero=rtr.getRequestTransactionResult().getResponseData().getResponseData1();
-                        if(numero.compareTo("")!=0) 
-                        {
-                            if(Integer.parseInt(numero)>0)
-                            {
-                                if(rtr.getRequestTransactionResult().getResponseData().getResponseData1().compareTo("")!=0)
-                                {
-                                    Random rng=new Random();
-                                    long  dig8 = rng.nextInt(90000000)+10000000;
-                                    rtr.getRequestTransactionResult().getResponse().getIdentifier();
-                                    CodeBase64 codificador = new CodeBase64();
-                                    boolean respuesta=codificador.DecodeBase64(rtr.getRequestTransactionResult().getResponseData().getResponseData2(), "xml-consulta/"+dig8+".xml");
-                                    if(respuesta==true)
-                                    {
-                                        try
-                                        {
-                                            File fXmlFile = new File(ruta+"xml-consulta/"+dig8+".xml"); 
-                                            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-                                            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-                                            Document doc = dBuilder.parse(fXmlFile);
-                                            //optional, but recommended
-                                            //read this - http://stackoverflow.com/questions/13786607/normalization-in-dom-parsing-with-java-how-does-it-work
-                                            doc.getDocumentElement().normalize();
-                                            NodeList nList = doc.getElementsByTagName("doc");
-                                            DefaultTableModel modelo=ModeloTablaFactura(0, columnas1);
-                                            for (int temp = 0; temp < nList.getLength(); temp++)
-                                            {
-                                                Node nNode = nList.item(temp);
-                                                if (nNode.getNodeType() == Node.ELEMENT_NODE) 
-                                                {
-                                                    Element eElement = (Element) nNode;
-                                                    if(eElement.getElementsByTagName("cancelled").item(0).getTextContent().compareTo("")==0) 
-                                                    {
-                                                        modelo.addRow(
-                                                                new Object[]
-                                                                {
-                                                                    eElement.getElementsByTagName("taxId").item(0).getTextContent(),
-                                                                    eElement.getElementsByTagName("uuid").item(0).getTextContent(),
-                                                                    eElement.getElementsByTagName("branch").item(0).getTextContent(),
-                                                                    eElement.getElementsByTagName("batch").item(0).getTextContent(),
-                                                                    eElement.getElementsByTagName("serial").item(0).getTextContent(),
-                                                                    eElement.getElementsByTagName("issued").item(0).getTextContent(),
-                                                                    Double.parseDouble(eElement.getElementsByTagName("total").item(0).getTextContent()),
-                                                                    eElement.getElementsByTagName("currency").item(0).getTextContent()
-                                                                });
-                                                    }
-                                                }
-                                            }
-                                            t_facturas.setModel(modelo);
-                                            if(t_facturas.getRowCount()==1)//hay una factura ya generada guardamos los datos en la orden
-                                            {
-                                                factura.setSerie(t_facturas.getValueAt(0, 3).toString());
-                                                factura.setFolio(t_facturas.getValueAt(0, 4).toString());
-                                                factura.setFFiscal(t_facturas.getValueAt(0, 1).toString());
-                                                factura.setFechaFiscal(t_facturas.getValueAt(0, 5).toString());
-                                                factura.setNombreDocumento(t_facturas.getValueAt(0, 0).toString()+"_"+t_facturas.getValueAt(0, 3).toString()+"_"+t_facturas.getValueAt(0, 4).toString()+"_"+t_rfc.getText());
-                                                factura.setEstadoFactura("Facturado");
-                                                factura.setEstatus("POR COBRAR");
-                                                session.update(factura);
-                                                session.beginTransaction().commit();
-                                                if(session.isOpen())
-                                                    session.close();
-                                                habilita(true, false);
-                                                progreso.setString("Listo");
-                                                progreso.setIndeterminate(false);
-                                                JOptionPane.showMessageDialog(null, "se encontro un registro y se importo la información");
-                                                guarda();
-                                                consulta();
-                                            }
-                                            else//hay mas de 1 factura para el folio enterno
-                                            {
-                                                habilita(true, false);
-                                                progreso.setString("Listo");
-                                                progreso.setIndeterminate(false);
-                                                formatoTablafactura();
-                                                javax.swing.JDialog consulta1 = new javax.swing.JDialog(General.this, true);
-                                                consulta1.setModalityType(java.awt.Dialog.ModalityType.DOCUMENT_MODAL);
-                                                consulta1.getContentPane().add(jLabel43, java.awt.BorderLayout.PAGE_START);
-                                                consulta1.getContentPane().add(jScrollPane2, java.awt.BorderLayout.CENTER);
-                                                consulta1.getContentPane().add(jPanel15, java.awt.BorderLayout.PAGE_END);
-                                                consulta1.setSize(861, 326);
-                                                Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-                                                consulta1.setLocation((d.width/2)-(consulta1.getWidth()/2), (d.height/2)-(consulta1.getHeight()/2));
-                                                consulta1.setVisible(true);
-                                            }
-                                        }
-                                        catch (Exception e)
-                                        {
-                                            habilita(true, false);
-                                            progreso.setString("Listo");
-                                            progreso.setIndeterminate(false);
-                                            JOptionPane.showMessageDialog(null, "Se encontraron "+numero+" facturas pero no fue posible leer el xml "+e);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        habilita(true, false);
-                                        progreso.setString("Listo");
-                                        progreso.setIndeterminate(false);
-                                        JOptionPane.showMessageDialog(null, "Se encontraron "+numero+" facturas pero no fue posible decodificar el xml");
-                                    }
-                                }
-                                else
-                                {
-                                    habilita(true, false);
-                                    progreso.setString("Listo");
-                                    progreso.setIndeterminate(false);
-                                    JOptionPane.showMessageDialog(null, "Se encontraron "+numero+" facturas pero no fue posible descargar el xml");
-                                }
-                            }
-                            else
-                            {
-                                CodeBase64 codificador=new CodeBase64();
-                                int numeroID=0;
-                                if(factura.getOrden()!=null)
-                                    numeroID=factura.getOrden().getIdOrden();
-                                if(factura.getOrdenExterna()!=null)
-                                    numeroID=factura.getOrdenExterna().getIdOrden();
-                                String cadenaCodificada=codificador.EncodeArchivo(new File(ruta+"nativos/"+numeroID+"nativo.xml"));
-                                if(cadenaCodificada.compareTo("")!=0)
-                                {
-                                    //Configuracion config=(Configuracion)session.get(Configuracion.class, 1);
-                                    RequestTransaction rq1=new RequestTransaction();
-                                    rq1.setRequestor(rq.getRequestor());//Lo proporcionará MySuite
-                                    rq1.setTransaction("CONVERT_NATIVE_XML");//Tipo de Transaccion
-                                    rq1.setCountry("MX");//Codigo de pais
-                                    rq1.setUser(rq.getUser());//igual que Requestor
-                                    rq1.setUserName(rq.getUserName());//Country.Entity.nombre_usuario
-                                    rq1.setEntity(rq.getEntity());
-                                    rq1.setData1(cadenaCodificada);//XML del CFDI a timbrar (no puede contener addendas ni timbre, y CFDI codificado en base 64).
-                                    rq1.setData2("PDF XML");//Vacío
-                                    rq1.setData3("");//Vacío
-                                    if(session.isOpen())
-                                        session.close();
-                                    llamarSoapTimbra(rq1);
-                                }
-                                else
-                                {
-                                    habilita(true, false);
-                                    progreso.setString("Listo");
-                                    progreso.setIndeterminate(false);
-                                    JOptionPane.showMessageDialog(null, "Error al codificar la cadena a Base 64");
-                                }
-                            }
-                        } 
-                        else
-                        {
-                            habilita(true, false);
-                            progreso.setString("Listo");
-                            progreso.setIndeterminate(false);
-                            JOptionPane.showMessageDialog(null, "¡Error en el SAP:"+rtr.getRequestTransactionResult().getResponse().getData());
-                        }
-                    }
-                    catch(InterruptedException ex)
-                    {
-                        habilita(true, false);
-                        progreso.setString("Listo");
-                        progreso.setIndeterminate(false);
-                        JOptionPane.showMessageDialog(null, "Error en la conexión con el SAP:"+ex);
-                    }
-                    catch(NumberFormatException ex)
-                    {
-                        habilita(true, false);
-                        progreso.setString("Listo");
-                        progreso.setIndeterminate(false);
-                        JOptionPane.showMessageDialog(null, "Error al generar el archivo de error");
-                    }
-                    catch(ExecutionException ex)
-                    {
-                        habilita(true, false);
-                        progreso.setString("Listo");
-                        progreso.setIndeterminate(false);
-                        JOptionPane.showMessageDialog(null, "Error al obtener la respuesta del SAP:"+ex);
-                    }
-                    catch(HibernateException ex)
-                    {
-                        habilita(true, false);
-                        progreso.setString("Listo");
-                        progreso.setIndeterminate(false);
-                        JOptionPane.showMessageDialog(null, "Error al leer la base de datos");
-                    }
-                }
-            };
-            java.util.concurrent.Future<? extends java.lang.Object> result = port.requestTransactionAsync(requestor, transaction, country, entity, userSAP, userName, data1, data2, data3, asyncHandler);
-            /*while(!result.isDone())
-            {
-            Thread.sleep(100);
-            }*/
+                comprobante.setDescuento(big_descuento.setScale(2, BigDecimal.ROUND_HALF_UP));//Falta
+                comprobante.setMotivoDescuento("PRONTO PAGO");
+            }
+            comprobante.setTotal(big_sub_total.add(monto.setScale(2, BigDecimal.ROUND_HALF_UP)));
+            
+                //Addenda adenda = objeto.createComprobanteAddenda();
+                //adenda.getAny().add("<H><H>");//agregar cada adenda
+            //comprobante.setAddenda(adenda);
+            //************************
+            return true;
         }
-        else
+        catch(Exception e)
         {
-            habilita(true, false);
-            progreso.setString("Listo");
-            progreso.setIndeterminate(false);
+            e.printStackTrace();
+            return false;
         }
-        return true;
+        finally
+        {
+            if(session!=null)
+                if(session.isOpen())
+                    session.close();
+        }
     }
     
     private void doClose(Factura o) {
         returnStatus = o;
         this.setVisible(false);
-        //this.dispose();
     }
     
     public Factura getReturnStatus() {
         return returnStatus;
     }
     
-    public void facturaElectronica()
-    {
+    public void consultaFacturaElectronica(File  arch){
         Session session = HibernateUtil.getSessionFactory().openSession();
-        try
-        {
+        try{
             session.beginTransaction().begin();
             factura=(Factura)session.get(Factura.class, factura.getIdFactura());
             int numeroID=0;
@@ -4712,37 +4063,484 @@ public void consulta()
                 numeroID=factura.getOrden().getIdOrden();
             if(factura.getOrdenExterna()!=null)
                 numeroID=factura.getOrdenExterna().getIdOrden();
-            if(generarXML(factura.getOrden(), ruta+"nativos/"+numeroID+"nativo.xml")==true)
+            Configuracion config=(Configuracion)session.createCriteria(Configuracion.class).add(Restrictions.eq("empresa", factura.getNombreEmisor())).setMaxResults(1).uniqueResult();
+            
+            String folio=""+factura.getFolioExterno();
+            String serie=factura.getSerieExterno();
+            if(XML_FINKOK(factura.getOrden(), folio, serie)==true)
             {
-                Configuracion config=(Configuracion)session.get(Configuracion.class, 1);
-                RequestTransaction rq=new RequestTransaction();
-                rq.setRequestor(config.getRequestor());//Lo proporcionará MySuite
-                rq.setTransaction("LOOKUP_ISSUED_INTERNAL_ID");//Tipo de Transaccion
-                rq.setCountry("MX");//Codigo de pais
-                rq.setUser(config.getRequestor());//igual que Requestor
-                rq.setUserName(config.getUsuario_1());//Country.Entity.nombre_usuario
-                rq.setEntity(config.getRfc());
-                rq.setData1(t_codigo.getText());//XML del CFDI a timbrar (no puede contener addendas ni timbre, y CFDI codificado en base 64).
-                rq.setData2(config.getSucursal());//Vacío
-                rq.setData3("");//Vacío
-                if(session.isOpen())
-                    session.close();
-                llamarSoapConsulta(rq);
+                GeneradorSelloDigital generadorsello = new GeneradorSelloDigital();
+                if(config.getCer()!=null && config.getCer().compareTo("")!=0)
+                {
+                    if(config.getClave()!=null && config.getClave().compareTo("")!=0)
+                    {
+                        String cadena = new String(comprobante.getCadenaOriginal().getBytes(), "UTF-8");
+                        System.out.println(cadena);
+                        String[] certificado=generadorsello.getCertificado(ruta+"config/"+config.getCer());
+                        if(certificado[0].compareTo("1")==0)
+                        {
+                            String[] getSello = generadorsello.getSelloDigital(cadena, config.getClave(), ruta+"config/"+config.getLlave());
+                            if(getSello[0].compareTo("1")==0)
+                            {
+                                String sello=getSello[1];
+                                comprobante.setSello(sello);
+                                comprobante.setNoCertificado(certificado[2]);
+                                comprobante.setCertificado(certificado[3]);
+                                FinkokJavaToXML xml= new FinkokJavaToXML();
+                                if(xml.creaAndValidaXML(comprobante, ruta+"nativos/"+numeroID+"nativo.xml")==true)
+                                {
+                                    ApiFinkok api1=new ApiFinkok(ruta);
+                                    ArrayList datos=new ArrayList();
+                                    datos.add(config.getEmailFinkok());
+                                    datos.add(config.getClaveFinkok());
+                                    datos.add(numeroID+"nativo.xml");//nombre del archivo nativo
+                                    datos.add(factura.getRfcEmisor()+"_"+serie+"_"+folio+"_"+t_rfc.getText()+".xml");//nombre del archivo timbrado
+                                    ArrayList guarda=api1.llamarSoapConsulta(datos);
+                                    switch(guarda.get(0).toString())
+                                    {
+                                        case "1"://Se timbro correcto
+                                            factura=(Factura)session.get(Factura.class, factura.getIdFactura());
+                                            factura.setFecha(fecha_factura);
+                                            factura.setEstadoFactura(guarda.get(1).toString());
+                                            factura.setEstatus(guarda.get(2).toString());
+                                            factura.setFFiscal(guarda.get(3).toString());
+                                            factura.setFechaFiscal(guarda.get(4).toString());
+                                            factura.setSerieExterno(serie);
+                                            factura.setFolioExterno(Integer.parseInt(folio));
+                                            factura.setNombreDocumento(factura.getRfcEmisor()+"_"+serie+"_"+folio+"_"+t_rfc.getText());
+                                            factura.setPac("F");
+                                            session.update(factura);
+                                            session.beginTransaction().commit();
+
+                                            progreso.setString("Listo");
+                                            progreso.setIndeterminate(false);
+                                            if(session.isOpen())
+                                                session.close();
+                                            guarda();
+                                            consulta();
+                                            arch=new File(ruta+"xml-timbrados/"+factura.getRfcEmisor()+"_"+serie+"_"+folio+"_"+t_rfc.getText()+".xml");
+                                            Desktop.getDesktop().open(arch);
+                                            break;
+
+                                        case "0"://Hay error local
+                                            ArrayList lista=(ArrayList)guarda.get(1);
+                                            String error="Error";
+                                            for(int x=0; x<lista.size(); x++)
+                                            {
+                                                ArrayList inc=(ArrayList)lista.get(x);
+                                                error+="Error: ";
+                                                for(int y=0; y<inc.size(); y++)
+                                                {
+                                                    error+=lista.get(0)+" ";
+                                                }
+                                                error+="\n";
+                                            }
+                                            progreso.setString("Listo");
+                                            progreso.setIndeterminate(false);
+                                            JOptionPane.showMessageDialog(null, error);
+                                            break;
+
+                                        case "-1"://Hay error en el SAP
+                                            progreso.setString("Listo");
+                                            progreso.setIndeterminate(false);
+                                            JOptionPane.showMessageDialog(null, guarda.get(1).toString());
+                                            break;
+                                    }
+                                }
+                                else
+                                {
+                                    progreso.setString("Listo");
+                                    progreso.setIndeterminate(false);
+                                    JOptionPane.showMessageDialog(null, "Error al generar el XML.-"+error);
+                                }
+                            }
+                            else
+                            {
+                                progreso.setString("Listo");
+                                progreso.setIndeterminate(false);
+                                JOptionPane.showMessageDialog(null, getSello[1]);
+                            }
+                        }
+                        else
+                        {
+                            progreso.setString("Listo");
+                            progreso.setIndeterminate(false);
+                            JOptionPane.showMessageDialog(null, certificado[1]);
+                        }
+                    }
+                    else
+                    {
+                        progreso.setString("Listo");
+                        progreso.setIndeterminate(false);
+                        JOptionPane.showMessageDialog(null, "Falta la clave del Archivo CER");
+                    }
+                }
+                else
+                {
+                    progreso.setString("Listo");
+                    progreso.setIndeterminate(false);
+                    JOptionPane.showMessageDialog(null, "Falta agrerar el archivo CER");
+                }
             }
             else
             {
-                habilita(true, false);
                 progreso.setString("Listo");
                 progreso.setIndeterminate(false);
                 JOptionPane.showMessageDialog(null, "Error al generar el XML.-"+error);
             }
-        }
-        catch(Exception e)
+        }catch(Exception e)
         {
             habilita(true, false);
             progreso.setString("Listo");
             progreso.setIndeterminate(false);
-            JOptionPane.showMessageDialog(null, "Error al abrir el archivo de configuración");
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error al abrir el archivo de configuración..");
+        }
+        finally
+        {
+            if(session!=null)
+                if(session.isOpen())
+                    session.close();
+        }
+    }
+    public void facturaElectronica()
+    {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try{
+            session.beginTransaction().begin();
+            factura=(Factura)session.get(Factura.class, factura.getIdFactura());
+            Configuracion config=(Configuracion)session.createCriteria(Configuracion.class).add(Restrictions.eq("empresa", factura.getNombreEmisor())).setMaxResults(1).uniqueResult();
+            String serie=config.getSerie();
+            int numeroID=0;
+            if(factura.getOrden()!=null)
+                numeroID=factura.getOrden().getIdOrden();
+            if(factura.getOrdenExterna()!=null)
+                numeroID=factura.getOrdenExterna().getIdOrden();
+            
+            switch(config.getPac())
+            {
+                case "MYSUITE":
+                    if(XML_MYSUITE(factura.getOrden(), ruta+"nativos/"+numeroID+"nativo.xml")==true)
+                    {
+                        ArrayList aux=new ArrayList();
+                        aux.add(config.getRequestor());
+                        aux.add("LOOKUP_ISSUED_INTERNAL_ID");
+                        aux.add("MX");
+                        aux.add(config.getRequestor());
+                        aux.add(config.getUsuario_1());
+                        aux.add(config.getRfc());
+                        aux.add(t_codigo.getText());
+                        aux.add(config.getSucursal());
+                        
+                        ApiMysuite timbrar=new ApiMysuite(ruta);
+                        DefaultTableModel modelo=ModeloTablaFactura(0, columnas1);
+                        ArrayList resp=timbrar.llamarSoapConsulta(aux,modelo);
+                        if(resp.size()>0)
+                        {
+                            switch(resp.get(0).toString())
+                            {
+                                case "-1"://Error
+                                    habilita(true, false);
+                                    progreso.setString("Listo");
+                                    progreso.setIndeterminate(false);
+                                    JOptionPane.showMessageDialog(null, resp.get(1).toString());
+                                    break;
+                                case "0"://No se encontro la factura
+                                    try 
+                                    {
+                                        CodeBase64 codificador=new CodeBase64();
+                                        String cadenaCodificada=codificador.EncodeArchivo(new File(ruta+"nativos/"+numeroID+"nativo.xml"));
+                                        if(cadenaCodificada.compareTo("")!=0)
+                                        {
+                                            aux=new ArrayList();
+                                            aux.add(config.getRequestor());//Lo proporcionará MySuite
+                                            aux.add("CONVERT_NATIVE_XML");//Tipo de Transaccion
+                                            aux.add("MX");//Codigo de pais
+                                            aux.add(config.getRequestor());//igual que Requestor
+                                            aux.add(config.getUsuario_1());//Country.Entity.nombre_usuario
+                                            aux.add(config.getRfc());
+                                            aux.add(cadenaCodificada);//XML del CFDI a timbrar (no puede contener addendas ni timbre, y CFDI codificado en base 64).
+                                            aux.add("PDF XML");//Documentos Requeridos
+
+                                            ArrayList guarda=timbrar.llamarSoapTimbra(aux);
+                                            factura = (Factura)session.get(Factura.class, factura.getIdFactura());
+
+                                            if(guarda.get(0).toString().compareTo("-1")!=0 && guarda.get(0).toString().compareTo("0")!=0)
+                                            {
+                                                //Datos de timbrado
+                                                factura.setEstadoFactura(guarda.get(1).toString());
+                                                factura.setEstatus(guarda.get(2).toString());
+                                                factura.setFFiscal(guarda.get(3).toString());
+                                                factura.setFechaFiscal(guarda.get(4).toString());
+                                                factura.setSerie(guarda.get(5).toString());
+                                                factura.setFolio(guarda.get(6).toString());
+                                                factura.setNombreDocumento(guarda.get(7).toString());
+                                                factura.setPac("M");
+                                                session.update(factura);
+                                                session.beginTransaction().commit();
+                                                session.beginTransaction().commit();
+
+                                                habilita(true, false);
+                                                progreso.setString("Listo");
+                                                progreso.setIndeterminate(false);
+                                                if(session.isOpen())
+                                                    session.close();
+                                                guarda();
+                                                consulta();
+                                            }
+                                            else{
+                                                habilita(true, false);
+                                                progreso.setString("Listo");
+                                                progreso.setIndeterminate(false);
+                                                JOptionPane.showMessageDialog(null, aux.get(1));
+                                            }
+                                        }
+                                        else
+                                        {
+                                            habilita(true, false);
+                                            progreso.setString("Listo");
+                                            progreso.setIndeterminate(false);
+                                            JOptionPane.showMessageDialog(null, "Error al codificar la cadena a Base 64");
+                                        }
+                                    }catch(Exception e)
+                                    {
+                                        session.beginTransaction().rollback();
+                                        e.printStackTrace();
+                                        habilita(true, false);
+                                        progreso.setString("Listo");
+                                        progreso.setIndeterminate(false);
+                                        JOptionPane.showMessageDialog(null, "Error al almacenar los datos");
+                                    }
+                                    finally
+                                    {
+                                        if(session!=null)
+                                            if(session.isOpen())
+                                                session.close();
+                                    }
+                                    
+                                    
+                                    
+                                    break;
+                                case "1"://se encontro una sola factura
+                                    modelo=(DefaultTableModel)resp.get(1);
+                                    t_facturas.setModel(modelo);
+                                    factura=(Factura)session.get(Factura.class, factura.getIdFactura());
+                                    factura.setSerie(t_facturas.getValueAt(0, 3).toString());
+                                    factura.setFolio(t_facturas.getValueAt(0, 4).toString());
+                                    factura.setFFiscal(t_facturas.getValueAt(0, 1).toString());
+                                    factura.setFechaFiscal(t_facturas.getValueAt(0, 5).toString());
+                                    factura.setNombreDocumento(t_facturas.getValueAt(0, 0).toString()+"_"+t_facturas.getValueAt(0, 3).toString()+"_"+t_facturas.getValueAt(0, 4).toString()+"_"+t_rfc.getText());
+                                    factura.setEstadoFactura("Facturado");
+                                    factura.setEstatus("POR COBRAR");
+                                    factura.setPac("M");
+                                    session.update(factura);
+                                    session.beginTransaction().commit();
+                                    if(session.isOpen())
+                                        session.close();
+                                    habilita(true, false);
+                                    progreso.setString("Listo");
+                                    progreso.setIndeterminate(false);
+                                    JOptionPane.showMessageDialog(null, "se encontro un registro y se importo la información");
+                                    guarda();
+                                    consulta();
+                                    break;
+                                default:// se encontro mas de una factura
+                                    modelo=(DefaultTableModel)resp.get(1);
+                                    t_facturas.setModel(modelo);
+                                    habilita(true, false);
+                                    progreso.setString("Listo");
+                                    progreso.setIndeterminate(false);
+                                    formatoTablafactura();
+                                    javax.swing.JDialog consulta1 = new javax.swing.JDialog(General.this, true);
+                                    consulta1.setModalityType(java.awt.Dialog.ModalityType.DOCUMENT_MODAL);
+                                    consulta1.getContentPane().add(jLabel43, java.awt.BorderLayout.PAGE_START);
+                                    consulta1.getContentPane().add(jScrollPane2, java.awt.BorderLayout.CENTER);
+                                    consulta1.getContentPane().add(jPanel15, java.awt.BorderLayout.PAGE_END);
+                                    consulta1.setSize(861, 326);
+                                    Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+                                    consulta1.setLocation((d.width/2)-(consulta1.getWidth()/2), (d.height/2)-(consulta1.getHeight()/2));
+                                    consulta1.setVisible(true);
+                                    break;
+                            }
+                        }
+                        else
+                            JOptionPane.showMessageDialog(null, "Error al obtener respuesta");
+                    }
+                    else
+                    {
+                        habilita(true, false);
+                        progreso.setString("Listo");
+                        progreso.setIndeterminate(false);
+                        JOptionPane.showMessageDialog(null, "Error al generar el XML.-"+error);
+                    }
+                    bandera=true;
+                    break;
+                    
+                case "FINKOK":
+                    String folio="1";
+                    if(t_codigo.getText().compareTo("")!=0)
+                    {
+                        Query maximo = session.createSQLQuery("select if(max(folio_externo) is null, 1, max(folio_externo)+1) as folio from factura where PAC='F' and rfc_emisor='"+factura.getRfcEmisor()+"' and serie_externo='"+serie+"';");
+                        maximo.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+                        ArrayList list_maximo=(ArrayList)maximo.list();
+                        if(list_maximo.size()>0)
+                        {
+                            java.util.HashMap map=(java.util.HashMap)list_maximo.get(0);
+                            folio = map.get("folio").toString();
+                        }
+                    }
+                    else{
+                        folio=t_codigo.getText();
+                    }
+                    if(XML_FINKOK(factura.getOrden(), folio, serie)==true)
+                    {
+                        GeneradorSelloDigital generadorsello = new GeneradorSelloDigital();
+                        if(config.getCer()!=null && config.getCer().compareTo("")!=0)
+                        {
+                            if(config.getClave()!=null && config.getClave().compareTo("")!=0)
+                            {
+                                String cadena = comprobante.getCadenaOriginal();
+                                String[] certificado=generadorsello.getCertificado(ruta+"config/"+config.getCer());
+                                if(certificado[0].compareTo("1")==0)
+                                {
+                                    String[] getSello = generadorsello.getSelloDigital(cadena, config.getClave(), ruta+"config/"+config.getLlave());
+                                    if(getSello[0].compareTo("1")==0)
+                                    {
+                                        String sello=getSello[1];
+                                        comprobante.setSello(sello);
+                                        comprobante.setNoCertificado(certificado[2]);
+                                        comprobante.setCertificado(certificado[3]);
+                                        FinkokJavaToXML xml= new FinkokJavaToXML();
+                                        if(xml.creaAndValidaXML(comprobante, ruta+"nativos/"+numeroID+"nativo.xml")==true)
+                                        {
+                                            ApiFinkok api1=new ApiFinkok(ruta);
+                                            ArrayList datos=new ArrayList();
+                                            datos.add(config.getEmailFinkok());
+                                            datos.add(config.getClaveFinkok());
+                                            datos.add(numeroID+"nativo.xml");//nombre del archivo nativo
+                                            datos.add(factura.getRfcEmisor()+"_"+serie.toLowerCase()+"_"+folio+"_"+t_rfc.getText()+".xml");//nombre del archivo timbrado
+                                            
+                                            ArrayList guarda=api1.llamarSoapFimbra(datos);
+                                            switch(guarda.get(0).toString())
+                                            {
+                                                case "1"://Se timbro correcto
+                                                    Factura factura1=(Factura)session.get(Factura.class, factura.getIdFactura());
+                                                    factura1.setFecha(fecha_factura);
+                                                    factura1.setEstadoFactura(guarda.get(1).toString());
+                                                    factura1.setEstatus(guarda.get(2).toString());
+                                                    factura1.setFFiscal(guarda.get(3).toString());
+                                                    factura1.setFechaFiscal(guarda.get(4).toString());
+                                                    factura1.setSerieExterno(serie);
+                                                    factura1.setFolioExterno(Integer.parseInt(folio));
+                                                    factura1.setNombreDocumento(factura.getRfcEmisor()+"_"+serie.toLowerCase()+"_"+folio+"_"+t_rfc.getText());
+                                                    factura1.setPac("F");
+                                                    factura1.setCertificadoEmisor(certificado[2]);
+                                                    factura1.setCertificadoSat(guarda.get(9).toString());
+                                                    factura1.setSelloSat(guarda.get(8).toString());
+                                                    factura1.setSelloCfdi(sello);
+                                                    factura1.setAddenda("general");
+                                                    
+                                                    session.update(factura1);
+                                                    session.beginTransaction().commit();
+                                                    session.beginTransaction().commit();
+
+                                                    if(session.isOpen())
+                                                        session.close();
+                                                    Formatos formato_pdf = new Formatos(this.user, this.sessionPrograma, factura1);
+                                                    formato_pdf.factura();
+                                                    habilita(true, false);
+                                                    progreso.setString("Listo");
+                                                    progreso.setIndeterminate(false);
+                                                    guarda();
+                                                    consulta();
+                                                    break;
+                                                    
+                                                case "0"://Hay error local
+                                                    ArrayList lista=(ArrayList)guarda.get(1);
+                                                    String error="Error";
+                                                    for(int x=0; x<lista.size(); x++)
+                                                    {
+                                                        ArrayList inc=(ArrayList)lista.get(x);
+                                                        error+="Error: ";
+                                                        for(int y=0; y<inc.size(); y++)
+                                                        {
+                                                            error+=lista.get(0)+" ";
+                                                        }
+                                                        error+="\n";
+                                                    }
+                                                    habilita(true, false);
+                                                    progreso.setString("Listo");
+                                                    progreso.setIndeterminate(false);
+                                                    JOptionPane.showMessageDialog(null, error);
+                                                    break;
+                                                    
+                                                case "-1"://Hay error en el SAP
+                                                    habilita(true, false);
+                                                    progreso.setString("Listo");
+                                                    progreso.setIndeterminate(false);
+                                                    JOptionPane.showMessageDialog(null, guarda.get(1).toString());
+                                                    break;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            habilita(true, false);
+                                            progreso.setString("Listo");
+                                            progreso.setIndeterminate(false);
+                                            JOptionPane.showMessageDialog(null, "Error al generar el XML.-"+error);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        habilita(true, false);
+                                        progreso.setString("Listo");
+                                        progreso.setIndeterminate(false);
+                                        JOptionPane.showMessageDialog(null, getSello[1]);
+                                    }
+                                }
+                                else
+                                {
+                                    habilita(true, false);
+                                    progreso.setString("Listo");
+                                    progreso.setIndeterminate(false);
+                                    JOptionPane.showMessageDialog(null, certificado[1]);
+                                }
+                            }
+                            else
+                            {
+                                habilita(true, false);
+                                progreso.setString("Listo");
+                                progreso.setIndeterminate(false);
+                                JOptionPane.showMessageDialog(null, "Falta la clave del Archivo CER");
+                            }
+                        }
+                        else
+                        {
+                            habilita(true, false);
+                            progreso.setString("Listo");
+                            progreso.setIndeterminate(false);
+                            JOptionPane.showMessageDialog(null, "Falta agrerar el archivo CER");
+                        }
+                    }
+                    else
+                    {
+                        habilita(true, false);
+                        progreso.setString("Listo");
+                        progreso.setIndeterminate(false);
+                        JOptionPane.showMessageDialog(null, "Error al generar el XML.-"+error);
+                    }
+                    bandera=true;
+                    break;
+            }
+        }
+        catch(Exception e)
+        {
+            bandera=true;
+            habilita(true, false);
+            progreso.setString("Listo");
+            progreso.setIndeterminate(false);
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error al abrir el archivo de configuración..");
         }
         finally
         {
@@ -4806,7 +4604,7 @@ public void consulta()
             factura.setContactoReceptor(t_nombre_receptor.getText().trim());
             factura.setCorreoReceptor(t_correo_receptor.getText().trim());
             factura.setTelefonoReceptor(t_tel_receptor.getText().trim());
-            factura.setCondicionesPago(t_condiciones.getText().trim());
+            factura.setCondicionesPago(t_forma_pago.getText().trim());
             factura.setAddenda("general");
             factura.setIva(Integer.parseInt(t_iva1.getValue().toString()));
             factura.setExtra(t_extra.getText());
@@ -4854,5 +4652,13 @@ public void consulta()
                     session.close();
         }
         return respuesta;
+    }
+    
+    public static String acentos(String input) {
+        // Descomposición canónica
+        String normalized = Normalizer.normalize(input, Normalizer.Form.NFD);
+        // Nos quedamos únicamente con los caracteres ASCII
+        Pattern pattern = Pattern.compile("\\P{ASCII}");
+        return pattern.matcher(normalized).replaceAll("");
     }
 }

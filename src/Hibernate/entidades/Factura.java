@@ -76,12 +76,20 @@ public class Factura  implements java.io.Serializable {
      private String estatus;
      private Date fEstatus;
      private String texto;
+     private Integer folioExterno;
+     private String serieExterno;
+     private String pac;
+     private String selloSat;
+     private String selloCfdi;
+     private String certificadoSat;
+     private String certificadoEmisor;
+     private Double descDeducible;
      private Set conceptos = new HashSet(0);
 
     public Factura() {
     }
 
-    public Factura(Orden orden, Usuario usuarioByAutorizo, OrdenExterna ordenExterna, Usuario usuarioByGenero, Date fecha, String rfcEmisor, String nombreEmisor, String calleEmisor, String coloniaEmisor, String numeroExteriorEmisor, String municipioEmisor, String estadoEmisor, String paisEmisor, String cpEmisor, String rfcReceptor, String nombreReceptor, String calleReceptor, String coloniaReceptor, String numeroExteriorReceptor, String municipioReceptor, String estadoReceptor, String paisReceptor, String cpReceptor, Double deducible, String estadoFactura, String FFiscal, String fechaFiscal, String serie, String folio, String metodoPago, String cuentaPago, String moneda, Double factorCambio, String area, String tipoPoliza, String tipoEmisor, String contactoEmisor, String correoEmisor, String telefonoEmisor, String tipoReceptor, String contactoReceptor, String correoReceptor, String telefonoReceptor, String codigoOficina, String foliosElectronicos, String nombreDocumento, String error, String addenda, String riEmosor, String riReceptor, String proveedor, String condicionesPago, String tipoFacturacion, String descripcionEmisor, String medioPago, Date fechaMedioPago, Date fechaCondicionesPago, int iva, String riesgo, String extra, String estatus, Date fEstatus, String texto, Set conceptos) {
+    public Factura(Orden orden, Usuario usuarioByAutorizo, OrdenExterna ordenExterna, Usuario usuarioByGenero, Date fecha, String rfcEmisor, String nombreEmisor, String calleEmisor, String coloniaEmisor, String numeroExteriorEmisor, String municipioEmisor, String estadoEmisor, String paisEmisor, String cpEmisor, String rfcReceptor, String nombreReceptor, String calleReceptor, String coloniaReceptor, String numeroExteriorReceptor, String municipioReceptor, String estadoReceptor, String paisReceptor, String cpReceptor, Double deducible, String estadoFactura, String FFiscal, String fechaFiscal, String serie, String folio, String metodoPago, String cuentaPago, String moneda, Double factorCambio, String area, String tipoPoliza, String tipoEmisor, String contactoEmisor, String correoEmisor, String telefonoEmisor, String tipoReceptor, String contactoReceptor, String correoReceptor, String telefonoReceptor, String codigoOficina, String foliosElectronicos, String nombreDocumento, String error, String addenda, String riEmosor, String riReceptor, String proveedor, String condicionesPago, String tipoFacturacion, String descripcionEmisor, String medioPago, Date fechaMedioPago, Date fechaCondicionesPago, int iva, String riesgo, String extra, String estatus, Date fEstatus, String texto, Integer folioExterno, String serieExterno, String pac, String selloSat, String selloCfdi, String certificadoSat, String certificadoEmisor, Double descDeducible, Set conceptos) {
        this.orden = orden;
        this.usuarioByAutorizo = usuarioByAutorizo;
        this.ordenExterna = ordenExterna;
@@ -146,6 +154,14 @@ public class Factura  implements java.io.Serializable {
        this.estatus = estatus;
        this.fEstatus= fEstatus;
        this.texto = texto;
+       this.folioExterno=folioExterno;
+       this.serieExterno=serieExterno;
+       this.pac=pac;
+       this.selloSat=selloSat;
+       this.selloCfdi=selloCfdi;
+       this.certificadoSat=certificadoSat;
+       this.certificadoEmisor=certificadoEmisor;
+       this.descDeducible=descDeducible;
     }
    
     public Integer getIdFactura() {
@@ -594,6 +610,57 @@ public class Factura  implements java.io.Serializable {
         this.texto = texto;
     }
     
+    public Integer getFolioExterno() {
+        return this.folioExterno;
+    }
+    
+    public void setFolioExterno(Integer folioExterno) {
+        this.folioExterno = folioExterno;
+    }
+    public String getSerieExterno() {
+        return this.serieExterno;
+    }
+    
+    public void setSerieExterno(String serieExterno) {
+        this.serieExterno = serieExterno;
+    }
+    
+    public String getPac() {
+        return this.pac;
+    }
+    
+    public void setPac(String pac) {
+        this.pac = pac;
+    }
+    
+    public String getSelloSat() {
+        return this.selloSat;
+    }
+    
+    public void setSelloSat(String selloSat) {
+        this.selloSat = selloSat;
+    }
+    public String getSelloCfdi() {
+        return this.selloCfdi;
+    }
+    
+    public void setSelloCfdi(String selloCfdi) {
+        this.selloCfdi = selloCfdi;
+    }
+    public String getCertificadoSat() {
+        return this.certificadoSat;
+    }
+    
+    public void setCertificadoSat(String certificadoSat) {
+        this.certificadoSat = certificadoSat;
+    }
+    public String getCertificadoEmisor() {
+        return this.certificadoEmisor;
+    }
+    
+    public void setCertificadoEmisor(String certificadoEmisor) {
+        this.certificadoEmisor = certificadoEmisor;
+    }
     public Set getConceptos() {
         return this.conceptos;
     }
@@ -611,6 +678,13 @@ public class Factura  implements java.io.Serializable {
     }
 
 
+    public Double getDescDeducible() {
+        return this.descDeducible;
+    }
+    
+    public void setDescDeducible(Double descDeducible) {
+        this.descDeducible = descDeducible;
+    }
 
 
 }

@@ -93,6 +93,7 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
     /**
      * Creates new form valuacionDirecta
      */
+    //private javax.swing.JDialog ventana;
     private String orden;
     private Usuario user;
     String sessionPrograma="";
@@ -127,6 +128,12 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
         sessionPrograma=ses;
         orden=ord;
         user=us;
+        /*cb_hojalateria.setEnabled(true);
+        cb_mecanica.setEnabled(true);
+        cb_suspension.setEnabled(true);
+        cb_electrico.setEnabled(true);
+        cb_pintura.setEnabled(true);*/
+        
 
         if(menu==3)
         {
@@ -203,6 +210,7 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
         t_datos.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         formato = new FormatoTabla();
         buscaCuentas(-1,-1);
+        SumaTotal();
         verEstado();
         h=new Herramientas(user, 0);
         if(h.isCerrada(orden)==true)
@@ -213,6 +221,7 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
             t_vales.setEnabled(false);
             b_ok.setEnabled(false);
             b_ac.setEnabled(false);
+            b_consumibles.setEnabled(false);
             r_cerrar_valuacion.setEnabled(false);
             this.r_cerrar_cotizacion.setEnabled(false);
         }
@@ -374,6 +383,27 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
         l1 = new javax.swing.JLabel();
         l5 = new javax.swing.JLabel();
         t_porcentaje = new javax.swing.JTextField();
+        ventanaConsumible = new javax.swing.JDialog();
+        jPanel9 = new javax.swing.JPanel();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        jLabel14 = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
+        jLabel16 = new javax.swing.JLabel();
+        jLabel17 = new javax.swing.JLabel();
+        cb_hojalateria = new javax.swing.JCheckBox();
+        cb_mecanica = new javax.swing.JCheckBox();
+        cb_suspension = new javax.swing.JCheckBox();
+        cb_electrico = new javax.swing.JCheckBox();
+        cb_pintura = new javax.swing.JCheckBox();
+        jLabel18 = new javax.swing.JLabel();
+        jButton7 = new javax.swing.JButton();
+        t_hojalateria = new javax.swing.JFormattedTextField();
+        t_mecanica = new javax.swing.JFormattedTextField();
+        t_suspension = new javax.swing.JFormattedTextField();
+        t_electrico = new javax.swing.JFormattedTextField();
+        t_pintura = new javax.swing.JFormattedTextField();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         t_busca = new javax.swing.JTextField();
@@ -405,7 +435,7 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
         t_mo_directa1 = new javax.swing.JFormattedTextField();
         l6 = new javax.swing.JLabel();
         jPanel8 = new javax.swing.JPanel();
-        t_horas1 = new javax.swing.JFormattedTextField();
+        t_total_consumible = new javax.swing.JFormattedTextField();
         b_consumibles = new javax.swing.JButton();
         scroll = new javax.swing.JScrollPane();
         t_datos = new javax.swing.JTable();
@@ -708,6 +738,244 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
             }
         });
 
+        ventanaConsumible.setTitle("ASIGNACIÓN PRESUPUESTO DE CONSUMIBLES");
+        ventanaConsumible.setBackground(new java.awt.Color(255, 255, 255));
+        ventanaConsumible.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        ventanaConsumible.setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
+        ventanaConsumible.setPreferredSize(new java.awt.Dimension(375, 250));
+
+        jPanel9.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel9.setPreferredSize(new java.awt.Dimension(375, 250));
+
+        jLabel9.setFont(new java.awt.Font("Times New Roman", 0, 11)); // NOI18N
+        jLabel9.setText("HOJALATERÍA:");
+
+        jLabel10.setFont(new java.awt.Font("Times New Roman", 0, 11)); // NOI18N
+        jLabel10.setText("MECÁNICA:");
+
+        jLabel12.setFont(new java.awt.Font("Times New Roman", 0, 11)); // NOI18N
+        jLabel12.setText("SUSPENSIÓN:");
+
+        jLabel14.setFont(new java.awt.Font("Times New Roman", 0, 11)); // NOI18N
+        jLabel14.setText("ELÉCTRICO:");
+
+        jLabel15.setFont(new java.awt.Font("Times New Roman", 0, 11)); // NOI18N
+        jLabel15.setText("PINTURA:");
+
+        jLabel16.setFont(new java.awt.Font("Times New Roman", 1, 11)); // NOI18N
+        jLabel16.setText("ESPECIALIDAD");
+
+        jLabel17.setFont(new java.awt.Font("Times New Roman", 1, 11)); // NOI18N
+        jLabel17.setText("DESTAJO");
+
+        cb_hojalateria.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cb_hojalateriaActionPerformed(evt);
+            }
+        });
+
+        cb_mecanica.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cb_mecanicaActionPerformed(evt);
+            }
+        });
+
+        cb_suspension.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cb_suspensionActionPerformed(evt);
+            }
+        });
+
+        cb_electrico.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cb_electricoActionPerformed(evt);
+            }
+        });
+
+        cb_pintura.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cb_pinturaActionPerformed(evt);
+            }
+        });
+
+        jLabel18.setFont(new java.awt.Font("Times New Roman", 1, 11)); // NOI18N
+        jLabel18.setText("PRESUPUESTO");
+
+        jButton7.setBackground(new java.awt.Color(2, 135, 242));
+        jButton7.setForeground(new java.awt.Color(255, 255, 255));
+        jButton7.setText("Guardar");
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
+
+        t_hojalateria.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        t_hojalateria.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.00"))));
+        t_hojalateria.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        t_hojalateria.setText("0.00");
+        t_hojalateria.setDisabledTextColor(new java.awt.Color(2, 38, 253));
+        t_hojalateria.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
+        t_hojalateria.setNextFocusableComponent(t_busca);
+        t_hojalateria.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                t_hojalateriaFocusLost(evt);
+            }
+        });
+
+        t_mecanica.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        t_mecanica.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.00"))));
+        t_mecanica.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        t_mecanica.setText("0.00");
+        t_mecanica.setDisabledTextColor(new java.awt.Color(2, 38, 253));
+        t_mecanica.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
+        t_mecanica.setNextFocusableComponent(t_busca);
+        t_mecanica.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                t_mecanicaFocusLost(evt);
+            }
+        });
+
+        t_suspension.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        t_suspension.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.00"))));
+        t_suspension.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        t_suspension.setText("0.00");
+        t_suspension.setDisabledTextColor(new java.awt.Color(2, 38, 253));
+        t_suspension.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
+        t_suspension.setNextFocusableComponent(t_busca);
+        t_suspension.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                t_suspensionFocusLost(evt);
+            }
+        });
+
+        t_electrico.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        t_electrico.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.00"))));
+        t_electrico.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        t_electrico.setText("0.00");
+        t_electrico.setDisabledTextColor(new java.awt.Color(2, 38, 253));
+        t_electrico.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
+        t_electrico.setNextFocusableComponent(t_busca);
+        t_electrico.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                t_electricoFocusLost(evt);
+            }
+        });
+
+        t_pintura.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        t_pintura.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.00"))));
+        t_pintura.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        t_pintura.setText("0.00");
+        t_pintura.setDisabledTextColor(new java.awt.Color(2, 38, 253));
+        t_pintura.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
+        t_pintura.setNextFocusableComponent(t_busca);
+        t_pintura.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                t_pinturaFocusLost(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
+        jPanel9.setLayout(jPanel9Layout);
+        jPanel9Layout.setHorizontalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addGap(26, 26, 26)
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel16)
+                    .addComponent(jLabel9)
+                    .addComponent(jLabel10)
+                    .addComponent(jLabel12)
+                    .addComponent(jLabel14)
+                    .addComponent(jLabel15))
+                .addGap(29, 29, 29)
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(t_hojalateria)
+                            .addComponent(t_mecanica)
+                            .addComponent(t_suspension, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(t_electrico, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(t_pintura, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel18))
+                .addGap(47, 47, 47)
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel17, javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
+                            .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(cb_mecanica)
+                                .addComponent(cb_hojalateria)
+                                .addComponent(cb_suspension)
+                                .addComponent(cb_electrico)
+                                .addComponent(cb_pintura))
+                            .addGap(20, 20, 20)))
+                    .addComponent(jButton7))
+                .addContainerGap(30, Short.MAX_VALUE))
+        );
+        jPanel9Layout.setVerticalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel9Layout.createSequentialGroup()
+                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel9Layout.createSequentialGroup()
+                                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel16)
+                                    .addComponent(jLabel18))
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel9))
+                            .addGroup(jPanel9Layout.createSequentialGroup()
+                                .addComponent(jLabel17)
+                                .addGap(18, 18, 18)
+                                .addComponent(cb_hojalateria)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cb_mecanica)
+                            .addComponent(jLabel10))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel9Layout.createSequentialGroup()
+                                .addComponent(jLabel12)
+                                .addGap(10, 10, 10))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
+                                .addComponent(cb_suspension)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cb_electrico)
+                            .addComponent(jLabel14))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel15)
+                            .addComponent(cb_pintura)))
+                    .addGroup(jPanel9Layout.createSequentialGroup()
+                        .addGap(31, 31, 31)
+                        .addComponent(t_hojalateria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(t_mecanica, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(t_suspension, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(t_electrico, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(t_pintura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, 18)
+                .addComponent(jButton7)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout ventanaConsumibleLayout = new javax.swing.GroupLayout(ventanaConsumible.getContentPane());
+        ventanaConsumible.getContentPane().setLayout(ventanaConsumibleLayout);
+        ventanaConsumibleLayout.setHorizontalGroup(
+            ventanaConsumibleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        ventanaConsumibleLayout.setVerticalGroup(
+            ventanaConsumibleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
         setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
         setLayout(new java.awt.BorderLayout());
 
@@ -987,15 +1255,15 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
         jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "Consumibles", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Tahoma", 1, 10))); // NOI18N
         jPanel8.setLayout(null);
 
-        t_horas1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_horas1.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.00"))));
-        t_horas1.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        t_horas1.setText("0.00");
-        t_horas1.setDisabledTextColor(new java.awt.Color(2, 38, 253));
-        t_horas1.setEnabled(false);
-        t_horas1.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
-        jPanel8.add(t_horas1);
-        t_horas1.setBounds(10, 20, 69, 18);
+        t_total_consumible.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        t_total_consumible.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.00"))));
+        t_total_consumible.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        t_total_consumible.setText("0.00");
+        t_total_consumible.setDisabledTextColor(new java.awt.Color(2, 38, 253));
+        t_total_consumible.setEnabled(false);
+        t_total_consumible.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
+        jPanel8.add(t_total_consumible);
+        t_total_consumible.setBounds(10, 20, 69, 18);
 
         b_consumibles.setBackground(new java.awt.Color(2, 135, 242));
         b_consumibles.setIcon(new ImageIcon("imagenes/calendario.png"));
@@ -1375,7 +1643,7 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
                             //***guardar el usuario que abrio el levantamiento*****
                             ord.setRCotizaCierre(null);
                             session.update(ord);
-                            session.getTransaction().commit();
+                            session.beginTransaction().commit();
                             JOptionPane.showMessageDialog(null, "La cotización fue abierta");
                         buscaCuentas(-1,-1);
                     }
@@ -1391,7 +1659,7 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
             catch(Exception e)
             {
                 e.printStackTrace();
-                session.getTransaction().rollback();
+                session.beginTransaction().rollback();
                 r_cerrar_valuacion.setSelected(true);
                 JOptionPane.showMessageDialog(null, "Error no se pudo abrir la cotizacion");
             }
@@ -1442,7 +1710,7 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
                             ord.setRValuacionCierre(calendario3.getTime());
                             ord.setUsuarioByRValuacionCierreAsigno(user);
                             session.update(ord);
-                            session.getTransaction().commit();
+                            session.beginTransaction().commit();
                             JOptionPane.showMessageDialog(null, "La valuación fue autorizada");
                         buscaCuentas(-1,-1);
                     }
@@ -1817,7 +2085,7 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
             String valor=dateFormat.format(fecha);
             File folder = new File("reportes/"+ord.getIdOrden());
             folder.mkdirs();
-            reporte.Abrir(PageSize.LETTER, "Valuación", "reportes/"+ord.getIdOrden()+"/"+valor+"-valuacion.pdf");
+            reporte.Abrir2(PageSize.LETTER, "Valuación", "reportes/"+ord.getIdOrden()+"/"+valor+"-valuacion.pdf");
             Font font = new Font(Font.FontFamily.HELVETICA, 7, Font.NORMAL);
             BaseColor contenido=BaseColor.WHITE;
             int centro=Element.ALIGN_CENTER;
@@ -1939,7 +2207,7 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
             reporte.agregaObjeto(tabla);
             reporte.agregaObjeto(tabla1);
             reporte.cerrar();
-            reporte.visualizar("reportes/"+ord.getIdOrden()+"/"+valor+"-valuacion.pdf");
+            reporte.visualizar2("reportes/"+ord.getIdOrden()+"/"+valor+"-valuacion.pdf");
         }catch(Exception e)
         {
             e.printStackTrace();
@@ -1971,7 +2239,7 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
             String valor=dateFormat.format(fecha);
             File folder = new File("reportes/"+ord.getIdOrden());
             folder.mkdirs();
-            reporte.Abrir(PageSize.LETTER.rotate(), "Valuación", "reportes/"+ord.getIdOrden()+"/"+valor+"-ref_precio.pdf");
+            reporte.Abrir2(PageSize.LETTER.rotate(), "Valuación", "reportes/"+ord.getIdOrden()+"/"+valor+"-ref_precio.pdf");
             Font font = new Font(Font.FontFamily.HELVETICA, 7, Font.NORMAL);
             BaseColor contenido=BaseColor.WHITE;
             int centro=Element.ALIGN_CENTER;
@@ -2262,7 +2530,7 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
                 reporte.agregaObjeto(tabla);
             //}
             reporte.cerrar();
-            reporte.visualizar("reportes/"+ord.getIdOrden()+"/"+valor+"-ref_precio.pdf");
+            reporte.visualizar2("reportes/"+ord.getIdOrden()+"/"+valor+"-ref_precio.pdf");
         }catch(Exception e)
         {
             e.printStackTrace();
@@ -2301,7 +2569,7 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
             String valor=dateFormat.format(fecha);
             File folder = new File("reportes/"+ord.getIdOrden());
             folder.mkdirs();
-            reporte.Abrir(PageSize.LETTER.rotate(), "Valuación", "reportes/"+ord.getIdOrden()+"/"+valor+"-ref_sin_precio.pdf");
+            reporte.Abrir2(PageSize.LETTER.rotate(), "Valuación", "reportes/"+ord.getIdOrden()+"/"+valor+"-ref_sin_precio.pdf");
             Font font = new Font(Font.FontFamily.HELVETICA, 7, Font.NORMAL);
             BaseColor contenido=BaseColor.WHITE;
             int centro=Element.ALIGN_CENTER;
@@ -2489,7 +2757,7 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
             reporte.agregaObjeto(tabla);
             
             reporte.cerrar();
-            reporte.visualizar("reportes/"+ord.getIdOrden()+"/"+valor+"-ref_sin_precio.pdf");
+            reporte.visualizar2("reportes/"+ord.getIdOrden()+"/"+valor+"-ref_sin_precio.pdf");
         }catch(Exception e)
         {
             e.printStackTrace();
@@ -2656,7 +2924,7 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
             String valor=dateFormat.format(fecha);
             File folder = new File("reportes/"+ord.getIdOrden());
             folder.mkdirs();
-            reporte.Abrir(PageSize.LETTER.rotate(), "Operaciones", "reportes/"+ord.getIdOrden()+"/"+valor+"-operaciones.pdf");
+            reporte.Abrir2(PageSize.LETTER.rotate(), "Operaciones", "reportes/"+ord.getIdOrden()+"/"+valor+"-operaciones.pdf");
             Font font = new Font(Font.FontFamily.HELVETICA, 7, Font.NORMAL);
             BaseColor contenido=BaseColor.WHITE;
             int centro=Element.ALIGN_CENTER;
@@ -2804,7 +3072,7 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
             tabla.setHeaderRows(3);
             reporte.agregaObjeto(tabla);
             reporte.cerrar();
-            reporte.visualizar("reportes/"+ord.getIdOrden()+"/"+valor+"-operaciones.pdf");
+            reporte.visualizar2("reportes/"+ord.getIdOrden()+"/"+valor+"-operaciones.pdf");
         }catch(Exception e)
         {
             e.printStackTrace();
@@ -3198,7 +3466,7 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
             String valor=dateFormat.format(fecha);
             File folder = new File("reportes/"+ord.getIdOrden());
             folder.mkdirs();
-            reporte.Abrir(PageSize.LETTER.rotate(), "Valuación", "reportes/"+ord.getIdOrden()+"/"+valor+"-ref_precio.pdf");
+            reporte.Abrir2(PageSize.LETTER.rotate(), "Valuación", "reportes/"+ord.getIdOrden()+"/"+valor+"-ref_precio.pdf");
             Font font = new Font(Font.FontFamily.HELVETICA, 6, Font.BOLD);
             BaseColor contenido=BaseColor.WHITE;
             int centro=Element.ALIGN_CENTER;
@@ -3264,7 +3532,7 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
             reporte.agregaObjeto(tabla);
 
             reporte.cerrar();
-            reporte.visualizar("reportes/"+ord.getIdOrden()+"/"+valor+"-ref_precio.pdf");
+            reporte.visualizar2("reportes/"+ord.getIdOrden()+"/"+valor+"-ref_precio.pdf");
         }catch(Exception e)
         {
             e.printStackTrace();
@@ -3296,7 +3564,7 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
             String valor=dateFormat.format(fecha);
             File folder = new File("reportes/"+ord.getIdOrden());
             folder.mkdirs();
-            reporte.Abrir(PageSize.LETTER.rotate(), "Operaciones", "reportes/"+ord.getIdOrden()+"/"+valor+"-operaciones1.pdf");
+            reporte.Abrir2(PageSize.LETTER.rotate(), "Operaciones", "reportes/"+ord.getIdOrden()+"/"+valor+"-operaciones1.pdf");
             Font font = new Font(Font.FontFamily.HELVETICA, 7, Font.NORMAL);
             BaseColor contenido=BaseColor.WHITE;
             int centro=Element.ALIGN_CENTER;
@@ -3464,7 +3732,7 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
             tabla.setHeaderRows(3);
             reporte.agregaObjeto(tabla);
             reporte.cerrar();
-            reporte.visualizar("reportes/"+ord.getIdOrden()+"/"+valor+"-operaciones1.pdf");
+            reporte.visualizar2("reportes/"+ord.getIdOrden()+"/"+valor+"-operaciones1.pdf");
         }catch(Exception e)
         {
             e.printStackTrace();
@@ -3557,9 +3825,364 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
     }//GEN-LAST:event_cb_tipoActionPerformed
 
     private void b_consumiblesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_consumiblesActionPerformed
-        // TODO add your handling code here:
+        // TODO add your handling code here:        
+       if(user.getConsultaConsumible()==false && user.getEditaConsumible()==false){
+           JOptionPane.showMessageDialog(this, "¡Acceso Denegado!");
+       }else{
+           /*if(user.getEditaConsumible()==false){
+               bloquea_consumible();
+           }
+           consulta_consumible(); 
+           
+           Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+           ventanaConsumible.setLocation((d.width/2)-(375/2), (d.height/2)-(250/2));
+           ventanaConsumible.setSize(375, 250);
+           ventanaConsumible.setVisible(true);   */
+           RegistraConsumibles reg_con=new RegistraConsumibles(new javax.swing.JFrame(), true, orden, user, sessionPrograma);
+           Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+           reg_con.setLocation((d.width/2)-(800/2), (d.height/2)-(376/2));
+           reg_con.setSize(800, 376);
+           reg_con.setVisible(true);
+           SumaTotal();
+       }
     }//GEN-LAST:event_b_consumiblesActionPerformed
 
+    public void bloquea_consumible(){
+        cb_hojalateria.setEnabled(false);
+        cb_mecanica.setEnabled(false);
+        cb_suspension.setEnabled(false);
+        cb_electrico.setEnabled(false);
+        cb_pintura.setEnabled(false);
+        t_hojalateria.setEnabled(false);
+        t_mecanica.setEnabled(false);
+        t_suspension.setEnabled(false);
+        t_electrico.setEnabled(false);
+        t_pintura.setEnabled(false);
+        jButton7.setEnabled(false);
+    }
+    private void t_pinturaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_pinturaFocusLost
+        // TODO add your handling code here:
+        if(t_pintura.getText().compareTo("")==0)
+        {
+            t_pintura.setText("0");
+            t_pintura.setValue(0.00);
+        }
+    }//GEN-LAST:event_t_pinturaFocusLost
+
+    private void t_electricoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_electricoFocusLost
+        // TODO add your handling code here:
+        if(t_electrico.getText().compareTo("")==0)
+        {
+            t_electrico.setText("0");
+            t_electrico.setValue(0.00);
+        }
+    }//GEN-LAST:event_t_electricoFocusLost
+
+    private void t_suspensionFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_suspensionFocusLost
+        // TODO add your handling code here:
+        if(t_suspension.getText().compareTo("")==0)
+        {
+            t_suspension.setText("0");
+            t_suspension.setValue(0.00);
+        }
+    }//GEN-LAST:event_t_suspensionFocusLost
+
+    private void t_mecanicaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_mecanicaFocusLost
+        // TODO add your handling code here:
+        if(t_mecanica.getText().compareTo("")==0)
+        {
+            t_mecanica.setText("0");
+            t_mecanica.setValue(0.00);
+        }
+    }//GEN-LAST:event_t_mecanicaFocusLost
+
+    private void t_hojalateriaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_hojalateriaFocusLost
+        // TODO add your handling code here:
+        if(t_hojalateria.getText().compareTo("")==0)
+        {
+            t_hojalateria.setText("0");
+            t_hojalateria.setValue(0.00);
+        }
+    }//GEN-LAST:event_t_hojalateriaFocusLost
+
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        // TODO add your handling code here:
+        double total=0.00, t_h = 0.00, t_m = 0.00, t_s = 0.00, t_e = 0.00, t_p = 0.00;
+        Session session = HibernateUtil.getSessionFactory().openSession();        
+        session.beginTransaction().begin();
+        Orden ord1=(Orden)session.get(Orden.class, Integer.parseInt(this.orden));
+        Configuracion con= (Configuracion)session.get(Configuracion.class, 1);
+        double iva = con.getIva(); 
+        
+        //***guardar la fecha de cierre del levantamiento*****
+        try{
+            //HOJALATERIA
+            if(cb_hojalateria.isSelected()==true){
+                ord1.setDHojalateria(true);
+                t_hojalateria.setValue(ord1.getPHojalateria());
+            }else{
+                Query query2 = session.createSQLQuery("select (select if(sum(cantidad*valor) is null, 0, sum(cantidad*valor)) from movimiento left join almacen on movimiento.id_almacen=almacen.id_almacen left join orden on almacen.id_orden=orden.id_orden where orden.id_orden="+ord.getIdOrden()+" and almacen.operacion=5 and almacen.tipo_movimiento=2 and almacen.especialidad='h') - (select if(sum(cantidad*valor) is null, 0, sum(cantidad*valor)) from movimiento left join almacen on movimiento.id_almacen=almacen.id_almacen left join orden on almacen.id_orden=orden.id_orden where orden.id_orden="+ord1.getIdOrden()+" and almacen.operacion=5 and almacen.tipo_movimiento=1 and almacen.especialidad='h')as monto_consumible");
+                query2.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+                ArrayList consumido = (ArrayList)query2.list();
+                for(int i =0; i<consumido.size(); i++){
+                    java.util.HashMap map=(java.util.HashMap)consumido.get(i);
+                    t_h = Double.parseDouble(map.get("monto_consumible").toString());
+                }
+                Double iva_h = t_h*(iva /100);
+                iva_h = t_h+iva_h;
+                if(((Number)t_hojalateria.getValue()).doubleValue()>=iva_h){
+                    ord1.setPHojalateria(((Number)t_hojalateria.getValue()).doubleValue());
+                    ord1.setDHojalateria(false);
+                }else{
+                    t_hojalateria.setValue(ord1.getPHojalateria());
+                    JOptionPane.showMessageDialog(this, "El Monto Hojalateria es menor al Consumido");
+                }
+            }
+            //MECANICA
+            if(cb_mecanica.isSelected()==true){
+                ord1.setDMecanica(true);
+                t_mecanica.setValue(ord1.getPMecanica());
+            }else{
+                Query query2 = session.createSQLQuery("select (select if(sum(cantidad*valor) is null, 0, sum(cantidad*valor)) from movimiento left join almacen on movimiento.id_almacen=almacen.id_almacen left join orden on almacen.id_orden=orden.id_orden where orden.id_orden="+ord.getIdOrden()+" and almacen.operacion=5 and almacen.tipo_movimiento=2 and almacen.especialidad='m') - (select if(sum(cantidad*valor) is null, 0, sum(cantidad*valor)) from movimiento left join almacen on movimiento.id_almacen=almacen.id_almacen left join orden on almacen.id_orden=orden.id_orden where orden.id_orden="+ord1.getIdOrden()+" and almacen.operacion=5 and almacen.tipo_movimiento=1 and almacen.especialidad='m')as monto_consumible");
+                query2.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+                ArrayList consumido = (ArrayList)query2.list();
+                for(int i =0; i<consumido.size(); i++){
+                    java.util.HashMap map=(java.util.HashMap)consumido.get(i);
+                    t_m = Double.parseDouble(map.get("monto_consumible").toString());
+                }
+                Double iva_m = t_m*(iva /100);
+                iva_m = t_m+iva_m;
+                if(((Number)t_mecanica.getValue()).doubleValue()>=iva_m){
+                    ord1.setPMecanica(((Number)t_mecanica.getValue()).doubleValue());
+                    ord1.setDMecanica(false);
+                }else{
+                    t_mecanica.setValue(ord1.getPMecanica());
+                    JOptionPane.showMessageDialog(this, "El Monto Mecanica es menor al Consumido");
+                }
+            }
+            //SUSPENSION
+            if(cb_suspension.isSelected()==true){
+                ord1.setDSuspension(true);
+                t_suspension.setValue(ord1.getPSuspension());
+            }else{
+                Query query2 = session.createSQLQuery("select (select if(sum(cantidad*valor) is null, 0, sum(cantidad*valor)) from movimiento left join almacen on movimiento.id_almacen=almacen.id_almacen left join orden on almacen.id_orden=orden.id_orden where orden.id_orden="+ord.getIdOrden()+" and almacen.operacion=5 and almacen.tipo_movimiento=2 and almacen.especialidad='s') - (select if(sum(cantidad*valor) is null, 0, sum(cantidad*valor)) from movimiento left join almacen on movimiento.id_almacen=almacen.id_almacen left join orden on almacen.id_orden=orden.id_orden where orden.id_orden="+ord1.getIdOrden()+" and almacen.operacion=5 and almacen.tipo_movimiento=1 and almacen.especialidad='s')as monto_consumible");
+                query2.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+                ArrayList consumido = (ArrayList)query2.list();
+                for(int i =0; i<consumido.size(); i++){
+                    java.util.HashMap map=(java.util.HashMap)consumido.get(i);
+                    t_s = Double.parseDouble(map.get("monto_consumible").toString());
+                }
+                Double iva_s = t_s*(iva /100);
+                iva_s = t_s+iva_s;
+                if(((Number)t_suspension.getValue()).doubleValue()>=iva_s){
+                    ord1.setPSuspension(((Number)t_suspension.getValue()).doubleValue());
+                    ord1.setDSuspension(false);
+                }else{
+                    t_suspension.setValue(ord1.getPSuspension());
+                    JOptionPane.showMessageDialog(this, "El Monto Suspension es menor al Consumido");
+                }
+            }
+            //ELECTRICO
+            if(cb_electrico.isSelected()==true){
+                ord1.setDElectrico(true);
+                t_electrico.setValue(ord1.getPElectrico());
+            }else{
+                Query query2 = session.createSQLQuery("select (select if(sum(cantidad*valor) is null, 0, sum(cantidad*valor)) from movimiento left join almacen on movimiento.id_almacen=almacen.id_almacen left join orden on almacen.id_orden=orden.id_orden where orden.id_orden="+ord.getIdOrden()+" and almacen.operacion=5 and almacen.tipo_movimiento=2 and almacen.especialidad='e') - (select if(sum(cantidad*valor) is null, 0, sum(cantidad*valor)) from movimiento left join almacen on movimiento.id_almacen=almacen.id_almacen left join orden on almacen.id_orden=orden.id_orden where orden.id_orden="+ord1.getIdOrden()+" and almacen.operacion=5 and almacen.tipo_movimiento=1 and almacen.especialidad='e')as monto_consumible");
+                query2.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+                ArrayList consumido = (ArrayList)query2.list();
+                for(int i =0; i<consumido.size(); i++){
+                    java.util.HashMap map=(java.util.HashMap)consumido.get(i);
+                    t_e = Double.parseDouble(map.get("monto_consumible").toString());
+                }
+                Double iva_e = t_e*(iva /100);
+                iva_e = t_e+iva_e;
+                if(((Number)t_electrico.getValue()).doubleValue()>=iva_e){
+                    ord1.setPElectrico(((Number)t_electrico.getValue()).doubleValue());
+                    ord1.setDElectrico(false);
+                }else{
+                    t_electrico.setValue(ord1.getPElectrico());
+                    JOptionPane.showMessageDialog(this, "El Monto Electrico es menor al Consumido");
+                }
+            }
+            //PINTURA
+            if(cb_pintura.isSelected()==true){
+                ord1.setDPintura(true);
+                t_pintura.setValue(ord1.getPPintura());
+            }else{
+                Query query2 = session.createSQLQuery("select (select if(sum(cantidad*valor) is null, 0, sum(cantidad*valor)) from movimiento left join almacen on movimiento.id_almacen=almacen.id_almacen left join orden on almacen.id_orden=orden.id_orden where orden.id_orden="+ord.getIdOrden()+" and almacen.operacion=5 and almacen.tipo_movimiento=2 and almacen.especialidad='p') - (select if(sum(cantidad*valor) is null, 0, sum(cantidad*valor)) from movimiento left join almacen on movimiento.id_almacen=almacen.id_almacen left join orden on almacen.id_orden=orden.id_orden where orden.id_orden="+ord1.getIdOrden()+" and almacen.operacion=5 and almacen.tipo_movimiento=1 and almacen.especialidad='p')as monto_consumible");
+                query2.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+                ArrayList consumido = (ArrayList)query2.list();
+                for(int i =0; i<consumido.size(); i++){
+                    java.util.HashMap map=(java.util.HashMap)consumido.get(i);
+                    t_p = Double.parseDouble(map.get("monto_consumible").toString());
+                }
+                Double iva_p = t_p*(iva /100);
+                iva_p = t_p+iva_p;
+                if(((Number)t_pintura.getValue()).doubleValue()>=iva_p){
+                    ord1.setPPintura(((Number)t_pintura.getValue()).doubleValue());
+                    ord1.setDPintura(false);
+                }else{
+                    t_pintura.setValue(ord1.getPPintura());
+                    JOptionPane.showMessageDialog(this, "El Monto Electrico es Menor al Consumido");
+                }
+            }
+            
+            session.update(ord1);
+            session.getTransaction().commit();
+            
+            t_total_consumible.setText("0");
+            t_total_consumible.setValue(0.00);
+
+            if(ord1.getDHojalateria()==false){
+                total += ord1.getPHojalateria().doubleValue();
+            }
+
+            if(ord1.getDMecanica()==false){
+                total += ord1.getPMecanica().doubleValue();
+            }
+
+            if(ord1.getDSuspension()==false){
+                total += ord1.getPSuspension().doubleValue();
+            }
+
+            if(ord1.getDElectrico()==false){
+                total += ord1.getPElectrico().doubleValue();
+            }
+
+            if(ord1.getDPintura()==false){
+                total += ord1.getPPintura().doubleValue();
+            }
+            t_total_consumible.setValue(total);
+            
+        }catch(Exception e)
+        {
+            session.beginTransaction().rollback();
+            e.printStackTrace();
+        }
+        if(session!=null)
+            if(session.isOpen())
+            {
+                session.flush();
+                session.clear();
+                session.close();
+            }
+    }//GEN-LAST:event_jButton7ActionPerformed
+
+    private void cb_pinturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_pinturaActionPerformed
+        // TODO add your handling code here:
+        if(cb_pintura.isSelected()){
+            t_pintura.setEnabled(false);
+        }else{
+            t_pintura.setEnabled(true);
+        }
+    }//GEN-LAST:event_cb_pinturaActionPerformed
+
+    private void cb_electricoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_electricoActionPerformed
+        // TODO add your handling code here:
+        if(cb_electrico.isSelected()){
+            t_electrico.setEnabled(false);
+        }else{
+            t_electrico.setEnabled(true);
+        }
+    }//GEN-LAST:event_cb_electricoActionPerformed
+
+    private void cb_suspensionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_suspensionActionPerformed
+        // TODO add your handling code here:
+        if(cb_suspension.isSelected()){
+            t_suspension.setEnabled(false);
+        }else{
+            t_suspension.setEnabled(true);
+        }
+    }//GEN-LAST:event_cb_suspensionActionPerformed
+
+    private void cb_mecanicaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_mecanicaActionPerformed
+        // TODO add your handling code here:
+        if(cb_mecanica.isSelected()){
+            t_mecanica.setEnabled(false);
+        }else{
+            t_mecanica.setEnabled(true);
+        }
+    }//GEN-LAST:event_cb_mecanicaActionPerformed
+
+    private void cb_hojalateriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_hojalateriaActionPerformed
+        // TODO add your handling code here:
+        if(cb_hojalateria.isSelected()==true){
+            t_hojalateria.setEnabled(false);
+        }else{
+            t_hojalateria.setEnabled(true);
+        }
+    }//GEN-LAST:event_cb_hojalateriaActionPerformed
+
+    public void consulta_consumible(){
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try{
+            ord=(Orden)session.get(Orden.class, ord.getIdOrden());
+            if(ord!=null){
+                //HOJALATERIA
+                t_hojalateria.setText(""+ord.getPHojalateria());
+                t_hojalateria.setValue(ord.getPHojalateria());
+                if(ord.getDHojalateria()==true){
+                    t_hojalateria.setEnabled(false);
+                    cb_hojalateria.setSelected(true);
+                }else{
+                    t_hojalateria.setEnabled(true);
+                    cb_hojalateria.setSelected(false);
+                }
+                //MECANICA
+                t_mecanica.setText(""+ord.getPMecanica());
+                t_mecanica.setValue(ord.getPMecanica());
+                if(ord.getDMecanica()==true){
+                    t_mecanica.setEnabled(false);
+                    cb_mecanica.setSelected(true);
+                }else{
+                    t_mecanica.setEnabled(true);
+                    cb_mecanica.setSelected(false);
+                }
+                //SUSPENSION
+                t_suspension.setText(""+ord.getPSuspension());
+                t_suspension.setValue(ord.getPSuspension());
+                if(ord.getDSuspension()==true){
+                    t_suspension.setEnabled(false);
+                    cb_suspension.setSelected(true);
+                }else{
+                    t_suspension.setEnabled(true);
+                    cb_suspension.setSelected(false);
+                }
+                //ELECTRICO
+                t_electrico.setText(""+ord.getPElectrico());
+                t_electrico.setValue(ord.getPElectrico());
+                if(ord.getDElectrico()==true){
+                    t_electrico.setEnabled(false);
+                    cb_electrico.setSelected(true);
+                }else{
+                    t_electrico.setEnabled(true);
+                    cb_electrico.setSelected(false);
+                }
+                //PINTURA
+                t_pintura.setText(""+ord.getPPintura());
+                t_pintura.setValue(ord.getPPintura());
+                if(ord.getDPintura()==true){
+                    t_pintura.setEnabled(false);
+                    cb_pintura.setSelected(true);
+                }else{
+                    t_pintura.setEnabled(true);
+                    cb_pintura.setSelected(false);
+                }
+            }
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        if(session!=null)
+            if(session.isOpen())
+            {
+                session.flush();
+                session.clear();
+                session.close();
+            }
+    }
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton b_ac;
@@ -3572,8 +4195,13 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
     private javax.swing.JButton b_ok;
     private javax.swing.JButton b_pdf;
     private javax.swing.JButton bt;
+    private javax.swing.JCheckBox cb_electrico;
+    private javax.swing.JCheckBox cb_hojalateria;
+    private javax.swing.JCheckBox cb_mecanica;
     private javax.swing.JComboBox cb_partidas;
+    private javax.swing.JCheckBox cb_pintura;
     private javax.swing.JComboBox cb_precio;
+    private javax.swing.JCheckBox cb_suspension;
     private javax.swing.JComboBox cb_tipo;
     private javax.swing.JTextField instruccion;
     private javax.swing.JButton jButton1;
@@ -3582,9 +4210,17 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
@@ -3594,6 +4230,7 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -3602,6 +4239,7 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
+    private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel l1;
     private javax.swing.JLabel l2;
@@ -3623,18 +4261,24 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
     private javax.swing.JTable t_datos;
     private javax.swing.JFormattedTextField t_deducible;
     private javax.swing.JFormattedTextField t_demerito;
+    private javax.swing.JFormattedTextField t_electrico;
+    private javax.swing.JFormattedTextField t_hojalateria;
     private javax.swing.JFormattedTextField t_horas;
-    private javax.swing.JFormattedTextField t_horas1;
     private javax.swing.JFormattedTextField t_importe;
+    private javax.swing.JFormattedTextField t_mecanica;
     private javax.swing.JFormattedTextField t_mo_directa;
     private javax.swing.JFormattedTextField t_mo_directa1;
     private javax.swing.JFormattedTextField t_num;
     private javax.swing.JTextField t_numero;
     private javax.swing.JTextField t_ok;
+    private javax.swing.JFormattedTextField t_pintura;
     private javax.swing.JTextField t_porcentaje;
     private javax.swing.JFormattedTextField t_ref_autorizadas_directo;
     private javax.swing.JFormattedTextField t_ref_presupuesto;
+    private javax.swing.JFormattedTextField t_suspension;
+    private javax.swing.JFormattedTextField t_total_consumible;
     private javax.swing.JFormattedTextField t_vales;
+    private javax.swing.JDialog ventanaConsumible;
     private javax.swing.JDialog ventanaReportes;
     // End of variables declaration//GEN-END:variables
 
@@ -3665,6 +4309,7 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
     private void buscaCuentas(int x, int y)
     {
         double imp=0.0;
+        double suma=0.00;
         if(orden!=null)
         {
             Session session = HibernateUtil.getSessionFactory().openSession();
@@ -3691,7 +4336,31 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
                 {
                     this.t_deducible.setText("0.00");
                     this.t_deducible.setValue(0);
-                }    
+                }
+                if(ord.getPHojalateria()!=null)
+                    
+                    if(ord.getDHojalateria()==false){
+                        suma +=ord.getPHojalateria().doubleValue();
+                    }
+                    
+                    if(ord.getDMecanica()==false){
+                        suma +=ord.getPMecanica().doubleValue();
+                    }
+                    
+                    if(ord.getDSuspension()==false){
+                        suma += ord.getPSuspension().doubleValue();
+                    }
+                    
+                    if(ord.getDElectrico()==false){
+                        suma += ord.getPElectrico().doubleValue();
+                    }
+                    
+                    if(ord.getDPintura()==false){
+                        suma +=ord.getPPintura().doubleValue();
+                    }
+                
+                    t_total_consumible.setValue(suma);
+                
                 if(ord.getDemerito()!=null)
                 {
                     this.t_demerito.setText(""+ord.getDemerito());
@@ -4196,6 +4865,7 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
             if(session!=null)
                 if(session.isOpen()==true)
                 {
+                    session.beginTransaction().commit();
                     session.flush();
                     session.clear();
                     session.close();
@@ -6301,4 +6971,44 @@ public class MyModel extends DefaultTableModel
        }
        return seleccion;
    }
+   
+   private void SumaTotal()
+    {
+        if(orden!=null)
+        {
+            double total=0.0;
+            Session session = HibernateUtil.getSessionFactory().openSession();
+            try
+            {
+                //Orden ord = (Orden)session.get(Orden.class, Integer.parseInt(orden));
+                Query query = session.createSQLQuery("select sum(cantidad*consumible.precio)as tot from consumible \n" +
+"left join ejemplar on consumible.id_Parte=ejemplar.id_Parte where id_orden="+orden+" order by id_consumible;");  
+                query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+                ArrayList partidas=(ArrayList)query.list();
+                if(partidas.size()>0)
+                {
+                    java.util.HashMap map=(java.util.HashMap)partidas.get(0);
+                    try{
+                    total = Double.parseDouble(map.get("tot").toString());
+                    }catch(Exception e){total =0.0d;}
+                    t_total_consumible.setValue(total);
+                }
+                else
+                    t_total_consumible.setValue(0.0d);
+                session.beginTransaction().rollback();
+            }catch(Exception e)
+            {
+                e.printStackTrace();
+            }
+            if(session!=null)
+                if(session.isOpen()==true)
+                {
+                    session.flush();
+                    session.clear();
+                    session.close();
+                }
+        }
+        else
+            t_total_consumible.setValue(0.0d);
+    }
 }

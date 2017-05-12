@@ -982,7 +982,7 @@ public class EliminaPedido extends javax.swing.JPanel {
                                 if(pos>=0)
                                     padre.P_pestana.remove(pos);
                             }
-                            if(c_tipo.getSelectedItem().toString().compareTo("Externo")==0)
+                            if(c_tipo.getSelectedItem().toString().compareTo("Inventario")==0)
                             {
                                 session.delete(ped);
                                 session.beginTransaction().commit();

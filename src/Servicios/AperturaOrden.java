@@ -56,6 +56,14 @@ import org.hibernate.criterion.Restrictions;
 import Integral.Herramientas;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.Properties;
+import javax.mail.BodyPart;
+import javax.mail.Message;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
 /**
  *
@@ -523,7 +531,7 @@ public class AperturaOrden extends javax.swing.JPanel {
         jLabel14.setText("Edo:");
 
         c_estado_cliente.setBackground(new java.awt.Color(204, 255, 255));
-        c_estado_cliente.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "AGUASCALIENTES", "BAJA CALIFORNIA", "BAJA CALIFORNIA SUR", "CAMPECHE", "CHIAPAS", "CHIHUAHUA", "COAHUILA", "COLIMA", "DISTRITO FEDERAL", "DURANGO", "ESTADO DE MEXICO", "GUANAJUATO", "GUERRERO", "HIDALGO", "JALISCO", "MICHOACAN", "MORELOS", "NAYARIT", "NUEVO LEON", "OAXACA", "PUEBLA", "QUERETARO", "QUINTANA ROO", "SAN LUIS POTOSI", "SINALOA", "SONORA", "TABASCO", "TAMAULIPAS", "TLAXCALA", "VERACRUZ", "YUCATAN", "ZACATECAS" }));
+        c_estado_cliente.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "AGUASCALIENTES", "BAJA CALIFORNIA", "BAJA CALIFORNIA SUR", "CAMPECHE", "CHIAPAS", "CHIHUAHUA", "COAHUILA", "COLIMA", "CIUDAD DE MÉXICO", "DURANGO", "ESTADO DE MÉXICO", "GUANAJUATO", "GUERRERO", "HIDALGO", "JALISCO", "MICHOACAN", "MORELOS", "NAYARIT", "NUEVO LEON", "OAXACA", "PUEBLA", "QUERETARO", "QUINTANA ROO", "SAN LUIS POTOSI", "SINALOA", "SONORA", "TABASCO", "TAMAULIPAS", "TLAXCALA", "VERACRUZ", "YUCATAN", "ZACATECAS" }));
         c_estado_cliente.setEnabled(false);
         c_estado_cliente.setNextFocusableComponent(b_guardar_cliente);
         c_estado_cliente.addActionListener(new java.awt.event.ActionListener() {
@@ -1187,7 +1195,7 @@ public class AperturaOrden extends javax.swing.JPanel {
 
         b_buscarh.setBackground(new java.awt.Color(2, 135, 242));
         b_buscarh.setForeground(new java.awt.Color(255, 255, 255));
-        b_buscarh.setText("Tecnico");
+        b_buscarh.setText("Supervisor");
         b_buscarh.setToolTipText("Consultar empleados");
         b_buscarh.setMaximumSize(new java.awt.Dimension(32, 8));
         b_buscarh.setMinimumSize(new java.awt.Dimension(32, 8));
@@ -1278,8 +1286,7 @@ public class AperturaOrden extends javax.swing.JPanel {
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(b_buscarh, javax.swing.GroupLayout.DEFAULT_SIZE, 82, Short.MAX_VALUE)
-                                    .addComponent(b_fecha_interna, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(b_fecha_interna, javax.swing.GroupLayout.DEFAULT_SIZE, 82, Short.MAX_VALUE)
                                     .addComponent(b_agente, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(b_ajustador, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1291,8 +1298,7 @@ public class AperturaOrden extends javax.swing.JPanel {
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(t_fecha_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addComponent(t_agente)
-                                    .addComponent(t_ajustador, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(t_tecnico)))
+                                    .addComponent(t_ajustador, javax.swing.GroupLayout.Alignment.LEADING)))
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jPanel3Layout.createSequentialGroup()
@@ -1314,7 +1320,11 @@ public class AperturaOrden extends javax.swing.JPanel {
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(l_nombre_marca, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                             .addComponent(t_tipo, javax.swing.GroupLayout.PREFERRED_SIZE, 277, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                                .addGap(0, 9, Short.MAX_VALUE)))
+                                .addGap(0, 9, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                                .addComponent(b_buscarh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(t_tecnico, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(114, 114, 114)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addGroup(jPanel3Layout.createSequentialGroup()
@@ -2348,7 +2358,7 @@ public class AperturaOrden extends javax.swing.JPanel {
 
     private void t_economicoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_economicoKeyTyped
         // TODO add your handling code here:char car = evt.getKeyChar();
-        if(t_economico.getText().length()>=5)
+        if(t_economico.getText().length()>=6)
         evt.consume();
     }//GEN-LAST:event_t_economicoKeyTyped
 
@@ -2589,9 +2599,9 @@ public class AperturaOrden extends javax.swing.JPanel {
 
     private void t_economicoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_economicoFocusLost
         // TODO add your handling code here:
-        if(t_economico.getText().length()>5)
+        if(t_economico.getText().length()>6)
         {
-            t_economico.setText(t_economico.getText().substring(0, 5));
+            t_economico.setText(t_economico.getText().substring(0, 6));
         }
     }//GEN-LAST:event_t_economicoFocusLost
 
@@ -2982,12 +2992,35 @@ private Integer guardarOrden(Orden nueva)
                 
                 ID=(Integer) session.save(nueva);
                 session.getTransaction().commit();
+                
+                Orden aux = (Orden)session.get(Orden.class, ID);
+                Empleado emp1 = aux.getEmpleadoByRTecnico();
+                if(emp1!=null)
+                {
+                    emp1=(Empleado)session.get(Empleado.class, emp1.getIdEmpleado());
+                    if(emp1.getEmail()!=null)
+                    {
+                        String mensaje="<p>Asignaci&oacute;n de Orden De Taller <strong>"+ID+"</strong></p><p>Saludos. </p>";
+                        enviaCorreo("Asignaci&oacute;n OT("+ID+")", mensaje, emp1.getEmail()); 
+                    }
+                }
             }
         }
         else
         {
             ID=(Integer) session.save(nueva);
             session.getTransaction().commit();
+            Orden aux=(Orden)session.get(Orden.class, ID);
+            Empleado emp1=aux.getEmpleadoByRTecnico();
+            if(emp1!=null)
+            {
+                emp1=(Empleado)session.get(Empleado.class, emp1.getIdEmpleado());
+                if(emp1.getEmail()!=null)
+                {
+                    String mensaje="<p>Asignaci&oacute;n de Orden De Taller <strong>"+ID+"</strong></p><p>Saludos. </p>";
+                    enviaCorreo("Asignaci&oacute;n OT("+ID+")", mensaje, emp1.getEmail()); 
+                }
+            }
         }
         File folder = new File(ruta+"ordenes/"+ID);
         folder.mkdirs();
@@ -3290,6 +3323,103 @@ private void buscaCompania()
             if(session!=null)
                 if(session.isOpen())
                     session.close();    
+        }
+    }
+    
+    public void enviaCorreo(String asunto, String mensaje, String from)
+    {
+        String smtp="";
+        boolean ttl=false;
+        String puerto="";
+        String envia="";
+        String clave="";
+        //String from="";
+        String cc="";
+        String texto = null;
+        
+        try
+        {
+            FileReader f = new FileReader("correo.ml");
+            BufferedReader b = new BufferedReader(f);
+            int renglon=0;
+            while((texto = b.readLine())!=null)
+            {
+                switch(renglon)
+                {
+                    case 1://smtp
+                        smtp=texto.trim();
+                        break;
+                    case 2://ttl
+                        if(texto.compareToIgnoreCase("true")==0)
+                            ttl=true;
+                        else
+                            ttl=false;
+                        break;
+                    case 3://puerto
+                        puerto=texto.trim();
+                        break;
+                    case 4://cuenta
+                        envia=texto.trim();
+                        break;
+                    case 5://contraseña
+                        clave=texto.trim();
+                        break;
+                }
+                renglon+=1;
+            }
+            b.close();
+        }catch(Exception e){e.printStackTrace();}
+        
+        try
+        {
+            // se obtiene el objeto Session.
+            Properties props = new Properties();
+            props.put("mail.smtp.host", smtp);
+            props.setProperty("mail.smtp.starttls.enable", ""+ttl);
+            props.setProperty("mail.smtp.port", puerto);
+            props.setProperty("mail.smtp.user", envia);
+            props.setProperty("mail.smtp.auth", "true");
+
+            javax.mail.Session session = javax.mail.Session.getDefaultInstance(props, null);
+            // session.setDebug(true);
+
+            // Se compone la parte del texto
+            BodyPart texto_mensaje = new MimeBodyPart();
+            texto_mensaje.setContent(mensaje, "text/html");
+
+            // Una MultiParte para agrupar texto e imagen.
+            MimeMultipart multiParte = new MimeMultipart();
+            multiParte.addBodyPart(texto_mensaje);
+
+            // Se compone el correo, dando to, from, subject y el contenido.
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(envia));
+
+            String [] direcciones=from.split(";");
+            for(int x=0; x<direcciones.length; x++)
+            {
+                if(direcciones[x].compareTo("")!=0)
+                    message.addRecipient(Message.RecipientType.TO, new InternetAddress(direcciones[x].replace(" ","")));
+            }
+
+            String [] dirCC=cc.split(";");
+            for(int y=0; y<dirCC.length; y++)
+            {
+                if(dirCC[y].compareTo("")!=0)
+                    message.addRecipient(Message.RecipientType.CC, new InternetAddress(dirCC[y].replace(" ","")));
+            }
+
+            message.setSubject(asunto);
+            message.setContent(multiParte);
+
+            Transport t = session.getTransport("smtp");
+            t.connect(envia, clave);
+            t.sendMessage(message, message.getAllRecipients());
+            t.close();
+        }
+        catch (Exception e)
+        {
+            JOptionPane.showMessageDialog(null, "¡No se pudo enviar el correo error de red!"); 
         }
     }
 }

@@ -3,7 +3,7 @@
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated 10/12/2016 11:06:29 AM by Hibernate Tools 3.6.0 -->
 <hibernate-mapping>
-    <class name="Hibernate.entidades.Agente" table="agente" catalog="mydb">
+    <class name="Hibernate.entidades.Agente" table="agente">
         <id name="idAgente" type="java.lang.Integer">
             <column name="id_agente" />
             <generator class="identity" />
@@ -16,6 +16,12 @@
                 <column name="id_agente" />
             </key>
             <one-to-many class="Hibernate.entidades.Orden" />
+        </set>
+        <set name="accesos" table="acceso" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_agente" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Acceso" />
         </set>
     </class>
 </hibernate-mapping>

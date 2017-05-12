@@ -781,9 +781,9 @@
                 <StringItem index="5" value="CHIHUAHUA"/>
                 <StringItem index="6" value="COAHUILA"/>
                 <StringItem index="7" value="COLIMA"/>
-                <StringItem index="8" value="DISTRITO FEDERAL"/>
+                <StringItem index="8" value="CIUDAD DE M&#xc9;XICO"/>
                 <StringItem index="9" value="DURANGO"/>
-                <StringItem index="10" value="ESTADO DE MEXICO"/>
+                <StringItem index="10" value="ESTADO DE M&#xc9;XICO"/>
                 <StringItem index="11" value="GUANAJUATO"/>
                 <StringItem index="12" value="GUERRERO"/>
                 <StringItem index="13" value="HIDALGO"/>
@@ -1145,8 +1145,7 @@
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
                                   <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                                      <Component id="b_buscarh" pref="82" max="32767" attributes="0"/>
-                                      <Component id="b_fecha_interna" max="32767" attributes="0"/>
+                                      <Component id="b_fecha_interna" pref="82" max="32767" attributes="0"/>
                                       <Component id="b_agente" alignment="0" max="32767" attributes="0"/>
                                       <Component id="b_ajustador" alignment="0" max="32767" attributes="0"/>
                                   </Group>
@@ -1161,7 +1160,6 @@
                                       </Group>
                                       <Component id="t_agente" max="32767" attributes="0"/>
                                       <Component id="t_ajustador" alignment="0" max="32767" attributes="0"/>
-                                      <Component id="t_tecnico" max="32767" attributes="0"/>
                                   </Group>
                               </Group>
                               <Group type="102" attributes="0">
@@ -1192,6 +1190,11 @@
                                       </Group>
                                   </Group>
                                   <EmptySpace min="0" pref="9" max="32767" attributes="0"/>
+                              </Group>
+                              <Group type="102" alignment="1" attributes="0">
+                                  <Component id="b_buscarh" max="32767" attributes="0"/>
+                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                  <Component id="t_tecnico" min="-2" pref="244" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                           <EmptySpace min="-2" pref="114" max="-2" attributes="0"/>
@@ -1920,7 +1923,7 @@
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="ff" green="ff" red="ff" type="rgb"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Tecnico"/>
+            <Property name="text" type="java.lang.String" value="Supervisor"/>
             <Property name="toolTipText" type="java.lang.String" value="Consultar empleados"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[32, 8]"/>

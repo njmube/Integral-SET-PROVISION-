@@ -26,6 +26,8 @@ import java.awt.Toolkit;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.nio.file.CopyOption;
@@ -33,7 +35,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -138,7 +142,7 @@ public class Provision extends javax.swing.JPanel {
                         + "where MONTH(ex.fecha)="+cb_mes1.getSelectedItem()+" and ex.tipo='Dr' ORDER BY poliza ASC");
             Excel[] listaPoliza = (Excel[])query1.list().toArray(new Excel[0]); 
             t_datos.setModel(ModeloTablaReporte(listaPoliza.length, columnas));
-             for(int x=0; x<listaPoliza.length; x++)
+            for(int x=0; x<listaPoliza.length; x++)
             {
                 t_datos.setValueAt(listaPoliza[x].getIdExcel(), x, 0);
                 t_datos.setValueAt(listaPoliza[x].getPoliza(), x, 1);
@@ -149,7 +153,7 @@ public class Provision extends javax.swing.JPanel {
                 for(int a=0; a<as.length; a++)
                 {
                     cadena+=""+as[a].getReclamo().getIdReclamo();
-                    if(a+1>as.length)
+                    if(a+1<as.length)
                         cadena+="-";
                 }
                 t_datos.setValueAt(cadena, x, 4);
@@ -315,6 +319,10 @@ public class Provision extends javax.swing.JPanel {
         jLabel2 = new javax.swing.JLabel();
         t_mes = new javax.swing.JTextField();
         cb_poliza = new javax.swing.JComboBox();
+        jLabel10 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        t_inicio = new javax.swing.JFormattedTextField();
+        t_fin = new javax.swing.JFormattedTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         panel_provision = new javax.swing.JPanel();
         p_consulta = new javax.swing.JPanel();
@@ -476,14 +484,29 @@ public class Provision extends javax.swing.JPanel {
         t_mes.setEditable(false);
         t_mes.setDisabledTextColor(new java.awt.Color(0, 0, 0));
 
+        jLabel10.setText("Reclamo Inicio:");
+
+        jLabel11.setText("Fin:");
+
+        t_inicio.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
+
+        t_fin.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
+                .addComponent(jLabel10)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(t_inicio, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addComponent(jLabel11)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(t_fin, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 85, Short.MAX_VALUE)
                 .addComponent(jButton1)
-                .addGap(142, 142, 142)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cb_poliza, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -493,7 +516,7 @@ public class Provision extends javax.swing.JPanel {
                 .addComponent(t_mes, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton3)
-                .addContainerGap(189, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -505,7 +528,11 @@ public class Provision extends javax.swing.JPanel {
                     .addComponent(jLabel1)
                     .addComponent(jLabel2)
                     .addComponent(t_mes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cb_poliza, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cb_poliza, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel10)
+                    .addComponent(jLabel11)
+                    .addComponent(t_inicio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(t_fin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -702,162 +729,211 @@ public class Provision extends javax.swing.JPanel {
          Session session = HibernateUtil.getSessionFactory().openSession();
         try
         {
-            ArrayList listaConsulta=new ArrayList();
-            ArrayList listaProveedor=new ArrayList();
-            session.beginTransaction().begin();
-            Query query_proveedor = session.createSQLQuery("select distinct reclamo.id_proveedor as id FROM reclamo LEFT JOIN asiento on reclamo.id_reclamo=asiento.id_reclamo where reclamo.fecha_aceptado is not null AND asiento.id_reclamo is null");
-            query_proveedor.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
-            listaProveedor=(ArrayList)query_proveedor.list();
-
-            lista = new ArrayList();
-            cb_poliza.removeAllItems();
-            cb_poliza.addItem("TODAS");
-            t_mes.setText("");
-
-            panel_provision.removeAll();
-            panel_provision.setAutoscrolls(true);
-            panel_provision.repaint();
-            panel_provision.updateUI();
-                
-            for(int li=0; li<listaProveedor.size(); li++)
+            if(t_inicio.getValue()!=null)
             {
-                Query qr=session.createSQLQuery("select if(max(poliza)+1 is null, 1, max(poliza)+1) as poliza from excel where year(fecha)=year(now()) and month(fecha)=month(now()) and tipo='Dr';");
-                qr.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
-                listaConsulta=(ArrayList)qr.list();
-                java.util.HashMap poliza=(java.util.HashMap)listaConsulta.get(0);
-                
-                java.util.HashMap proveedor=(java.util.HashMap)listaProveedor.get(li);
-                Query query = session.createQuery("SELECT DISTINCT rec FROM Reclamo rec LEFT JOIN FETCH rec.asientos lista where rec.fechaAceptado is not null AND lista.reclamo is null and rec.proveedor.idProveedor="+proveedor.get("id").toString());
-                Reclamo[] rec = (Reclamo[])query.list().toArray(new Reclamo[0]);
-
-                if(rec.length>0)
+                if(t_fin.getValue()!=null)
                 {
-                    cb_poliza.addItem(poliza.get("poliza").toString());
-                    Date fecha = new Date();
-                    Calendar calendario = Calendar.getInstance();
-                    t_mes.setText(""+(calendario.get(Calendar.MONTH)+1));
-                        
-                    Excel excel=new Excel();
-                    for (i=0; i<rec.length; i++) {
-                        Reclamo rec1=rec[i];
-                        usr=(Usuario)session.get(Usuario.class, usr.getIdUsuario());
-                        
-                        Cuentas cuenta_prov=rec1.getProveedor().getCuentasByCtaProv();
-                        Cuentas cuenta_gasto=rec1.getProveedor().getCuentasByCtaGasto();
-                        ArchivoFactura factura = (ArchivoFactura)session.createCriteria(ArchivoFactura.class).createAlias("reclamo", "rec").add(Restrictions.eq("rec.idReclamo", rec1.getIdReclamo())).add(Restrictions.eq("estatus", "v")).uniqueResult();
-                        ArchivoNota nota = (ArchivoNota)session.createCriteria(ArchivoNota.class).createAlias("reclamo", "rec").add(Restrictions.eq("rec.idReclamo", rec1.getIdReclamo())).add(Restrictions.eq("estatus", "v")).uniqueResult();
-                        Cuentas iva_x_acreditar = (Cuentas)session.createCriteria(Cuentas.class).add(Restrictions.eq("idCuentas", "1190-002-000")).uniqueResult();
-                        Cuentas iva_compras = (Cuentas)session.createCriteria(Cuentas.class).add(Restrictions.eq("idCuentas", "1191-004-000")).uniqueResult();
+                    String pendientes="";
+                    ArrayList listaConsulta=new ArrayList();
+                    //ArrayList listaProveedor=new ArrayList();
+                    session.beginTransaction().begin();
+                    int inicio=((Number)t_inicio.getValue()).intValue();
+                    int fin=((Number)t_fin.getValue()).intValue();
+                    //String consulta1 = "select distinct reclamo.id_proveedor as id FROM reclamo LEFT JOIN asiento on reclamo.id_reclamo=asiento.id_reclamo where reclamo.fecha_aceptado is not null and reclamo.estatus='A' AND asiento.id_reclamo is null and reclamo.id_reclamo>="+inicio+" and reclamo.id_reclamo<="+fin;
+                    //Query query_proveedor = session.createSQLQuery(consulta1);
+                    //query_proveedor.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+                    //listaProveedor=(ArrayList)query_proveedor.list();
 
-                        if(i==0)//Registro del excel
+                    lista = new ArrayList();
+                    cb_poliza.removeAllItems();
+                    cb_poliza.addItem("TODAS");
+                    t_mes.setText("");
+
+                    panel_provision.removeAll();
+                    panel_provision.setAutoscrolls(true);
+                    panel_provision.repaint();
+                    panel_provision.updateUI();
+
+                    //for(int li=0; li<listaProveedor.size(); li++)
+                    //{
+                        Query qr=session.createSQLQuery("select if(max(poliza)+1 is null, 1, max(poliza)+1) as poliza from excel where year(fecha)=year(now()) and month(fecha)=month(now()) and tipo='Dr';");
+                        qr.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+                        listaConsulta=(ArrayList)qr.list();
+                        java.util.HashMap poliza=(java.util.HashMap)listaConsulta.get(0);
+
+                        //java.util.HashMap proveedor=(java.util.HashMap)listaProveedor.get(li);
+                        //Query query = session.createQuery("SELECT DISTINCT rec FROM Reclamo rec LEFT JOIN FETCH rec.asientos lista where rec.fechaAceptado is not null and rec.estatus='A' AND lista.reclamo is null and rec.proveedor.idProveedor="+proveedor.get("id").toString()+" AND rec.idReclamo>="+inicio+" AND rec.idReclamo<="+fin);
+                        Query query = session.createQuery("SELECT DISTINCT rec FROM Reclamo rec LEFT JOIN FETCH rec.asientos lista where rec.fechaAceptado is not null and rec.estatus='A' AND lista.reclamo is null  AND rec.idReclamo>="+inicio+" AND rec.idReclamo<="+fin);
+                        Reclamo[] rec = (Reclamo[])query.list().toArray(new Reclamo[0]);
+
+                        if(rec.length>0)
                         {
-                            excel.setPoliza(Integer.parseInt(poliza.get("poliza").toString()));
-                            excel.setFecha(fecha);
-                            excel.setConcepto("Provision de pagos");
-                            excel.setTipo("Dr");
-                            session.save(excel);
+                            cb_poliza.addItem(poliza.get("poliza").toString());
+                            Date fecha = new Date();
+                            Calendar calendario = Calendar.getInstance();
+                            t_mes.setText(""+(calendario.get(Calendar.MONTH)+1));
+
+                            Excel excel=new Excel();
+                            for (i=0; i<rec.length; i++) {
+                                Reclamo rec1=rec[i];
+                                usr=(Usuario)session.get(Usuario.class, usr.getIdUsuario());
+                                Cuentas cuenta_prov=rec1.getProveedor().getCuentasByCtaProv();
+                                Cuentas cuenta_gasto=rec1.getProveedor().getCuentasByCtaGasto();
+                                if(cuenta_prov!=null && cuenta_gasto!=null)
+                                {
+                                    ArchivoFactura factura = (ArchivoFactura)session.createCriteria(ArchivoFactura.class).createAlias("reclamo", "rec").add(Restrictions.eq("rec.idReclamo", rec1.getIdReclamo())).add(Restrictions.eq("estatus", "v")).uniqueResult();
+                                    ArchivoNota nota = (ArchivoNota)session.createCriteria(ArchivoNota.class).createAlias("reclamo", "rec").add(Restrictions.eq("rec.idReclamo", rec1.getIdReclamo())).add(Restrictions.eq("estatus", "v")).uniqueResult();
+                                    Cuentas iva_x_acreditar = (Cuentas)session.createCriteria(Cuentas.class).add(Restrictions.eq("idCuentas", "1190-002-000")).uniqueResult();
+                                    Cuentas iva_compras = (Cuentas)session.createCriteria(Cuentas.class).add(Restrictions.eq("idCuentas", "1191-004-000")).uniqueResult();
+
+                                    if(i==0)//Registro del excel
+                                    {
+                                        excel.setPoliza(Integer.parseInt(poliza.get("poliza").toString()));
+                                        excel.setFecha(fecha);
+                                        excel.setConcepto("Provision de pagos");
+                                        excel.setTipo("Dr");
+                                        session.save(excel);
+                                    }
+                                    //Registro de Asiento
+                                    Asiento asiento=new Asiento();
+                                    asiento.setReclamo(rec[i]);
+                                    asiento.setFechaProvision(fecha);
+                                    asiento.setUsuarioProvision(usr);
+                                    asiento.setExcelProvision(excel);
+                                    session.save(asiento);
+
+                                    //***************Registro de Asientos************************
+                                    //registro de compras
+                                    Registro r1=new Registro();
+                                    r1.setAsiento(asiento);
+                                    r1.setCuentas(cuenta_gasto);
+                                    r1.setDepto("0");
+                                    r1.setConcepto("REC:"+factura.getReclamo().getIdReclamo()+" FAC:"+factura.getFolio()+" "+factura.getReclamo().getProveedor().getNombre());
+                                    r1.setCantidad(BigDecimal.valueOf(factura.getSubTotal()).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+                                    r1.setCambio(factura.getCambio());
+                                    r1.setTipo("d");
+                                    r1.setTipoAsiento("Dr");
+                                    session.save(r1);
+
+                                    //registro de iva
+                                    Registro r2=new Registro();
+                                    r2.setAsiento(asiento);
+                                    r2.setCuentas(iva_x_acreditar);
+                                    r2.setDepto("0");
+                                    r2.setConcepto("REC:"+factura.getReclamo().getIdReclamo()+" FAC:"+factura.getFolio()+" "+factura.getReclamo().getProveedor().getNombre());
+                                    r2.setCantidad(BigDecimal.valueOf(factura.getIva()).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+                                    r2.setCambio(factura.getCambio());
+                                    r2.setTipo("d");
+                                    r2.setTipoAsiento("Dr");
+                                    session.save(r2);
+
+                                    //Registro de proveedores
+                                    double total = factura.getIva() + factura.getSubTotal();
+                                    Registro r3=new Registro();
+                                    r3.setAsiento(asiento);
+                                    r3.setCuentas(cuenta_prov);
+                                    r3.setDepto("0");
+                                    r3.setConcepto("REC:"+factura.getReclamo().getIdReclamo()+" FAC:"+factura.getFolio());
+                                    r3.setCantidad(BigDecimal.valueOf(total).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+                                    r3.setCambio(factura.getCambio());
+                                    r3.setTipo("a");
+                                    r3.setTipoAsiento("Dr");
+                                    session.save(r3);
+
+                                    if(nota!=null)
+                                    {
+                                        //Registro de proveedores
+                                        double total_nota = nota.getIva() + nota.getSubTotal();
+                                        Registro r4=new Registro();
+                                        r4.setAsiento(asiento);
+                                        r4.setCuentas(cuenta_prov);
+                                        r4.setDepto("0");
+                                        r4.setConcepto("REC:"+factura.getReclamo().getIdReclamo()+" NOT:"+nota.getFolio());
+                                        r4.setCantidad(BigDecimal.valueOf(total_nota).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+                                        r4.setCambio(factura.getCambio());
+                                        r4.setTipo("d");
+                                        r4.setTipoAsiento("Dr");
+                                        session.save(r4);
+
+                                        //registro de compras
+                                        Cuentas dev_compra = (Cuentas)session.createCriteria(Cuentas.class).add(Restrictions.eq("idCuentas", "5400-001-000")).uniqueResult();
+                                        Registro r5=new Registro();
+                                        r5.setAsiento(asiento);
+                                        r5.setCuentas(dev_compra);
+                                        r5.setDepto("0");
+                                        r5.setConcepto("REC:"+factura.getReclamo().getIdReclamo()+" NOT:"+nota.getFolio()+" "+factura.getReclamo().getProveedor().getNombre());
+                                        r5.setCantidad(BigDecimal.valueOf(nota.getSubTotal()).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+                                        r5.setCambio(nota.getCambio());
+                                        r5.setTipo("a");
+                                        r5.setTipoAsiento("Dr");
+                                        session.save(r5);
+
+                                        //registro de iva
+                                        Registro r6=new Registro();
+                                        r6.setAsiento(asiento);
+                                        r6.setCuentas(iva_compras);
+                                        r6.setDepto("0");
+                                        r6.setConcepto("REC:"+factura.getReclamo().getIdReclamo()+" NOT:"+nota.getFolio()+" "+factura.getReclamo().getProveedor().getNombre());
+                                        r6.setCantidad(BigDecimal.valueOf(nota.getIva()).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+                                        r6.setCambio(nota.getCambio());
+                                        r6.setTipo("a");
+                                        r6.setTipoAsiento("Dr");
+                                        session.save(r6);
+                                    }
+                                    lista.add(asiento);
+                                }
+                                else
+                                {
+                                    pendientes+=""+rec1.getIdReclamo()+", ";
+                                }
+                            }
                         }
-                        //Registro de Asiento
-                        Asiento asiento=new Asiento();
-                        asiento.setReclamo(rec[i]);
-                        asiento.setFechaProvision(fecha);
-                        asiento.setUsuarioProvision(usr);
-                        asiento.setExcelProvision(excel);
-                        session.save(asiento);
-
-                        //***************Registro de Asientos************************
-                        //registro de compras
-                        Registro r1=new Registro();
-                        r1.setAsiento(asiento);
-                        r1.setCuentas(cuenta_gasto);
-                        r1.setDepto("0");
-                        r1.setConcepto("REC:"+factura.getReclamo().getIdReclamo()+" FAC:"+factura.getFolio()+" "+factura.getReclamo().getProveedor().getNombre());
-                        r1.setCantidad(BigDecimal.valueOf(factura.getSubTotal()).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
-                        r1.setCambio(factura.getCambio());
-                        r1.setTipo("d");
-                        r1.setTipoAsiento("Dr");
-                        session.save(r1);
-
-                        //registro de iva
-                        Registro r2=new Registro();
-                        r2.setAsiento(asiento);
-                        r2.setCuentas(iva_x_acreditar);
-                        r2.setDepto("0");
-                        r2.setConcepto(iva_x_acreditar.getNombre());
-                        r2.setCantidad(BigDecimal.valueOf(factura.getIva()).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
-                        r2.setCambio(factura.getCambio());
-                        r2.setTipo("d");
-                        r2.setTipoAsiento("Dr");
-                        session.save(r2);
-
-                        //Registro de proveedores
-                        double total = factura.getIva() + factura.getSubTotal();
-                        Registro r3=new Registro();
-                        r3.setAsiento(asiento);
-                        r3.setCuentas(cuenta_prov);
-                        r3.setDepto("0");
-                        r3.setConcepto(cuenta_prov.getNombre());
-                        r3.setCantidad(BigDecimal.valueOf(total).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
-                        r3.setCambio(factura.getCambio());
-                        r3.setTipo("a");
-                        r3.setTipoAsiento("Dr");
-                        session.save(r3);
-
-                        if(nota!=null)
-                        {
-                            //Registro de proveedores
-                            double total_nota = nota.getIva() + nota.getSubTotal();
-                            Registro r4=new Registro();
-                            r4.setAsiento(asiento);
-                            r4.setCuentas(cuenta_prov);
-                            r4.setDepto("0");
-                            r4.setConcepto(cuenta_prov.getNombre());
-                            r4.setCantidad(BigDecimal.valueOf(total_nota).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
-                            r4.setCambio(factura.getCambio());
-                            r4.setTipo("d");
-                            r4.setTipoAsiento("Dr");
-                            session.save(r4);
-
-                            //registro de compras
-                            Cuentas dev_compra = (Cuentas)session.createCriteria(Cuentas.class).add(Restrictions.eq("idCuentas", "5400-001-000")).uniqueResult();
-                            Registro r5=new Registro();
-                            r5.setAsiento(asiento);
-                            r5.setCuentas(dev_compra);
-                            r5.setDepto("0");
-                            r5.setConcepto(dev_compra.getNombre());
-                            r5.setCantidad(BigDecimal.valueOf(nota.getSubTotal()).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
-                            r5.setCambio(nota.getCambio());
-                            r5.setTipo("a");
-                            r5.setTipoAsiento("Dr");
-                            session.save(r5);
-
-                            //registro de iva
-                            Registro r6=new Registro();
-                            r6.setAsiento(asiento);
-                            r6.setCuentas(iva_compras);
-                            r6.setDepto("0");
-                            r6.setConcepto(iva_compras.getNombre());
-                            r6.setCantidad(BigDecimal.valueOf(nota.getIva()).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
-                            r6.setCambio(nota.getCambio());
-                            r6.setTipo("a");
-                            r6.setTipoAsiento("Dr");
-                            session.save(r6);
-                        }
-                        lista.add(asiento);
+                    //}
+                    session.beginTransaction().commit();
+                    for(int l=0; l<lista.size(); l++)
+                    {
+                        Asiento aux=(Asiento)lista.get(l);
+                        asiento1 m=new asiento1(this.usr, aux, i, estado, this.sessionPrograma, "Dr");
+                        panel_provision.add(m);
+                        m.setVisible(true);
                     }
+                    panel_provision.setAutoscrolls(true);
+                    panel_provision.repaint();
+                    panel_provision.updateUI();
+                    if(pendientes.compareTo("")!=0)
+                    {
+                        FileWriter fichero = null;
+                        PrintWriter pw = null;
+                        try
+                        {
+                            Date fecha = new Date();
+                            DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH-mm-ss");//YYYY-MM-DD HH:MM:SS
+                            String valor=dateFormat.format(fecha);
+                            File folder = new File("polizas");
+                            folder.mkdirs();
+                            fichero = new FileWriter("polizas/"+valor+".txt");
+                            pw = new PrintWriter(fichero);
+                            pw.println("Reclamos no generados: "+pendientes);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        } finally {
+                           try {
+                           if (null != fichero)
+                              fichero.close();
+                           } catch (Exception e2) {
+                              e2.printStackTrace();
+                           }
+                        }
+                        JOptionPane.showMessageDialog(this, "Proceso completado pero algunos reclamos no se pudieron incluir por falta de cuenta de proveedor o gasto");
+                    }
+                    else
+                        JOptionPane.showMessageDialog(this, "Proceso completado");
                 }
+                else
+                    JOptionPane.showMessageDialog(this, "Falta el numero de reclamo de inicio");
             }
-            session.beginTransaction().commit();
-            for(int l=0; l<lista.size(); l++)
-            {
-                Asiento aux=(Asiento)lista.get(l);
-                asiento1 m=new asiento1(this.usr, aux, i, estado, this.sessionPrograma, "Dr");
-                panel_provision.add(m);
-                m.setVisible(true);
-            }
-            panel_provision.setAutoscrolls(true);
-            panel_provision.repaint();
-            panel_provision.updateUI();
+            else
+                JOptionPane.showMessageDialog(this, "Falta el numero de reclamo de inicio");
         }catch(Exception e)
         {
             session.beginTransaction().rollback();
@@ -1169,6 +1245,8 @@ public class Provision extends javax.swing.JPanel {
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -1195,6 +1273,8 @@ public class Provision extends javax.swing.JPanel {
     private javax.swing.JTextField t_concepto_aux;
     private javax.swing.JTable t_datos;
     private javax.swing.JTextField t_fecha_aux;
+    private javax.swing.JFormattedTextField t_fin;
+    private javax.swing.JFormattedTextField t_inicio;
     private javax.swing.JTextField t_mes;
     private javax.swing.JTextField t_poliza1;
     private javax.swing.JTextField t_poliza_aux;

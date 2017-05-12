@@ -1022,17 +1022,17 @@ public class editaEjemplar extends javax.swing.JPanel {
     private javax.swing.JLabel l_tipo1;
     private javax.swing.JLabel l_tipo2;
     private javax.swing.JLabel l_tipo3;
-    private javax.swing.JComboBox medida;
+    public javax.swing.JComboBox medida;
     private javax.swing.JPanel p_foto;
     private javax.swing.JTextField t_busca;
     public javax.swing.JTextField t_catalogo;
     public javax.swing.JTextArea t_comentario;
     private javax.swing.JTable t_datos;
-    private javax.swing.JFormattedTextField t_maximo;
-    private javax.swing.JFormattedTextField t_minimo;
+    public javax.swing.JFormattedTextField t_maximo;
+    public javax.swing.JFormattedTextField t_minimo;
     public javax.swing.JTextField t_modelo;
     public javax.swing.JTextField t_numero;
-    private javax.swing.JFormattedTextField t_precio;
+    public javax.swing.JFormattedTextField t_precio;
     // End of variables declaration//GEN-END:variables
 
     public void cargaMarca()

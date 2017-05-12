@@ -3174,7 +3174,7 @@ public class editaPedido extends javax.swing.JPanel {
                                         }
                                         part.setPcp((Double)t_datos.getValueAt(r, 9));
                                         part.setPedido(pedido);
-                                        if(t_datos.getValueAt(r, 7).toString().compareTo("0")==0)
+                                        if(t_datos.getValueAt(r, 7).toString().compareTo("0")==0 || t_datos.getValueAt(r, 7)==null)
                                                 part.setPlazo(null);
                                         else
                                         {
@@ -3512,7 +3512,8 @@ public class editaPedido extends javax.swing.JPanel {
                                         px.setFacturado(false);
                                         px.setUnidad(t_datos.getValueAt(ren, 6).toString());
                                         px.setOp(false);
-                                        if(t_datos.getValueAt(ren, 7).toString().compareTo("")!=0 || t_datos.getValueAt(ren, 7).toString().compareTo("0")!=0)
+                                        System.out.println("ok "+t_datos.getValueAt(ren, 7).toString());
+                                        if(t_datos.getValueAt(ren, 7).toString().compareTo("")!=0 || t_datos.getValueAt(ren, 6).toString().compareTo("0")!=0)
                                         {
                                             String[] fecha = t_datos.getValueAt(ren, 7).toString().split("-");
                                             Calendar calendario = Calendar.getInstance();
