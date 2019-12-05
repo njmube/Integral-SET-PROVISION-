@@ -327,6 +327,9 @@
         <property name="movimientoAlmacen" type="java.lang.Boolean">
             <column name="movimiento_almacen" />
         </property>
+        <property name="movimientoAlmacen2" type="java.lang.Boolean">
+            <column name="movimiento_almacen2" />
+        </property>
         <property name="consultaMovimientoAlmacen" type="java.lang.Boolean">
             <column name="consulta_movimiento_almacen" />
         </property>
@@ -380,6 +383,17 @@
         </property>
         <property name="generaAdicional" type="java.lang.Boolean">
             <column name="genera_adicional" />
+        </property>
+        <property name="autorizaAdicional" type="java.lang.Boolean">
+            <column name="autoriza_adicional" />
+        </property>
+        <property name="autorizaConsumibles" type="java.lang.Boolean">
+            <column name="autoriza_consumibles">
+                <comment>permiso para autorizar consumibles adicionales</comment>
+            </column>
+        </property>
+        <property name="editaMetas" type="java.lang.Boolean">
+            <column name="edita_metas" />
         </property>
         <set name="pedidosForAutorizo" table="pedido" inverse="true" lazy="true" fetch="select">
             <key>
@@ -601,10 +615,10 @@
             </key>
             <one-to-many class="Hibernate.entidades.Nota" />
         </set>
-        <set name="ordensForRAutorizacionInternaAsigno" table="orden" inverse="true" lazy="true" fetch="select">
+        <set name="ordensForRPrefacturaAsigno" table="orden" inverse="true" lazy="true" fetch="select">
             <key>
-                <column name="r_autorizacion_interna_asigno" length="10">
-                    <comment>Usuario que dio la autorizaci&#195;&#179;n</comment>
+                <column name="r_prefactura_asigno" length="10">
+                    <comment>Usuario que genero la prefactura</comment>
                 </column>
             </key>
             <one-to-many class="Hibernate.entidades.Orden" />
@@ -636,6 +650,18 @@
                 <column name="mecanico" length="10" />
             </key>
             <one-to-many class="Hibernate.entidades.PartidaExterna" />
+        </set>
+        <set name="pagosForAutorizo" table="pago" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="autorizo" length="10" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Pago" />
+        </set>
+        <set name="pagosForGenero" table="pago" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="genero" length="10" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Pago" />
         </set>
     </class>
 </hibernate-mapping>

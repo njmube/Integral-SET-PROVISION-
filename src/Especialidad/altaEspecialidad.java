@@ -17,6 +17,8 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import Integral.Herramientas;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 /**
  *
  * @author ESPECIALIZADO TOLUCA
@@ -176,6 +178,7 @@ public class altaEspecialidad extends javax.swing.JDialog {
                 Especialidad nuevoEspecialidad = new Especialidad();
                 if(grupomecanico.getText().compareTo("")!=0)
                 nuevoEspecialidad.setDescripcion(grupomecanico.getText());
+                nuevoEspecialidad.setPlantilla(true);
                 Integer respuesta=guardarEspecialidad(nuevoEspecialidad);
                 if(respuesta==null)
                 {
@@ -257,6 +260,8 @@ public class altaEspecialidad extends javax.swing.JDialog {
         try 
         {
             session.beginTransaction();
+            Especialidad esp =(Especialidad) session.createCriteria(Especialidad.class).addOrder(Order.desc("orden")).setMaxResults(1).uniqueResult();
+            obj.setOrden(esp.getOrden()+1);
             IdClientes=(Integer) session.save(obj);
             session.save(obj);
             session.getTransaction().commit();

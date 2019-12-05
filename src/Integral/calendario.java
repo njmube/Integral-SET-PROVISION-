@@ -11,6 +11,7 @@
 package Integral;
 
 import java.util.Calendar;
+import javax.swing.ImageIcon;
 import javax.swing.InputMap;
 
 /**
@@ -23,11 +24,18 @@ public class calendario extends javax.swing.JDialog {
     InputMap map = new InputMap();
     
     /** Creates new form acceso */
-    public calendario(java.awt.Frame parent, boolean modal) {
+    public calendario(java.awt.Frame parent, boolean modal, boolean hora) {
         super(parent, modal);
         //map.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, false), "pressed");
         //map.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, true), "released");   
         initComponents();
+        l_hora.setEnabled(hora);
+        c_hora.setEnabled(hora);
+        l_minuto.setEnabled(hora);
+        c_minuto.setEnabled(hora);
+        l_segundo.setEnabled(hora);
+        c_segundo.setEnabled(hora);
+        b_ok.setEnabled(hora);
         //bentrar.setInputMap(0, map);
     }
 
@@ -50,12 +58,20 @@ public class calendario extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        panel_fecha = new datechooser.beans.DateChooserPanel();
+        p_fecha = new datechooser.beans.DateChooserPanel();
+        p_hora = new javax.swing.JPanel();
+        l_hora = new javax.swing.JLabel();
+        c_hora = new javax.swing.JComboBox();
+        l_minuto = new javax.swing.JLabel();
+        c_minuto = new javax.swing.JComboBox();
+        l_segundo = new javax.swing.JLabel();
+        c_segundo = new javax.swing.JComboBox();
+        b_ok = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Acceso");
 
-        panel_fecha.setCurrentView(new datechooser.view.appearance.AppearancesList("Light",
+        p_fecha.setCurrentView(new datechooser.view.appearance.AppearancesList("Light",
             new datechooser.view.appearance.ViewAppearance("custom",
                 new datechooser.view.appearance.swing.SwingCellAppearance(new java.awt.Font("Tahoma", java.awt.Font.PLAIN, 11),
                     new java.awt.Color(0, 0, 0),
@@ -96,19 +112,67 @@ public class calendario extends javax.swing.JDialog {
                 (datechooser.view.BackRenderer)null,
                 false,
                 true)));
-    panel_fecha.setCalendarPreferredSize(new java.awt.Dimension(250, 215));
-    panel_fecha.setNavigateFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 10));
-    panel_fecha.setShowOneMonth(true);
-    panel_fecha.addSelectionChangedListener(new datechooser.events.SelectionChangedListener() {
-        public void onSelectionChange(datechooser.events.SelectionChangedEvent evt) {
-            panel_fechaOnSelectionChange(evt);
-        }
-    });
-    panel_fecha.addCommitListener(new datechooser.events.CommitListener() {
+    p_fecha.setShowOneMonth(true);
+    p_fecha.addCommitListener(new datechooser.events.CommitListener() {
         public void onCommit(datechooser.events.CommitEvent evt) {
-            panel_fechaOnCommit(evt);
+            p_fechaOnCommit(evt);
         }
     });
+
+    l_hora.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+    l_hora.setText("H:");
+
+    c_hora.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23" }));
+
+    l_minuto.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+    l_minuto.setText("M:");
+
+    c_minuto.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59" }));
+
+    l_segundo.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+    l_segundo.setText("S:");
+
+    c_segundo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59", "23" }));
+
+    b_ok.setIcon(new ImageIcon("imagenes/boton_editar1.png"));
+    b_ok.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            b_okActionPerformed(evt);
+        }
+    });
+
+    javax.swing.GroupLayout p_horaLayout = new javax.swing.GroupLayout(p_hora);
+    p_hora.setLayout(p_horaLayout);
+    p_horaLayout.setHorizontalGroup(
+        p_horaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, p_horaLayout.createSequentialGroup()
+            .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(l_hora)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(c_hora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(l_minuto)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(c_minuto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(l_segundo)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(c_segundo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(b_ok)
+            .addGap(22, 22, 22))
+    );
+    p_horaLayout.setVerticalGroup(
+        p_horaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addComponent(b_ok, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        .addGroup(p_horaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+            .addComponent(l_hora)
+            .addComponent(c_hora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(l_minuto)
+            .addComponent(c_minuto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(l_segundo)
+            .addComponent(c_segundo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+    );
 
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
     getContentPane().setLayout(layout);
@@ -116,52 +180,58 @@ public class calendario extends javax.swing.JDialog {
         layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
         .addGroup(layout.createSequentialGroup()
             .addContainerGap()
-            .addComponent(panel_fecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addComponent(p_fecha, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(p_hora, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
     );
     layout.setVerticalGroup(
         layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
         .addGroup(layout.createSequentialGroup()
             .addContainerGap()
-            .addComponent(panel_fecha, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(p_fecha, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(p_hora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addContainerGap())
     );
 
     pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void panel_fechaOnSelectionChange(datechooser.events.SelectionChangedEvent evt) {//GEN-FIRST:event_panel_fechaOnSelectionChange
+    private void p_fechaOnCommit(datechooser.events.CommitEvent evt) {//GEN-FIRST:event_p_fechaOnCommit
         // TODO add your handling code here:
-        //Calendar fech=panel_fecha.getSelectedDate();
-        //doClose(fech);
-    }//GEN-LAST:event_panel_fechaOnSelectionChange
-
-    private void panel_fechaOnCommit(datechooser.events.CommitEvent evt) {//GEN-FIRST:event_panel_fechaOnCommit
-        // TODO add your handling code here:
-        Calendar fech=panel_fecha.getSelectedDate();
+        Calendar fech=p_fecha.getSelectedDate();
+        if(fech!=null)
+        {
+            fech.set(Calendar.HOUR_OF_DAY, Integer.parseInt(c_hora.getSelectedItem().toString()));
+            fech.set(Calendar.MINUTE, Integer.parseInt(c_minuto.getSelectedItem().toString()));
+            fech.set(Calendar.SECOND, Integer.parseInt(c_segundo.getSelectedItem().toString()));
+        }
         doClose(fech);
-    }//GEN-LAST:event_panel_fechaOnCommit
+    }//GEN-LAST:event_p_fechaOnCommit
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
+    private void b_okActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_okActionPerformed
+        // TODO add your handling code here:
+        Calendar fech=p_fecha.getSelectedDate();
+        if(fech!=null)
+        {
+            fech.set(Calendar.HOUR_OF_DAY, Integer.parseInt(c_hora.getSelectedItem().toString()));
+            fech.set(Calendar.MINUTE, Integer.parseInt(c_minuto.getSelectedItem().toString()));
+            fech.set(Calendar.SECOND, Integer.parseInt(c_segundo.getSelectedItem().toString()));
+        }
+        doClose(fech);
+    }//GEN-LAST:event_b_okActionPerformed
 
-            public void run() {
-                calendario dialog = new calendario(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
-    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private datechooser.beans.DateChooserPanel panel_fecha;
+    private javax.swing.JButton b_ok;
+    public javax.swing.JComboBox c_hora;
+    public javax.swing.JComboBox c_minuto;
+    public javax.swing.JComboBox c_segundo;
+    private javax.swing.JLabel l_hora;
+    private javax.swing.JLabel l_minuto;
+    private javax.swing.JLabel l_segundo;
+    public datechooser.beans.DateChooserPanel p_fecha;
+    private javax.swing.JPanel p_hora;
     // End of variables declaration//GEN-END:variables
 
     private Calendar returnStatus = RET_CANCEL;

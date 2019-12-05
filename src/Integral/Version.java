@@ -9,13 +9,14 @@ package Integral;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  *
  * @author Angel
  */
 public class Version {
-    String ruta, version, local;
+    String ruta, local, version;
     public boolean version(){
         
         try
@@ -27,7 +28,7 @@ public class Version {
             //obtenemos direccion de red
             FileReader f = new FileReader("config.txt");
             BufferedReader b = new BufferedReader(f);
-                if((ruta = b.readLine())==null)
+            if((ruta = b.readLine())==null)
                 ruta="";
             b.close();
             
@@ -35,12 +36,10 @@ public class Version {
             String nueva=ruta+"ver.txt";
             FileReader archivo= new FileReader(nueva);
             BufferedReader b1 = new BufferedReader(archivo);
-            if((version = b1.readLine())==null)
+            if((version=b1.readLine())==null){
                 version="";
+            }
             b.close();
-            
-            char version2 = version.charAt(0);
-            
             
             //obtenemos la version local
             FileReader f1 = new FileReader("ver.txt");
@@ -48,10 +47,9 @@ public class Version {
             if((local = b2.readLine())==null)
                 local="";
             b.close();
-            char local2 = local.charAt(0);
             
             //comparamos las versiones red y local
-            if(version2!=local2)
+            if(version.compareTo(local)!=0)
                 return true;
             else
                 return false;

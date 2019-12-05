@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 29/11/2017 10:51:31 AM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.CuentaSeguimiento" table="cuenta_seguimiento">
+        <id name="idCuentaSeguimiento" type="java.lang.Integer">
+            <column name="id_cuenta_seguimiento" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="proveedor" class="Hibernate.entidades.Proveedor" fetch="select">
+            <column name="id_proveedor" />
+        </many-to-one>
+        <property name="email" type="string">
+            <column name="email" length="100" />
+        </property>
+        <property name="clave" type="string">
+            <column name="clave" length="10" />
+        </property>
+        <property name="fecha" type="date">
+            <column name="fecha" length="10" />
+        </property>
+        <property name="token" type="string">
+            <column name="token" length="250" />
+        </property>
+        <property name="usuario" type="string">
+            <column name="usuario" length="10" />
+        </property>
+    </class>
+</hibernate-mapping>

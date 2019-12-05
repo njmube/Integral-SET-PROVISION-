@@ -68,6 +68,7 @@ public class altaMarca extends javax.swing.JDialog {
         b_guardar1 = new javax.swing.JButton();
         b_cancelar = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
+        cb_ejemplar = new javax.swing.JComboBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Alta de marca");
@@ -134,14 +135,18 @@ public class altaMarca extends javax.swing.JDialog {
         jLabel3.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         jLabel3.setText("Nota: Identifica la marca de la unidad");
 
+        cb_ejemplar.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Unidad", "Inventario", "Ambos" }));
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(cb_ejemplar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(b_cancelar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(b_guardar1))
@@ -172,7 +177,8 @@ public class altaMarca extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(b_guardar1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(b_cancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(b_cancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cb_ejemplar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
                 .addComponent(jLabel3)
                 .addContainerGap())
@@ -215,6 +221,7 @@ public class altaMarca extends javax.swing.JDialog {
                     if(marca_nombre.getText().compareTo("")!=0)
                         nuevoMarca.setMarcaNombre(marca_nombre.getText());
 
+                    nuevoMarca.setEjemplar(cb_ejemplar.getSelectedIndex());
                     String respuesta=guardarMarca(nuevoMarca);
                     if(respuesta==null)
                         JOptionPane.showMessageDialog(null, "Error al guardar los datos");
@@ -275,6 +282,7 @@ public class altaMarca extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton b_cancelar;
     private javax.swing.JButton b_guardar1;
+    private javax.swing.JComboBox cb_ejemplar;
     public javax.swing.JTextField id_marca;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -340,6 +348,7 @@ public class altaMarca extends javax.swing.JDialog {
     private void borra_cajas()
     {
         this.id_marca.setText("");
-        this.marca_nombre.setText("");        
+        this.marca_nombre.setText("");       
+        this.cb_ejemplar.setSelectedIndex(0);
     }
 }

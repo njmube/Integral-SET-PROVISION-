@@ -1,17 +1,22 @@
 
 package Ejemplar;
 
+import Catalogo.buscaCatalogo;
 import Integral.Herramientas;
 import Integral.ExtensionFileFilter;
 import Integral.Imagen;
 import Hibernate.Util.HibernateUtil;
+import Hibernate.entidades.Catalogo;
 import java.util.List;
 import javax.swing.InputMap;
 import Hibernate.entidades.Ejemplar;
+import Hibernate.entidades.Grupo;
 import Hibernate.entidades.Marca;
 import Hibernate.entidades.Tipo;
 import Hibernate.entidades.Usuario;
+import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.File;
@@ -32,7 +37,7 @@ public class altaEjemplar extends javax.swing.JDialog {
     InputMap map = new InputMap();
     DefaultTableModel model;
     String[] marca;
-    String[] tipo;
+    String[] grupo;
     int[] catalogo;
     //private Session session;
     Usuario user;
@@ -53,6 +58,18 @@ public class altaEjemplar extends javax.swing.JDialog {
         cargaTipo();
         this.t_numero.requestFocus();
         user=u;
+        if(inventario==0)
+        {
+            l_minimo.setVisible(false);
+            l_maximo.setVisible(false);
+            t_minimo.setVisible(false);
+            t_maximo.setVisible(false);
+            l_ubicacion.setVisible(false);
+            t_ubicacion.setVisible(false);
+            //l_catalogo.setForeground(new java.awt.Color(102, 102, 255));
+        }
+        //else
+            //l_catalogo.setForeground(new java.awt.Color(102, 102, 255));
     }
     
     private void doClose(Ejemplar o) {
@@ -109,12 +126,10 @@ public class altaEjemplar extends javax.swing.JDialog {
         jPanel1 = new javax.swing.JPanel();
         jLabel20 = new javax.swing.JLabel();
         t_numero = new javax.swing.JTextField();
-        l_modelo = new javax.swing.JLabel();
-        t_modelo = new javax.swing.JTextField();
         l_marca = new javax.swing.JLabel();
         c_marca = new javax.swing.JComboBox();
         l_tipo = new javax.swing.JLabel();
-        c_tipo = new javax.swing.JComboBox();
+        c_grupo = new javax.swing.JComboBox();
         l_catalogo = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         t_comentario = new javax.swing.JTextArea();
@@ -127,10 +142,17 @@ public class altaEjemplar extends javax.swing.JDialog {
         medida = new javax.swing.JComboBox();
         l_modelo1 = new javax.swing.JLabel();
         t_precio = new javax.swing.JFormattedTextField();
-        l_comentario1 = new javax.swing.JLabel();
+        l_maximo = new javax.swing.JLabel();
         t_minimo = new javax.swing.JFormattedTextField();
         t_maximo = new javax.swing.JFormattedTextField();
-        l_comentario2 = new javax.swing.JLabel();
+        l_minimo = new javax.swing.JLabel();
+        cb_moneda = new javax.swing.JCheckBox();
+        t_ubicacion = new javax.swing.JTextField();
+        l_ubicacion = new javax.swing.JLabel();
+        b_buscar_aseguradora = new javax.swing.JButton();
+        t_id_catalogo = new javax.swing.JTextField();
+        c_tipo = new javax.swing.JComboBox();
+        l_ubicacion1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Alta de articulos");
@@ -148,28 +170,18 @@ public class altaEjemplar extends javax.swing.JDialog {
             }
         });
 
-        l_modelo.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
-        l_modelo.setText("Modelo:");
-
-        t_modelo.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                t_modeloKeyTyped(evt);
-            }
-        });
-
         l_marca.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         l_marca.setText("Marca:");
 
         l_tipo.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
-        l_tipo.setText("Tipo:");
+        l_tipo.setText("Linea:");
 
         l_catalogo.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
-        l_catalogo.setForeground(new java.awt.Color(102, 102, 255));
-        l_catalogo.setText("Descripción:");
+        l_catalogo.setText("Partida Valuacion:");
 
         t_comentario.setColumns(20);
         t_comentario.setRows(5);
-        t_comentario.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "Comentario", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP));
+        t_comentario.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(102, 102, 255), 1, true), "Descripción", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(102, 102, 255))); // NOI18N
         t_comentario.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 t_comentarioKeyTyped(evt);
@@ -202,6 +214,7 @@ public class altaEjemplar extends javax.swing.JDialog {
         jLabel1.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         jLabel1.setText("Nota: Los campos en azul son obligatorios");
 
+        t_catalogo.setEditable(false);
         t_catalogo.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 t_catalogoKeyTyped(evt);
@@ -238,9 +251,9 @@ public class altaEjemplar extends javax.swing.JDialog {
 
         t_precio.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.00"))));
 
-        l_comentario1.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
-        l_comentario1.setForeground(new java.awt.Color(102, 102, 255));
-        l_comentario1.setText("Maximo:");
+        l_maximo.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        l_maximo.setForeground(new java.awt.Color(102, 102, 255));
+        l_maximo.setText("Maximo:");
 
         t_minimo.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.00"))));
         t_minimo.setValue(0.0);
@@ -253,9 +266,49 @@ public class altaEjemplar extends javax.swing.JDialog {
         t_maximo.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.00"))));
         t_maximo.setValue(0.0);
 
-        l_comentario2.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
-        l_comentario2.setForeground(new java.awt.Color(102, 102, 255));
-        l_comentario2.setText("Minimo:");
+        l_minimo.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        l_minimo.setForeground(new java.awt.Color(102, 102, 255));
+        l_minimo.setText("Minimo:");
+
+        cb_moneda.setText("Dolares");
+
+        t_ubicacion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                t_ubicacionActionPerformed(evt);
+            }
+        });
+        t_ubicacion.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                t_ubicacionKeyTyped(evt);
+            }
+        });
+
+        l_ubicacion.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        l_ubicacion.setText("Ubicación:");
+
+        b_buscar_aseguradora.setBackground(new java.awt.Color(2, 135, 242));
+        b_buscar_aseguradora.setIcon(new ImageIcon("imagenes/buscar.png"));
+        b_buscar_aseguradora.setToolTipText("Consultar aseguradoras");
+        b_buscar_aseguradora.setMaximumSize(new java.awt.Dimension(32, 8));
+        b_buscar_aseguradora.setMinimumSize(new java.awt.Dimension(32, 8));
+        b_buscar_aseguradora.setPreferredSize(new java.awt.Dimension(32, 8));
+        b_buscar_aseguradora.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_buscar_aseguradoraActionPerformed(evt);
+            }
+        });
+
+        t_id_catalogo.setEditable(false);
+        t_id_catalogo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                t_id_catalogoKeyTyped(evt);
+            }
+        });
+
+        c_tipo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "REFACCION", "CONSUMIBLE" }));
+
+        l_ubicacion1.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        l_ubicacion1.setText("Tipo:");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -277,49 +330,60 @@ public class altaEjemplar extends javax.swing.JDialog {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(l_tipo)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(c_tipo, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(c_grupo, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap())
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(t_numero, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(48, 48, 48)
-                                .addComponent(l_modelo)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(t_modelo, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(197, 197, 197)
                                 .addComponent(l_modelo1)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(t_precio, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(l_catalogo)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(t_catalogo, javax.swing.GroupLayout.PREFERRED_SIZE, 408, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(l_tipo1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(medida, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 603, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(16, 16, 16)
-                        .addComponent(p_foto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(t_precio, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(cb_moneda))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(b_cancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(b_guardar, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addComponent(l_comentario1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(t_maximo, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addComponent(l_comentario2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(t_minimo, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(17, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addContainerGap())
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(l_catalogo)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(t_id_catalogo, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(t_catalogo, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(b_buscar_aseguradora, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(63, 63, 63)
+                                        .addComponent(l_tipo1)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(medida, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                            .addComponent(l_ubicacion1)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(c_tipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(l_ubicacion)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(t_ubicacion, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 603, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(16, 16, 16)
+                                .addComponent(p_foto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(b_cancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(b_guardar, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                        .addComponent(l_minimo)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(t_minimo, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                        .addComponent(l_maximo)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(t_maximo, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addContainerGap())))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -327,37 +391,49 @@ public class altaEjemplar extends javax.swing.JDialog {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(t_numero, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(l_modelo)
-                    .addComponent(t_modelo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(l_modelo1)
-                    .addComponent(t_precio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(t_precio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cb_moneda))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(c_marca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(l_marca, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(c_tipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(c_grupo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(l_tipo, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(l_catalogo, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(t_catalogo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(l_tipo1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(medida, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(l_catalogo, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(t_catalogo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(l_tipo1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(medida, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(t_id_catalogo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(b_buscar_aseguradora, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(p_foto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(l_comentario1)
-                            .addComponent(t_maximo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(l_maximo)
+                                .addComponent(t_maximo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                .addGap(5, 5, 5)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(l_ubicacion1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(c_tipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(l_ubicacion, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(t_ubicacion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(t_minimo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(l_comentario2))
+                            .addComponent(l_minimo))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel1))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -370,7 +446,7 @@ public class altaEjemplar extends javax.swing.JDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -381,7 +457,7 @@ public class altaEjemplar extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void b_cancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_cancelarActionPerformed
-        t_modelo.requestFocus();
+        t_numero.requestFocus();
         int opt=JOptionPane.showConfirmDialog(this, "¡Los datos capturados se eliminarán!");
         System.out.println(opt);
         if(opt==0)
@@ -394,122 +470,157 @@ public class altaEjemplar extends javax.swing.JDialog {
         b_cancelar.requestFocus(); 
         h=new Herramientas(user, 0);
         h.session(sessionPrograma);
-        if(t_catalogo.getText().compareTo("")!=0)
+        boolean descripcion=true, maximo=true, minimo=true;
+        if(inventario==1)
         {
-            if(t_numero.getText().compareTo("")!=0)
+            if(t_comentario.getText().compareTo("")==0)
+                descripcion=false;
+            if(t_maximo.getText().compareTo("")==0)
+                maximo=false;
+            if(t_minimo.getText().compareTo("")==0)
+                minimo=false;
+        }
+        if(descripcion==true)
+        {
+            if(maximo==true)
             {
-                Session session = HibernateUtil.getSessionFactory().openSession();
-                try 
+                if(minimo==true)
                 {
-                    session.beginTransaction();
-                    boolean nuevo=true;
-                    Ejemplar art = (Ejemplar)session.createCriteria(Ejemplar.class).add(Restrictions.eq("idParte", this.t_numero.getText())).setMaxResults(1).uniqueResult();
-                    if(art!=null)
+                    if(t_numero.getText().compareTo("")!=0)
                     {
-                        if(art.getInventario()==inventario)
+                        Session session = HibernateUtil.getSessionFactory().openSession();
+                        try 
                         {
-                            session.getTransaction().rollback();
-                            this.setAlwaysOnTop(false);
-                            JOptionPane.showMessageDialog(null, "¡El artículo ya existe!");
-                            this.setAlwaysOnTop(true);
-                        }
-                        else
-                        {
-                            if(inventario==1)
+                            session.beginTransaction();
+                            boolean nuevo=true;
+                            Ejemplar art = (Ejemplar)session.createCriteria(Ejemplar.class).add(Restrictions.eq("idParte", this.t_numero.getText())).setMaxResults(1).uniqueResult();
+                            if(art!=null)
                             {
-                                art.setInventario(1);
-                                session.update(art);
-                                session.beginTransaction().commit();
-                                this.setAlwaysOnTop(false);
-                                JOptionPane.showMessageDialog(null, "Registro almacenado");
-                                this.setAlwaysOnTop(true);
+                                if(c_tipo.getSelectedIndex()==0)
+                                    art.setTipoEjemplar("R");
+                                else
+                                    art.setTipoEjemplar("C");
+                                if(art.getInventario()==inventario)
+                                {
+                                    session.getTransaction().rollback();
+                                    this.setAlwaysOnTop(false);
+                                    JOptionPane.showMessageDialog(null, "¡El artículo ya existe!");
+                                    this.setAlwaysOnTop(true);
+                                }
+                                else
+                                {
+                                    if(inventario==1)
+                                    {
+                                        art.setInventario(1);
+                                        session.update(art);
+                                        session.beginTransaction().commit();
+                                        this.setAlwaysOnTop(false);
+                                        JOptionPane.showMessageDialog(null, "Registro almacenado");
+                                        this.setAlwaysOnTop(true);
+                                    }
+                                    else
+                                    {
+                                        session.getTransaction().rollback();
+                                        this.setAlwaysOnTop(false);
+                                        JOptionPane.showMessageDialog(null, "¡El artículo ya existe en el catalogo de almacen!");
+                                        this.setAlwaysOnTop(true);
+                                    }
+                                }
                             }
                             else
                             {
-                                session.getTransaction().rollback();
+                                art= new Ejemplar();
+                                art.setIdParte(t_numero.getText().trim());
+                                if(c_tipo.getSelectedIndex()==0)
+                                    art.setTipoEjemplar("R");
+                                else
+                                    art.setTipoEjemplar("C");
+                                if(c_marca.getSelectedIndex()>0)
+                                {
+                                    Marca marc = (Marca)session.get(Marca.class,marca[c_marca.getSelectedIndex()]);
+                                    art.setMarca(marc);
+                                }
+                                if(c_grupo.getSelectedIndex()>0)
+                                {
+                                    Grupo grup= (Grupo)session.get(Grupo.class,Integer.parseInt(grupo[c_grupo.getSelectedIndex()]));
+                                    art.setGrupo(grup);
+                                }
+                                if(t_id_catalogo.getText().compareTo("")!=0)
+                                {
+                                    Catalogo cat_act=(Catalogo)session.get(Catalogo.class,Integer.parseInt(t_id_catalogo.getText()));
+                                    art.setCatalogo(cat_act);
+                                }
+                                art.setComentario(t_comentario.getText());
+                                art.setInventario(inventario);
+                                art.setMedida(medida.getSelectedItem().toString());
+                                art.setExistencias(0.0);
+                                art.setMaximo(((Number)t_maximo.getValue()).doubleValue());
+                                art.setMinimo(((Number)t_minimo.getValue()).doubleValue());
+                                art.setMoneda(cb_moneda.isSelected());
+                                art.setUbicacion(t_ubicacion.getText());
+                                if(entro_foto==1)
+                                {
+                                    Random rng=new Random();
+                                    long  dig8 = rng.nextInt(90000000)+10000000;
+                                    String nombreFoto=""+dig8+".jpg";
+                                    guardaFoto(nombreFoto);
+                                    art.setImagen(nombreFoto);
+                                }
+                                art.setPrecio(Double.parseDouble(t_precio.getValue().toString()));
+                                session.save(art);
+                                session.getTransaction().commit();
+                                returnStatus=art;
                                 this.setAlwaysOnTop(false);
-                                JOptionPane.showMessageDialog(null, "¡El artículo ya existe en el catalogo de almacen!");
+                                JOptionPane.showMessageDialog(null, "Registro almacenado");
                                 this.setAlwaysOnTop(true);
+                                borra_cajas();
+                                t_numero.requestFocus();
                             }
+                        }
+                        catch (HibernateException he) 
+                        {
+                            he.printStackTrace();
+                            session.getTransaction().rollback();
+                            this.setAlwaysOnTop(false);
+                            JOptionPane.showMessageDialog(null, "Error al guardar");
+                            //this.setAlwaysOnTop(true);
+                        }
+                        finally 
+                        {
+                            session.close(); 
                         }
                     }
                     else
                     {
-                        art= new Ejemplar();
-                        art.setIdParte(t_numero.getText().trim());
-                        if(t_modelo.getText().compareTo("")!=0)
-                            art.setModelo(Integer.parseInt(t_modelo.getText()));
-                        if(c_marca.getSelectedIndex()>0)
-                        {
-                            Marca marc = (Marca)session.get(Marca.class,marca[c_marca.getSelectedIndex()]);
-                            art.setMarca(marc);
-                        }
-                        if(c_tipo.getSelectedIndex()>0)
-                        {
-                            Tipo tip= (Tipo)session.get(Tipo.class,tipo[c_tipo.getSelectedIndex()]);
-                            art.setTipo(tip);
-                        }
-                        art.setCatalogo(t_catalogo.getText());
-                        art.setComentario(t_comentario.getText());
-                        art.setInventario(inventario);
-                        art.setMedida(medida.getSelectedItem().toString());
-                        art.setExistencias(0.0);
-                        art.setMaximo(((Number)t_maximo.getValue()).doubleValue());
-                        art.setMinimo(((Number)t_minimo.getValue()).doubleValue());
-                        if(entro_foto==1)
-                        {
-                            Random rng=new Random();
-                            long  dig8 = rng.nextInt(90000000)+10000000;
-                            String nombreFoto=""+dig8+".jpg";
-                            guardaFoto(nombreFoto);
-                            art.setImagen(nombreFoto);
-                        }
-                        art.setPrecio(Double.parseDouble(t_precio.getValue().toString()));
-                        session.save(art);
-                        session.getTransaction().commit();
                         this.setAlwaysOnTop(false);
-                        JOptionPane.showMessageDialog(null, "Registro almacenado");
-                        this.setAlwaysOnTop(true);
-                        borra_cajas();
-                        t_modelo.requestFocus();
+                        JOptionPane.showMessageDialog(null, "¡El número de parte no puede ir vacio!");
+                        //this.setAlwaysOnTop(true);
+                        t_numero.requestFocus();
                     }
                 }
-                catch (HibernateException he) 
+                else
                 {
-                    he.printStackTrace();
-                    session.getTransaction().rollback();
                     this.setAlwaysOnTop(false);
-                    JOptionPane.showMessageDialog(null, "Error al guardar");
-                    this.setAlwaysOnTop(true);
-                }
-                finally 
-                {
-                    session.close(); 
+                    JOptionPane.showMessageDialog(null, "¡Debes ingresar el minimo!");
+                    //this.setAlwaysOnTop(true);
+                    t_minimo.requestFocus();
                 }
             }
             else
             {
                 this.setAlwaysOnTop(false);
-                JOptionPane.showMessageDialog(null, "¡El número de parte no puede ir vacio!");
-                this.setAlwaysOnTop(true);
-                t_numero.requestFocus();
+                JOptionPane.showMessageDialog(null, "¡Debes ingresar el maximo!");
+                //this.setAlwaysOnTop(true);
+                t_maximo.requestFocus();
             }
         }
         else
         {
             this.setAlwaysOnTop(false);
             JOptionPane.showMessageDialog(null, "¡Debe introducir la descripción!");
-            this.setAlwaysOnTop(true);
+            //this.setAlwaysOnTop(false);
         }
     }//GEN-LAST:event_b_guardarActionPerformed
-
-    private void t_modeloKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_modeloKeyTyped
-        char car = evt.getKeyChar();
-        if(this.t_modelo.getText().length()>=4)
-        evt.consume();
-        if((car<'0' || car>'9'))
-        evt.consume();
-    }//GEN-LAST:event_t_modeloKeyTyped
 
     private void t_comentarioKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_comentarioKeyTyped
         evt.setKeyChar(Character.toUpperCase(evt.getKeyChar()));
@@ -560,32 +671,76 @@ public class altaEjemplar extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_t_minimoActionPerformed
 
+    private void t_ubicacionKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_ubicacionKeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_t_ubicacionKeyTyped
+
+    private void t_ubicacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_ubicacionActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_t_ubicacionActionPerformed
+
+    private void b_buscar_aseguradoraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_buscar_aseguradoraActionPerformed
+        // TODO add your handling code here:
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try
+        {
+            session.beginTransaction().begin();
+            
+                buscaCatalogo obj = new buscaCatalogo(new javax.swing.JFrame(), true, sessionPrograma, user);
+                Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+                obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
+                obj.setVisible(true);
+                Catalogo cat_act=obj.getReturnStatus();
+                if (cat_act!=null)
+                {
+                    cat_act=(Catalogo)session.get(Catalogo.class, cat_act.getIdCatalogo());
+                    t_id_catalogo.setText(""+cat_act.getIdCatalogo());
+                    t_catalogo.setText(cat_act.getNombre());
+                }
+        }catch(Exception e)
+        {
+            System.out.println(e);
+        }
+        if(session!=null)
+            if(session.isOpen())
+                session.close();
+    }//GEN-LAST:event_b_buscar_aseguradoraActionPerformed
+
+    private void t_id_catalogoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_id_catalogoKeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_t_id_catalogoKeyTyped
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton b_buscar_aseguradora;
     private javax.swing.JButton b_cancelar;
     private javax.swing.JButton b_guardar;
+    public javax.swing.JComboBox c_grupo;
     public javax.swing.JComboBox c_marca;
-    public javax.swing.JComboBox c_tipo;
+    private javax.swing.JComboBox c_tipo;
+    private javax.swing.JCheckBox cb_moneda;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel l_catalogo;
-    private javax.swing.JLabel l_comentario1;
-    private javax.swing.JLabel l_comentario2;
     private javax.swing.JLabel l_marca;
-    private javax.swing.JLabel l_modelo;
+    private javax.swing.JLabel l_maximo;
+    private javax.swing.JLabel l_minimo;
     private javax.swing.JLabel l_modelo1;
     private javax.swing.JLabel l_tipo;
     private javax.swing.JLabel l_tipo1;
+    private javax.swing.JLabel l_ubicacion;
+    private javax.swing.JLabel l_ubicacion1;
     private javax.swing.JComboBox medida;
     private javax.swing.JPanel p_foto;
     public javax.swing.JTextField t_catalogo;
     public javax.swing.JTextArea t_comentario;
+    public javax.swing.JTextField t_id_catalogo;
     private javax.swing.JFormattedTextField t_maximo;
     private javax.swing.JFormattedTextField t_minimo;
-    public javax.swing.JTextField t_modelo;
     public javax.swing.JTextField t_numero;
     private javax.swing.JFormattedTextField t_precio;
+    public javax.swing.JTextField t_ubicacion;
     // End of variables declaration//GEN-END:variables
 
     private List<Object[]> executeHQLQuery(String hql) {
@@ -606,11 +761,11 @@ public class altaEjemplar extends javax.swing.JDialog {
 
     private void borra_cajas()
     {
-        t_modelo.setText("");
         t_catalogo.setText("");
         t_comentario.setText("");
         this.t_numero.setText("");
         this.t_precio.setValue(0.00);
+        t_ubicacion.setText("");
         entro_foto=0;
         archivo=null;
         p_foto.removeAll();
@@ -619,7 +774,7 @@ public class altaEjemplar extends javax.swing.JDialog {
     
     public void cargaMarca()
     {
-        List <Object[]> resultList=executeHQLQuery("from Marca");
+        List <Object[]> resultList=executeHQLQuery("from Marca where ejemplar in(1,2)");
         if(resultList.size()>0)
         {
             c_marca.removeAllItems();
@@ -639,19 +794,19 @@ public class altaEjemplar extends javax.swing.JDialog {
     
     public void cargaTipo()
     {
-        List <Object[]> resultList=executeHQLQuery("from Tipo");
+        List <Object[]> resultList=executeHQLQuery("from Grupo");
         if(resultList.size()>0)
         {
-            c_tipo.removeAllItems();
-            tipo= new String [resultList.size()+1];
-            c_tipo.addItem("NA");
-            tipo[0]="";
+            c_grupo.removeAllItems();
+            grupo= new String [resultList.size()+1];
+            c_grupo.addItem("NA");
+            grupo[0]="";
             int x=1;
             for (Object o : resultList)
             {
-                Tipo actor = (Tipo) o;
-                c_tipo.addItem(actor.getTipoNombre());
-                tipo[x]=actor.getTipoNombre();
+                Grupo actor = (Grupo) o;
+                c_grupo.addItem(actor.getDescripcion());
+                grupo[x]=actor.getIdGrupo().toString();
                 x++;
             }
         }

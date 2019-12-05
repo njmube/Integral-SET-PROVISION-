@@ -8,6 +8,7 @@ package Clientes;
 import Hibernate.Util.HibernateUtil;
 import Hibernate.entidades.Acceso;
 import Hibernate.entidades.Clientes;
+import Hibernate.entidades.UsoCfdi;
 import Hibernate.entidades.Usuario;
 import Integral.ExtensionFileFilter;
 import java.awt.Color;
@@ -35,6 +36,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.hibernate.criterion.Restrictions;
+import sat.buscaUsoCfdi;
 /**
  *
  * @author ESPECIALIZADO TOLUCA
@@ -53,7 +55,7 @@ public class editaCliente extends javax.swing.JPanel {
     int[] puestos;
     DefaultTableModel model;
     //Puestos puesto;
-     String[] columnas = new String [] {"Clave","Nombre","Dirección","Colonia","C.P.","R.F.C.","Población","Estado","Teléfono","E-mail", "Contacto", "Nextel", "Municipio", "N° Ext", "Receptor","email receptor"};
+     String[] columnas = new String [] {"Clave","Nombre","Dirección","Colonia","C.P.","R.F.C.","Población","Estado","Teléfono","E-mail", "Contacto", "Nextel", "Municipio", "N° Ext", "Receptor","email receptor", "Clave CFDI", "Descripcion CDFI"};
     private Clientes returnStatus;
     
     public editaCliente(Usuario usuario, String ses) {
@@ -66,7 +68,7 @@ public class editaCliente extends javax.swing.JPanel {
 
     DefaultTableModel ModeloTablaReporte(int renglones, String columnas[]) 
     {
-        model = new DefaultTableModel(new Object [renglones][10], columnas)
+        model = new DefaultTableModel(new Object [renglones][18], columnas)
         {
             Class[] types = new Class [] {
                 java.lang.Integer.class,
@@ -84,10 +86,12 @@ public class editaCliente extends javax.swing.JPanel {
                 java.lang.String.class, 
                 java.lang.String.class, 
                 java.lang.String.class, 
+                java.lang.String.class, 
+                java.lang.String.class, 
                 java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false,false,false,false,false,false,false,false,false,false,false,false,false
+                false, false, false, false,false,false,false,false,false,false,false,false,false,false,false,false, false, false
             };
             
             public void setValueAt(Object value, int row, int col)
@@ -124,6 +128,8 @@ public class editaCliente extends javax.swing.JPanel {
 
         nombre2 = new javax.swing.JTextField();
         jLabel13 = new javax.swing.JLabel();
+        jLabel14 = new javax.swing.JLabel();
+        nextel = new javax.swing.JTextField();
         jPanel1 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -140,8 +146,6 @@ public class editaCliente extends javax.swing.JPanel {
         Cp = new javax.swing.JTextField();
         jLabel12 = new javax.swing.JLabel();
         contacto = new javax.swing.JTextField();
-        jLabel14 = new javax.swing.JLabel();
-        nextel = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         Colonia = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
@@ -169,10 +173,9 @@ public class editaCliente extends javax.swing.JPanel {
         t_busca = new javax.swing.JTextField();
         b_busca = new javax.swing.JButton();
         bt_actualiza2 = new javax.swing.JButton();
-        jLabel17 = new javax.swing.JLabel();
-        usuario = new javax.swing.JTextField();
-        jLabel18 = new javax.swing.JLabel();
-        contrasenia = new javax.swing.JPasswordField();
+        t_descripcion_cfdi = new javax.swing.JTextField();
+        t_id_cfdi = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
 
         nombre2.setEnabled(false);
         nombre2.setNextFocusableComponent(Direccion);
@@ -189,6 +192,16 @@ public class editaCliente extends javax.swing.JPanel {
 
         jLabel13.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         jLabel13.setText("Contacto:");
+
+        jLabel14.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        jLabel14.setText("Nextel:");
+
+        nextel.setEnabled(false);
+        nextel.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                nextelKeyTyped(evt);
+            }
+        });
 
         setBackground(new java.awt.Color(255, 255, 255));
 
@@ -279,16 +292,6 @@ public class editaCliente extends javax.swing.JPanel {
         contacto.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 contactoKeyTyped(evt);
-            }
-        });
-
-        jLabel14.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel14.setText("Nextel:");
-
-        nextel.setEnabled(false);
-        nextel.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                nextelKeyTyped(evt);
             }
         });
 
@@ -490,22 +493,18 @@ public class editaCliente extends javax.swing.JPanel {
             }
         });
 
-        jLabel17.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel17.setForeground(new java.awt.Color(36, 116, 227));
-        jLabel17.setText("Usuario:");
+        t_descripcion_cfdi.setBackground(new java.awt.Color(204, 255, 255));
+        t_descripcion_cfdi.setEnabled(false);
 
-        usuario.setEnabled(false);
-        usuario.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                usuarioKeyTyped(evt);
+        t_id_cfdi.setBackground(new java.awt.Color(204, 255, 255));
+        t_id_cfdi.setEnabled(false);
+
+        jButton1.setText("Uso CFDI");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
             }
         });
-
-        jLabel18.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel18.setForeground(new java.awt.Color(36, 116, 227));
-        jLabel18.setText("Contraseña:");
-
-        contrasenia.setEnabled(false);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -568,10 +567,7 @@ public class editaCliente extends javax.swing.JPanel {
                         .addComponent(jLabel12)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(contacto, javax.swing.GroupLayout.PREFERRED_SIZE, 374, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(28, 28, 28)
-                        .addComponent(jLabel14)
-                        .addGap(31, 31, 31)
-                        .addComponent(nextel, javax.swing.GroupLayout.DEFAULT_SIZE, 152, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -591,51 +587,49 @@ public class editaCliente extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(Selecciona2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(jLabel22)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(t_receptor, javax.swing.GroupLayout.PREFERRED_SIZE, 392, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(b_cancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(b_actualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jLabel22)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(jLabel17)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(usuario, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(contrasenia, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(jLabel23)
-                                .addGap(18, 18, 18)
-                                .addComponent(t_email_receptor)))))
+                        .addComponent(t_receptor, javax.swing.GroupLayout.PREFERRED_SIZE, 392, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel23)
+                        .addGap(18, 18, 18)
+                        .addComponent(t_email_receptor))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(b_cancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(b_actualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(t_id_cfdi, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(t_descripcion_cfdi)
+                        .addGap(462, 462, 462)))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(Eliminar1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(Selecciona2, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(Selecciona3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(bt_actualiza1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(bt_actualiza2, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(IdClientes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel4))
-                    .addComponent(t_busca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(b_busca, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(33, 33, 33)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(IdClientes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4)))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(Eliminar1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(Selecciona2, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(Selecciona3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(bt_actualiza1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(bt_actualiza2, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(t_busca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(b_busca, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(6, 6, 6)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(nombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -648,9 +642,7 @@ public class editaCliente extends javax.swing.JPanel {
                     .addComponent(Cp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6)
                     .addComponent(jLabel12)
-                    .addComponent(contacto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(nextel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel14))
+                    .addComponent(contacto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
@@ -680,13 +672,13 @@ public class editaCliente extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(b_cancelar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(b_actualizar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel17))
-                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(usuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel18)
-                        .addComponent(contrasenia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(t_id_cfdi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(t_descripcion_cfdi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButton1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(b_cancelar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(b_actualizar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -780,12 +772,9 @@ public class editaCliente extends javax.swing.JPanel {
                 numero.setText(t_datos.getValueAt(t_datos.getSelectedRow(), 13).toString());
                 t_receptor.setText(t_datos.getValueAt(t_datos.getSelectedRow(), 14).toString());
                 t_email_receptor.setText(t_datos.getValueAt(t_datos.getSelectedRow(), 15).toString());
+                this.t_id_cfdi.setText(t_datos.getValueAt(t_datos.getSelectedRow(), 16).toString());
+                this.t_descripcion_cfdi.setText(t_datos.getValueAt(t_datos.getSelectedRow(), 17).toString());
                 
-                Acceso datos = (Acceso)session.createCriteria(Acceso.class).add(Restrictions.eq("clientes.idClientes", Integer.parseInt(t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString()))).setMaxResults(1).uniqueResult();
-                if(datos!=null){
-                    usuario.setText(datos.getIdAcceso());
-                    contrasenia.setText(datos.getClave());
-                }
                 cajas(true);
             }
             else
@@ -871,24 +860,12 @@ public class editaCliente extends javax.swing.JPanel {
                 {
                     if(Rfc.getText().trim().compareTo("")!=0)
                     {
-                        if(usuario.getText().compareTo("")!=0)
+                        boolean respuesta=modifica();
+                        if(respuesta==true)
                         {
-                            if(contrasenia.getText().compareTo("")!=0)
-                            {
-                                boolean respuesta=modifica();
-                                if(respuesta==true)
-                                {
-                                    JOptionPane.showMessageDialog(null, "Registro modificado");
-                                    this.borra_cajas();
-                                    buscaDato();
-                                }
-                            }else{
-                                JOptionPane.showMessageDialog(null, "Ingrese la contraseña del cliente");
-                                contrasenia.requestFocus();
-                            }
-                        }else{
-                            JOptionPane.showMessageDialog(null, "Ingrese el usuario del cliente");
-                            usuario.requestFocus();
+                            JOptionPane.showMessageDialog(null, "Registro modificado");
+                            this.borra_cajas();
+                            buscaDato();
                         }
                     }else{
                         JOptionPane.showMessageDialog(null, "Ingrese el RFC del cliente");
@@ -1100,12 +1077,27 @@ public class editaCliente extends javax.swing.JPanel {
         } 
     }//GEN-LAST:event_bt_actualiza2ActionPerformed
 
-    private void usuarioKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_usuarioKeyTyped
-        // TODO add your handling code here:-
-        evt.setKeyChar(Character.toUpperCase(evt.getKeyChar()));
-        if(usuario.getText().length()>=13)
-        evt.consume();
-    }//GEN-LAST:event_usuarioKeyTyped
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        buscaUsoCfdi obj = new buscaUsoCfdi(new javax.swing.JFrame(), true, this.sessionPrograma, this.usr);
+        obj.t_busca.requestFocus();
+        obj.formatoTabla();
+        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+        obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
+        obj.setVisible(true);
+
+        UsoCfdi actor=obj.getReturnStatus();
+        if(actor!=null)
+        {
+            t_id_cfdi.setText(actor.getIdUsoCfdi());
+            t_descripcion_cfdi.setText(actor.getDescripcion());
+        }
+        else
+        {
+            t_id_cfdi.setText("");
+            t_descripcion_cfdi.setText("");
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JTextField Colonia;
@@ -1126,7 +1118,7 @@ public class editaCliente extends javax.swing.JPanel {
     private javax.swing.JButton bt_actualiza1;
     private javax.swing.JButton bt_actualiza2;
     public javax.swing.JTextField contacto;
-    public javax.swing.JPasswordField contrasenia;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
@@ -1134,8 +1126,6 @@ public class editaCliente extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
-    private javax.swing.JLabel jLabel17;
-    private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
@@ -1156,9 +1146,10 @@ public class editaCliente extends javax.swing.JPanel {
     public javax.swing.JTextField numero;
     private javax.swing.JTextField t_busca;
     private javax.swing.JTable t_datos;
+    private javax.swing.JTextField t_descripcion_cfdi;
     public javax.swing.JTextField t_email_receptor;
+    private javax.swing.JTextField t_id_cfdi;
     public javax.swing.JTextField t_receptor;
-    public javax.swing.JTextField usuario;
     // End of variables declaration//GEN-END:variables
 
     private List<Object[]> executeHQLQuery(String hql) 
@@ -1175,11 +1166,6 @@ public class editaCliente extends javax.swing.JPanel {
             he.printStackTrace();
             List lista= null;
             return lista;
-        }
-        finally
-        {
-            if(session.isOpen())
-            session.close();
         }
     }
     
@@ -1246,6 +1232,20 @@ public class editaCliente extends javax.swing.JPanel {
                     model.setValueAt(actor.getEmailReceptor(), i, 15);
                 else
                     model.setValueAt("", i, 15);
+                if(actor.getUsoCfdi()!=null)
+                {
+                    model.setValueAt(actor.getUsoCfdi().getIdUsoCfdi(), i, 16);
+                    model.setValueAt(actor.getUsoCfdi().getDescripcion(), i, 17);
+                }
+                else
+                {
+                    model.setValueAt("", i, 16);
+                    model.setValueAt("", i, 17);
+                }
+                if(actor.getEmailReceptor()!=null)
+                    model.setValueAt(actor.getEmailReceptor(), i, 15);
+                else
+                    model.setValueAt("", i, 15);
                 i++;
             }
         }
@@ -1283,17 +1283,13 @@ public class editaCliente extends javax.swing.JPanel {
                 objeto.setNumeroExterior(numero.getText().trim());
                 objeto.setReceptor(t_receptor.getText());
                 objeto.setEmailReceptor(t_email_receptor.getText());
+                if(t_id_cfdi.getText().compareTo("")!=0)
+                {
+                    UsoCfdi uso=(UsoCfdi) session.createCriteria(UsoCfdi.class).add(Restrictions.eq("idUsoCfdi", t_id_cfdi.getText())).setMaxResults(1).uniqueResult();
+                    objeto.setUsoCfdi(uso);
+                }
                 session.update(objeto);
                 
-                Acceso datos = (Acceso)session.createCriteria(Acceso.class).add(Restrictions.eq("clientes.idClientes", Integer.parseInt(IdClientes.getText()))).setMaxResults(1).uniqueResult();
-                if(datos!=null){
-                    Query query = session.createSQLQuery("update acceso set id_acceso='"+usuario.getText()+"', clave='"+contrasenia.getText()+"' where id_clientes="+Integer.parseInt(IdClientes.getText()));
-                    query.executeUpdate();
-                }else{
-                   Query query = session.createSQLQuery("insert into acceso(id_acceso, clave,token, id_clientes) values('"+usuario.getText()+"','"+contrasenia.getText()+"',null, "+Integer.parseInt(IdClientes.getText())+")");
-                   query.executeUpdate();
-                }
-
                 session.getTransaction().commit();
                 cajas(false);
                 return true;
@@ -1371,8 +1367,8 @@ public class editaCliente extends javax.swing.JPanel {
         this.numero.setEnabled(edo);
         this.t_receptor.setEnabled(edo);
         this.t_email_receptor.setEnabled(edo);
-        this.usuario.setEnabled(edo);
-        this.contrasenia.setEnabled(edo);
+        this.t_id_cfdi.setEnabled(edo);
+        this.t_descripcion_cfdi.setEnabled(edo);
     }
     
     public void borra_cajas()
@@ -1393,8 +1389,8 @@ public class editaCliente extends javax.swing.JPanel {
         this.numero.setText("");
         this.t_receptor.setText("");
         this.t_email_receptor.setText("");
-        this.usuario.setText("");
-        this.contrasenia.setText("");
+        this.t_id_cfdi.setText("");
+        this.t_descripcion_cfdi.setText("");
     }
     public void tabla_tamaños()
     {

@@ -9,7 +9,7 @@ package Servicios;
 
 import Integral.Imagen;
 import java.io.File;
-import javax.swing.JFileChooser;
+import javax.swing.ImageIcon;
 
 /**
  *
@@ -21,34 +21,16 @@ public class vista extends javax.swing.JPanel {
      * Creates new form Elemento
      */
     String ruta;
-    String nombre;
+    String nombre, carpeta;
+    boolean tipo=false;
     
-    public vista(String nombre, String ruta) {
+    public vista(String nombre, String ruta, String carpeta, boolean tipo) {
         initComponents();
         this.nombre=nombre;
+        this.carpeta=carpeta;
         this.ruta=ruta;
+        this.tipo=tipo;
         Hilo miHilo = new Hilo(this.nombre);
-        /*try
-        {
-            File f=new File(ruta+nombre);
-            JFileChooser jf=new JFileChooser();
-            jf.setSelectedFile(f);
-            javax.swing.JPanel p=new javax.swing.JPanel();
-            
-            if(f.isDirectory()==true){
-                p=new Imagen("imagenes/lines.jpg", 76, 79, 1, 1, 76, 79);
-            }
-            else
-                p=new Imagen(ruta+nombre, 76, 79, 1, 1, 76, 79);
-                //p_foto.removeAll();
-                p_foto.add(p);
-                p_foto.repaint();
-                l_nombre.setText(f.getName());
-                
-        }catch(Exception e)
-        {
-            e.printStackTrace();
-        }*/
     }
 
     /**
@@ -61,7 +43,7 @@ public class vista extends javax.swing.JPanel {
     private void initComponents() {
 
         l_nombre = new javax.swing.JLabel();
-        p_foto = new javax.swing.JPanel();
+        l_img = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setToolTipText("Doble click para abrir");
@@ -70,41 +52,26 @@ public class vista extends javax.swing.JPanel {
         l_nombre.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         l_nombre.setText("nombre del archivo");
 
-        p_foto.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 255, 255)));
-        p_foto.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-
-        javax.swing.GroupLayout p_fotoLayout = new javax.swing.GroupLayout(p_foto);
-        p_foto.setLayout(p_fotoLayout);
-        p_fotoLayout.setHorizontalGroup(
-            p_fotoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 76, Short.MAX_VALUE)
-        );
-        p_fotoLayout.setVerticalGroup(
-            p_fotoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 79, Short.MAX_VALUE)
-        );
+        l_img.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
+        l_img.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(l_nombre, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(26, 26, 26)
-                    .addComponent(p_foto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(31, Short.MAX_VALUE)))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(l_img, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(85, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(l_img, javax.swing.GroupLayout.DEFAULT_SIZE, 68, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(l_nombre))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(3, 3, 3)
-                    .addComponent(p_foto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
     }// </editor-fold>//GEN-END:initComponents
     public class Hilo implements Runnable
@@ -119,17 +86,30 @@ public class vista extends javax.swing.JPanel {
         public void run() {
           try
             {
-                File f=new File(ruta+nombre);
                 javax.swing.JPanel p=new javax.swing.JPanel();
-                if(f.isDirectory()==true){
-                    p=new Imagen("imagenes/lines.jpg", 76, 79, 1, 1, 76, 79);
-                }
-                else
-                    p=new Imagen(ruta+nombre, 76, 79, 1, 1, 76, 79);
-                p_foto.removeAll();
-                p_foto.add(p);
-                p_foto.repaint();
-                l_nombre.setText(f.getName());
+                p=new Imagen("imagenes/lines.jpg", 76, 79, 1, 1, 76, 79);
+                if(nombre.contains(".pdf") || nombre.contains(".PDF"))
+                    l_img.setIcon(new ImageIcon("imagenes/pdf.png"));
+                else{
+                    if(nombre.contains(".doc") || nombre.contains(".DOC"))
+                        l_img.setIcon(new ImageIcon("imagenes/word.png"));
+                    else{
+                        if(nombre.contains(".xls") || nombre.contains(".xls"))
+                            l_img.setIcon(new ImageIcon("imagenes/exel.png"));
+                        else{
+                            if(nombre.contains(".jpg") || nombre.contains(".JPG") || nombre.contains(".png") || nombre.contains(".PNG"))
+                                l_img.setIcon(new ImageIcon("imagenes/imagen.png"));
+                            else
+                            {
+                                if(tipo==true)
+                                    l_img.setIcon(new ImageIcon("imagenes/file.png"));
+                                else
+                                    l_img.setIcon(new ImageIcon("imagenes/desconocido.png"));
+                            }
+                        }
+                    }
+                }    
+                l_nombre.setText(nombre);
                 p=null;
             }catch(Exception e)
             {
@@ -138,7 +118,7 @@ public class vista extends javax.swing.JPanel {
         }
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel l_img;
     private javax.swing.JLabel l_nombre;
-    public javax.swing.JPanel p_foto;
     // End of variables declaration//GEN-END:variables
 }

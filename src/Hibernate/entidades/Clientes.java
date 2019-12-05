@@ -28,6 +28,7 @@ public class Clientes  implements java.io.Serializable {
      private String numeroExterior;
      private String receptor;
      private String emailReceptor;
+     private UsoCfdi usoCfdi;
      private Set ordens = new HashSet(0);
      private Set accesos = new HashSet(0);
 
@@ -38,7 +39,7 @@ public class Clientes  implements java.io.Serializable {
     public Clientes(String nombre) {
         this.nombre = nombre;
     }
-    public Clientes(String nombre, String direccion, String colonia, String poblacion, Integer cp, String estado, String rfc, String telefono, String email, String contacto, String nextel, String municipio, String pais, String numeroExterior, String receptor, String emailReceptor, Set ordens, Set accesos) {
+    public Clientes(String nombre, String direccion, String colonia, String poblacion, Integer cp, String estado, String rfc, String telefono, String email, String contacto, String nextel, String municipio, String pais, String numeroExterior, String receptor, String emailReceptor, UsoCfdi usoCfdi, Set ordens, Set accesos) {
        this.nombre = nombre;
        this.direccion = direccion;
        this.colonia = colonia;
@@ -55,6 +56,7 @@ public class Clientes  implements java.io.Serializable {
        this.numeroExterior = numeroExterior;
        this.ordens = ordens;
        this.receptor=receptor;
+       this.usoCfdi = usoCfdi;
        this.emailReceptor = emailReceptor;
        this.accesos = accesos;
     }
@@ -172,6 +174,14 @@ public class Clientes  implements java.io.Serializable {
     
     public void setEmailReceptor(String emailReceptor) {
         this.emailReceptor = emailReceptor;
+    }
+    
+    public UsoCfdi getUsoCfdi() {
+        return this.usoCfdi;
+    }
+    
+    public void setUsoCfdi(UsoCfdi usoCfdi) {
+        this.usoCfdi = usoCfdi;
     }
     
     public String getNumeroExterior() {

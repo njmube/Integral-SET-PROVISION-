@@ -38,6 +38,7 @@ import Integral.HorizontalBarUI;
 import Integral.Render1;
 import Integral.VerticalBarUI;
 import java.awt.event.KeyEvent;
+import java.util.Date;
 
 /**
  *
@@ -61,18 +62,20 @@ public class PreFactura extends javax.swing.JPanel {
         "No","#","Grupo","Descripcion","Can","Med","Precio c/u","Total","Partida","Tipo","Incluir"};
     String[] columnas2 = new String [] {
         "id","Cant.","Med.","Descripcion", "Precio c/u","Total"};
+    int configuracion=1;
     /**
      * Creates new form PreFactura
      */
-    public PreFactura(String ord, Usuario us, String edo, String ses, int op) {
+    public PreFactura(String ord, Usuario us, String edo, String ses, int op, int configuracion) {
         initComponents();
+        this.configuracion=configuracion;
         orden=ord;
         user=us;
         estado=edo;
         sessionPrograma=ses;
         menu=op;
         formato=new FormatoTabla();
-        prefac= new Formatos(this.user, this.sessionPrograma, this.ord);
+        prefac= new Formatos(this.user, this.sessionPrograma, this.ord, configuracion);
         formatoTabla();
         buscaCuentas();
         //consulta();
@@ -305,11 +308,11 @@ public class PreFactura extends javax.swing.JPanel {
                 .addComponent(t_demerito, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(b_ac)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 343, Short.MAX_VALUE)
-                .addComponent(b_externa)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(61, 61, 61)
                 .addComponent(c_enviar)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 145, Short.MAX_VALUE)
+                .addComponent(b_externa)
+                .addGap(149, 149, 149)
                 .addComponent(jButton1)
                 .addGap(77, 77, 77))
         );
@@ -726,6 +729,10 @@ public class PreFactura extends javax.swing.JPanel {
                     }
                     c_enviar.setEnabled(true);
                     ord.setAutorizadoFacturar(true);
+                    Date hoy=new Date();
+                    ord.setRPrefactura(hoy);
+                    
+                    ord.setUsuarioByRPrefacturaAsigno(user);
                     session.save(ord);
                     session.getTransaction().commit();
                     estado(false);
@@ -801,7 +808,7 @@ public class PreFactura extends javax.swing.JPanel {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-        Object[] vector=new Object[]{"", 1.0, "PZA", "", 0.0, 0.0};
+        Object[] vector=new Object[]{"", 1.0, "PZAS", "", 0.0, 0.0};
         
         model2.addRow(vector);
     }//GEN-LAST:event_jButton3ActionPerformed
@@ -1045,7 +1052,7 @@ public class PreFactura extends javax.swing.JPanel {
                                                 if(value.toString().compareTo("")!=0 && Double.parseDouble(value.toString())>=0) 
                                                 {
                                                     part.setCantidadFactura((double)value);
-                                                    part.setCantidadAut((double)value);
+                                                    //part.setCantidadAut((double)value);
                                                     session.update(part);
                                                     session.getTransaction().commit();
                                                     vector.setElementAt(value, col);
@@ -1096,7 +1103,7 @@ public class PreFactura extends javax.swing.JPanel {
                                     Session session = HibernateUtil.getSessionFactory().openSession();
                                     try
                                     {
-                                        session.beginTransaction().begin();
+                                        session.getTransaction().begin();
                                         user= (Usuario)session.get(Usuario.class, user.getIdUsuario());
                                         if(user.getEditaCostoAut()==true)
                                         {
@@ -1110,7 +1117,7 @@ public class PreFactura extends javax.swing.JPanel {
                                                 if(value.toString().compareTo("")!=0 && Double.parseDouble(value.toString())>=0) 
                                                 {
                                                     part.setPrecioFactura((double)value);
-                                                    part.setPrecioAutCU((double)value);
+                                                    //part.setPrecioAutCU((double)value);
                                                     session.update(part);
                                                     session.getTransaction().commit();
                                                     vector.setElementAt(value, col);
@@ -1161,7 +1168,7 @@ public class PreFactura extends javax.swing.JPanel {
                                     Session session = HibernateUtil.getSessionFactory().openSession();
                                     try
                                     {
-                                        session.beginTransaction().begin();
+                                        session.getTransaction().begin();
                                         user= (Usuario)session.get(Usuario.class, user.getIdUsuario());
                                         if(user.getEditaCostoAut()==true)
                                         {
@@ -1174,9 +1181,9 @@ public class PreFactura extends javax.swing.JPanel {
                                             {
                                                 part.setDescripcionFactura((String)t_datos.getValueAt(row, 3));
                                                 part.setPrecioFactura((double)t_datos.getValueAt(row, 6));
-                                                part.setPrecioAutCU((double)t_datos.getValueAt(row, 6));
+                                                //part.setPrecioAutCU((double)t_datos.getValueAt(row, 6));
                                                 part.setCantidadFactura((double)t_datos.getValueAt(row, 4));
-                                                part.setCantidadAut((double)t_datos.getValueAt(row, 4));
+                                                //part.setCantidadAut((double)t_datos.getValueAt(row, 4));
                                                 part.setFacturado((boolean)value);
                                                 session.update(part);
                                                 session.getTransaction().commit();
@@ -1598,8 +1605,8 @@ public class PreFactura extends javax.swing.JPanel {
                         this.t_mo_directa.setValue(ord.getMoDirecta());
 
                         imp=ord.getCompania().getImporteHora();
-                        Partida[] cuentas = (Partida[])session.createCriteria(Partida.class).add(Restrictions.eq("ordenByIdOrden.idOrden", ord.getIdOrden())).add(Restrictions.eq("autorizadoValuacion", true)).add(Restrictions.eq("incluida", false)).addOrder(Order.asc("idEvaluacion")).addOrder(Order.asc("subPartida")).list().toArray(new Partida[0]);
-                        Partida[] enlazadas = (Partida[])session.createCriteria(Partida.class).add(Restrictions.eq("ordenByEnlazada.idOrden", ord.getIdOrden())).add(Restrictions.eq("autorizadoValuacion", true)).addOrder(Order.asc("idEvaluacion")).addOrder(Order.asc("subPartida")).list().toArray(new Partida[0]);
+                        Partida[] cuentas = (Partida[])session.createCriteria(Partida.class).add(Restrictions.eq("ordenByIdOrden.idOrden", ord.getIdOrden())).add(Restrictions.eq("incluida", false)).addOrder(Order.asc("idEvaluacion")).addOrder(Order.asc("subPartida")).list().toArray(new Partida[0]);
+                        Partida[] enlazadas = (Partida[])session.createCriteria(Partida.class).add(Restrictions.eq("ordenByEnlazada.idOrden", ord.getIdOrden())).addOrder(Order.asc("idEvaluacion")).addOrder(Order.asc("subPartida")).list().toArray(new Partida[0]);
                         
                         if(cuentas.length>0 || enlazadas.length>0)
                         {

@@ -29,6 +29,7 @@ import Integral.Render1;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.FileOutputStream;
+import javax.swing.DefaultCellEditor;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -42,7 +43,7 @@ public class editaMarca extends javax.swing.JPanel {
     
     private Marca actor;
     DefaultTableModel model;
-    String[] columnas = new String [] {"Prefijo","Nombre"}; 
+    String[] columnas = new String [] {"Prefijo","Nombre", "Inventario"}; 
     public String ic = "";
     public String m = "";
     Usuario usr;
@@ -66,27 +67,166 @@ public class editaMarca extends javax.swing.JPanel {
         {
             Class[] types = new Class [] {
                 java.lang.String.class, 
-                java.lang.String.class
+                java.lang.String.class,
+                java.lang.Integer.class
             };
             boolean[] canEdit = new boolean [] {
-                false,false
+                true,true,true
             };
             
             public void setValueAt(Object value, int row, int col)
             {
                 Vector vector = (Vector)this.dataVector.elementAt(row);
-                Object celda = ((Vector)this.dataVector.elementAt(row)).elementAt(col);
                 switch(col)
                 {
                     case 0:
-                        vector.setElementAt(value, col);
-                        this.dataVector.setElementAt(vector, row);
-                        fireTableCellUpdated(row, col);
+                        if(vector.get(col)==null)
+                        {
+                            vector.setElementAt(value, col);
+                            this.dataVector.setElementAt(vector, row);
+                            fireTableCellUpdated(row, col);
+                        }
+                        else
+                        {
+                            Session session = HibernateUtil.getSessionFactory().openSession();
+                            String valor = (String)value;
+                            String valorAnterior = t_datos.getValueAt(row, col).toString();
+                            if(valorAnterior.compareToIgnoreCase(valor)!=0)
+                            {
+                                try   
+                                {
+                                    session.beginTransaction();
+                                    Object resp=session.createQuery("from Marca obj where obj.idMarca='"+valor+"'").uniqueResult();
+                                    if(resp==null)
+                                    {
+                                        Query q = session.createQuery("update Marca obj set obj.idMarca='"+valor+"' where obj.idMarca='"+valorAnterior+"'");
+                                        q.executeUpdate();
+                                        session.getTransaction().commit();
+                                        vector.setElementAt(value, col);
+                                        this.dataVector.setElementAt(vector, row);
+                                        fireTableCellUpdated(row, col);
+                                    }
+                                    else
+                                        JOptionPane.showMessageDialog(null, "No se pueden guardar claves duplicadas");  
+                                }
+                                catch (HibernateException he)
+                                {
+                                    he.printStackTrace(); 
+                                    System.out.println(he.hashCode());
+                                    session.getTransaction().rollback();
+                                    JOptionPane.showMessageDialog(null, "Error al guardar los datos");  
+                                }
+                                finally
+                                {
+                                    if(session.isOpen())
+                                        session.close();
+                                }
+                            }
+                        }
                         break;
-                    default:
-                        vector.setElementAt(value, col);
-                        this.dataVector.setElementAt(vector, row);
-                        fireTableCellUpdated(row, col);
+                    case 1:
+                        if(vector.get(col)==null)
+                        {
+                            vector.setElementAt(value, col);
+                            this.dataVector.setElementAt(vector, row);
+                            fireTableCellUpdated(row, col);
+                        }
+                        else
+                        {
+                            Session session = HibernateUtil.getSessionFactory().openSession();
+                            String valor = (String)value;
+                            String valorAnterior = t_datos.getValueAt(row, col).toString();
+                            if(valorAnterior.compareToIgnoreCase(valor)!=0)
+                            {
+                                try   
+                                {                
+                                    session.beginTransaction();
+                                    Object resp=session.createQuery("from Marca obj where obj.marcaNombre='"+valor+"'").uniqueResult();
+                                    if(resp==null)
+                                    {
+                                        ic = t_datos.getValueAt(row, 0).toString();
+                                        Query q = session.createQuery("update Marca obj set obj.marcaNombre='"+valor+"' where obj.idMarca='"+ic+"'");
+                                        q.executeUpdate();
+                                        session.getTransaction().commit();
+                                        vector.setElementAt(value, col);
+                                        this.dataVector.setElementAt(vector, row);
+                                        fireTableCellUpdated(row, col);
+                                    }
+                                    else
+                                        JOptionPane.showMessageDialog(null, "No se pueden guardar claves duplicadas");
+                                }
+                                catch (HibernateException he)
+                                {
+                                    he.printStackTrace(); 
+                                    System.out.println(he.hashCode());
+                                    session.getTransaction().rollback();
+                                    JOptionPane.showMessageDialog(null, "Error al guardar los datos");  
+                                }
+                                finally
+                                {
+                                    if(session.isOpen())
+                                        session.close();
+                                }
+                            }
+                        }
+                        break;
+                    case 2:
+                        if(vector.get(col)==null)
+                        {
+                            vector.setElementAt(value, col);
+                            this.dataVector.setElementAt(vector, row);
+                            fireTableCellUpdated(row, col);
+                        }
+                        else
+                        {
+                            Session session = HibernateUtil.getSessionFactory().openSession();
+                            String valor = (String)value;
+                            String valorAnterior = t_datos.getValueAt(row, col).toString();
+                            if(valorAnterior.compareToIgnoreCase(valor)!=0)
+                            {
+                                try   
+                                {                
+                                    session.beginTransaction();
+                                    Object resp=session.createQuery("from Marca obj where obj.idMarca='"+valor+"'").uniqueResult();
+                                    if(resp==null)
+                                    {
+                                        ic = t_datos.getValueAt(row, 0).toString();
+                                        switch(valor)
+                                        {
+                                            case "Unidad":
+                                                valor="0";
+                                                break;
+                                            case "Inventario":
+                                                valor="1";
+                                                break;
+                                            case "Ambos":
+                                                valor="2";
+                                                break;
+                                        }
+                                        Query q = session.createQuery("update Marca obj  set obj.ejemplar="+valor+" where obj.idMarca='"+ic+"'");
+                                        q.executeUpdate();
+                                        session.getTransaction().commit();
+                                        vector.setElementAt(value, col);
+                                        this.dataVector.setElementAt(vector, row);
+                                        fireTableCellUpdated(row, col);
+                                    }
+                                    else
+                                        JOptionPane.showMessageDialog(null, "No se pueden guardar claves duplicadas");  
+                                }
+                                catch (HibernateException he)
+                                {
+                                    he.printStackTrace(); 
+                                    System.out.println(he.hashCode());
+                                    session.getTransaction().rollback();
+                                    JOptionPane.showMessageDialog(null, "Error al guardar los datos");  
+                                }
+                                finally
+                                {
+                                    if(session.isOpen())
+                                        session.close();
+                                }
+                            }
+                        }
                         break;
                 }
             }
@@ -108,46 +248,44 @@ public class editaMarca extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        jPanel3 = new javax.swing.JPanel();
+        cb_inventario = new javax.swing.JComboBox();
+        t_prefijo = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         t_datos = new javax.swing.JTable();
-        bt_actualiza1 = new javax.swing.JButton();
-        Selecciona2 = new javax.swing.JButton();
-        Eliminar1 = new javax.swing.JButton();
-        Selecciona3 = new javax.swing.JButton();
-        bt_actualiza2 = new javax.swing.JButton();
         t_busca = new javax.swing.JTextField();
         b_busca = new javax.swing.JButton();
-        jPanel4 = new javax.swing.JPanel();
-        id_marca = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        marca_nombre = new javax.swing.JTextField();
-        b_cancelar1 = new javax.swing.JButton();
-        b_guardar = new javax.swing.JButton();
+        Selecciona3 = new javax.swing.JButton();
+        Eliminar1 = new javax.swing.JButton();
+        bt_actualiza1 = new javax.swing.JButton();
+        bt_actualiza2 = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+
+        cb_inventario.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Unidad", "Inventario", "Ambos" }));
+
+        t_prefijo.setText("jTextField1");
+        t_prefijo.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        t_prefijo.setCaretPosition(10);
+        t_prefijo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                t_prefijoKeyTyped(evt);
+            }
+        });
 
         setBackground(new java.awt.Color(255, 255, 255));
-
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "Edita de Marca", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Arial", 1, 12))); // NOI18N
-
-        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "Lista", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Arial", 1, 11))); // NOI18N
 
         t_datos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Prefijo", "Nombre"
+                "Prefijo", "Nombre", "Inventario"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.Integer.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false
+                false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -162,43 +300,17 @@ public class editaMarca extends javax.swing.JPanel {
         t_datos.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(t_datos);
 
-        bt_actualiza1.setBackground(new java.awt.Color(2, 135, 242));
-        bt_actualiza1.setForeground(new java.awt.Color(254, 254, 254));
-        bt_actualiza1.setIcon(new ImageIcon("imagenes/tabla.png"));
-        bt_actualiza1.setText("Actualizar");
-        bt_actualiza1.setToolTipText("Actualizar los datos de la tabla");
-        bt_actualiza1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        bt_actualiza1.setMaximumSize(new java.awt.Dimension(87, 23));
-        bt_actualiza1.setMinimumSize(new java.awt.Dimension(87, 23));
-        bt_actualiza1.addActionListener(new java.awt.event.ActionListener() {
+        t_busca.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bt_actualiza1ActionPerformed(evt);
+                t_buscaActionPerformed(evt);
             }
         });
 
-        Selecciona2.setBackground(new java.awt.Color(2, 135, 242));
-        Selecciona2.setForeground(new java.awt.Color(254, 254, 254));
-        Selecciona2.setIcon(new ImageIcon("imagenes/update-user.png"));
-        Selecciona2.setText("Seleccionar");
-        Selecciona2.setToolTipText("Seleccionar un registro de la tabla para editar");
-        Selecciona2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        Selecciona2.addActionListener(new java.awt.event.ActionListener() {
+        b_busca.setIcon(new ImageIcon("imagenes/buscar1.png"));
+        b_busca.setToolTipText("Busca una partida");
+        b_busca.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Selecciona2ActionPerformed(evt);
-            }
-        });
-
-        Eliminar1.setBackground(new java.awt.Color(2, 135, 242));
-        Eliminar1.setForeground(new java.awt.Color(254, 254, 254));
-        Eliminar1.setIcon(new ImageIcon("imagenes/del-user.png"));
-        Eliminar1.setText("Eliminar");
-        Eliminar1.setToolTipText("Eliminar el registro actual");
-        Eliminar1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        Eliminar1.setMaximumSize(new java.awt.Dimension(87, 23));
-        Eliminar1.setMinimumSize(new java.awt.Dimension(87, 23));
-        Eliminar1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Eliminar1ActionPerformed(evt);
+                b_buscaActionPerformed(evt);
             }
         });
 
@@ -216,6 +328,34 @@ public class editaMarca extends javax.swing.JPanel {
             }
         });
 
+        Eliminar1.setBackground(new java.awt.Color(2, 135, 242));
+        Eliminar1.setForeground(new java.awt.Color(254, 254, 254));
+        Eliminar1.setIcon(new ImageIcon("imagenes/del-user.png"));
+        Eliminar1.setText("Eliminar");
+        Eliminar1.setToolTipText("Eliminar el registro actual");
+        Eliminar1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        Eliminar1.setMaximumSize(new java.awt.Dimension(87, 23));
+        Eliminar1.setMinimumSize(new java.awt.Dimension(87, 23));
+        Eliminar1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Eliminar1ActionPerformed(evt);
+            }
+        });
+
+        bt_actualiza1.setBackground(new java.awt.Color(2, 135, 242));
+        bt_actualiza1.setForeground(new java.awt.Color(254, 254, 254));
+        bt_actualiza1.setIcon(new ImageIcon("imagenes/tabla.png"));
+        bt_actualiza1.setText("Actualizar");
+        bt_actualiza1.setToolTipText("Actualizar los datos de la tabla");
+        bt_actualiza1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        bt_actualiza1.setMaximumSize(new java.awt.Dimension(87, 23));
+        bt_actualiza1.setMinimumSize(new java.awt.Dimension(87, 23));
+        bt_actualiza1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt_actualiza1ActionPerformed(evt);
+            }
+        });
+
         bt_actualiza2.setBackground(new java.awt.Color(2, 135, 242));
         bt_actualiza2.setForeground(new java.awt.Color(254, 254, 254));
         bt_actualiza2.setIcon(new ImageIcon("imagenes/guardar-documento.png"));
@@ -230,187 +370,7 @@ public class editaMarca extends javax.swing.JPanel {
             }
         });
 
-        t_busca.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                t_buscaActionPerformed(evt);
-            }
-        });
-
-        b_busca.setIcon(new ImageIcon("imagenes/buscar1.png"));
-        b_busca.setToolTipText("Busca una partida");
-        b_busca.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                b_buscaActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 402, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(bt_actualiza2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(bt_actualiza1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(Selecciona2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(Eliminar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(Selecciona3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addComponent(t_busca)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(b_busca, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(t_busca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(b_busca, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(Selecciona3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Eliminar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Selecciona2)
-                    .addComponent(bt_actualiza1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(bt_actualiza2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
-
-        jPanel4.setBackground(new java.awt.Color(254, 254, 254));
-        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "Actualizar", javax.swing.border.TitledBorder.RIGHT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Arial", 1, 11))); // NOI18N
-        jPanel4.setForeground(new java.awt.Color(51, 0, 255));
-
-        id_marca.setEnabled(false);
-        id_marca.setNextFocusableComponent(marca_nombre);
-        id_marca.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                id_marcaActionPerformed(evt);
-            }
-        });
-        id_marca.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                id_marcaKeyTyped(evt);
-            }
-        });
-
-        jLabel2.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(51, 0, 255));
-        jLabel2.setText("Prefijo");
-
-        jLabel3.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(51, 0, 255));
-        jLabel3.setText("Nombre");
-
-        marca_nombre.setEnabled(false);
-        marca_nombre.setNextFocusableComponent(b_guardar);
-        marca_nombre.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                marca_nombreActionPerformed(evt);
-            }
-        });
-        marca_nombre.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                marca_nombreKeyTyped(evt);
-            }
-        });
-
-        b_cancelar1.setBackground(new java.awt.Color(2, 135, 242));
-        b_cancelar1.setForeground(new java.awt.Color(254, 254, 254));
-        b_cancelar1.setIcon(new ImageIcon("imagenes/cancelar.png"));
-        b_cancelar1.setText("Cancelar");
-        b_cancelar1.setEnabled(false);
-        b_cancelar1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        b_cancelar1.setNextFocusableComponent(id_marca);
-        b_cancelar1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                b_cancelar1ActionPerformed(evt);
-            }
-        });
-
-        b_guardar.setBackground(new java.awt.Color(2, 135, 242));
-        b_guardar.setForeground(new java.awt.Color(254, 254, 254));
-        b_guardar.setIcon(new ImageIcon("imagenes/guardar.png"));
-        b_guardar.setText("Actualizar");
-        b_guardar.setEnabled(false);
-        b_guardar.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        b_guardar.setName(""); // NOI18N
-        b_guardar.setNextFocusableComponent(b_cancelar1);
-        b_guardar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                b_guardarActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap(30, Short.MAX_VALUE)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(jPanel4Layout.createSequentialGroup()
-                            .addComponent(jLabel2)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(id_marca, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                            .addComponent(jLabel3)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(marca_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                        .addComponent(b_cancelar1)
-                        .addGap(18, 18, 18)
-                        .addComponent(b_guardar)))
-                .addContainerGap())
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap(76, Short.MAX_VALUE)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel2)
-                    .addComponent(id_marca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(84, 84, 84)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel3)
-                    .addComponent(marca_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(59, 59, 59)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(b_cancelar1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(b_guardar, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(62, 62, 62))
-        );
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 73, Short.MAX_VALUE)
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(0, 54, Short.MAX_VALUE))
-        );
+        jLabel1.setText("Buscar:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -418,95 +378,47 @@ public class editaMarca extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(t_busca, javax.swing.GroupLayout.PREFERRED_SIZE, 319, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(b_busca, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 235, Short.MAX_VALUE)
+                        .addComponent(Selecciona3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(bt_actualiza1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(bt_actualiza2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(Eliminar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(b_busca, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel1)
+                        .addComponent(t_busca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(Eliminar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(bt_actualiza1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(bt_actualiza2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(Selecciona3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 431, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void id_marcaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_id_marcaActionPerformed
-        marca_nombre.requestFocus();
-    }//GEN-LAST:event_id_marcaActionPerformed
-
-    private void marca_nombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_marca_nombreActionPerformed
-        b_guardar.requestFocus();
-    }//GEN-LAST:event_marca_nombreActionPerformed
-
-    private void id_marcaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_id_marcaKeyTyped
-        evt.setKeyChar(Character.toUpperCase(evt.getKeyChar()));
-        if(id_marca.getText().length()>=4)
-            evt.consume();
-    }//GEN-LAST:event_id_marcaKeyTyped
-
-    private void marca_nombreKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_marca_nombreKeyTyped
-        evt.setKeyChar(Character.toUpperCase(evt.getKeyChar()));
-        if(marca_nombre.getText().length()>=20)
-            evt.consume();
-    }//GEN-LAST:event_marca_nombreKeyTyped
-
-    private void b_guardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_guardarActionPerformed
-        h=new Herramientas(usr, 0);
-        h.session(sessionPrograma);
-        if(id_marca.getText().compareTo("")!=0)
-        {
-            if(this.marca_nombre.getText().compareTo("")!=0)
-            {
-                boolean respuesta=modifica();
-                if(respuesta==true)
-                {
-                    this.borra_cajas();
-                    cajas(false, false, false, false);
-                    buscaDato();
-                }
-            }
-            else
-            {
-                JOptionPane.showMessageDialog(null, "Ingresa el nombre");
-                marca_nombre.requestFocus();
-            } 
-        }
-        else
-        {
-            JOptionPane.showMessageDialog(null, "Ingresa el prefijo");
-            id_marca.requestFocus();
-        }        
-    }//GEN-LAST:event_b_guardarActionPerformed
-
-    private void b_cancelar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_cancelar1ActionPerformed
-        int opt=JOptionPane.showConfirmDialog(this, "¡Los datos capturados se eliminarán!");
-        if(opt==0)
-        {
-            borra_cajas();
-            cajas(false, false, false, false);
-        }
-    }//GEN-LAST:event_b_cancelar1ActionPerformed
-
     private void bt_actualiza1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_actualiza1ActionPerformed
-        this.borra_cajas();
-        this.cajas(false, false, false, false);
         buscaDato();
     }//GEN-LAST:event_bt_actualiza1ActionPerformed
-
-    private void Selecciona2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Selecciona2ActionPerformed
-        h=new Herramientas(usr, 0);
-        h.session(sessionPrograma);
-        if(t_datos.getSelectedRow()>=0)
-        {
-            this.borra_cajas();
-            id_marca.setText(t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString());
-            ic=t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString();
-            marca_nombre.setText(t_datos.getValueAt(t_datos.getSelectedRow(), 1).toString());
-            this.cajas(true, true, true, true);
-        }
-        else
-            JOptionPane.showMessageDialog(null, "¡No hay un marca seleccionada!");
-    }//GEN-LAST:event_Selecciona2ActionPerformed
 
     private void Eliminar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Eliminar1ActionPerformed
         h=new Herramientas(usr, 0);
@@ -521,8 +433,6 @@ public class editaMarca extends javax.swing.JPanel {
                 boolean respuesta=elimina(t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString());
                 if(respuesta==true)
                 { 
-                    this.borra_cajas();
-                    this.cajas(false, false, false, false);
                     JOptionPane.showMessageDialog(null, "Registro eliminado");
                     buscaDato();
                 }
@@ -536,7 +446,6 @@ public class editaMarca extends javax.swing.JPanel {
         else
         {
             JOptionPane.showMessageDialog(null, "¡Selecciona la marca que desees eliminar!");
-            id_marca.requestFocus();
         }
     }//GEN-LAST:event_Eliminar1ActionPerformed
 
@@ -547,8 +456,6 @@ public class editaMarca extends javax.swing.JPanel {
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
         obj.setVisible(true);
-        borra_cajas();
-        cajas(false, false, false, false);
         buscaDato();
     }//GEN-LAST:event_Selecciona3ActionPerformed
 
@@ -657,25 +564,26 @@ public class editaMarca extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_b_buscaActionPerformed
 
+    private void t_prefijoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_prefijoKeyTyped
+        // TODO add your handling code here:
+        char car = evt.getKeyChar();
+        evt.setKeyChar(Character.toUpperCase(evt.getKeyChar()));
+        if(t_prefijo.getText().length()>=3)
+            evt.consume();
+    }//GEN-LAST:event_t_prefijoKeyTyped
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Eliminar1;
-    private javax.swing.JButton Selecciona2;
     private javax.swing.JButton Selecciona3;
     private javax.swing.JButton b_busca;
-    private javax.swing.JButton b_cancelar1;
-    private javax.swing.JButton b_guardar;
     private javax.swing.JButton bt_actualiza1;
     private javax.swing.JButton bt_actualiza2;
-    public javax.swing.JTextField id_marca;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel3;
-    public javax.swing.JPanel jPanel4;
+    public javax.swing.JComboBox cb_inventario;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
-    public javax.swing.JTextField marca_nombre;
     private javax.swing.JTextField t_busca;
     private javax.swing.JTable t_datos;
+    private javax.swing.JTextField t_prefijo;
     // End of variables declaration//GEN-END:variables
 
     private List<Object[]> executeHQLQuery(String hql) {
@@ -712,6 +620,20 @@ public class editaMarca extends javax.swing.JPanel {
                 Marca actor = (Marca) o;
                 model.setValueAt(actor.getIdMarca(), i, 0);
                 model.setValueAt(actor.getMarcaNombre(), i, 1);
+                String valor = "";
+                switch(actor.getEjemplar())
+                {
+                    case 0:
+                        valor="Unidad";
+                        break;
+                    case 1:
+                        valor="Inventario";
+                        break;
+                    case 2:
+                        valor="Ambos";
+                        break;
+                }
+                model.setValueAt(valor, i, 2);
                 i++;
             }
         }else
@@ -719,42 +641,6 @@ public class editaMarca extends javax.swing.JPanel {
         formatoTabla();
     }
     
-    private boolean modifica()
-    {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        try   
-        {                
-            session.beginTransaction();
-            Object resp=session.createQuery("from Marca obj where obj.idMarca='"+id_marca.getText()+"' and obj.idMarca!='"+ic+"'").uniqueResult();
-            if(resp==null)
-            {
-                Query q = session.createQuery("update Marca obj set obj.marcaNombre='"+marca_nombre.getText()+"', obj.idMarca='"+id_marca.getText()+"'where obj.idMarca='"+ic+"'");
-                q.executeUpdate();
-                session.getTransaction().commit();
-                JOptionPane.showMessageDialog(null, "Registro modificado");
-                return true;
-            }
-            else
-            {
-                JOptionPane.showMessageDialog(null, "No se pueden guardar claves duplicadas");  
-                return false;
-            }
-        }
-        catch (HibernateException he)
-        {
-            he.printStackTrace(); 
-            System.out.println(he.hashCode());
-            session.getTransaction().rollback();
-            JOptionPane.showMessageDialog(null, "Error al guardar los datos");  
-            return false;
-        }
-        finally
-        {
-            if(session.isOpen())
-                session.close();
-        }
-    }
-
     private boolean elimina(String idMarca)
     {
         Session session = HibernateUtil.getSessionFactory().openSession();
@@ -789,20 +675,6 @@ public class editaMarca extends javax.swing.JPanel {
         }
     }
     
-    public void cajas( boolean nombre, boolean descripcion, boolean guardar, boolean cancelar)
-    {
-        this.id_marca.setEnabled(nombre);
-        this.marca_nombre.setEnabled(descripcion);
-        this.b_guardar.setEnabled(guardar);
-        this.b_cancelar1.setEnabled(cancelar);
-    }
-    
-    public void borra_cajas()
-    {
-        this.id_marca.setText("");
-        this.marca_nombre.setText("");        
-    }
-    
     public void tabla_tamaños()
     {
         TableColumnModel col_model = t_datos.getColumnModel();
@@ -813,12 +685,18 @@ public class editaMarca extends javax.swing.JPanel {
               {
                   case 0:
                       column.setPreferredWidth(10);
+                      DefaultCellEditor miEditor1 = new DefaultCellEditor(t_prefijo);
+                      miEditor1.setClickCountToStart(2);
+                      column.setCellEditor(miEditor1);
                       break;
                   case 1:
                       column.setPreferredWidth(150);
                       break;                 
-                  default:
+                  case 2:
                       column.setPreferredWidth(40);
+                      DefaultCellEditor miEditor = new DefaultCellEditor(cb_inventario);
+                      miEditor.setClickCountToStart(2);
+                      column.setCellEditor(miEditor);
                       break;
               }
         }

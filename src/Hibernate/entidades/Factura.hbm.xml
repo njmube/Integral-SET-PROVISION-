@@ -216,7 +216,7 @@
             <column name="proveedor" length="20" />
         </property>
         <property name="condicionesPago" type="string">
-            <column name="condiciones_pago" length="20" />
+            <column name="condiciones_pago" length="35" />
         </property>
         <property name="tipoFacturacion" type="string">
             <column name="tipo_facturacion" length="15" />
@@ -277,11 +277,44 @@
                 <comment>monto del deducible a descontar factura</comment>
             </column>
         </property>
+        <property name="tipoRelacion" type="string">
+            <column name="tipo_relacion" length="3" />
+        </property>
+        <property name="version" type="java.lang.Double">
+            <column name="version" precision="22" scale="0" />
+        </property>
+        <property name="idTultitlan" type="java.lang.Integer">
+            <column name="id_tultitlan" />
+        </property>
+        <property name="noProveedor" type="string">
+            <column name="no_proveedor" length="10" />
+        </property>
+        <many-to-one name="usoCfdi" class="Hibernate.entidades.UsoCfdi" fetch="select">
+            <column name="id_uso_cfdi" length="6" />
+        </many-to-one>
         <set name="conceptos" table="concepto" inverse="true" lazy="true" fetch="select" cascade="all">
             <key>
                 <column name="id_factura" />
             </key>
             <one-to-many class="Hibernate.entidades.Concepto" />
+        </set>
+        <set name="documentoPagos" table="documento_pago" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_factura" />
+            </key>
+            <one-to-many class="Hibernate.entidades.DocumentoPago" />
+        </set>
+        <set name="relacionsForIdFactura" table="relacion" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_factura" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Relacion" />
+        </set>
+        <set name="relacionsForRelacionFactura" table="relacion" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="relacion_factura" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Relacion" />
         </set>
     </class>
 </hibernate-mapping>

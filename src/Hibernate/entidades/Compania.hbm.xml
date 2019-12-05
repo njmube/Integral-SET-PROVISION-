@@ -89,6 +89,12 @@
         <property name="formatoPago" type="string">
             <column name="formato_pago" length="25" />
         </property>
+        <property name="redondeo" type="boolean">
+            <column name="redondeo" not-null="true" />
+        </property>
+        <many-to-one name="usoCfdi" class="Hibernate.entidades.UsoCfdi" fetch="select">
+            <column name="id_uso_cfdi" length="6" />
+        </many-to-one>
         <set name="ordenExternas" table="ordenExterna" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="id_compania" />

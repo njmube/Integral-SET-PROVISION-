@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<cfdi:Comprobante xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cfdi="http://www.sat.gob.mx/cfd/3" Version="3.3" Serie="B" Folio="1" Fecha="2019-08-30T05:39:26" Sello="Hj0YbGjQLJJa/cdlMaWtAaFrFq/JM5V9zHniMDmiHNsVZBRfdfIHaiBTtZx90GGyFEpyU9c6FGWj5r9IWCHFltvsG7CWKliLaB1IQHold1qg7DbbsJ0qATDcRCiKY2tWdG9GvaqeG8gkk29VHVNDpCUSfW8Oc7rEnorHxJ0utGZzIau6s5p4pJEGWfe986K7VkS0dF+MC0yYb3qC5BWmrUoYiWgDVkTcAhBW6KsN/IjnCz20vt3ZntlDne66Q2ZG9dmU3GW6ENyClgvfAbZUNopdTFNzJu4aV0U3u0fOvI16kZmnHu24bvc1Cz+Hn+t2k3HzLO+TXiB/EpW0vFn41A==" FormaPago="99" NoCertificado="00001000000404308392" Certificado="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" CondicionesDePago="PAGO EN PARCIALIDADES O DIFERIDO" SubTotal="2800.00" Moneda="MXN" TipoCambio="1" Total="3248.00" TipoDeComprobante="I" MetodoPago="PPD" LugarExpedicion="50226" xsi:schemaLocation="http://www.sat.gob.mx/cfd/3 http://www.sat.gob.mx/sitio_internet/cfd/3/cfdv33.xsd">
+    <cfdi:Emisor Rfc="PEVV740319ML1" Nombre="VICENTE PEREZ VILLAR" RegimenFiscal="612"/>
+    <cfdi:Receptor Rfc="GCE1009026V2" Nombre="GRUPO CARROCERO EICSASA DE CV" UsoCFDI="P01"/>
+    <cfdi:Conceptos>
+        <cfdi:Concepto ClaveProdServ="78181500" Cantidad="1.00" ClaveUnidad="E48" Unidad="SERV" Descripcion="MANO DE OBRA POR CAMBIO DE HULES Y CANUELAS" ValorUnitario="2800.00" Importe="2800.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="2800.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="448.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+    </cfdi:Conceptos>
+    <cfdi:Impuestos TotalImpuestosTrasladados="448.00">
+        <cfdi:Traslados>
+            <cfdi:Traslado Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="448.00"/>
+        </cfdi:Traslados>
+    </cfdi:Impuestos>
+</cfdi:Comprobante>

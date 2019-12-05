@@ -10,6 +10,7 @@ import Hibernate.Util.HibernateUtil;
 import Hibernate.entidades.Archivo;
 import Hibernate.entidades.Orden;
 import Hibernate.entidades.Usuario;
+import Integral.Ftp;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Image;
@@ -43,18 +44,14 @@ import org.hibernate.criterion.Restrictions;
 import Integral.Herramientas;
 import java.io.BufferedReader;
 import java.io.FileReader;
-import uk.co.mmscomputing.device.scanner.Scanner;
-import uk.co.mmscomputing.device.scanner.ScannerDevice;
-import uk.co.mmscomputing.device.scanner.ScannerIOException;
-import uk.co.mmscomputing.device.scanner.ScannerIOMetadata;
-import uk.co.mmscomputing.device.scanner.ScannerListener;
+import org.apache.commons.net.ftp.FTPFile;
 
 
 /**
  *
  * @author I.S.C Salvador
  */
-public class ArchivoOrden extends javax.swing.JPanel implements ScannerListener{
+public class ArchivoOrden extends javax.swing.JPanel {
 
     /**
      * Creates new form Galeria
@@ -66,9 +63,8 @@ public class ArchivoOrden extends javax.swing.JPanel implements ScannerListener{
     Orden ord;
     Herramientas h;
     String sessionPrograma="";
-    Scanner scanner=null;
     String edo="";
-    String ruta;
+    String rutaFTP;
     JFileChooser selector;
     
     public ArchivoOrden(String id, Usuario usuario, String estado, String ses, String carpeta) {
@@ -77,15 +73,14 @@ public class ArchivoOrden extends javax.swing.JPanel implements ScannerListener{
         orden=id;
         edo=estado;
         initComponents();
-        ruta=carpeta;
-        /*try
-        {
-            FileReader f = new FileReader("config.txt");
-            BufferedReader b = new BufferedReader(f);
-            if((ruta = b.readLine())==null)
-                ruta="";
+        try{
+        FileReader fil = new FileReader("ftp.txt");
+            BufferedReader b = new BufferedReader(fil);
+            if((rutaFTP = b.readLine())==null)
+                rutaFTP="";
             b.close();
-        }catch(Exception e){e.printStackTrace();}*/
+            fil.close();
+        }catch(Exception e){}
         
         if(usr.getEditaDocumentos()==false)
         {
@@ -97,14 +92,6 @@ public class ArchivoOrden extends javax.swing.JPanel implements ScannerListener{
             visualiza(true);
         else
             visualiza(false);
-        try
-        {
-            scanner=Scanner.getDevice();
-            scanner.addListener(this);
-        }catch(Exception e)
-        {
-            //System.out.println(e);
-        }
         h=new Herramientas(usr, 0);
         if(h.isCerrada(orden)==true)
             visualiza(false);
@@ -124,15 +111,12 @@ public class ArchivoOrden extends javax.swing.JPanel implements ScannerListener{
         jScrollPane1 = new javax.swing.JScrollPane();
         panel = new javax.swing.JScrollPane();
         p_contenedor = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
         jButton2.setBackground(new java.awt.Color(2, 135, 242));
         jButton2.setForeground(new java.awt.Color(255, 255, 255));
         jButton2.setIcon(new ImageIcon("imagenes/guardar-documento.png"));
-        jButton2.setText("Agregar");
         jButton2.setToolTipText("Agregar un documento");
         jButton2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -155,35 +139,14 @@ public class ArchivoOrden extends javax.swing.JPanel implements ScannerListener{
 
         jScrollPane1.setViewportView(panel);
 
-        jButton1.setBackground(new java.awt.Color(2, 135, 242));
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Seleccionar");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
-        jButton3.setBackground(new java.awt.Color(2, 135, 242));
-        jButton3.setForeground(new java.awt.Color(255, 255, 255));
-        jButton3.setText("Escanear");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 824, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 890, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 111, Short.MAX_VALUE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -191,11 +154,7 @@ public class ArchivoOrden extends javax.swing.JPanel implements ScannerListener{
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 137, Short.MAX_VALUE)
-                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(235, Short.MAX_VALUE))
             .addComponent(jScrollPane1)
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -217,124 +176,132 @@ public class ArchivoOrden extends javax.swing.JPanel implements ScannerListener{
             Session session = HibernateUtil.getSessionFactory().openSession();
             try
             {
-                for(int x=0; x<archivo.length; x++)
-                {
-                    session.beginTransaction().begin();
-                    if(archivo[x].exists())
+                Ftp miFtp=new Ftp();
+                boolean respuesta=true;
+                respuesta=miFtp.conectar(rutaFTP, "compras", "04650077", 3310);
+                if(respuesta==true){
+                    for(int x=0; x<archivo.length; x++)
                     {
-                        File folder = new File(ruta+"ordenes/"+orden+"/archivos");
-                        folder.mkdirs();
-                        destino = new File(ruta+"ordenes/"+orden+"/archivos/"+archivo[x].getName());
-                        if(destino.exists())
+                        session.beginTransaction().begin();
+                        if(archivo[x].exists())
                         {
-                            int opt=JOptionPane.showConfirmDialog(this, "El archivo '"+archivo[x].getName()+"' ya existe desea remplazarlo");
-                            System.out.println(opt);
-                            if(opt==0)
+                            if(!miFtp.cambiarDirectorio("/ordenes"))
+                                if(miFtp.crearDirectorio("/ordenes"))
+                                    miFtp.cambiarDirectorio("/ordenes");
+                            
+                            if(!miFtp.cambiarDirectorio("/ordenes/"+orden+"/"))
                             {
-                                try
+                                miFtp.cambiarDirectorio(miFtp.raiz);
+                                if(miFtp.crearDirectorio("/ordenes/"+orden+"/"))
+                                    miFtp.cambiarDirectorio("/ordenes/"+orden+"/");
+                            }
+                            
+                            if(!miFtp.cambiarDirectorio("/ordenes/"+orden+"/archivos/"))
+                            {
+                                miFtp.cambiarDirectorio(miFtp.raiz);
+                                if(miFtp.crearDirectorio("/ordenes/"+orden+"/archivos/"))
+                                    miFtp.cambiarDirectorio("/ordenes/"+orden+"/archivos/");
+                            }
+                            
+                            FTPFile[] lista=miFtp.listarArchivos();
+                            boolean existe=false;
+                            for(int pos=0; pos<lista.length; pos++)
+                            {
+                                if(lista[pos].getName().compareToIgnoreCase(archivo[x].getName())==0)
                                 {
-                                    //****************obtenemos la nueva fecha
-                                    Date fecha_orden = new Date();
-                                    DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");//YYYY-MM-DD HH:MM:SS
-                                    String valor=dateFormat.format(fecha_orden);
-                                    String [] fecha = valor.split("-");
-                                    String [] hora=fecha[2].split(":");
-                                    String [] aux=hora[0].split(" ");
-                                    fecha[2]=aux[0];
-                                    hora[0]=aux[1];
-                                    Calendar calendario = Calendar.getInstance();
-                                    calendario.set(
-                                        Integer.parseInt(fecha[2]), 
-                                        Integer.parseInt(fecha[1])-1, 
-                                        Integer.parseInt(fecha[0]), 
-                                        Integer.parseInt(hora[0]), 
-                                        Integer.parseInt(hora[1]), 
-                                        Integer.parseInt(hora[2]));
-
-                                    //destino.deleteOnExit();
-                                    InputStream in = new FileInputStream(archivo[x]);
-                                    OutputStream out = new FileOutputStream(destino);
-                                    byte[] buf = new byte[1024];
-                                    int len;
-                                    while ((len = in.read(buf)) > 0) 
-                                    {
-                                        out.write(buf, 0, len);
-                                    }
-                                    in.close();
-                                    out.close();
-                                    session.beginTransaction();
-                                    int id=-1;
-
-                                   Archivo ar = (Archivo) session.createCriteria(Archivo.class).add(Restrictions.eq("orden.idOrden", ord.getIdOrden())).add(Restrictions.eq("nombreDocumento", archivo[x].getName())).setMaxResults(1).uniqueResult();
-                                   if(ar!=null)
-                                    {
-                                        ar.setFechaDocumento(calendario.getTime());
-                                        session.update(ar);
-                                    }
-                                   else
-                                   {
-                                        ar=new Archivo();
-                                        Archivo img=new Archivo(ord, archivo[x].getName(), calendario.getTime());
-                                        ord = (Orden)session.get(Orden.class, Integer.parseInt(orden)); 
-                                        ord.addArchivo(img);
-                                        session.save(ord);
-                                   }
-                                   session.getTransaction().commit();
+                                    existe=true;
+                                    pos=lista.length;
                                 }
-                                catch(Exception e)
+                            }
+
+                            if(existe==true)
+                            {
+                                int opt=JOptionPane.showConfirmDialog(this, "El archivo '"+archivo[x].getName()+"' ya existe desea remplazarlo");
+                                if(opt==0)
                                 {
-                                    e.printStackTrace();
-                                    session.getTransaction().rollback();
-                                    javax.swing.JOptionPane.showMessageDialog(null, "Error no se pudo eliminar el archivo NO° Error:3");
+                                    try
+                                    {
+                                        //****************obtenemos la nueva fecha
+                                        respuesta=miFtp.subirArchivo(archivo[x].getPath(), archivo[x].getName());
+                                        Date fecha_orden = new Date();
+                                        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");//YYYY-MM-DD HH:MM:SS
+                                        String valor=dateFormat.format(fecha_orden);
+                                        String [] fecha = valor.split("-");
+                                        String [] hora=fecha[2].split(":");
+                                        String [] aux=hora[0].split(" ");
+                                        fecha[2]=aux[0];
+                                        hora[0]=aux[1];
+                                        Calendar calendario = Calendar.getInstance();
+                                        calendario.set(
+                                            Integer.parseInt(fecha[2]), 
+                                            Integer.parseInt(fecha[1])-1, 
+                                            Integer.parseInt(fecha[0]), 
+                                            Integer.parseInt(hora[0]), 
+                                            Integer.parseInt(hora[1]), 
+                                            Integer.parseInt(hora[2]));
+
+                                        session.beginTransaction();
+                                        int id=-1;
+
+                                       Archivo ar = (Archivo) session.createCriteria(Archivo.class).add(Restrictions.eq("orden.idOrden", ord.getIdOrden())).add(Restrictions.eq("nombreDocumento", archivo[x].getName())).setMaxResults(1).uniqueResult();
+                                       if(ar!=null)
+                                        {
+                                            ar.setFechaDocumento(calendario.getTime());
+                                            session.update(ar);
+                                        }
+                                       else
+                                       {
+                                            ar=new Archivo();
+                                            Archivo img=new Archivo(ord, archivo[x].getName(), calendario.getTime());
+                                            ord = (Orden)session.get(Orden.class, Integer.parseInt(orden)); 
+                                            ord.addArchivo(img);
+                                            session.save(ord);
+                                       }
+                                       session.getTransaction().commit();
+                                    }
+                                    catch(Exception e)
+                                    {
+                                        e.printStackTrace();
+                                        session.getTransaction().rollback();
+                                        javax.swing.JOptionPane.showMessageDialog(null, "Error no se pudo eliminar el archivo NO° Error:3");
+                                    }
                                 }
+                            }
+                            else
+                            {
+                                respuesta=miFtp.subirArchivo(archivo[x].getPath(), archivo[x].getName());
+                                ord = (Orden)session.get(Orden.class, Integer.parseInt(orden)); 
+                                //*******obtenemos fecha con hora******
+                                Date fecha_orden = new Date();
+                                DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");//YYYY-MM-DD HH:MM:SS
+                                String valor=dateFormat.format(fecha_orden);
+                                String [] fecha = valor.split("-");
+                                String [] hora=fecha[2].split(":");
+                                String [] aux=hora[0].split(" ");
+                                fecha[2]=aux[0];
+                                hora[0]=aux[1];
+                                Calendar calendario = Calendar.getInstance();
+                                calendario.set(
+                                    Integer.parseInt(fecha[2]), 
+                                    Integer.parseInt(fecha[1])-1, 
+                                    Integer.parseInt(fecha[0]), 
+                                    Integer.parseInt(hora[0]), 
+                                    Integer.parseInt(hora[1]), 
+                                    Integer.parseInt(hora[2]));
+                                System.out.println(calendario.getTime());
+                                Archivo img=new Archivo(ord, archivo[x].getName(), calendario.getTime());
+                                //******************************************
+                                ord.addArchivo(img);
+                                session.saveOrUpdate(ord);
+                                session.getTransaction().commit();  
                             }
                         }
                         else
                         {
-                            //String ruta=archivo.getPath();
-
-                            InputStream in = new FileInputStream(archivo[x]);
-                            OutputStream out = new FileOutputStream(destino);
-                            byte[] buf = new byte[1024];
-                            int len;
-                            while ((len = in.read(buf)) > 0) 
-                            {
-                                out.write(buf, 0, len);
-                            }
-                            in.close();
-                            out.close();
-
-                            ord = (Orden)session.get(Orden.class, Integer.parseInt(orden)); 
-
-                            //*******obtenemos fecha con hora******
-                            Date fecha_orden = new Date();
-                            DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");//YYYY-MM-DD HH:MM:SS
-                            String valor=dateFormat.format(fecha_orden);
-                            String [] fecha = valor.split("-");
-                            String [] hora=fecha[2].split(":");
-                            String [] aux=hora[0].split(" ");
-                            fecha[2]=aux[0];
-                            hora[0]=aux[1];
-                            Calendar calendario = Calendar.getInstance();
-                            calendario.set(
-                                Integer.parseInt(fecha[2]), 
-                                Integer.parseInt(fecha[1])-1, 
-                                Integer.parseInt(fecha[0]), 
-                                Integer.parseInt(hora[0]), 
-                                Integer.parseInt(hora[1]), 
-                                Integer.parseInt(hora[2]));
-                            System.out.println(calendario.getTime());
-                            Archivo img=new Archivo(ord, archivo[x].getName(), calendario.getTime());
-                            //******************************************
-                            ord.addArchivo(img);
-                            session.saveOrUpdate(ord);
-                            session.getTransaction().commit();  
+                            session.getTransaction().rollback();
+                            //javax.swing.JOptionPane.showMessageDialog(null, "Error no se pudo cargar el archivo NO° Error:2");
                         }
-                    }
-                    else
-                    {
-                        session.getTransaction().rollback();
-                        //javax.swing.JOptionPane.showMessageDialog(null, "Error no se pudo cargar el archivo NO° Error:2");
+                        miFtp.cambiarDirectorio("/");
                     }
                 }
             }catch (Exception ioe)
@@ -351,30 +318,9 @@ public class ArchivoOrden extends javax.swing.JPanel implements ScannerListener{
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        try {
-            // TODO add your handling code here:
-            scanner.select();
-        } catch (ScannerIOException ex) {
-            Logger.getLogger(ArchivoOrden.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
-        try 
-        {
-            scanner.acquire();
-        } catch (ScannerIOException ex) {
-            Logger.getLogger(ArchivoOrden.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_jButton3ActionPerformed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel p_contenedor;
     private javax.swing.JScrollPane panel;
@@ -383,9 +329,7 @@ public class ArchivoOrden extends javax.swing.JPanel implements ScannerListener{
 
     public void visualiza(Boolean valor)
     {
-        this.jButton1.setEnabled(valor);
         this.jButton2.setEnabled(valor);
-        this.jButton3.setEnabled(valor);
     }
     public void cargaArchivos()
     {
@@ -418,7 +362,7 @@ public class ArchivoOrden extends javax.swing.JPanel implements ScannerListener{
                 DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
                 for(int i=0; i<fotos.length; i++)
                 {
-                    Elemento obj=new Elemento(fotos[i], ""+ord.getIdOrden(), edo, ruta);
+                    Elemento obj=new Elemento(fotos[i], ""+ord.getIdOrden(), edo, rutaFTP);
                     p_contenedor.add(obj);
                 }
                 //p_contenedor.updateUI();
@@ -432,153 +376,4 @@ public class ArchivoOrden extends javax.swing.JPanel implements ScannerListener{
             if(session.isOpen())
                 session.close();
     }
-    
-    public void update(ScannerIOMetadata.Type type, ScannerIOMetadata metadata){
-    try
-    {
-        if(type.equals(ScannerIOMetadata.ACQUIRED))
-        {
-            //****************obtenemos la nueva fecha
-            Date fecha_orden = new Date();
-            DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");//YYYY-MM-DD HH:MM:SS
-            String valor=dateFormat.format(fecha_orden);
-            String [] fecha = valor.split("-");
-            String [] hora=fecha[2].split(":");
-            String [] aux=hora[0].split(" ");
-            fecha[2]=aux[0];
-            hora[0]=aux[1];
-            Calendar calendario = Calendar.getInstance();
-            calendario.set(
-                    Integer.parseInt(fecha[2]), 
-                    Integer.parseInt(fecha[1])-1, 
-                    Integer.parseInt(fecha[0]), 
-                    Integer.parseInt(hora[0]), 
-                    Integer.parseInt(hora[1]), 
-                    Integer.parseInt(hora[2]));
-            boolean op=true;
-            do
-            {
-                String nombre="";
-                File destino=null;
-                nombre=javax.swing.JOptionPane.showInputDialog(null, "Guardar como:");
-                if(nombre==null)
-                    nombre="";
-
-                if(nombre.compareToIgnoreCase("")!=0)
-                {
-                    File archivo=new File(ruta+"ordenes/"+orden+"/archivos/"+nombre+".pdf");
-                    if(archivo.exists())
-                    {
-                        int opt=JOptionPane.showConfirmDialog(this, "El archivo ya existe desea remplazarlo", "Alerta", JOptionPane.YES_NO_OPTION);
-                        if(opt==0)
-                        {
-                            BufferedImage image=metadata.getImage();
-                            Document document = new Document(PageSize.LETTER , 36, 36, 54, 36);
-                            PdfWriter.getInstance(document, new FileOutputStream(ruta+"ordenes/"+orden+"/archivos/"+nombre+".pdf"));
-                            document.open();
-                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                            ImageIO.write((RenderedImage) image, "jpg", baos);
-                            baos.flush();
-                            byte[] imagedata = baos.toByteArray();
-                            Image imagen = Image.getInstance(imagedata);    
-                            imagen.setAlignment(Element.ALIGN_CENTER);
-                            imagen.scaleAbsolute(PageSize.LETTER.getWidth(), PageSize.LETTER.getHeight());
-                            document.add(imagen);
-                            document.close();       
-                            Session session = HibernateUtil.getSessionFactory().openSession();
-                            try
-                            {
-                                session.beginTransaction().begin();
-                                int id=-1;
-
-                                Archivo ar = (Archivo) session.createCriteria(Archivo.class).add(Restrictions.eq("orden.idOrden", ord.getIdOrden())).add(Restrictions.eq("nombreDocumento", archivo.getName())).setMaxResults(1).uniqueResult();
-                                if(ar!=null)
-                                {
-                                    ar.setFechaDocumento(calendario.getTime());
-                                    session.update(ar);
-                                }
-                                else
-                                {
-                                    ar=new Archivo();
-                                    Archivo img=new Archivo(ord, archivo.getName(), calendario.getTime());
-                                    ord = (Orden)session.get(Orden.class, Integer.parseInt(orden)); 
-                                    ord.addArchivo(img);
-                                    session.save(ord);
-                                }
-                                session.getTransaction().commit();
-                            }
-                            catch(Exception e)
-                            {
-                                System.out.println(e);
-                            }
-                            if(session!=null)
-                                if(session.isOpen())
-                                    session.close();
-                            
-                            File file = new File(ruta+"ordenes/"+orden+"/archivos/"+nombre+".pdf");
-                            Desktop.getDesktop().open(file);
-                            op=false;
-                        }
-                            
-                    }
-                    else
-                    {
-                        BufferedImage image=metadata.getImage();
-                        Document document = new Document(PageSize.LETTER , 36, 36, 54, 36);
-                        PdfWriter.getInstance(document, new FileOutputStream(ruta+"ordenes/"+orden+"/archivos/"+nombre+".pdf"));
-                        document.open();
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        ImageIO.write((RenderedImage) image, "jpg", baos);
-                        baos.flush();
-                        byte[] imagedata = baos.toByteArray();
-                        Image imagen = Image.getInstance(imagedata);    
-                        imagen.setAlignment(Element.ALIGN_CENTER);
-                        imagen.scaleAbsolute(PageSize.LETTER.getWidth(), PageSize.LETTER.getHeight());
-                        document.add(imagen);
-                        document.close();       
-                        Session session = HibernateUtil.getSessionFactory().openSession();
-                        try
-                        {
-                            session.beginTransaction().begin();
-                            int id=-1;
-
-                            Archivo ar = (Archivo) session.createCriteria(Archivo.class).add(Restrictions.eq("orden.idOrden", ord.getIdOrden())).add(Restrictions.eq("nombreDocumento", archivo.getName())).setMaxResults(1).uniqueResult();
-                            ar=new Archivo();
-                            Archivo img=new Archivo(ord, archivo.getName(), calendario.getTime());
-                            ord = (Orden)session.get(Orden.class, Integer.parseInt(orden)); 
-                            ord.addArchivo(img);
-                            session.save(ord);
-                            session.getTransaction().commit();
-                        }
-                        catch(Exception e)
-                        {
-                            System.out.println(e);
-                        }
-                        if(session!=null)
-                            if(session.isOpen())
-                                session.close();
-                            
-                        File file = new File(ruta+"ordenes/"+orden+"/archivos/"+nombre+".pdf");
-                        Desktop.getDesktop().open(file);
-                        op=false;    
-                    }
-                }
-            }while(op);
-            cargaArchivos();
-        }
-        else 
-            if(type.equals(ScannerIOMetadata.STATECHANGE))
-            {
-                System.out.println(metadata.getStateStr());
-            }
-            else
-                if(type.equals(ScannerIOMetadata.EXCEPTION))
-                {
-                    metadata.getException().printStackTrace();
-                }
-    }catch(Exception e)
-    {
-        e.printStackTrace();
-    }
-  }
 }

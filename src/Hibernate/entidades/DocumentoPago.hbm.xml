@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 26/02/2018 04:16:48 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.DocumentoPago" table="documento_pago">
+        <id name="idDocumentoPago" type="java.lang.Integer">
+            <column name="id_documento_pago" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="factura" class="Hibernate.entidades.Factura" fetch="select">
+            <column name="id_factura" />
+        </many-to-one>
+        <many-to-one name="pago" class="Hibernate.entidades.Pago" fetch="select">
+            <column name="id_pago" />
+        </many-to-one>
+        <property name="parcialidad" type="java.lang.Integer">
+            <column name="parcialidad" />
+        </property>
+        <property name="importe" type="java.lang.Double">
+            <column name="importe" precision="22" scale="0" />
+        </property>
+        <property name="saldoInsoluto" type="java.lang.Double">
+            <column name="saldo_insoluto" precision="22" scale="0" />
+        </property>
+        <property name="saldoAnterior" type="java.lang.Double">
+            <column name="saldo_anterior" precision="22" scale="0" />
+        </property>
+        <property name="moneda" type="string">
+            <column name="moneda" length="4" />
+        </property>
+        <property name="metodoPago" type="string">
+            <column name="metodo_pago" length="4" />
+        </property>
+    </class>
+</hibernate-mapping>

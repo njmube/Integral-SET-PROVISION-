@@ -16,9 +16,13 @@ import Integral.Herramientas;
 import Integral.calendario;
 import Compania.buscaCompania;
 import Hibernate.Util.HibernateUtil;
+import Hibernate.entidades.Adicionales;
 import Hibernate.entidades.Clientes;
 import Hibernate.entidades.Compania;
+import Hibernate.entidades.Concepto;
+//import Hibernate.entidades.Conceptos;
 import Hibernate.entidades.Configuracion;
+import Hibernate.entidades.Factura;
 import Hibernate.entidades.Orden;
 import Hibernate.entidades.Partida;
 import Hibernate.entidades.PartidaExterna;
@@ -69,6 +73,9 @@ import Integral.VerticalBarUI;
 import Servicios.ModificarOrden;
 import Servicios.buscaOrden;
 import java.math.BigDecimal;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 
 /**
  *
@@ -92,11 +99,13 @@ public class Reportes extends javax.swing.JPanel {
     private javax.swing.JTabbedPane P_pestana;
     private ModificarOrden Modificar_Orden;
     String ruta="";
+    int configuracion=0;
     /**
      * Creates new form Reportes
      */
-    public Reportes(Usuario us, String ses, String ciclo, javax.swing.JTabbedPane panel, ModificarOrden mod_ord, String carpeta) {
+    public Reportes(Usuario us, String ses, String ciclo, javax.swing.JTabbedPane panel, ModificarOrden mod_ord, String carpeta, int configuracion) {
         initComponents();
+        this.configuracion=configuracion;
         ruta=carpeta;
         P_pestana=panel;
         Modificar_Orden=mod_ord;
@@ -190,6 +199,12 @@ public class Reportes extends javax.swing.JPanel {
         cb_comprador = new javax.swing.JCheckBox();
         cb_a_compañia = new javax.swing.JCheckBox();
         cb_ajustador = new javax.swing.JCheckBox();
+        cb_fecha_salida = new javax.swing.JCheckBox();
+        cb_consumible = new javax.swing.JCheckBox();
+        cb_ai = new javax.swing.JCheckBox();
+        cb_presupuesto = new javax.swing.JCheckBox();
+        cb_servicio = new javax.swing.JCheckBox();
+        cb_cotizo = new javax.swing.JCheckBox();
         jButton4 = new javax.swing.JButton();
         scroll = new javax.swing.JScrollPane();
         t_datos = new javax.swing.JTable();
@@ -378,7 +393,7 @@ public class Reportes extends javax.swing.JPanel {
             }
         });
 
-        c_tipo_fecha.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccione", "Ingreso", "Siniestro", "Promesa Interna", "Levantamiento", "Inicio Cotizacion", "Autorizacion del cliente", "Autorizacion interna", "Inicio de valuación", "Envio a compañia", "Autoriza Compañia", "Autoriza Valuacion", "Facturacion", "Cierre", " " }));
+        c_tipo_fecha.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccione", "Ingreso", "Siniestro", "Promesa Interna", "Levantamiento", "Inicio Cotizacion", "Autorizacion del cliente", "Autorizacion interna", "Inicio de valuación", "Envio a compañia", "Autoriza Compañia", "Autoriza Valuacion", "Facturacion", "Cierre" }));
         c_tipo_fecha.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 c_tipo_fechaActionPerformed(evt);
@@ -579,7 +594,7 @@ public class Reportes extends javax.swing.JPanel {
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(66, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -701,6 +716,49 @@ public class Reportes extends javax.swing.JPanel {
             }
         });
 
+        cb_fecha_salida.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        cb_fecha_salida.setText("F. Salida");
+
+        cb_consumible.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        cb_consumible.setText("Material Almacen");
+        cb_consumible.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cb_consumibleActionPerformed(evt);
+            }
+        });
+
+        cb_ai.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        cb_ai.setText("Prefactura");
+        cb_ai.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cb_aiActionPerformed(evt);
+            }
+        });
+
+        cb_presupuesto.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        cb_presupuesto.setText("Presupuesto");
+        cb_presupuesto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cb_presupuestoActionPerformed(evt);
+            }
+        });
+
+        cb_servicio.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        cb_servicio.setText("T. Servicio");
+        cb_servicio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cb_servicioActionPerformed(evt);
+            }
+        });
+
+        cb_cotizo.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        cb_cotizo.setText("Comprador Cotiza");
+        cb_cotizo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cb_cotizoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -741,16 +799,24 @@ public class Reportes extends javax.swing.JPanel {
                     .addComponent(cb_compras))
                 .addGap(55, 55, 55)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cb_a_compañia)
-                    .addComponent(cb_comprador)
+                    .addComponent(cb_fecha_entrada)
                     .addComponent(cb_factura)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(cb_fecha_entrada)
-                        .addGap(69, 69, 69)
-                        .addComponent(cb_ajustador))
                     .addComponent(cb_tipo)
-                    .addComponent(cb_fecha_cliente))
-                .addGap(114, 114, Short.MAX_VALUE))
+                    .addComponent(cb_fecha_cliente)
+                    .addComponent(cb_comprador)
+                    .addComponent(cb_a_compañia))
+                .addGap(9, 9, 9)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cb_servicio)
+                    .addComponent(cb_presupuesto)
+                    .addComponent(cb_ai)
+                    .addComponent(cb_fecha_salida)
+                    .addComponent(cb_consumible)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(cb_ajustador)
+                        .addGap(41, 41, 41)
+                        .addComponent(cb_cotizo)))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -787,17 +853,23 @@ public class Reportes extends javax.swing.JPanel {
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(cb_fecha_entrada)
-                                    .addComponent(cb_ajustador))
+                                    .addComponent(cb_ajustador)
+                                    .addComponent(cb_cotizo))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(cb_factura)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(cb_factura)
+                                    .addComponent(cb_fecha_salida))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(cb_tipo)))
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(cb_tipo)
+                                    .addComponent(cb_consumible))))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(cb_placas)
                             .addComponent(cb_estatus)
                             .addComponent(cb_tot1)
-                            .addComponent(cb_fecha_cliente))))
+                            .addComponent(cb_fecha_cliente)
+                            .addComponent(cb_ai))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(cb_fecha_siniestro)
@@ -807,7 +879,9 @@ public class Reportes extends javax.swing.JPanel {
                             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(cb_presupuestado)
                                 .addComponent(cb_tot_directa))
-                            .addComponent(cb_comprador))
+                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(cb_comprador)
+                                .addComponent(cb_presupuesto)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -815,7 +889,8 @@ public class Reportes extends javax.swing.JPanel {
                                 .addComponent(cb_cia)
                                 .addComponent(cb_cliente))
                             .addComponent(cb_compras)
-                            .addComponent(cb_a_compañia))))
+                            .addComponent(cb_a_compañia)
+                            .addComponent(cb_servicio))))
                 .addGap(0, 39, Short.MAX_VALUE))
         );
 
@@ -836,7 +911,7 @@ public class Reportes extends javax.swing.JPanel {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addComponent(jTabbedPane1)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 881, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE)
@@ -898,7 +973,7 @@ public class Reportes extends javax.swing.JPanel {
         h=new Herramientas(usr, 0);
         h.session(sessionPrograma);
 
-        calendario cal =new calendario(new javax.swing.JFrame(), true);
+        calendario cal =new calendario(new javax.swing.JFrame(), true, false);
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         cal.setLocation((d.width/2)-(cal.getWidth()/2), (d.height/2)-(cal.getHeight()/2));
         cal.setVisible(true);
@@ -924,7 +999,7 @@ public class Reportes extends javax.swing.JPanel {
         h=new Herramientas(usr, 0);
         h.session(sessionPrograma);
 
-        calendario cal =new calendario(new javax.swing.JFrame(), true);
+        calendario cal =new calendario(new javax.swing.JFrame(), true, false);
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         cal.setLocation((d.width/2)-(cal.getWidth()/2), (d.height/2)-(cal.getHeight()/2));
         cal.setVisible(true);
@@ -1443,6 +1518,7 @@ public class Reportes extends javax.swing.JPanel {
         {
             session.beginTransaction().begin();
             Query q = session.createQuery(consulta);
+            Configuracion configuracion= (Configuracion)session.get(Configuracion.class, 1);
             session.beginTransaction().commit();
             List resultList = q.list();
             
@@ -1661,8 +1737,13 @@ public class Reportes extends javax.swing.JPanel {
                 }
                 if(cb_factura.isSelected()==true)
                 {
-                    tipos.add(java.lang.String.class);
+                    tipos.add(java.lang.Double.class);
                     col.add("Factura");
+                    tam.add(80);
+                    tam_pdf.add(15);
+                 
+                    tipos.add(java.lang.String.class);
+                    col.add("Factura $");
                     tam.add(80);
                     tam_pdf.add(15);
                 }
@@ -1680,11 +1761,26 @@ public class Reportes extends javax.swing.JPanel {
                     tam.add(80);
                     tam_pdf.add(15);
                 }
+                if(cb_fecha_salida.isSelected()==true)
+                {
+                    tipos.add(java.lang.String.class);
+                    col.add("F.Salida");
+                    tam.add(80);
+                    tam_pdf.add(15);
+                }
 
                 if(cb_comprador.isSelected()==true)
                 {
                     tipos.add(java.lang.String.class);
                     col.add("Comprador");
+                    tam.add(150);
+                    tam_pdf.add(25);
+                }
+                
+                if(cb_cotizo.isSelected()==true)
+                {
+                    tipos.add(java.lang.String.class);
+                    col.add("Cotizo");
                     tam.add(150);
                     tam_pdf.add(25);
                 }
@@ -1697,10 +1793,41 @@ public class Reportes extends javax.swing.JPanel {
                     tam_pdf.add(15);
                 }
                 
+                if(cb_consumible.isSelected()==true)
+                {
+                    tipos.add(java.lang.Double.class);
+                    col.add("Material Almacen");
+                    tam.add(80);
+                    tam_pdf.add(15);
+                }
+                
                 if(cb_ajustador.isSelected()==true)
                 {
                     tipos.add(java.lang.String.class);
                     col.add("Ajustador");
+                    tam.add(120);
+                    tam_pdf.add(30);
+                }
+                
+                if(cb_ai.isSelected()==true)
+                {
+                    tipos.add(java.lang.String.class);
+                    col.add("Prefactura");
+                    tam.add(80);
+                    tam_pdf.add(15);
+                }
+                if(cb_presupuesto.isSelected()==true)
+                {
+                    tipos.add(java.lang.Double.class);
+                    col.add("Presup.");
+                    tam.add(80);
+                    tam_pdf.add(15);
+                }
+                
+                if(cb_servicio.isSelected()==true)
+                {
+                    tipos.add(java.lang.String.class);
+                    col.add("Serv");
                     tam.add(120);
                     tam_pdf.add(30);
                 }
@@ -1740,25 +1867,37 @@ public class Reportes extends javax.swing.JPanel {
                     
                     if(cb_poliza.isSelected()==true)
                     {
-                        t_datos.setValueAt(orden.getPoliza(), ren, columna);
+                        if(orden.getPoliza()!=null)
+                            t_datos.setValueAt(orden.getPoliza(), ren, columna);
+                        else
+                            t_datos.setValueAt("", ren, columna);
                         columna++;
                     }
 
                     if(cb_siniestro.isSelected()==true)
                     {
-                        t_datos.setValueAt(orden.getSiniestro(), ren, columna);
+                        if(orden.getSiniestro()!=null)
+                            t_datos.setValueAt(orden.getSiniestro(), ren, columna);
+                        else
+                            t_datos.setValueAt("", ren, columna);
                         columna++;
                     }
 
                     if(cb_inciso.isSelected()==true)
                     {
-                        t_datos.setValueAt(orden.getInciso(), ren, columna);
+                        if(orden.getInciso()!=null)
+                            t_datos.setValueAt(orden.getInciso(), ren, columna);
+                        else
+                            t_datos.setValueAt("", ren, columna);
                         columna++;
                     }
 
                     if(cb_reporte.isSelected()==true)
                     {
-                        t_datos.setValueAt(orden.getNoReporte(), ren, columna);
+                        if(orden.getNoReporte()!=null)
+                            t_datos.setValueAt(orden.getNoReporte(), ren, columna);
+                        else
+                            t_datos.setValueAt("", ren, columna);
                         columna++;
                     }
 
@@ -1812,31 +1951,46 @@ public class Reportes extends javax.swing.JPanel {
 
                     if(cb_placas.isSelected()==true)
                     {
-                        t_datos.setValueAt(orden.getNoPlacas(), ren, columna);
+                        if(orden.getNoPlacas()!=null)
+                            t_datos.setValueAt(orden.getNoPlacas(), ren, columna);
+                        else
+                            t_datos.setValueAt("", ren, columna);
                         columna++;
                     }
 
                     if(cb_motor.isSelected()==true)
                     {
-                        t_datos.setValueAt(orden.getNoMotor(), ren, columna);
+                        if(orden.getNoMotor()!=null)
+                            t_datos.setValueAt(orden.getNoMotor(), ren, columna);
+                        else
+                            t_datos.setValueAt("", ren, columna);
                         columna++;
                     }
 
                     if(cb_anio.isSelected()==true)
                     {
-                        t_datos.setValueAt(""+orden.getModelo(), ren, columna);
+                        if(orden.getModelo()!=null)
+                            t_datos.setValueAt(""+orden.getModelo(), ren, columna);
+                        else
+                            t_datos.setValueAt("", ren, columna);
                         columna++;
                     }
 
                     if(cb_serie.isSelected()==true)
                     {
-                        t_datos.setValueAt(orden.getNoSerie(), ren, columna);
+                        if(orden.getNoSerie()!=null)
+                            t_datos.setValueAt(orden.getNoSerie(), ren, columna);
+                        else
+                            t_datos.setValueAt("", ren, columna);
                         columna++;
                     }
 
                     if(cb_economico.isSelected()==true)
                     {
-                        t_datos.setValueAt(orden.getNoEconomico(), ren, columna);
+                        if(orden.getNoEconomico()!=null)
+                            t_datos.setValueAt(orden.getNoEconomico(), ren, columna);
+                        else
+                            t_datos.setValueAt("", ren, columna);
                         columna++;
                     }
 
@@ -1858,7 +2012,7 @@ public class Reportes extends javax.swing.JPanel {
                     if(cb_presupuestado.isSelected()==true)
                     {
                         Partida[] partidas=(Partida[])orden.getPartidasForIdOrden().toArray(new Partida[0]);
-                        double suma=0d;
+                        double suma=0.0d;
                         for(int p=0; p<partidas.length; p++)
                         {
                             suma+=partidas[p].getCU()*partidas[p].getCant();
@@ -1887,7 +2041,8 @@ public class Reportes extends javax.swing.JPanel {
                         double suma=0d;
                         for(int p=0; p<partidas.length; p++)
                         {
-                            suma+=Math.round(partidas[p].getCantidadAut()*partidas[p].getPrecioAutCU());
+                            if(partidas[p].isAutorizado())
+                                suma+=Math.round(partidas[p].getCantidadAut()*partidas[p].getPrecioAutCU());
                         }
                         BigDecimal conv=new BigDecimal(suma);
                         t_datos.setValueAt(conv.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue(), ren, columna);
@@ -1904,7 +2059,7 @@ public class Reportes extends javax.swing.JPanel {
                         {
                             if(partidas[p].getPedido()!=null)
                             {
-                                if(partidas[p].getPedido().getUsuarioByAutorizo()!=null && partidas[p].getPedido().getUsuarioByAutorizo2()!=null)
+                                if(partidas[p].getPedido().getUsuarioByAutorizo2()!=null)
                                 {
                                     suma+=Math.round(partidas[p].getCantPcp()*partidas[p].getPcp());
                                 }
@@ -1917,7 +2072,7 @@ public class Reportes extends javax.swing.JPanel {
                             {
                                 for(int a=0; a<adicionales.length; a++)
                                 {
-                                    if(adicionales[a].getUsuarioByAutorizo()!=null && adicionales[a].getUsuarioByAutorizo2()!=null)
+                                    if(adicionales[a].getUsuarioByAutorizo2()!=null)
                                     {
                                         PartidaExterna[] pe = (PartidaExterna[])adicionales[a].getPartidaExternas().toArray(new PartidaExterna[0]);
                                         for(int b=0; b<pe.length; b++)
@@ -1933,7 +2088,8 @@ public class Reportes extends javax.swing.JPanel {
                         //t_datos.setValueAt(suma, ren, columna);
                         columna++;
                     }
-
+                    
+                    BigDecimal mo_cot=new BigDecimal(0.0d);
                     if(cb_tot.isSelected()==true)
                     {
                         double suma=0d;
@@ -1960,8 +2116,8 @@ public class Reportes extends javax.swing.JPanel {
                             horas*=partidas[p].getCant();
                             suma+=horas*orden.getCompania().getImporteHora();
                         }
-                        BigDecimal conv=new BigDecimal(suma);
-                        t_datos.setValueAt(conv.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue(), ren, columna);
+                        mo_cot=new BigDecimal(suma);
+                        t_datos.setValueAt(mo_cot.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue(), ren, columna);
                         //t_datos.setValueAt(suma, ren, columna);
                         columna++;
                     }
@@ -1983,10 +2139,91 @@ public class Reportes extends javax.swing.JPanel {
                     if(cb_factura.isSelected()==true)
                     {
                         if(orden.getNoFactura()!=null)
+                        {
                             t_datos.setValueAt(orden.getNoFactura(), ren, columna);
+                            columna++;
+                            Factura fac=(Factura)session.get(Factura.class, orden.getNoFactura());
+                            BigDecimal total=new BigDecimal("0.0");
+                            BigDecimal cantidad=new BigDecimal(0.0d);
+                            BigDecimal precio=new BigDecimal(0.0d);
+                            BigDecimal descuento=new BigDecimal(0.0d);
+                            BigDecimal subtotal=new BigDecimal(0.0d);
+                            BigDecimal resta=new BigDecimal(0.0d);
+                            if(fac!=null)
+                            {
+                                Concepto[] con=(Concepto[])fac.getConceptos().toArray(new Concepto[0]);
+                                
+                                for(int w=0; w<con.length; w++)
+                                {
+                                    cantidad=new BigDecimal(""+con[w].getCantidad());
+                                    precio=new BigDecimal(""+con[w].getPrecio());
+                                    descuento=new BigDecimal(""+con[w].getDescuento());
+                                    descuento=descuento.divide(new BigDecimal("100"));
+                                    subtotal=cantidad.multiply(precio).setScale(2, BigDecimal.ROUND_HALF_UP);
+                                    resta=subtotal.multiply(descuento).setScale(2, BigDecimal.ROUND_HALF_UP);
+                                    total = total.add(subtotal.subtract(resta)).setScale(2, BigDecimal.ROUND_HALF_UP);
+                                }
+                                if(orden.getMoDirecta()!=null)
+                                {
+                                    BigDecimal mo=new BigDecimal(orden.getMoDirecta());
+                                    total = total.add(mo.setScale(2, BigDecimal.ROUND_HALF_UP));
+                                }
+                                
+                                if(mo_cot.doubleValue()>0)
+                                {
+                                    total = total.add(mo_cot.setScale(2, BigDecimal.ROUND_HALF_UP));
+                                }
+                                
+                                BigDecimal iva=new BigDecimal(""+fac.getIva());
+                                iva=iva.divide(new BigDecimal("100"));
+                                total=total.add(total.multiply(iva));
+                            }
+                            else
+                            {
+                                Partida[] cuentas = (Partida[])session.createCriteria(Partida.class).add(Restrictions.eq("ordenByIdOrden.idOrden", orden.getIdOrden())).add(Restrictions.eq("autorizadoValuacion", true)).add(Restrictions.eq("incluida", false)).add(Restrictions.eq("facturado", true)).addOrder(Order.asc("idEvaluacion")).addOrder(Order.asc("subPartida")).list().toArray(new Partida[0]);
+                                Adicionales[] externas = (Adicionales[])session.createCriteria(Adicionales.class).add(Restrictions.eq("orden.idOrden", orden.getIdOrden())).addOrder(Order.asc("idAdicionales")).list().toArray(new Adicionales[0]);
+                                for(int i=0; i<cuentas.length; i++)
+                                {
+                                    cantidad=new BigDecimal(""+cuentas[i].getCantidadFactura());
+                                    precio=new BigDecimal(""+cuentas[i].getPrecioFactura());
+                                    subtotal=cantidad.multiply(precio).setScale(2, BigDecimal.ROUND_HALF_UP);
+                                    total = total.add(subtotal.subtract(resta)).setScale(2, BigDecimal.ROUND_HALF_UP);
+                                }
+                                
+                                for(int a=0; a<externas.length; a++)
+                                {   
+                                    cantidad=new BigDecimal(""+externas[a].getCantidad());
+                                    precio=new BigDecimal(""+externas[a].getPrecio());
+                                    subtotal=cantidad.multiply(precio).setScale(2, BigDecimal.ROUND_HALF_UP);
+                                    total = total.add(subtotal.subtract(resta)).setScale(2, BigDecimal.ROUND_HALF_UP);
+                                }
+                                if(orden.getMoDirecta()!=null)
+                                {
+                                    BigDecimal mo=new BigDecimal(orden.getMoDirecta());
+                                    total = total.add(mo.setScale(2, BigDecimal.ROUND_HALF_UP));
+                                }
+                                
+                                if(mo_cot.doubleValue()>0)
+                                {
+                                    total = total.add(mo_cot.setScale(2, BigDecimal.ROUND_HALF_UP));
+                                }
+                                
+                                BigDecimal iva=new BigDecimal(""+configuracion.getIva());
+                                iva=iva.divide(new BigDecimal("100"));
+                                total=total.add(total.multiply(iva));
+                            }
+                            
+                            t_datos.setValueAt(Double.parseDouble(total.setScale(2, BigDecimal.ROUND_HALF_UP).toString()), ren, columna);
+                            columna++;
+                        }
                         else
+                        {
                             t_datos.setValueAt("", ren, columna);
-                        columna++;
+                            columna++;
+                            BigDecimal na=new BigDecimal("0.0");
+                            t_datos.setValueAt(Double.parseDouble(na.setScale(2, BigDecimal.ROUND_HALF_UP).toString()), ren, columna);
+                            columna++;
+                        }
                     }
                     if(cb_tipo.isSelected()==true)
                     {
@@ -2004,10 +2241,28 @@ public class Reportes extends javax.swing.JPanel {
                             t_datos.setValueAt("", ren, columna);
                         columna++;
                     }
+                    if(cb_fecha_salida.isSelected()==true)
+                    {
+                        if(orden.getREntregarFecha()!=null)
+                            t_datos.setValueAt(orden.getREntregarFecha().toString(), ren, columna);
+                        else
+                            t_datos.setValueAt("", ren, columna);
+                        columna++;
+                    }
+                    
                     if(cb_comprador.isSelected()==true)
                     {
                         if(orden.getEmpleadoByRRefacciones()!=null)
                             t_datos.setValueAt(orden.getEmpleadoByRRefacciones().getNombre(), ren, columna);
+                        else
+                            t_datos.setValueAt("", ren, columna);
+                        columna++;
+                    }
+                    
+                    if(cb_cotizo.isSelected()==true)
+                    {
+                        if(orden.getEmpleadoByRCotiza()!=null)
+                            t_datos.setValueAt(orden.getEmpleadoByRCotiza().getNombre(), ren, columna);
                         else
                             t_datos.setValueAt("", ren, columna);
                         columna++;
@@ -2022,10 +2277,65 @@ public class Reportes extends javax.swing.JPanel {
                         columna++;
                     }
                     
+                    if(cb_consumible.isSelected()==true)
+                    {//realizar consulta materia entregado en movimientos almacen
+                        double consumible=0d;
+                        ArrayList datos = new ArrayList();
+                        /*Query query = session.createSQLQuery("select (select sum(cantidad*valor) from movimiento " +
+                                                            "left join almacen on almacen.id_almacen=movimiento.id_almacen " +
+                                                            "where tipo_movimiento=1 and almacen.operacion=8 and id_orden="+orden.getIdOrden()+")as entrada, (select sum(cantidad*valor) from movimiento " +
+                                                            "left join almacen on almacen.id_almacen=movimiento.id_almacen " +
+                                                            "where tipo_movimiento=2 and almacen.operacion=8 and id_orden="+orden.getIdOrden()+")as salida;");*/
+                        Query query = session.createSQLQuery("select sum(cantidad*precio)as consumibles from consumible where id_orden="+orden.getIdOrden());
+                        query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+                        datos = (ArrayList) query.list();
+                        if(datos.size()>0)
+                        {
+                            java.util.HashMap map = (java.util.HashMap) datos.get(0);
+                            if(map.get("consumibles")!=null)
+                                consumible=Double.parseDouble(map.get("consumibles").toString());
+                            /*double entrada=0.0d;
+                            double salida=0.0d;
+                            if(map.get("entrada")!=null)
+                                entrada=Double.parseDouble(map.get("entrada").toString());
+                            if(map.get("salida")!=null)
+                                salida=Double.parseDouble(map.get("salida").toString());
+                            consumible=salida-entrada;*/
+                        }
+                        BigDecimal con=new BigDecimal(consumible);
+                        t_datos.setValueAt(con.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue(), ren, columna);
+                        columna++;
+                    }
+                    
                     if(cb_ajustador.isSelected()==true)
                     {
-                        if(orden.getAgente()!=null)
-                            t_datos.setValueAt(orden.getAgente().getNombre(), ren, columna);
+                        if(orden.getAjustador()!=null)
+                            t_datos.setValueAt(orden.getAjustador().getNombre(), ren, columna);
+                        else
+                            t_datos.setValueAt("", ren, columna);
+                        columna++;
+                    }
+                    
+                    if(cb_ai.isSelected()==true)
+                    {
+                        if(orden.getRPrefactura()!=null)
+                            t_datos.setValueAt(orden.getRPrefactura().toString(), ren, columna);
+                        else
+                            t_datos.setValueAt("", ren, columna);
+                        columna++;
+                    }
+                    if(cb_presupuesto.isSelected()==true)
+                    {
+                        if(orden.getVales()!=null)
+                            t_datos.setValueAt(orden.getVales(), ren, columna);
+                        else
+                            t_datos.setValueAt(0.0d, ren, columna);
+                        columna++;
+                    }
+                    if(cb_servicio.isSelected()==true)
+                    {
+                        if(orden.getReparacion()!=null)
+                            t_datos.setValueAt(orden.getReparacion().getNombre(), ren, columna);
                         else
                             t_datos.setValueAt("", ren, columna);
                         columna++;
@@ -2338,6 +2648,8 @@ public class Reportes extends javax.swing.JPanel {
         javax.swing.JFileChooser jF1= new javax.swing.JFileChooser(); 
         jF1.setFileFilter(new ExtensionFileFilter("Excel document (*.xls)", new String[] { "xls" }));
         String ruta = null; 
+        /*List compradores=new ArrayList();
+        compradores.lastIndexOf(h)*/
         if(jF1.showSaveDialog(null)==jF1.APPROVE_OPTION)
         { 
             ruta = jF1.getSelectedFile().getAbsolutePath(); 
@@ -2364,6 +2676,13 @@ public class Reportes extends javax.swing.JPanel {
                             }
                             else
                             {
+                                if(cb_comprador.isSelected()==true)
+                                {
+                                    if(t_datos.getColumnName(col).compareTo("Comprador")==0)
+                                    {
+                                        
+                                    }
+                                }
                                 try
                                 {
                                     celda.setCellValue(t_datos.getValueAt(ren-1, col).toString());
@@ -2415,7 +2734,7 @@ public class Reportes extends javax.swing.JPanel {
                     }
                     else
                     {
-                        Modificar_Orden = new ModificarOrden(usr, this.periodo, 3, sessionPrograma, ruta);
+                        Modificar_Orden = new ModificarOrden(usr, this.periodo, 3, sessionPrograma, ruta,configuracion);
                         PanelPestanas btc=new PanelPestanas(P_pestana,3,usr);
                         P_pestana.addTab("A. Valuacion", Modificar_Orden);
                         P_pestana.setSelectedComponent(Modificar_Orden);
@@ -2447,7 +2766,7 @@ public class Reportes extends javax.swing.JPanel {
 
     private void b_busca_cliente1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_busca_cliente1ActionPerformed
         // TODO add your handling code here:
-        buscaOrden obj = new buscaOrden(new javax.swing.JFrame(), true, this.usr,0);
+        buscaOrden obj = new buscaOrden(new javax.swing.JFrame(), true, this.usr,0, configuracion);
         obj.t_busca.requestFocus();
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
@@ -2467,6 +2786,26 @@ public class Reportes extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_cb_ajustadorActionPerformed
 
+    private void cb_consumibleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_consumibleActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cb_consumibleActionPerformed
+
+    private void cb_presupuestoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_presupuestoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cb_presupuestoActionPerformed
+
+    private void cb_aiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_aiActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cb_aiActionPerformed
+
+    private void cb_servicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_servicioActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cb_servicioActionPerformed
+
+    private void cb_cotizoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_cotizoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cb_cotizoActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton b_busca_cliente;
@@ -2480,6 +2819,7 @@ public class Reportes extends javax.swing.JPanel {
     private javax.swing.JComboBox c_tipo_fecha;
     private javax.swing.JComboBox c_valuacion;
     private javax.swing.JCheckBox cb_a_compañia;
+    private javax.swing.JCheckBox cb_ai;
     private javax.swing.JCheckBox cb_ajustador;
     private javax.swing.JCheckBox cb_anio;
     private javax.swing.JCheckBox cb_autorizado;
@@ -2488,12 +2828,15 @@ public class Reportes extends javax.swing.JPanel {
     private javax.swing.JCheckBox cb_cliente;
     private javax.swing.JCheckBox cb_comprador;
     private javax.swing.JCheckBox cb_compras;
+    private javax.swing.JCheckBox cb_consumible;
+    private javax.swing.JCheckBox cb_cotizo;
     private javax.swing.JCheckBox cb_economico;
     private javax.swing.JCheckBox cb_email;
     private javax.swing.JCheckBox cb_estatus;
     private javax.swing.JCheckBox cb_factura;
     private javax.swing.JCheckBox cb_fecha_cliente;
     private javax.swing.JCheckBox cb_fecha_entrada;
+    private javax.swing.JCheckBox cb_fecha_salida;
     private javax.swing.JCheckBox cb_fecha_siniestro;
     private javax.swing.JCheckBox cb_inciso;
     private javax.swing.JCheckBox cb_interna;
@@ -2502,8 +2845,10 @@ public class Reportes extends javax.swing.JPanel {
     private javax.swing.JCheckBox cb_placas;
     private javax.swing.JCheckBox cb_poliza;
     private javax.swing.JCheckBox cb_presupuestado;
+    private javax.swing.JCheckBox cb_presupuesto;
     private javax.swing.JCheckBox cb_reporte;
     private javax.swing.JCheckBox cb_serie;
+    private javax.swing.JCheckBox cb_servicio;
     private javax.swing.JCheckBox cb_siniestro;
     private javax.swing.JCheckBox cb_tipo;
     private javax.swing.JCheckBox cb_tipo_cliente;
@@ -2627,7 +2972,7 @@ public class Reportes extends javax.swing.JPanel {
             reporte.contenido.setColorStroke(new GrayColor(0.2f));
             reporte.contenido.setColorFill(new GrayColor(0.9f));
 
-            Configuracion con= (Configuracion)session.get(Configuracion.class, 1);
+            Configuracion con= (Configuracion)session.get(Configuracion.class, configuracion);
             reporte.inicioTexto();
             reporte.contenido.setFontAndSize(bf, 14);
             reporte.contenido.setColorFill(BaseColor.BLACK);

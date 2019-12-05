@@ -282,7 +282,7 @@ public class AgendaCliente extends javax.swing.JPanel {
         h.session(sessionPrograma);
         if(t_datos.getSelectedRow()>-1)
         {
-            calendario cal =new calendario(new javax.swing.JFrame(), true);
+            calendario cal =new calendario(new javax.swing.JFrame(), true, false);
             Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
             cal.setLocation((d.width/2)-(cal.getWidth()/2), (d.height/2)-(cal.getHeight()/2));
             cal.setVisible(true);

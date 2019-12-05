@@ -84,12 +84,20 @@ public class Factura  implements java.io.Serializable {
      private String certificadoSat;
      private String certificadoEmisor;
      private Double descDeducible;
+     private UsoCfdi usoCfdi;
+     private Double version;
+     private String tipoRelacion;
+     private Integer idTultitlan;
+     private String noProveedor;
      private Set conceptos = new HashSet(0);
+     private Set documentoPagos = new HashSet(0);
+     private Set relacionsForIdFactura = new HashSet(0);
+     private Set relacionsForRelacionFactura = new HashSet(0);
 
     public Factura() {
     }
 
-    public Factura(Orden orden, Usuario usuarioByAutorizo, OrdenExterna ordenExterna, Usuario usuarioByGenero, Date fecha, String rfcEmisor, String nombreEmisor, String calleEmisor, String coloniaEmisor, String numeroExteriorEmisor, String municipioEmisor, String estadoEmisor, String paisEmisor, String cpEmisor, String rfcReceptor, String nombreReceptor, String calleReceptor, String coloniaReceptor, String numeroExteriorReceptor, String municipioReceptor, String estadoReceptor, String paisReceptor, String cpReceptor, Double deducible, String estadoFactura, String FFiscal, String fechaFiscal, String serie, String folio, String metodoPago, String cuentaPago, String moneda, Double factorCambio, String area, String tipoPoliza, String tipoEmisor, String contactoEmisor, String correoEmisor, String telefonoEmisor, String tipoReceptor, String contactoReceptor, String correoReceptor, String telefonoReceptor, String codigoOficina, String foliosElectronicos, String nombreDocumento, String error, String addenda, String riEmosor, String riReceptor, String proveedor, String condicionesPago, String tipoFacturacion, String descripcionEmisor, String medioPago, Date fechaMedioPago, Date fechaCondicionesPago, int iva, String riesgo, String extra, String estatus, Date fEstatus, String texto, Integer folioExterno, String serieExterno, String pac, String selloSat, String selloCfdi, String certificadoSat, String certificadoEmisor, Double descDeducible, Set conceptos) {
+    public Factura(Orden orden, Usuario usuarioByAutorizo, OrdenExterna ordenExterna, Usuario usuarioByGenero, Date fecha, String rfcEmisor, String nombreEmisor, String calleEmisor, String coloniaEmisor, String numeroExteriorEmisor, String municipioEmisor, String estadoEmisor, String paisEmisor, String cpEmisor, String rfcReceptor, String nombreReceptor, String calleReceptor, String coloniaReceptor, String numeroExteriorReceptor, String municipioReceptor, String estadoReceptor, String paisReceptor, String cpReceptor, Double deducible, String estadoFactura, String FFiscal, String fechaFiscal, String serie, String folio, String metodoPago, String cuentaPago, String moneda, Double factorCambio, String area, String tipoPoliza, String tipoEmisor, String contactoEmisor, String correoEmisor, String telefonoEmisor, String tipoReceptor, String contactoReceptor, String correoReceptor, String telefonoReceptor, String codigoOficina, String foliosElectronicos, String nombreDocumento, String error, String addenda, String riEmosor, String riReceptor, String proveedor, String condicionesPago, String tipoFacturacion, String descripcionEmisor, String medioPago, Date fechaMedioPago, Date fechaCondicionesPago, int iva, String riesgo, String extra, String estatus, Date fEstatus, String texto, Integer folioExterno, String serieExterno, String pac, String selloSat, String selloCfdi, String certificadoSat, String certificadoEmisor, Double descDeducible, UsoCfdi usoCfdi, Double version,String tipoRelacion, Integer idTultitlan, String noProveedor, Set conceptos, Set documentoPagos, Set relacionsForIdFactura, Set relacionsForRelacionFactura) {
        this.orden = orden;
        this.usuarioByAutorizo = usuarioByAutorizo;
        this.ordenExterna = ordenExterna;
@@ -148,7 +156,6 @@ public class Factura  implements java.io.Serializable {
        this.fechaMedioPago = fechaMedioPago;
        this.fechaCondicionesPago = fechaCondicionesPago;
        this.riesgo = riesgo;
-       this.conceptos = conceptos;
        this.iva = iva;
        this.extra = extra;
        this.estatus = estatus;
@@ -162,6 +169,15 @@ public class Factura  implements java.io.Serializable {
        this.certificadoSat=certificadoSat;
        this.certificadoEmisor=certificadoEmisor;
        this.descDeducible=descDeducible;
+       this.usoCfdi = usoCfdi;
+       this.version = version;
+       this.tipoRelacion = tipoRelacion;
+       this.idTultitlan=idTultitlan;
+       this.noProveedor=noProveedor;
+       this.conceptos = conceptos;
+       this.documentoPagos = documentoPagos;
+       this.relacionsForIdFactura = relacionsForIdFactura;
+       this.relacionsForRelacionFactura = relacionsForRelacionFactura;
     }
    
     public Integer getIdFactura() {
@@ -617,6 +633,15 @@ public class Factura  implements java.io.Serializable {
     public void setFolioExterno(Integer folioExterno) {
         this.folioExterno = folioExterno;
     }
+    
+    public Integer getIdTultitlan() {
+        return this.idTultitlan;
+    }
+    
+    public void setIdTultitlan(Integer idTultitlan) {
+        this.idTultitlan = idTultitlan;
+    }
+    
     public String getSerieExterno() {
         return this.serieExterno;
     }
@@ -668,7 +693,13 @@ public class Factura  implements java.io.Serializable {
     public void setConceptos(Set conceptos) {
         this.conceptos = conceptos;
     }
+    public Set getDocumentoPagos() {
+        return this.documentoPagos;
+    }
     
+    public void setDocumentoPagos(Set documentoPagos) {
+        this.documentoPagos = documentoPagos;
+    }
     public int getIva() {
         return this.iva;
     }
@@ -677,7 +708,22 @@ public class Factura  implements java.io.Serializable {
         this.iva = iva;
     }
 
-
+    public Double getVersion() {
+        return this.version;
+    }
+    
+    public void setVersion(Double version) {
+        this.version = version;
+    }
+    
+    public UsoCfdi getUsoCfdi() {
+        return this.usoCfdi;
+    }
+    
+    public void setUsoCfdi(UsoCfdi usoCfdi) {
+        this.usoCfdi = usoCfdi;
+    }
+    
     public Double getDescDeducible() {
         return this.descDeducible;
     }
@@ -686,7 +732,35 @@ public class Factura  implements java.io.Serializable {
         this.descDeducible = descDeducible;
     }
 
+    public String getTipoRelacion() {
+        return this.tipoRelacion;
+    }
+    
+    public void setTipoRelacion(String tipoRelacion) {
+        this.tipoRelacion = tipoRelacion;
+    }
+    
+    public Set getRelacionsForIdFactura() {
+        return this.relacionsForIdFactura;
+    }
+    
+    public void setRelacionsForIdFactura(Set relacionsForIdFactura) {
+        this.relacionsForIdFactura = relacionsForIdFactura;
+    }
+    public Set getRelacionsForRelacionFactura() {
+        return this.relacionsForRelacionFactura;
+    }
+    
+    public void setRelacionsForRelacionFactura(Set relacionsForRelacionFactura) {
+        this.relacionsForRelacionFactura = relacionsForRelacionFactura;
+    }
+ 
+    public String getNoProveedor() {
+        return this.noProveedor;
+    }
+    
+    public void setNoProveedor(String noProveedor) {
+        this.noProveedor = noProveedor;
+    }
 
 }
-
-

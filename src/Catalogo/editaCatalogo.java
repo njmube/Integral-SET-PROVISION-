@@ -510,7 +510,7 @@ public class editaCatalogo extends javax.swing.JPanel {
                 {
                     try
                     {
-                        List <Object[]> resultList=executeHQLQuery("from Catalogo obj where obj.nombre='"+t_nombre.getText()+"'");
+                        List <Object[]> resultList=executeHQLQuery("from Catalogo obj where obj.nombre='"+t_nombre.getText()+"' and actual=1");
                         int bandera=0;
                         if(resultList.size()>0)
                         {
@@ -850,7 +850,7 @@ public class editaCatalogo extends javax.swing.JPanel {
     
     private void buscaDato()
     {
-        String consulta="from Catalogo cat ORDER BY cat.especialidad.descripcion, cat.nombre ";
+        String consulta="from Catalogo cat where actual=1 ORDER BY cat.especialidad.descripcion, cat.nombre ";
         List <Object[]> resultList=executeHQLQuery(consulta);
         if(resultList.size()>0)
         {

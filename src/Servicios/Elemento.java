@@ -9,6 +9,7 @@ package Servicios;
 import Hibernate.Util.HibernateUtil;
 import Hibernate.entidades.Archivo;
 import Hibernate.entidades.Orden;
+import Integral.Ftp;
 import java.awt.Desktop;
 import java.io.File;
 import javax.swing.JFileChooser;
@@ -20,6 +21,8 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -40,18 +43,29 @@ public class Elemento extends javax.swing.JPanel {
         orden=ord;
         arch=miArchivo;
         ruta=dir;
+        String nombre=arch.getNombreDocumento();
         try
         {
-            File f=new File(ruta+"ordenes/"+orden+"/archivos/"+arch.getNombreDocumento());
-            Imagen op;
-            JFileChooser jf=new JFileChooser();
-            jf.setSelectedFile(f);
-            l_img.setIcon(jf.getFileSystemView().getSystemIcon(f));
-            l_nombre.setText(f.getName());
+            if(nombre.contains(".pdf") || nombre.contains(".PDF"))
+                l_img.setIcon(new ImageIcon("imagenes/pdf.png"));
+            else{
+                if(nombre.contains(".doc") || nombre.contains(".DOC"))
+                    l_img.setIcon(new ImageIcon("imagenes/word.png"));
+                else{
+                    if(nombre.contains(".xls") || nombre.contains(".xls"))
+                        l_img.setIcon(new ImageIcon("imagenes/exel.png"));
+                    else{
+                        if(nombre.contains(".jpg") || nombre.contains(".JPG") || nombre.contains(".png") || nombre.contains(".PNG"))
+                            l_img.setIcon(new ImageIcon("imagenes/imagen.png"));
+                        else
+                        {
+                            l_img.setIcon(new ImageIcon("imagenes/desconocido.png"));
+                        }
+                    }
+                }
+            }
+            l_nombre.setText(arch.getNombreDocumento());
             l_fecha.setText(""+arch.getFechaDocumento());
-            f=null;
-            op=null;
-            jf=null;
         }catch(Exception e)
         {
             e.printStackTrace();
@@ -151,27 +165,17 @@ public class Elemento extends javax.swing.JPanel {
             if (evt.getClickCount() == 2 && !evt.isConsumed()) 
             {
                 evt.consume();
-                try
+                Ftp miFtp=new Ftp();
+                boolean respuesta=true;
+                respuesta=miFtp.conectar(ruta, "compras", "04650077", 3310);
+                if(respuesta==true)
                 {
-                    File archivo = new File(ruta+"ordenes/"+orden+"/archivos/"+arch.getNombreDocumento());
-                    if(ruta.contains("http:")==true || ruta.contains("\\\\")==true || ruta.contains("//")==true || ruta.contains("////")==true)
-                    {
-                        String aux =arch.getNombreDocumento().replaceAll(" ", "%20");
-                        Desktop.getDesktop().browse(getFileURI(ruta+"ordenes\\"+orden+"\\archivos\\"+aux));
-                    }
-                    else
-                    {
-                        if(archivo.exists()==true)
-                            Desktop.getDesktop().open(archivo);
-                        else
-                            javax.swing.JOptionPane.showMessageDialog(null, "El archivo no existe");
-                    }
-                    archivo=null;
-                }catch(Exception e)
-                {
-                    e.printStackTrace();
-                    javax.swing.JOptionPane.showMessageDialog(null, "Error no se pudo abrir el archivo");
+                    miFtp.cambiarDirectorio("/ordenes/"+orden+"/archivos/");
+                    miFtp.AbrirArchivo(l_nombre.getText());
+                    miFtp.desconectar();
                 }
+                else
+                    JOptionPane.showMessageDialog(null, "No fue posible conectar al servidor FTP");
             }
         }
     }//GEN-LAST:event_formMouseClicked
@@ -180,20 +184,17 @@ public class Elemento extends javax.swing.JPanel {
         // TODO add your handling code here:
         try
         {
-            File archivo = new File(ruta+"ordenes/"+orden+"/archivos/"+arch.getNombreDocumento());
-            if(ruta.contains("http:")==true || ruta.contains("\\\\")==true || ruta.contains("//")==true || ruta.contains("////")==true)
+            Ftp miFtp=new Ftp();
+            boolean respuesta=true;
+            respuesta=miFtp.conectar(ruta, "compras", "04650077", 3310);
+            if(respuesta==true)
             {
-                String aux =arch.getNombreDocumento().replaceAll(" ", "%20");
-                Desktop.getDesktop().browse(getFileURI(ruta+"ordenes\\"+orden+"\\archivos\\"+aux));
+                miFtp.cambiarDirectorio("/ordenes/"+orden+"/archivos/");
+                miFtp.AbrirArchivo(l_nombre.getText());
+                miFtp.desconectar();
             }
             else
-            {
-                if(archivo.exists()==true)
-                    Desktop.getDesktop().open(archivo);
-                else
-                    javax.swing.JOptionPane.showMessageDialog(null, "El archivo no existe");
-            }
-            archivo=null;
+                JOptionPane.showMessageDialog(null, "No fue posible conectar al servidor FTP");
         }catch(Exception e)
         {
             e.printStackTrace();
@@ -209,12 +210,22 @@ public class Elemento extends javax.swing.JPanel {
             session.beginTransaction().begin();
             Orden ord = (Orden)session.get(Orden.class, arch.getOrden().getIdOrden());
             arch= (Archivo)session.get(Archivo.class, arch.getIdArchivo());
-            File destino = new File(ruta+"ordenes/"+orden+"/archivos/"+arch.getNombreDocumento());
-            destino.delete();
             ord.eliminaArchivo(arch);
             session.update(ord);
             session.delete(arch);
             session.getTransaction().commit();
+            
+            Ftp miFtp=new Ftp();
+            boolean respuesta=true;
+            respuesta=miFtp.conectar(ruta, "compras", "04650077", 3310);
+            if(respuesta==true)
+            {
+                miFtp.cambiarDirectorio("/ordenes/"+orden+"/archivos/");
+                miFtp.borrarArchivo(l_nombre.getText());
+                miFtp.desconectar();
+            }
+            else
+                JOptionPane.showMessageDialog(null, "No fue posible conectar al servidor FTP");
             this.setVisible(false);
         }catch (Exception ioe)
         {
@@ -226,69 +237,7 @@ public class Elemento extends javax.swing.JPanel {
             if(session.isOpen())
                 session.close(); 
     }//GEN-LAST:event_jMenuItem2ActionPerformed
-
-
-    
-    
-      public void launchFile(File file)
-  {
-    if(!Desktop.isDesktopSupported()) return;
-    Desktop dt = Desktop.getDesktop();
-    try
-    {
-      dt.open(file);
-    } catch (IOException ex)
-    {
-      //this is sometimes necessary with files on other servers ie \\xxx\xxx.xls
-      launchFile(file.getPath());
-    }
-  }
-  
-  //this can launch both local and remote files
-  public void launchFile(String filePath)
-  {
-    if(filePath == null || filePath.trim().length() == 0) return;
-    if(!Desktop.isDesktopSupported()) return;
-    Desktop dt = Desktop.getDesktop();
-    try
-    {      
-       dt.browse(getFileURI(filePath));
-    } catch (Exception ex)
-    {
-      ex.printStackTrace();
-     }
-   }
-
-  //generate uri according to the filePath
-  private URI getFileURI(String filePath)
-  {
-    URI uri = null;
-    filePath = filePath.trim();
-    if(filePath.indexOf("http") == 0 || filePath.indexOf("\\") == 0)
-    {
-      if(filePath.indexOf("\\") == 0) filePath = "file:" + filePath;
-      try
-      {
-        filePath = filePath.replaceAll(" ", "%20");
-        URL url = new URL(filePath);
-        uri = url.toURI();
-      } catch (MalformedURLException ex)
-      {
-        ex.printStackTrace();
-      }
-      catch (URISyntaxException ex)
-      {
-        ex.printStackTrace();
-      }
-    }
-    else
-    {
-      File file = new File(filePath);
-      uri = file.toURI();
-    }
-    return uri;
-  }
-    
+   
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel3;
     private javax.swing.JMenuItem jMenuItem1;

@@ -12,14 +12,38 @@ public class Item  implements java.io.Serializable {
      private int idReparacion;
      private Catalogo catalogo;
      private Servicio servicio;
+     private double intDesm;
+     private double intCamb;
+     private double intRepMin;
+     private double intRepMed;
+     private double intRepMax;
+     private double intPinMin;
+     private double intPinMed;
+     private double intPinMax;
+     private Posicion posicion;
+     private double costoOri;
+     private double costoNal;
+     private double costoDesm;
 
     public Item() {
     }
 
-    public Item(int idReparacion, Catalogo catalogo, Servicio servicio) {
+    public Item(int idReparacion, Catalogo catalogo, Servicio servicio, double intDesm, double intCamb, double intRepMin, double intRepMed, double intRepMax, double intPinMin, double intPinMed, double intPinMax, Posicion posicion, Double costoOri, Double costoNal, Double costoDesm) {
        this.idReparacion = idReparacion;
        this.catalogo = catalogo;
        this.servicio = servicio;
+       this.intDesm = intDesm;
+        this.intCamb = intCamb;
+        this.intRepMin = intRepMin;
+        this.intRepMed = intRepMed;
+        this.intRepMax = intRepMax;
+        this.intPinMin = intPinMin;
+        this.intPinMed = intPinMed;
+        this.intPinMax = intPinMax;
+        this.posicion = posicion;
+        this.costoOri = costoOri;
+        this.costoNal = costoNal;
+        this.costoDesm = costoDesm;
     }
    
     public int getIdReparacion() {
@@ -44,9 +68,92 @@ public class Item  implements java.io.Serializable {
         this.servicio = servicio;
     }
 
+    public double getIntDesm() {
+        return this.intDesm;
+    }
+    
+    public void setIntDesm(double intDesm) {
+        this.intDesm = intDesm;
+    }
+    public double getIntCamb() {
+        return this.intCamb;
+    }
+    
+    public void setIntCamb(double intCamb) {
+        this.intCamb = intCamb;
+    }
+    public double getIntRepMin() {
+        return this.intRepMin;
+    }
+    
+    public void setIntRepMin(double intRepMin) {
+        this.intRepMin = intRepMin;
+    }
+    public double getIntRepMed() {
+        return this.intRepMed;
+    }
+    
+    public void setIntRepMed(double intRepMed) {
+        this.intRepMed = intRepMed;
+    }
+    public double getIntRepMax() {
+        return this.intRepMax;
+    }
+    
+    public void setIntRepMax(double intRepMax) {
+        this.intRepMax = intRepMax;
+    }
+    public double getIntPinMin() {
+        return this.intPinMin;
+    }
+    
+    public void setIntPinMin(double intPinMin) {
+        this.intPinMin = intPinMin;
+    }
+    public double getIntPinMed() {
+        return this.intPinMed;
+    }
+    
+    public void setIntPinMed(double intPinMed) {
+        this.intPinMed = intPinMed;
+    }
+    public double getIntPinMax() {
+        return this.intPinMax;
+    }
+    
+    public void setIntPinMax(double intPinMax) {
+        this.intPinMax = intPinMax;
+    }
 
+    public Posicion getPosicion() {
+        return this.posicion;
+    }
+    
+    public void setPosicion(Posicion posicion) {
+        this.posicion = posicion;
+    }
 
+    public Double getCostoOri() {
+        return this.costoOri;
+    }
+    
+    public void setCostoOri(Double costotOri) {
+        this.costoOri = costotOri;
+    }
 
+    public Double getCostoNal() {
+        return this.costoNal;
+    }
+    
+    public void setCostoNal(Double costoNal) {
+        this.costoNal = costoNal;
+    }
+    public Double getCostoDesm() {
+        return this.costoDesm;
+    }
+    
+    public void setCostoDesm(Double costoDesm) {
+        this.costoDesm = costoDesm;
+    }
+    
 }
-
-

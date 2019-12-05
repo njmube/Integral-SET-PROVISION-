@@ -35,6 +35,7 @@ public class Render1 extends JLabel implements TableCellRenderer
             boolean isSelected, boolean hasFocus, int row, int column) {
         setText(value.toString());
         return this;
+        
     }
  
 }

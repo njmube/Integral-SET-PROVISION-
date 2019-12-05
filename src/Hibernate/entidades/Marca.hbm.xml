@@ -11,6 +11,9 @@
         <property name="marcaNombre" type="string">
             <column name="marca_nombre" length="20" not-null="true" />
         </property>
+        <property name="ejemplar" type="int">
+            <column name="ejemplar" not-null="true" />
+        </property>
         <set name="ordens" table="orden" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="id_marca" length="4" not-null="true">

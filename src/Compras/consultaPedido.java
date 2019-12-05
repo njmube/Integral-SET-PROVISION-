@@ -14,6 +14,7 @@ import Hibernate.entidades.PartidaExterna;
 import Hibernate.entidades.Pedido;
 import Hibernate.entidades.Proveedor;  
 import Hibernate.entidades.Usuario;
+import Integral.EnviaCorreo;
 import java.awt.Color;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -33,16 +34,33 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import Integral.FormatoTabla;
+import Integral.Ftp;
 import Integral.Herramientas;
 import Integral.HorizontalBarUI;
+import Integral.PeticionPost;
 import Integral.Render1;
 import Integral.VerticalBarUI;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Properties;
+import javax.mail.BodyPart;
+import javax.mail.Message;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JButton;
+import javax.swing.JRootPane;
 import org.hibernate.Criteria;
 /**
  *
@@ -69,20 +87,37 @@ public class consultaPedido extends javax.swing.JPanel {
     Herramientas h;
     Formatos f1;
     int menu=0;
+    EnviaCorreo miCorreo;
     public Pedido pedido=null;
     String[] columnas = new String [] {
-        "Interno","N0","#","N° Parte","Folio","Descripción","Med","Plazo","Cant","Costo c/u","Total"
+        "Interno","N0","#","N° Parte","Folio","Descripción","Med","Plazo","Cant","Costo c/u", "Tipo", "Total"
     };
     FormatoTabla formato;
+    Notificacion miNotificacion;
+    int configuracion=1;
+    String rutaFTP="";
         /**
      * Creates new form nuevoPedido
      */
-    public consultaPedido(Usuario usuario, String ses, Pedido ped, int ventana) {
+    public consultaPedido(Usuario usuario, String ses, Pedido ped, int ventana, int configuracion, String ruta) {
         usr=usuario;
+        this.configuracion=configuracion;
         sessionPrograma=ses;
         pedido=ped;
         menu=ventana;
         initComponents();
+        rutaFTP=ruta;
+        p_arriba.add(panelMenu(), java.awt.BorderLayout.NORTH);
+        m_menu.add(b_pedidos);
+        m_menu.add(l_busca);
+        m_menu.add(t_busca);
+        m_menu.add(b_busca);
+        m_menu.add(l_cambio);
+        m_menu.add(t_cambio);
+        m_menu.add(s_separador);
+        //m_menu.add(r_autorizar);
+        m_menu.add(r_autorizar2);
+        
         scroll.getVerticalScrollBar().setUI(new VerticalBarUI());
         scroll.getHorizontalScrollBar().setUI(new HorizontalBarUI());
         formato = new FormatoTabla();
@@ -132,12 +167,17 @@ public class consultaPedido extends javax.swing.JPanel {
         t_proveedor = new javax.swing.JTextField();
         t_clave = new javax.swing.JTextField();
         r_autorizar = new javax.swing.JRadioButton();
-        jPanel4 = new javax.swing.JPanel();
-        l_busca = new javax.swing.JLabel();
-        b_busca = new javax.swing.JButton();
-        t_busca = new javax.swing.JTextField();
+        tipo = new javax.swing.JComboBox();
+        m_menu = new javax.swing.JMenuBar();
         b_pedidos = new javax.swing.JButton();
-        b_compra = new javax.swing.JButton();
+        l_busca = new javax.swing.JLabel();
+        t_busca = new javax.swing.JTextField();
+        b_busca = new javax.swing.JButton();
+        r_autorizar2 = new javax.swing.JRadioButton();
+        s_separador = new javax.swing.JSeparator();
+        l_cambio = new javax.swing.JLabel();
+        t_cambio = new javax.swing.JTextField();
+        jPanel4 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
         l_iva = new javax.swing.JLabel();
         t_IVA = new javax.swing.JFormattedTextField();
@@ -149,7 +189,9 @@ public class consultaPedido extends javax.swing.JPanel {
         t_notas = new javax.swing.JTextArea();
         l_notas = new javax.swing.JLabel();
         b_menos = new javax.swing.JButton();
-        r_autorizar2 = new javax.swing.JRadioButton();
+        b_archivo = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        cb_pago = new javax.swing.JComboBox();
         scroll = new javax.swing.JScrollPane();
         t_datos = new javax.swing.JTable();
         p_arriba = new javax.swing.JPanel();
@@ -302,25 +344,34 @@ public class consultaPedido extends javax.swing.JPanel {
             }
         });
 
-        setBackground(new java.awt.Color(255, 255, 255));
-        setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "Autorización de Pedidos", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Arial", 1, 12))); // NOI18N
-        setLayout(new java.awt.BorderLayout());
+        tipo.setFont(new java.awt.Font("Dialog", 0, 9)); // NOI18N
+        tipo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "-", "ori", "nal", "des" }));
 
-        l_busca.setFont(new java.awt.Font("Arial", 0, 9)); // NOI18N
-        l_busca.setText("Buscar:");
-
-        b_busca.setBackground(new java.awt.Color(90, 66, 126));
-        b_busca.setForeground(new java.awt.Color(255, 255, 255));
-        b_busca.setIcon(new ImageIcon("imagenes/buscar.png"));
-        b_busca.setToolTipText("Busca una partida");
-        b_busca.addActionListener(new java.awt.event.ActionListener() {
+        b_pedidos.setBackground(new java.awt.Color(90, 66, 126));
+        b_pedidos.setForeground(new java.awt.Color(255, 255, 255));
+        b_pedidos.setIcon(new ImageIcon("imagenes/impresora.png"));
+        b_pedidos.setEnabled(false);
+        b_pedidos.setMaximumSize(new java.awt.Dimension(25, 25));
+        b_pedidos.setMinimumSize(new java.awt.Dimension(25, 25));
+        b_pedidos.setPreferredSize(new java.awt.Dimension(25, 25));
+        b_pedidos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                b_buscaActionPerformed(evt);
+                b_pedidosActionPerformed(evt);
             }
         });
 
+        l_busca.setFont(new java.awt.Font("Arial", 0, 9)); // NOI18N
+        l_busca.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        l_busca.setText("Buscar:");
+        l_busca.setMaximumSize(new java.awt.Dimension(50, 12));
+        l_busca.setMinimumSize(new java.awt.Dimension(50, 12));
+        l_busca.setPreferredSize(new java.awt.Dimension(50, 12));
+
         t_busca.setFont(new java.awt.Font("Arial", 0, 10)); // NOI18N
         t_busca.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        t_busca.setMaximumSize(new java.awt.Dimension(200, 17));
+        t_busca.setMinimumSize(new java.awt.Dimension(200, 17));
+        t_busca.setPreferredSize(new java.awt.Dimension(200, 17));
         t_busca.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 t_buscaActionPerformed(evt);
@@ -332,25 +383,60 @@ public class consultaPedido extends javax.swing.JPanel {
             }
         });
 
-        b_pedidos.setBackground(new java.awt.Color(90, 66, 126));
-        b_pedidos.setForeground(new java.awt.Color(255, 255, 255));
-        b_pedidos.setText("Pedido");
-        b_pedidos.setEnabled(false);
-        b_pedidos.addActionListener(new java.awt.event.ActionListener() {
+        b_busca.setBackground(new java.awt.Color(90, 66, 126));
+        b_busca.setForeground(new java.awt.Color(255, 255, 255));
+        b_busca.setIcon(new ImageIcon("imagenes/buscar1.png"));
+        b_busca.setToolTipText("Busca una partida");
+        b_busca.setMaximumSize(new java.awt.Dimension(25, 25));
+        b_busca.setMinimumSize(new java.awt.Dimension(25, 25));
+        b_busca.setPreferredSize(new java.awt.Dimension(25, 25));
+        b_busca.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                b_pedidosActionPerformed(evt);
+                b_buscaActionPerformed(evt);
             }
         });
 
-        b_compra.setBackground(new java.awt.Color(90, 66, 126));
-        b_compra.setForeground(new java.awt.Color(255, 255, 255));
-        b_compra.setText("Ord. de Compra");
-        b_compra.setEnabled(false);
-        b_compra.addActionListener(new java.awt.event.ActionListener() {
+        r_autorizar2.setForeground(new java.awt.Color(0, 0, 204));
+        r_autorizar2.setText("Autorizacion 2");
+        r_autorizar2.setEnabled(false);
+        r_autorizar2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                b_compraActionPerformed(evt);
+                r_autorizar2ActionPerformed(evt);
             }
         });
+
+        s_separador.setMaximumSize(new java.awt.Dimension(32767, 12));
+        s_separador.setMinimumSize(new java.awt.Dimension(50, 12));
+        s_separador.setPreferredSize(new java.awt.Dimension(50, 12));
+
+        l_cambio.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        l_cambio.setText("Cambio:");
+        l_cambio.setMaximumSize(new java.awt.Dimension(70, 14));
+        l_cambio.setMinimumSize(new java.awt.Dimension(70, 14));
+        l_cambio.setPreferredSize(new java.awt.Dimension(70, 14));
+
+        t_cambio.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        t_cambio.setText("0.0");
+        t_cambio.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
+        t_cambio.setMaximumSize(new java.awt.Dimension(70, 15));
+        t_cambio.setMinimumSize(new java.awt.Dimension(70, 15));
+        t_cambio.setPreferredSize(new java.awt.Dimension(70, 15));
+        t_cambio.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                t_cambioFocusLost(evt);
+            }
+        });
+        t_cambio.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                t_cambioKeyTyped(evt);
+            }
+        });
+
+        setBackground(new java.awt.Color(255, 255, 255));
+        setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "Autorización de Pedidos", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Arial", 1, 12))); // NOI18N
+        setLayout(new java.awt.BorderLayout());
+
+        jPanel4.setBackground(new java.awt.Color(2, 135, 242));
 
         jPanel6.setBackground(new java.awt.Color(2, 135, 242));
         jPanel6.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -405,6 +491,7 @@ public class consultaPedido extends javax.swing.JPanel {
 
         l_notas.setBackground(new java.awt.Color(254, 254, 254));
         l_notas.setFont(new java.awt.Font("Arial", 0, 10)); // NOI18N
+        l_notas.setForeground(new java.awt.Color(255, 255, 255));
         l_notas.setText("Notas:");
 
         b_menos.setBackground(new java.awt.Color(90, 66, 126));
@@ -417,69 +504,68 @@ public class consultaPedido extends javax.swing.JPanel {
             }
         });
 
-        r_autorizar2.setForeground(new java.awt.Color(0, 0, 204));
-        r_autorizar2.setText("Autorizacion 2");
-        r_autorizar2.setEnabled(false);
-        r_autorizar2.addActionListener(new java.awt.event.ActionListener() {
+        b_archivo.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        b_archivo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                r_autorizar2ActionPerformed(evt);
+                b_archivoActionPerformed(evt);
             }
         });
+
+        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel3.setText("Forma de Pago");
+        jLabel3.setEnabled(false);
+
+        cb_pago.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "SELECCIONAR", "CREDITO", "CONTADO", "EFECTIVO", "CHEQUE" }));
+        cb_pago.setEnabled(false);
+        cb_pago.setMaximumSize(new java.awt.Dimension(120, 20));
+        cb_pago.setMinimumSize(new java.awt.Dimension(120, 20));
+        cb_pago.setPreferredSize(new java.awt.Dimension(120, 20));
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
+                .addComponent(b_menos, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(57, 57, 57)
+                .addComponent(b_archivo, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(b_menos, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(l_busca)
-                        .addGap(18, 18, 18)
-                        .addComponent(t_busca, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(b_busca, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(b_pedidos)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(b_compra)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 216, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 420, Short.MAX_VALUE)
                         .addComponent(l_notas)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(r_autorizar2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cb_pago, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(18, 18, 18)
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(b_menos, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(l_notas, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(t_busca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(l_busca))
-                                .addComponent(b_busca, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(b_pedidos)
-                                    .addComponent(b_compra))))
-                        .addGap(7, 7, 7)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(r_autorizar2)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(l_notas)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(cb_pago, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3)))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGap(7, 7, 7)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(b_archivo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(b_menos, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(19, 19, 19))
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         add(jPanel4, java.awt.BorderLayout.PAGE_END);
@@ -491,10 +577,11 @@ public class consultaPedido extends javax.swing.JPanel {
 
             },
             new String [] {
-                "#", "R. Valua", "N° Parte", "Folio", "Descripción", "Medida", "Plazo", "Cantidad", "Costo c/u", "Total"
+                "#", "R. Valua", "N° Parte", "Folio", "Descripción", "Medida", "Plazo", "Cantidad", "Costo c/u", "Tipo", "Total"
             }
         ));
         t_datos.setAutoscrolls(false);
+        t_datos.setColumnSelectionAllowed(true);
         t_datos.getTableHeader().setReorderingAllowed(false);
         scroll.setViewportView(t_datos);
         t_datos.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
@@ -940,32 +1027,15 @@ public class consultaPedido extends javax.swing.JPanel {
     private void b_pedidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_pedidosActionPerformed
         Formatos f1;
         if(this.c_tipo.getSelectedItem().toString().compareTo("Externo")==0 || this.c_tipo.getSelectedItem().toString().compareTo("Inventario")==0)
-            f1=new Formatos(this.usr, this.sessionPrograma, null, t_pedido.getText());
+            f1=new Formatos(this.usr, this.sessionPrograma, null, t_pedido.getText(),configuracion);
         else
-            f1=new Formatos(this.usr, this.sessionPrograma, this.orden_act, t_pedido.getText());
+            f1=new Formatos(this.usr, this.sessionPrograma, this.orden_act, t_pedido.getText(),configuracion);
             
         if(this.c_tipo.getSelectedItem().toString().compareTo("Interno")==0)
             f1.pedidos();
         else
             f1.pedidosExternos(Integer.parseInt(this.t_pedido.getText()));
     }//GEN-LAST:event_b_pedidosActionPerformed
-
-    private void b_compraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_compraActionPerformed
-        Formatos f1;
-        if(this.c_tipo.getSelectedItem().toString().compareTo("Interno")==0)
-        {
-            f1=new Formatos(this.usr, this.sessionPrograma, this.orden_act, t_pedido.getText());
-            f1.ordenCompra();
-        }
-        else
-        {
-            if(this.c_tipo.getSelectedItem().toString().compareTo("Externo")==0)
-                f1=new Formatos(this.usr, this.sessionPrograma, null, t_pedido.getText());
-            else
-                f1=new Formatos(this.usr, this.sessionPrograma, this.orden_act, t_pedido.getText());
-            f1.ordenCompraExternos(Integer.parseInt(this.t_pedido.getText()));
-        }
-    }//GEN-LAST:event_b_compraActionPerformed
 
     private void t_contraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_contraActionPerformed
         b_autorizar.requestFocus();
@@ -1174,7 +1244,6 @@ public class consultaPedido extends javax.swing.JPanel {
                         pedido.setFechaAutorizo(calendario.getTime());
                         session.beginTransaction().commit();
                         busca();
-                        this.b_compra.setEnabled(true);
                         this.b_pedidos.setEnabled(true);
                         session = HibernateUtil.getSessionFactory().openSession();
                         usr = (Usuario)session.get(Usuario.class, usr.getIdUsuario());
@@ -1214,30 +1283,37 @@ public class consultaPedido extends javax.swing.JPanel {
                 session.beginTransaction().begin();
                 usr = (Usuario)session.get(Usuario.class, usr.getIdUsuario());
                 pedido = (Pedido)session.get(Pedido.class, pedido.getIdPedido());
-                if(usr.getAutorizarPedidos()==true && pedido.getUsuarioByAutorizo().getIdUsuario().compareTo(usr.getIdUsuario())==0)
+                if(usr.getAutorizarPedidos()==true)
                 {
-                    Query query2 = session.createSQLQuery("select ( (select if( sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) as can " +
-                        "from movimiento inner join almacen on movimiento.id_almacen=almacen.id_almacen where id_pedido="+pedido.getIdPedido()+" and almacen.tipo_movimiento=1 and almacen.operacion in (1, 2, 3)) " +
-                        "- " +
-                        "(select if( sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) as can " +
-                        "from movimiento inner join almacen on movimiento.id_almacen=almacen.id_almacen where id_pedido="+pedido.getIdPedido()+" and almacen.tipo_movimiento=2 and almacen.operacion in (1, 2, 3))) as almacen;");
-                    query2.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
-                    ArrayList resp = (ArrayList)query2.list();
-                    java.util.HashMap map=(java.util.HashMap)resp.get(0);
-                    if(Double.parseDouble(map.get("almacen").toString())==0.0d)
+                    if(pedido.getUsuarioByAutorizo().getIdUsuario().compareTo(usr.getIdUsuario())==0)
                     {
-                        pedido.setUsuarioByAutorizo(null);
-                        pedido.setFechaAutorizo(null);
-                        session.beginTransaction().commit();
-                        r_autorizar.setText("Autorizacion 1");
-                        this.b_compra.setEnabled(true);
-                        this.b_pedidos.setEnabled(true);
-                        JOptionPane.showMessageDialog(this, "Se eliminó la autorizacion del pedido con exito");
+                        Query query2 = session.createSQLQuery("select ( (select if( sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) as can " +
+                            "from movimiento inner join almacen on movimiento.id_almacen=almacen.id_almacen where id_pedido="+pedido.getIdPedido()+" and almacen.tipo_movimiento=1 and almacen.operacion in (1, 2, 3, 7)) " +
+                            "- " +
+                            "(select if( sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) as can " +
+                            "from movimiento inner join almacen on movimiento.id_almacen=almacen.id_almacen where id_pedido="+pedido.getIdPedido()+" and almacen.tipo_movimiento=2 and almacen.operacion in (1, 2, 3, 7))) as almacen;");
+                        query2.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+                        ArrayList resp = (ArrayList)query2.list();
+                        java.util.HashMap map=(java.util.HashMap)resp.get(0);
+                        if(Double.parseDouble(map.get("almacen").toString())==0.0d)
+                        {
+                            pedido.setUsuarioByAutorizo(null);
+                            pedido.setFechaAutorizo(null);
+                            session.beginTransaction().commit();
+                            r_autorizar.setText("Autorizacion 1");
+                            this.b_pedidos.setEnabled(true);
+                            JOptionPane.showMessageDialog(this, "Se eliminó la autorizacion del pedido con exito");
+                        }
+                        else
+                        {
+                            this.r_autorizar.setSelected(true);
+                            JOptionPane.showMessageDialog(this, "El pedido ya tiene movimientos en el almacen");
+                        }
                     }
                     else
                     {
                         this.r_autorizar.setSelected(true);
-                        JOptionPane.showMessageDialog(this, "El pedido ya tiene movimientos en el almacen");
+                        JOptionPane.showMessageDialog(this, "No puedes quitar autorizaciones de otro Usuario");
                     }
                 }
                 else
@@ -1274,6 +1350,7 @@ public class consultaPedido extends javax.swing.JPanel {
                 {
                     //if(pedido.getUsuarioByAutorizo()==null || pedido.getUsuarioByAutorizo().getIdUsuario().compareTo(usr.getIdUsuario())!=0)
                     //{
+                        pedido.setUsuarioByAutorizo(usr);
                         pedido.setUsuarioByAutorizo2(usr);
                         Date fecha_autorizo2 = new Date();
                         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
@@ -1291,11 +1368,31 @@ public class consultaPedido extends javax.swing.JPanel {
                             Integer.parseInt(hora[0]),
                             Integer.parseInt(hora[1]),
                             Integer.parseInt(hora[2]));
+                        pedido.setFechaAutorizo(calendario.getTime());
                         pedido.setFechaAutorizo2(calendario.getTime());
+                        
+                        Configuracion con=(Configuracion)session.get(Configuracion.class, configuracion);
+                        String empresa="set";
+                        String suc="Toluca";
+                        if(rutaFTP.compareToIgnoreCase("tbstultitlan.ddns.net")==0)
+                        {
+                            suc="Tultitlan";
+                            empresa="logis";
+                        }
+                        else{
+                            if(rutaFTP.compareToIgnoreCase("set-toluca.ddns.net")==0)
+                            {
+                                suc="Merida";
+                                empresa="merida";
+                            }
+                        }
                         session.beginTransaction().commit();
-                        this.b_compra.setEnabled(true);
                         this.b_pedidos.setEnabled(true);
                         r_autorizar2.setText(usr.getEmpleado().getNombre());
+                        miNotificacion=null;
+                        miNotificacion = new Notificacion(pedido.getIdPedido(), pedido.getProveedorByIdProveedor().getRfc(), empresa) ;
+                        //enviaCorreo();
+                        miCorreo = new EnviaCorreo("Se a Autorizado el Pedido ("+pedido.getIdPedido()+") de "+suc, "Hola buen dia, se te comunica que el pedido No:"+pedido.getIdPedido()+" se a Autorizado saludos.", pedido.getEmpleado().getEmail(), usr.getEmpleado().getEmail());
                         JOptionPane.showMessageDialog(this, "El pedido fue autorizado con exito");
                     /*}
                     else
@@ -1330,36 +1427,46 @@ public class consultaPedido extends javax.swing.JPanel {
                 session.beginTransaction().begin();
                 pedido = (Pedido)session.get(Pedido.class, Integer.parseInt(t_pedido.getText()));
                 usr = (Usuario)session.get(Usuario.class, usr.getIdUsuario());
-                Query query2 = session.createSQLQuery("select ( (select if( sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) as can " +
-                    "from movimiento inner join almacen on movimiento.id_almacen=almacen.id_almacen where id_pedido="+pedido.getIdPedido()+" and almacen.tipo_movimiento=1 and almacen.operacion in (1, 2, 3)) " +
-                    "- " +
-                    "(select if( sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) as can " +
-                    "from movimiento inner join almacen on movimiento.id_almacen=almacen.id_almacen where id_pedido="+pedido.getIdPedido()+" and almacen.tipo_movimiento=2 and almacen.operacion in (1, 2, 3))) as almacen;");
-                query2.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
-                ArrayList resp = (ArrayList)query2.list();
-                java.util.HashMap map=(java.util.HashMap)resp.get(0);
-                if(Double.parseDouble(map.get("almacen").toString())==0.0d)
+                if(usr.getAutorizarPedidos()==true)
                 {
-                    if(usr.getAutorizarPedidos()==true && pedido.getUsuarioByAutorizo2().getIdUsuario().compareTo(usr.getIdUsuario())==0)
+                    if(pedido.getUsuarioByAutorizo2().getIdUsuario().compareTo(usr.getIdUsuario())==0)
                     {
-                        pedido.setUsuarioByAutorizo2(null);
-                        pedido.setFechaAutorizo2(null);
-                        session.beginTransaction().commit();
-                        r_autorizar2.setText("Autorizacion 2");
-                        this.b_compra.setEnabled(true);
-                        this.b_pedidos.setEnabled(true);
-                        JOptionPane.showMessageDialog(this, "Se eliminó la autorización del pedido con exito");
+                        Query query2 = session.createSQLQuery("select ( (select if( sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) as can " +
+                            "from movimiento inner join almacen on movimiento.id_almacen=almacen.id_almacen where id_pedido="+pedido.getIdPedido()+" and almacen.tipo_movimiento=1 and almacen.operacion in (1, 2, 3, 7)) " +
+                            "- " +
+                            "(select if( sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) as can " +
+                            "from movimiento inner join almacen on movimiento.id_almacen=almacen.id_almacen where id_pedido="+pedido.getIdPedido()+" and almacen.tipo_movimiento=2 and almacen.operacion in (1, 2, 3, 7))) as almacen;");
+                        query2.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+                        ArrayList resp = (ArrayList)query2.list();
+                        java.util.HashMap map=(java.util.HashMap)resp.get(0);
+                        if(Double.parseDouble(map.get("almacen").toString())==0.0d)
+                        {
+                            pedido.setUsuarioByAutorizo(null);
+                            pedido.setFechaAutorizo(null);
+                            pedido.setUsuarioByAutorizo2(null);
+                            pedido.setFechaAutorizo2(null);
+                            session.beginTransaction().commit();
+                            r_autorizar2.setText("Autorizacion 2");
+                            this.b_pedidos.setEnabled(true);
+                            miCorreo = new EnviaCorreo("Se elimino la Autorizacion del Pedido ("+pedido.getIdPedido()+")", "Hola buen dia, se te comunica que del pedido No:"+pedido.getIdPedido()+" se eliminó la Autorización.", pedido.getEmpleado().getEmail(), usr.getEmpleado().getEmail());
+                            JOptionPane.showMessageDialog(this, "Se eliminó la autorización del pedido con exito");
+                        }
+                        else
+                        {
+                            r_autorizar2.setSelected(true);
+                            JOptionPane.showMessageDialog(this, "El pedido ya tiene movimientos en el almacen");
+                        }
                     }
                     else
                     {
                         r_autorizar2.setSelected(true);
-                        JOptionPane.showMessageDialog(this, "Acceso denegado");
+                        JOptionPane.showMessageDialog(this, "No puedes quitar autorizaciones de otro Usuario");
                     }
                 }
                 else
                 {
                     r_autorizar2.setSelected(true);
-                    JOptionPane.showMessageDialog(this, "El pedido ya tiene movimientos en el almacen");
+                    JOptionPane.showMessageDialog(this, "Acceso denegado");
                 }
             }catch(Exception e)
             {
@@ -1376,19 +1483,93 @@ public class consultaPedido extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_r_autorizar2ActionPerformed
 
+    private void t_cambioFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_cambioFocusLost
+        // TODO add your handling code here:
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try
+        {
+            session.beginTransaction().begin();
+            Configuracion config=(Configuracion)session.get(Configuracion.class, configuracion);
+            Date fecha_hoy = new Date();
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String fecha = dateFormat.format(fecha_hoy);
+            DecimalFormat df = new DecimalFormat("#.0000");
+
+            double valor = Double.parseDouble(t_cambio.getText());
+            if(valor > 0.0){
+                config.setTipoCambio(valor);
+                config.setFechaCambio(fecha_hoy);
+                session.update(config);
+                session.beginTransaction().commit();
+
+                t_cambio.setText(""+df.format(valor));
+                t_cambio.setEditable(false);
+            }else{
+                t_cambio.setText("0.0");
+                t_cambio.setEditable(true);
+            }
+
+        }catch(Exception e)
+        {
+            session.beginTransaction().rollback();
+            e.printStackTrace();
+            //JOptionPane.showMessageDialog(null, "Error al consultar la base de datos");
+        }
+        finally
+        {
+            if(session!=null)
+            if(session.isOpen())
+            session.close();
+        }
+    }//GEN-LAST:event_t_cambioFocusLost
+
+    private void t_cambioKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_cambioKeyTyped
+        // TODO add your handling code here:
+        char caracter = evt.getKeyChar();
+        // Verificar si la tecla pulsada no es un digito
+        if(((caracter < '0') ||
+            (caracter > '9')) &&
+        (caracter != '\b' /*corresponde a BACK_SPACE*/) && caracter!='.')
+        {
+            evt.consume();  // ignorar el evento de teclado
+        }
+    }//GEN-LAST:event_t_cambioKeyTyped
+
+    private void b_archivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_archivoActionPerformed
+        // TODO add your handling code here:
+        if(b_archivo.getText().compareTo("Agregar Soporte")!=0)
+        {
+            Ftp miFtp=new Ftp();
+            boolean respuesta=true;
+            respuesta=miFtp.conectar(rutaFTP, "compras", "04650077", 3310);
+            if(respuesta==true)
+            {
+                miFtp.cambiarDirectorio("/soporte/");
+                miFtp.AbrirArchivo(b_archivo.getText());
+                miFtp.desconectar();
+            }
+            else
+            JOptionPane.showMessageDialog(null, "No fue posible conectar al servidor FTP");
+        }
+        else
+        JOptionPane.showMessageDialog(null, "No hay soporte aun");
+    }//GEN-LAST:event_b_archivoActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDialog autorizarCosto;
+    private javax.swing.JButton b_archivo;
     private javax.swing.JButton b_autorizar;
     private javax.swing.JButton b_busca;
-    private javax.swing.JButton b_compra;
     private javax.swing.JButton b_menos;
     private javax.swing.JButton b_pedidos;
     private javax.swing.JComboBox c_tipo;
+    private javax.swing.JComboBox cb_pago;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel12;
@@ -1403,6 +1584,7 @@ public class consultaPedido extends javax.swing.JPanel {
     private javax.swing.JLabel l_asegurado;
     private javax.swing.JLabel l_aseguradora;
     private javax.swing.JLabel l_busca;
+    private javax.swing.JLabel l_cambio;
     private javax.swing.JLabel l_colonia;
     private javax.swing.JLabel l_cp;
     private javax.swing.JLabel l_direccion;
@@ -1420,15 +1602,18 @@ public class consultaPedido extends javax.swing.JPanel {
     private javax.swing.JLabel l_subtotal;
     private javax.swing.JLabel l_tipo;
     private javax.swing.JLabel l_total;
+    private static javax.swing.JMenuBar m_menu;
     private javax.swing.JPanel p_arriba;
     private javax.swing.JPanel p_interno_centro;
     private javax.swing.JRadioButton r_autorizar;
     private javax.swing.JRadioButton r_autorizar2;
+    private javax.swing.JSeparator s_separador;
     private javax.swing.JScrollPane scroll;
     private javax.swing.JFormattedTextField t_IVA;
     private javax.swing.JTextField t_asegurado;
     private javax.swing.JTextField t_aseguradora;
     private javax.swing.JTextField t_busca;
+    private javax.swing.JTextField t_cambio;
     private javax.swing.JTextField t_clave;
     private javax.swing.JTextField t_colonia;
     private javax.swing.JPasswordField t_contra;
@@ -1455,6 +1640,7 @@ public class consultaPedido extends javax.swing.JPanel {
     private javax.swing.JTextField t_tipo;
     private javax.swing.JFormattedTextField t_total;
     private javax.swing.JTextField t_user;
+    private javax.swing.JComboBox tipo;
     // End of variables declaration//GEN-END:variables
 
     private Orden buscarOrden(int id)
@@ -1520,6 +1706,12 @@ public class consultaPedido extends javax.swing.JPanel {
                     column.setPreferredWidth(30);
                     break;
                 case 10:
+                    column.setPreferredWidth(10);
+                    DefaultCellEditor editor2 = new DefaultCellEditor(tipo);
+                    column.setCellEditor(editor2); 
+                    editor2.setClickCountToStart(0);
+                    break;
+                case 11:
                     column.setPreferredWidth(30);
                     break;
                 default:
@@ -1560,6 +1752,11 @@ public class consultaPedido extends javax.swing.JPanel {
             Session session = HibernateUtil.getSessionFactory().openSession();
             try
             {
+                pedido = (Pedido)session.get(Pedido.class, pedido.getIdPedido());
+                t_cambio.setEditable(false);
+                if(Double.parseDouble(pedido.getTipoCambio().toString())>0.0)
+                    t_cambio.setText(""+Double.parseDouble(pedido.getTipoCambio().toString()));
+                
                 this.t_pedido.setText("");
                 this.t_proveedor.setText("");
                 this.t_plazo.setText("");
@@ -1591,6 +1788,7 @@ public class consultaPedido extends javax.swing.JPanel {
                 String resp="";
                 
                 //*********cargamos datos de la factura*************************
+                this.cb_pago.setSelectedIndex(pedido.getFormaPago());
                 this.t_pedido.setText(""+pedido.getIdPedido());
                 this.t_proveedor.setText(""+pedido.getProveedorByIdProveedor().getIdProveedor());
                 l_proveedor.setText(pedido.getProveedorByIdProveedor().getNombre());
@@ -1626,6 +1824,10 @@ public class consultaPedido extends javax.swing.JPanel {
                 else
                     this.t_cp.setText("");
                 
+                if(pedido.getSoporte()==true)
+                    agregaArchivo(""+pedido.getIdPedido()+".pdf", b_archivo);
+                else
+                    agregaArchivo("Agregar Soporte", b_archivo);
                 //************cargamos datos de la orden***********************
                 if(part.length>0)
                 {
@@ -1790,7 +1992,16 @@ public class consultaPedido extends javax.swing.JPanel {
                             model.setValueAt(0, r, 9);
                         double sum=part[r].getCantPcp()*part[r].getPcp();
                         tot+=sum;
-                        model.setValueAt(sum, r, 10);
+                        
+                        String tipo_pieza="";
+                        if(part[r].getTipoPieza()!=null){
+                            tipo_pieza = part[r].getTipoPieza().toString();
+                        }else
+                            tipo_pieza="-";
+                        
+                        model.setValueAt(tipo_pieza, r, 10);
+                        
+                        model.setValueAt(sum, r, 11);
                     }
                 }
                 if(c_tipo.getSelectedItem().toString().compareTo("Externo")==0 || c_tipo.getSelectedItem().toString().compareTo("Adicional")==0)
@@ -1826,7 +2037,9 @@ public class consultaPedido extends javax.swing.JPanel {
                             model.setValueAt(0, r, 9);
                         double sum=partEx[r].getCantidad()*partEx[r].getCosto();
                         tot+=sum;
-                        model.setValueAt(sum, r, 10);
+                        
+                        model.setValueAt("", r , 10);
+                        model.setValueAt(sum, r, 11);
                     }
                 }
                 if(c_tipo.getSelectedItem().toString().compareTo("Inventario")==0)
@@ -1859,7 +2072,9 @@ public class consultaPedido extends javax.swing.JPanel {
                             model.setValueAt(0, r, 9);
                         double sum=partEx[r].getCantidad()*partEx[r].getCosto();
                         tot+=sum;
-                        model.setValueAt(sum, r, 10);
+                        
+                        model.setValueAt("", r , 10);
+                        model.setValueAt(sum, r, 11);
                     }
                 }
                 
@@ -1869,9 +2084,9 @@ public class consultaPedido extends javax.swing.JPanel {
                 t_total.setValue(tot+iva);
                 
                 //checar si la orden ya fue autorizada
-                if(/*pedido.getUsuarioByAutorizo()!=null ||*/ pedido.getUsuarioByAutorizo2()!=null)
+                if(pedido.getUsuarioByAutorizo()!=null || pedido.getUsuarioByAutorizo2()!=null)
                 {
-                    /*if(pedido.getUsuarioByAutorizo()!=null)
+                    if(pedido.getUsuarioByAutorizo()!=null)
                     {
                         r_autorizar.setSelected(true);
                         r_autorizar.setText(pedido.getUsuarioByAutorizo().getEmpleado().getNombre());
@@ -1880,17 +2095,17 @@ public class consultaPedido extends javax.swing.JPanel {
                     {
                         r_autorizar.setSelected(false);
                         r_autorizar.setText("Autorizacion 1");
-                    }*/
-                    //if(pedido.getUsuarioByAutorizo2()!=null)
-                    //{
+                    }
+                    if(pedido.getUsuarioByAutorizo2()!=null)
+                    {
                         r_autorizar2.setSelected(true);
                         r_autorizar2.setText(pedido.getUsuarioByAutorizo2().getEmpleado().getNombre());
-                    /*}
+                    }
                     else
                     {
                         r_autorizar2.setSelected(false);
                         r_autorizar2.setText("Autorizacion 2");
-                    }*/
+                    }
                     model.setColumnaEditable(0, false);
                     model.setColumnaEditable(1, false);
                     model.setColumnaEditable(2, false);
@@ -1899,12 +2114,13 @@ public class consultaPedido extends javax.swing.JPanel {
                     model.setColumnaEditable(7, false);
                     model.setColumnaEditable(8, false);
                     model.setColumnaEditable(9, false);
+                    model.setColumnaEditable(10, false);
                 }
                 else
                 {
-                    //r_autorizar.setSelected(false);
+                    r_autorizar.setSelected(false);
                     r_autorizar2.setSelected(false);
-                    //r_autorizar.setText("Autorizacion 1");
+                    r_autorizar.setText("Autorizacion 1");
                     r_autorizar2.setText("Autorizacion 2");
                 }
                 
@@ -2017,10 +2233,11 @@ public class consultaPedido extends javax.swing.JPanel {
             t_clave.setText("");
             this.b_menos.setEnabled(false);
             b_pedidos.setEnabled(false);
-            b_compra.setEnabled(false);
-            //r_autorizar.setEnabled(false);
-            //r_autorizar.setText("Autorizacion 1");
+            r_autorizar.setEnabled(false);
+            r_autorizar.setSelected(false);
+            r_autorizar.setText("Autorizacion 1");
             r_autorizar2.setEnabled(false);
+            r_autorizar2.setSelected(false);
             r_autorizar2.setText("Autorizacion 2");
             model=new MyModel(0, columnas);
             t_datos.setModel(model); 
@@ -2054,13 +2271,13 @@ public class consultaPedido extends javax.swing.JPanel {
         for(int ren=0; ren<t_datos.getRowCount(); ren++)
         {
             double multi= Double.parseDouble(String.valueOf(t_datos.getValueAt(ren,8)))*Double.parseDouble(String.valueOf(t_datos.getValueAt(ren,9)));
-            t_datos.setValueAt(multi,ren,10);
-            double subtotal1= Double.parseDouble(String.valueOf(t_datos.getValueAt(ren,10)));
+            t_datos.setValueAt(multi,ren,11);
+            double subtotal1= Double.parseDouble(String.valueOf(t_datos.getValueAt(ren,11)));
             subtotal+=subtotal1;
         }
         t_subtotal.setValue(subtotal);
         session = HibernateUtil.getSessionFactory().openSession();
-        Configuracion con = (Configuracion)session.get(Configuracion.class, 1);
+        Configuracion con = (Configuracion)session.get(Configuracion.class, configuracion);
         t_IVA.setValue(iva=subtotal*con.getIva()/100);
         t_total.setValue(subtotal+iva);
         if(session.isOpen())
@@ -2082,6 +2299,7 @@ public class consultaPedido extends javax.swing.JPanel {
             java.lang.String.class/*Plazo*/, 
             java.lang.Double.class/*Cantidad*/, 
             java.lang.Double.class/*Costo c/u*/, 
+            java.lang.String.class/*Tipo*/,
             java.lang.Double.class/*Total*/ 
         };
         int ren=0;
@@ -2318,5 +2536,162 @@ public class consultaPedido extends javax.swing.JPanel {
             return resp;
         }
     }
+ 
+    public class Notificacion implements Runnable
+    {
+        Thread t;
+        int pedido;
+        String rfc, empresa="set";
+        
+        public Notificacion(int pedido, String rfc, String empresa) 
+        {
+            this.pedido=pedido;
+            this.rfc=rfc;
+            this.empresa=empresa;
+            t=new Thread(this,"no");
+            t.start();
+        }
+        @Override
+        public void run() {
+            envia(pedido, rfc, empresa);
+            t.interrupt();
+        }
+        
+        public void envia(int pedido, String rfc, String empresa){
+            try{    
+                String notificaciones="{\"NOTIFICACIONES\":";
+                notificaciones +="{\"VENTANA\":\"Pedido\",\"ID\":\""+pedido+"\",\"SUCURSAL\":\""+empresa+"\",\"RFC\":\""+rfc+"\"}";
+                notificaciones +="}";
+                //PeticionPost service = new PeticionPost("http://192.168.1.122/Seguimiento/service/api.php");
+                PeticionPost service = new PeticionPost("http://tbstoluca.ddns.net:8085/Seguimiento/service/api.php");
+                service.add("METODO", "NOTIFICACION.MENSAJE");
+                service.add("NOTIFICACIONES", notificaciones);
+                System.out.println(service.getRespueta());
+
+            }catch(Exception e){
+                e.printStackTrace();
+                //JOptionPane.showMessageDialog(this, "Error en la conexión al servidor, intente mas tarde.");
+            }
+        }
+        
+    }
     
+    private static Component panelMenu() {
+      JRootPane rootPane = new JRootPane();
+      rootPane.setJMenuBar(m_menu);
+      return rootPane;
+  }
+    
+    void agregaArchivo(String nombre, JButton bt)
+    {
+        if(nombre.contains(".pdf") || nombre.contains(".PDF"))
+            bt.setIcon(new ImageIcon("imagenes/pdf.png"));
+        else
+        {
+            if(nombre.contains(".docx") || nombre.contains(".DOCX"))
+                bt.setIcon(new ImageIcon("imagenes/word.png"));
+            else
+                bt.setIcon(new ImageIcon("imagenes/desconocido.png"));
+            
+            //subir el archivo
+        }
+        bt.setText(nombre);
+   }
+    
+    /*public void enviaCorreo(String asunto, String mensaje, String from)
+    {
+        String smtp="";
+        boolean ttl=false;
+        String puerto="";
+        String envia="";
+        String clave="";
+        //String from="";
+        String cc="";
+        String texto = null;
+        
+        try
+        {
+            FileReader f = new FileReader("correo.ml");
+            BufferedReader b = new BufferedReader(f);
+            int renglon=0;
+            while((texto = b.readLine())!=null)
+            {
+                switch(renglon)
+                {
+                    case 1://smtp
+                        smtp=texto.trim();
+                        break;
+                    case 2://ttl
+                        if(texto.compareToIgnoreCase("true")==0)
+                            ttl=true;
+                        else
+                            ttl=false;
+                        break;
+                    case 3://puerto
+                        puerto=texto.trim();
+                        break;
+                    case 4://cuenta
+                        envia=texto.trim();
+                        break;
+                    case 5://contraseña
+                        clave=texto.trim();
+                        break;
+                }
+                renglon+=1;
+            }
+            b.close();
+        }catch(Exception e){e.printStackTrace();}
+        
+        try
+        {
+            // se obtiene el objeto Session.
+            Properties props = new Properties();
+            props.put("mail.smtp.host", smtp);
+            props.setProperty("mail.smtp.starttls.enable", ""+ttl);
+            props.setProperty("mail.smtp.port", puerto);
+            props.setProperty("mail.smtp.user", envia);
+            props.setProperty("mail.smtp.auth", "true");
+
+            javax.mail.Session session = javax.mail.Session.getDefaultInstance(props, null);
+            // session.setDebug(true);
+
+            // Se compone la parte del texto
+            BodyPart texto_mensaje = new MimeBodyPart();
+            texto_mensaje.setText(mensaje);
+
+            // Una MultiParte para agrupar texto e imagen.
+            MimeMultipart multiParte = new MimeMultipart();
+            multiParte.addBodyPart(texto_mensaje);
+
+            // Se compone el correo, dando to, from, subject y el contenido.
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(envia));
+
+            String [] direcciones=from.split(";");
+            for(int x=0; x<direcciones.length; x++)
+            {
+                if(direcciones[x].compareTo("")!=0)
+                    message.addRecipient(Message.RecipientType.TO, new InternetAddress(direcciones[x].replace(" ","")));
+            }
+
+            String [] dirCC=cc.split(";");
+            for(int y=0; y<dirCC.length; y++)
+            {
+                if(dirCC[y].compareTo("")!=0)
+                    message.addRecipient(Message.RecipientType.CC, new InternetAddress(dirCC[y].replace(" ","")));
+            }
+
+            message.setSubject(asunto);
+            message.setContent(multiParte);
+
+            Transport t = session.getTransport("smtp");
+            t.connect(envia, clave);
+            t.sendMessage(message, message.getAllRecipients());
+            t.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }*/
 }

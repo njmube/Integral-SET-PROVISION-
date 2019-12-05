@@ -90,11 +90,13 @@ public class ComparaCotizacion extends javax.swing.JPanel {
     String[] colPedidos = new String [] {
         "No°","Proveedor","Fecha",};
     String edo="";
+    int configuracion=1;
     /**
      * Creates new form ComparaCotizacion
      */
-    public ComparaCotizacion(String orde, Usuario us, String ses, Orden a, String estado) {
+    public ComparaCotizacion(String orde, Usuario us, String ses, Orden a, String estado, int configuracion) {
         initComponents();
+        this.configuracion=configuracion;
         scroll.getVerticalScrollBar().setUI(new VerticalBarUI());
         scroll.getHorizontalScrollBar().setUI(new HorizontalBarUI());
         ord=a;
@@ -853,7 +855,7 @@ public class ComparaCotizacion extends javax.swing.JPanel {
         h.session(sessionPrograma);
         if(user.getGeneraPedidos()==true)
         {
-            buscaProveedor obj = new buscaProveedor(new javax.swing.JFrame(), true, this.user, this.sessionPrograma);
+            buscaProveedor obj = new buscaProveedor(new javax.swing.JFrame(), true, this.user, this.sessionPrograma, 0);
             obj.t_busca.requestFocus();
             Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
             obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
@@ -879,7 +881,7 @@ public class ComparaCotizacion extends javax.swing.JPanel {
         // TODO add your handling code here:
         if(t_pedidos.getSelectedRow()> -1)
         {
-            f1=new Formatos(this.user, this.sessionPrograma, this.ord, t_pedidos.getValueAt(t_pedidos.getSelectedRow(), 0).toString());
+            f1=new Formatos(this.user, this.sessionPrograma, this.ord, t_pedidos.getValueAt(t_pedidos.getSelectedRow(), 0).toString(), configuracion);
             f1.pedidos();
         }
         else
@@ -892,7 +894,7 @@ public class ComparaCotizacion extends javax.swing.JPanel {
         // TODO add your handling code here:
         if(t_pedidos.getSelectedRow()> -1)
         {
-            f1=new Formatos(this.user, this.sessionPrograma, this.ord, t_pedidos.getValueAt(t_pedidos.getSelectedRow(), 0).toString());
+            f1=new Formatos(this.user, this.sessionPrograma, this.ord, t_pedidos.getValueAt(t_pedidos.getSelectedRow(), 0).toString(), configuracion);
             f1.ordenCompra();
         }
         else
@@ -1014,9 +1016,7 @@ public class ComparaCotizacion extends javax.swing.JPanel {
                                         ej=new Ejemplar();
                                         ej.setIdParte(t_datos.getValueAt(r, col-3).toString());
                                         ej.setMarca(ord.getMarca());
-                                        ej.setTipo(ord.getTipo());
-                                        ej.setModelo(ord.getModelo());
-                                        ej.setCatalogo(part.getCatalogo().getNombre());
+                                        ej.setCatalogo(part.getCatalogo());
                                         //ej.addPartida(part);
                                         session.save(part);
                                         part.setEjemplar(ej);
@@ -1034,9 +1034,7 @@ public class ComparaCotizacion extends javax.swing.JPanel {
                                     ej=new Ejemplar();
                                     ej.setIdParte(t_datos.getValueAt(r, col-3).toString());
                                     ej.setMarca(ord.getMarca());
-                                    ej.setTipo(ord.getTipo());
-                                    ej.setModelo(ord.getModelo());
-                                    ej.setCatalogo(part.getCatalogo().getNombre());
+                                    ej.setCatalogo(part.getCatalogo());
                                     //ej.addPartida(part);
                                     session.save(part);
                                     part.setEjemplar(ej);

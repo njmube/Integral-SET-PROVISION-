@@ -80,16 +80,18 @@ public class generaCotizacion extends javax.swing.JPanel {
     List noPartida;
     List cotizaciones;
     File archivoXLS=null;
+    int configuracion=1;
     /**
      * Creates new form generaCotizacion
      */
-    public generaCotizacion(String ord, Usuario us, String edo, String ses) {
+    public generaCotizacion(String ord, Usuario us, String edo, String ses, int configuracion) {
         initComponents();
         scroll.getVerticalScrollBar().setUI(new VerticalBarUI());
         scroll.getHorizontalScrollBar().setUI(new HorizontalBarUI());
         scroll1.getVerticalScrollBar().setUI(new VerticalBarUI());
         scroll1.getHorizontalScrollBar().setUI(new HorizontalBarUI());
         noPartida= new ArrayList();
+        this.configuracion=configuracion;
         estado=edo;
         sessionPrograma=ses;
         orden=ord;
@@ -903,7 +905,7 @@ public class generaCotizacion extends javax.swing.JPanel {
         {
             if(t_datos.getSelectedColumn()>4 && t_datos.getSelectedColumn()<8)
             {
-                buscaProveedor obj = new buscaProveedor(new javax.swing.JFrame(), true, this.user, this.sessionPrograma);
+                buscaProveedor obj = new buscaProveedor(new javax.swing.JFrame(), true, this.user, this.sessionPrograma,0);
                 obj.t_busca.requestFocus();
                 Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
                 obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
@@ -1278,7 +1280,7 @@ public class generaCotizacion extends javax.swing.JPanel {
                     Session session = HibernateUtil.getSessionFactory().openSession();
                     session.beginTransaction().begin();
                     Orden ord=(Orden)session.get(Orden.class, Integer.parseInt(orden));
-                    Configuracion con= (Configuracion)session.get(Configuracion.class, 1);
+                    Configuracion con= (Configuracion)session.get(Configuracion.class, configuracion);
                     
                     hoja.setColumnWidth(5, 15000);
                     Row r0=hoja.createRow(0);

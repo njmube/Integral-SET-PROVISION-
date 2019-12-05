@@ -50,20 +50,10 @@ import org.hibernate.Session;
 import Integral.calendario;
 import Integral.Imagen;
 import Integral.ExtensionFileFilter;
+import Integral.Ftp;
 import java.awt.Graphics;
-import java.util.Random;
 import org.hibernate.criterion.Restrictions;
 import Integral.Herramientas;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.util.Properties;
-import javax.mail.BodyPart;
-import javax.mail.Message;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
 
 /**
  *
@@ -87,29 +77,26 @@ public class AperturaOrden extends javax.swing.JPanel {
     String id_ajustador="";
     String id_agente="";
     String id_tecnico="";
+    int configuracion=1;
     /**
      * Creates new form altaServicios
      */
-    public AperturaOrden(Usuario usuario, String envio_periodo, String programa) {
+    public AperturaOrden(Usuario usuario, String envio_periodo, String programa, String rutaFTP, int configuracion) {
         sessionPrograma=programa;
+        this.configuracion=configuracion;
         usr=usuario;
         periodo=envio_periodo;
+        ruta=rutaFTP;
         initComponents();
-        ruta="";
-        try
-        {
-            FileReader f = new FileReader("config.txt");
-            BufferedReader b = new BufferedReader(f);
-            if((ruta = b.readLine())==null)
-                ruta="";
-            b.close();
-        }catch(Exception e){e.printStackTrace();}
         cargaEstatus();
-        //cargaSiniestro();
-        edita_cliente();
-        l_id_cliente.setVisible(false);
-        p_foto.add(new Imagen("imagenes/foto.png", 83, 43, 1, 25, 83, 88));
+        p_foto.add(new Imagen("imagenes/foto.png", 128, 168, 4, 4, 128,168));
         p_foto.repaint();
+        
+        cb_tipo_cliente.addItem("Asegurado");
+        cb_tipo_cliente.addItem("Tercero");
+        cb_tipo_cliente.addItem("Tercero Aseg.");
+        cb_tipo_cliente.addItem("Particular");
+        this.b_busca_cliente.requestFocus();
     }
 
     /**
@@ -121,9 +108,42 @@ public class AperturaOrden extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        dateChooserDialog1 = new datechooser.beans.DateChooserDialog();
         t_aseguradora = new javax.swing.JTextField();
+        l_id_cliente = new javax.swing.JLabel();
+        t_marca = new javax.swing.JTextField();
+        t_fecha_estatus = new javax.swing.JTextField();
+        jPanel3 = new javax.swing.JPanel();
+        b_marca = new javax.swing.JButton();
+        l_nombre_marca = new javax.swing.JLabel();
+        b_tipo = new javax.swing.JButton();
+        t_tipo = new javax.swing.JTextField();
+        l_serie = new javax.swing.JLabel();
+        t_serie = new javax.swing.JTextField();
+        l_motor = new javax.swing.JLabel();
+        t_motor = new javax.swing.JTextField();
+        l_placas = new javax.swing.JLabel();
+        t_placas = new javax.swing.JTextField();
+        l_economico = new javax.swing.JLabel();
+        t_economico = new javax.swing.JTextField();
+        l_modelo = new javax.swing.JLabel();
+        t_modelo = new javax.swing.JFormattedTextField();
+        l_km = new javax.swing.JLabel();
+        t_km = new javax.swing.JTextField();
+        l_color = new javax.swing.JLabel();
+        t_color = new javax.swing.JTextField();
+        l_cliente = new javax.swing.JLabel();
+        cb_tipo_cliente = new javax.swing.JComboBox();
+        p_foto = new javax.swing.JPanel();
+        b_guardar = new javax.swing.JButton();
+        b_cancelar = new javax.swing.JButton();
+        jLabel17 = new javax.swing.JLabel();
+        jPanel5 = new javax.swing.JPanel();
+        b_fecha_interna = new javax.swing.JButton();
+        t_fecha_interna = new javax.swing.JTextField();
+        b_fecha_cliente = new javax.swing.JButton();
+        t_fecha_cliente = new javax.swing.JTextField();
+        jPanel1 = new javax.swing.JPanel();
         b_buscar_aseguradora = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         t_siniestro = new javax.swing.JTextField();
@@ -137,725 +157,104 @@ public class AperturaOrden extends javax.swing.JPanel {
         t_reporte = new javax.swing.JTextField();
         l_nombre_aseguradora = new javax.swing.JLabel();
         t_fecha_siniestro = new javax.swing.JTextField();
-        p_foto = new javax.swing.JPanel();
+        b_ajustador = new javax.swing.JButton();
+        t_ajustador = new javax.swing.JTextField();
+        b_agente = new javax.swing.JButton();
+        t_agente = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
-        jLabel8 = new javax.swing.JLabel();
+        l_nombre = new javax.swing.JLabel();
         t_nombre_cliente = new javax.swing.JTextField();
-        jLabel9 = new javax.swing.JLabel();
-        t_direccion_cliente = new javax.swing.JTextField();
-        jLabel10 = new javax.swing.JLabel();
-        t_colonia_cliente = new javax.swing.JTextField();
-        jLabel11 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
+        l_rfc_cliente = new javax.swing.JLabel();
         t_rfc_cliente = new javax.swing.JTextField();
-        jLabel13 = new javax.swing.JLabel();
-        t_poblacion_cliente = new javax.swing.JTextField();
-        jLabel14 = new javax.swing.JLabel();
-        c_estado_cliente = new javax.swing.JComboBox();
-        jLabel15 = new javax.swing.JLabel();
-        jLabel16 = new javax.swing.JLabel();
-        l_id_cliente = new javax.swing.JLabel();
-        jPanel5 = new javax.swing.JPanel();
-        cb_tercero = new javax.swing.JCheckBox();
-        cb_tercero_asegurado = new javax.swing.JCheckBox();
-        cb_asegurado = new javax.swing.JCheckBox();
-        b_busca_cliente = new javax.swing.JButton();
-        cb_particular = new javax.swing.JCheckBox();
-        b_guardar_cliente = new javax.swing.JButton();
-        b_nuevo_cliente = new javax.swing.JButton();
+        l_direccion_cliente = new javax.swing.JLabel();
+        t_direccion_cliente = new javax.swing.JTextField();
+        l_contacto_cliente = new javax.swing.JLabel();
         t_contacto_cliente = new javax.swing.JTextField();
-        jLabel18 = new javax.swing.JLabel();
-        t_nextel_cliente = new javax.swing.JTextField();
-        jLabel25 = new javax.swing.JLabel();
-        t_cp_cliente = new javax.swing.JFormattedTextField();
+        l_email_cliente = new javax.swing.JLabel();
         t_email_cliente = new javax.swing.JTextField();
+        l_telefono_cliente = new javax.swing.JLabel();
         t_telefono_cliente = new javax.swing.JFormattedTextField();
-        jPanel3 = new javax.swing.JPanel();
-        t_fecha_interna = new javax.swing.JTextField();
-        b_fecha_interna = new javax.swing.JButton();
-        t_tipo = new javax.swing.JTextField();
-        b_tipo = new javax.swing.JButton();
-        t_marca = new javax.swing.JTextField();
-        b_marca = new javax.swing.JButton();
-        jLabel22 = new javax.swing.JLabel();
-        t_motor = new javax.swing.JTextField();
-        t_placas = new javax.swing.JTextField();
-        jLabel23 = new javax.swing.JLabel();
-        jLabel26 = new javax.swing.JLabel();
-        jLabel27 = new javax.swing.JLabel();
-        t_serie = new javax.swing.JTextField();
-        jLabel28 = new javax.swing.JLabel();
-        t_economico = new javax.swing.JTextField();
+        b_guardar_cliente = new javax.swing.JButton();
+        b_busca_cliente = new javax.swing.JButton();
+        b_nuevo_cliente = new javax.swing.JButton();
+        l_numero_cliente = new javax.swing.JLabel();
+        t_numero_cliente = new javax.swing.JTextField();
+        l_cp_cliente = new javax.swing.JLabel();
+        t_cp_cliente = new javax.swing.JTextField();
+        cb_edo_cliente = new javax.swing.JComboBox();
+        t_municipio_cliente = new javax.swing.JTextField();
+        l_municipio_cliente = new javax.swing.JLabel();
+        l_edo_cliente = new javax.swing.JLabel();
+        t_poblacion_cliente = new javax.swing.JTextField();
+        l_poblacion_cliente = new javax.swing.JLabel();
+        t_colonia_cliente = new javax.swing.JTextField();
+        l_colonia_cliente = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         c_estatus = new javax.swing.JComboBox();
-        t_fecha_estatus = new javax.swing.JTextField();
-        b_cancelar = new javax.swing.JButton();
-        b_guardar = new javax.swing.JButton();
-        t_fecha_cliente = new javax.swing.JTextField();
-        b_fecha_cliente = new javax.swing.JButton();
-        l_nombre_marca = new javax.swing.JLabel();
-        jLabel17 = new javax.swing.JLabel();
-        jPanel6 = new javax.swing.JPanel();
-        c_siniestro = new javax.swing.JComboBox();
-        jLabel29 = new javax.swing.JLabel();
-        t_modelo = new javax.swing.JFormattedTextField();
-        t_km = new javax.swing.JTextField();
-        jLabel30 = new javax.swing.JLabel();
-        t_color = new javax.swing.JTextField();
-        jLabel31 = new javax.swing.JLabel();
-        t_tecnico = new javax.swing.JTextField();
         b_buscarh = new javax.swing.JButton();
-        t_ajustador = new javax.swing.JTextField();
-        t_agente = new javax.swing.JTextField();
-        b_ajustador = new javax.swing.JButton();
-        b_agente = new javax.swing.JButton();
-
-        setBackground(new java.awt.Color(255, 255, 255));
-        setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(90, 66, 126), 1, true), "Apertura de Ordenes", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 3, 12))); // NOI18N
-
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(90, 66, 126), 1, true), "Datos del Seguro", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Arial", 1, 11))); // NOI18N
-        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jLabel1.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(51, 0, 255));
-        jLabel1.setText("Aseguradora:");
-        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, -1, 19));
+        t_tecnico = new javax.swing.JTextField();
+        jLabel34 = new javax.swing.JLabel();
+        jLabel33 = new javax.swing.JLabel();
+        c_siniestro = new javax.swing.JComboBox();
+        t_garantia = new javax.swing.JTextField();
+        cb_garantia = new javax.swing.JCheckBox();
 
         t_aseguradora.setBackground(new java.awt.Color(204, 255, 255));
         t_aseguradora.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_aseguradora.setNextFocusableComponent(t_siniestro);
-        t_aseguradora.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                t_aseguradoraFocusLost(evt);
-            }
-        });
-        t_aseguradora.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                t_aseguradoraActionPerformed(evt);
-            }
-        });
-        t_aseguradora.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                t_aseguradoraKeyTyped(evt);
-            }
-        });
-        jPanel1.add(t_aseguradora, new org.netbeans.lib.awtextra.AbsoluteConstraints(94, 50, 53, -1));
 
-        b_buscar_aseguradora.setBackground(new java.awt.Color(2, 135, 242));
-        b_buscar_aseguradora.setIcon(new ImageIcon("imagenes/buscar.png"));
-        b_buscar_aseguradora.setToolTipText("Consultar aseguradoras");
-        b_buscar_aseguradora.setMaximumSize(new java.awt.Dimension(32, 8));
-        b_buscar_aseguradora.setMinimumSize(new java.awt.Dimension(32, 8));
-        b_buscar_aseguradora.setNextFocusableComponent(t_siniestro);
-        b_buscar_aseguradora.setPreferredSize(new java.awt.Dimension(32, 8));
-        b_buscar_aseguradora.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                b_buscar_aseguradoraActionPerformed(evt);
-            }
-        });
-        jPanel1.add(b_buscar_aseguradora, new org.netbeans.lib.awtextra.AbsoluteConstraints(146, 47, 28, 24));
+        t_marca.setBackground(new java.awt.Color(204, 255, 255));
+        t_marca.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jLabel3.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel3.setText("Siniestro:");
-        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 80, 58, -1));
+        t_fecha_estatus.setBackground(new java.awt.Color(204, 255, 255));
+        t_fecha_estatus.setForeground(new java.awt.Color(51, 0, 255));
+        t_fecha_estatus.setText("DD-MM-AAAA");
+        t_fecha_estatus.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        t_fecha_estatus.setEnabled(false);
 
-        t_siniestro.setBackground(new java.awt.Color(204, 255, 255));
-        t_siniestro.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_siniestro.setNextFocusableComponent(t_poliza);
-        t_siniestro.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                t_siniestroFocusLost(evt);
-            }
-        });
-        t_siniestro.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                t_siniestroActionPerformed(evt);
-            }
-        });
-        t_siniestro.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                t_siniestroKeyTyped(evt);
-            }
-        });
-        jPanel1.add(t_siniestro, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 96, 90, -1));
-
-        jLabel4.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel4.setText("Fecha Reporte:");
-        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 120, -1, -1));
-
-        b_fecha_siniestro.setBackground(new java.awt.Color(2, 135, 242));
-        b_fecha_siniestro.setIcon(new ImageIcon("imagenes/calendario.png"));
-        b_fecha_siniestro.setToolTipText("Calendario");
-        b_fecha_siniestro.setMaximumSize(new java.awt.Dimension(32, 8));
-        b_fecha_siniestro.setMinimumSize(new java.awt.Dimension(32, 8));
-        b_fecha_siniestro.setNextFocusableComponent(cb_asegurado);
-        b_fecha_siniestro.setPreferredSize(new java.awt.Dimension(32, 8));
-        b_fecha_siniestro.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                b_fecha_siniestroActionPerformed(evt);
-            }
-        });
-        jPanel1.add(b_fecha_siniestro, new org.netbeans.lib.awtextra.AbsoluteConstraints(249, 137, 28, 24));
-
-        jLabel5.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel5.setText("Poliza:");
-        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 80, -1, -1));
-
-        t_poliza.setBackground(new java.awt.Color(204, 255, 255));
-        t_poliza.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_poliza.setNextFocusableComponent(t_reporte);
-        t_poliza.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                t_polizaFocusLost(evt);
-            }
-        });
-        t_poliza.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                t_polizaActionPerformed(evt);
-            }
-        });
-        t_poliza.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                t_polizaKeyTyped(evt);
-            }
-        });
-        jPanel1.add(t_poliza, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 96, 90, -1));
-
-        t_inciso.setBackground(new java.awt.Color(204, 255, 255));
-        t_inciso.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_inciso.setNextFocusableComponent(b_fecha_siniestro);
-        t_inciso.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                t_incisoFocusLost(evt);
-            }
-        });
-        t_inciso.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                t_incisoActionPerformed(evt);
-            }
-        });
-        t_inciso.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                t_incisoKeyTyped(evt);
-            }
-        });
-        jPanel1.add(t_inciso, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 140, 30, -1));
-
-        jLabel6.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel6.setText("Inciso:");
-        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 120, -1, -1));
-
-        jLabel7.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel7.setText("Reporte:");
-        jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 120, -1, -1));
-
-        t_reporte.setBackground(new java.awt.Color(204, 255, 255));
-        t_reporte.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_reporte.setNextFocusableComponent(t_inciso);
-        t_reporte.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                t_reporteFocusLost(evt);
-            }
-        });
-        t_reporte.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                t_reporteActionPerformed(evt);
-            }
-        });
-        t_reporte.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                t_reporteKeyTyped(evt);
-            }
-        });
-        jPanel1.add(t_reporte, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 140, 90, -1));
-
-        l_nombre_aseguradora.setFont(new java.awt.Font("Arial", 0, 10)); // NOI18N
-        l_nombre_aseguradora.setText("Seleccione una aseguradora");
-        jPanel1.add(l_nombre_aseguradora, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, 180, 15));
-
-        t_fecha_siniestro.setEditable(false);
-        t_fecha_siniestro.setBackground(new java.awt.Color(204, 255, 255));
-        t_fecha_siniestro.setText("DD-MM-AAAA");
-        t_fecha_siniestro.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_fecha_siniestro.setEnabled(false);
-        jPanel1.add(t_fecha_siniestro, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 140, 88, -1));
-
-        p_foto.setBackground(new java.awt.Color(2, 135, 242));
-        p_foto.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
-        p_foto.setToolTipText("Agregar imagen de la unidad");
-        p_foto.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        p_foto.setPreferredSize(new java.awt.Dimension(84, 94));
-        p_foto.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                p_fotoMouseClicked(evt);
-            }
-        });
-
-        javax.swing.GroupLayout p_fotoLayout = new javax.swing.GroupLayout(p_foto);
-        p_foto.setLayout(p_fotoLayout);
-        p_fotoLayout.setHorizontalGroup(
-            p_fotoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 82, Short.MAX_VALUE)
-        );
-        p_fotoLayout.setVerticalGroup(
-            p_fotoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 92, Short.MAX_VALUE)
-        );
-
-        jPanel1.add(p_foto, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 20, -1, -1));
-
-        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(90, 66, 126), 1, true), "Datos del Cliente", javax.swing.border.TitledBorder.RIGHT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Arial", 1, 11))); // NOI18N
-
-        jLabel8.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel8.setForeground(new java.awt.Color(51, 0, 255));
-        jLabel8.setText("Nombre:");
-
-        t_nombre_cliente.setBackground(new java.awt.Color(204, 255, 255));
-        t_nombre_cliente.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_nombre_cliente.setEnabled(false);
-        t_nombre_cliente.setNextFocusableComponent(t_direccion_cliente);
-        t_nombre_cliente.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                t_nombre_clienteFocusLost(evt);
-            }
-        });
-        t_nombre_cliente.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                t_nombre_clienteActionPerformed(evt);
-            }
-        });
-        t_nombre_cliente.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                t_nombre_clienteKeyTyped(evt);
-            }
-        });
-
-        jLabel9.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel9.setText("Dir:");
-
-        t_direccion_cliente.setBackground(new java.awt.Color(204, 255, 255));
-        t_direccion_cliente.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_direccion_cliente.setEnabled(false);
-        t_direccion_cliente.setNextFocusableComponent(t_cp_cliente);
-        t_direccion_cliente.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                t_direccion_clienteFocusLost(evt);
-            }
-        });
-        t_direccion_cliente.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                t_direccion_clienteActionPerformed(evt);
-            }
-        });
-        t_direccion_cliente.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                t_direccion_clienteKeyTyped(evt);
-            }
-        });
-
-        jLabel10.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel10.setText("Col:");
-
-        t_colonia_cliente.setBackground(new java.awt.Color(204, 255, 255));
-        t_colonia_cliente.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_colonia_cliente.setEnabled(false);
-        t_colonia_cliente.setNextFocusableComponent(t_rfc_cliente);
-        t_colonia_cliente.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                t_colonia_clienteFocusLost(evt);
-            }
-        });
-        t_colonia_cliente.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                t_colonia_clienteActionPerformed(evt);
-            }
-        });
-        t_colonia_cliente.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                t_colonia_clienteKeyTyped(evt);
-            }
-        });
-
-        jLabel11.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel11.setText("CP:");
-
-        jLabel12.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel12.setText("RFC:");
-
-        t_rfc_cliente.setBackground(new java.awt.Color(204, 255, 255));
-        t_rfc_cliente.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_rfc_cliente.setEnabled(false);
-        t_rfc_cliente.setNextFocusableComponent(t_email_cliente);
-        t_rfc_cliente.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                t_rfc_clienteFocusLost(evt);
-            }
-        });
-        t_rfc_cliente.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                t_rfc_clienteActionPerformed(evt);
-            }
-        });
-        t_rfc_cliente.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                t_rfc_clienteKeyTyped(evt);
-            }
-        });
-
-        jLabel13.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel13.setText("Pob:");
-
-        t_poblacion_cliente.setBackground(new java.awt.Color(204, 255, 255));
-        t_poblacion_cliente.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_poblacion_cliente.setEnabled(false);
-        t_poblacion_cliente.setNextFocusableComponent(c_estado_cliente);
-        t_poblacion_cliente.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                t_poblacion_clienteFocusLost(evt);
-            }
-        });
-        t_poblacion_cliente.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                t_poblacion_clienteActionPerformed(evt);
-            }
-        });
-        t_poblacion_cliente.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                t_poblacion_clienteKeyTyped(evt);
-            }
-        });
-
-        jLabel14.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel14.setText("Edo:");
-
-        c_estado_cliente.setBackground(new java.awt.Color(204, 255, 255));
-        c_estado_cliente.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "AGUASCALIENTES", "BAJA CALIFORNIA", "BAJA CALIFORNIA SUR", "CAMPECHE", "CHIAPAS", "CHIHUAHUA", "COAHUILA", "COLIMA", "CIUDAD DE MÉXICO", "DURANGO", "ESTADO DE MÉXICO", "GUANAJUATO", "GUERRERO", "HIDALGO", "JALISCO", "MICHOACAN", "MORELOS", "NAYARIT", "NUEVO LEON", "OAXACA", "PUEBLA", "QUERETARO", "QUINTANA ROO", "SAN LUIS POTOSI", "SINALOA", "SONORA", "TABASCO", "TAMAULIPAS", "TLAXCALA", "VERACRUZ", "YUCATAN", "ZACATECAS" }));
-        c_estado_cliente.setEnabled(false);
-        c_estado_cliente.setNextFocusableComponent(b_guardar_cliente);
-        c_estado_cliente.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                c_estado_clienteActionPerformed(evt);
-            }
-        });
-
-        jLabel15.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel15.setText("Tel:");
-
-        jLabel16.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel16.setForeground(new java.awt.Color(51, 0, 255));
-        jLabel16.setText("email:");
-
-        jPanel5.setOpaque(false);
-        jPanel5.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        cb_tercero.setText("Tercero           ");
-        cb_tercero.setNextFocusableComponent(cb_tercero_asegurado);
-        cb_tercero.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cb_terceroActionPerformed(evt);
-            }
-        });
-        jPanel5.add(cb_tercero, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 20, -1, -1));
-
-        cb_tercero_asegurado.setText("Tercero Aseg.");
-        cb_tercero_asegurado.setNextFocusableComponent(cb_particular);
-        cb_tercero_asegurado.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cb_tercero_aseguradoActionPerformed(evt);
-            }
-        });
-        jPanel5.add(cb_tercero_asegurado, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 40, -1, -1));
-
-        cb_asegurado.setSelected(true);
-        cb_asegurado.setText("Asegurado     ");
-        cb_asegurado.setNextFocusableComponent(cb_tercero);
-        cb_asegurado.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cb_aseguradoActionPerformed(evt);
-            }
-        });
-        jPanel5.add(cb_asegurado, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
-
-        b_busca_cliente.setBackground(new java.awt.Color(2, 135, 242));
-        b_busca_cliente.setIcon(new ImageIcon("imagenes/buscar.png"));
-        b_busca_cliente.setToolTipText("Consultar clientes");
-        b_busca_cliente.setMaximumSize(new java.awt.Dimension(32, 8));
-        b_busca_cliente.setMinimumSize(new java.awt.Dimension(32, 8));
-        b_busca_cliente.setNextFocusableComponent(t_tipo);
-        b_busca_cliente.setPreferredSize(new java.awt.Dimension(32, 8));
-        b_busca_cliente.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                b_busca_clienteActionPerformed(evt);
-            }
-        });
-        jPanel5.add(b_busca_cliente, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 103, -1, 30));
-
-        cb_particular.setText("Particular        ");
-        cb_particular.setNextFocusableComponent(b_busca_cliente);
-        cb_particular.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cb_particularActionPerformed(evt);
-            }
-        });
-        jPanel5.add(cb_particular, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 60, -1, -1));
-
-        b_guardar_cliente.setBackground(new java.awt.Color(2, 135, 242));
-        b_guardar_cliente.setIcon(new ImageIcon("imagenes/guardar.png"));
-        b_guardar_cliente.setToolTipText("Guardar Cliente");
-        b_guardar_cliente.setEnabled(false);
-        b_guardar_cliente.setMaximumSize(new java.awt.Dimension(32, 8));
-        b_guardar_cliente.setMinimumSize(new java.awt.Dimension(32, 8));
-        b_guardar_cliente.setPreferredSize(new java.awt.Dimension(32, 8));
-        b_guardar_cliente.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                b_guardar_clienteActionPerformed(evt);
-            }
-        });
-        jPanel5.add(b_guardar_cliente, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 103, -1, 30));
-
-        b_nuevo_cliente.setBackground(new java.awt.Color(2, 135, 242));
-        b_nuevo_cliente.setIcon(new ImageIcon("imagenes/nuevo.png"));
-        b_nuevo_cliente.setToolTipText("Nuevo Cliente");
-        b_nuevo_cliente.setMaximumSize(new java.awt.Dimension(32, 8));
-        b_nuevo_cliente.setMinimumSize(new java.awt.Dimension(32, 8));
-        b_nuevo_cliente.setPreferredSize(new java.awt.Dimension(32, 8));
-        b_nuevo_cliente.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                b_nuevo_clienteActionPerformed(evt);
-            }
-        });
-        jPanel5.add(b_nuevo_cliente, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 103, -1, 30));
-
-        t_contacto_cliente.setBackground(new java.awt.Color(204, 255, 255));
-        t_contacto_cliente.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_contacto_cliente.setEnabled(false);
-        t_contacto_cliente.setNextFocusableComponent(t_telefono_cliente);
-        t_contacto_cliente.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                t_contacto_clienteFocusLost(evt);
-            }
-        });
-        t_contacto_cliente.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                t_contacto_clienteKeyTyped(evt);
-            }
-        });
-
-        jLabel18.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel18.setText("Contacto:");
-
-        t_nextel_cliente.setBackground(new java.awt.Color(204, 255, 255));
-        t_nextel_cliente.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_nextel_cliente.setEnabled(false);
-        t_nextel_cliente.setNextFocusableComponent(t_poblacion_cliente);
-        t_nextel_cliente.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                t_nextel_clienteFocusLost(evt);
-            }
-        });
-        t_nextel_cliente.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                t_nextel_clienteActionPerformed(evt);
-            }
-        });
-        t_nextel_cliente.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                t_nextel_clienteKeyTyped(evt);
-            }
-        });
-
-        jLabel25.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel25.setText("ID:");
-
-        t_cp_cliente.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_cp_cliente.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("##0"))));
-        t_cp_cliente.setEnabled(false);
-        t_cp_cliente.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                t_cp_clienteFocusLost(evt);
-            }
-        });
-        t_cp_cliente.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                t_cp_clienteKeyTyped(evt);
-            }
-        });
-
-        t_email_cliente.setBackground(new java.awt.Color(204, 255, 255));
-        t_email_cliente.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_email_cliente.setEnabled(false);
-        t_email_cliente.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                t_email_clienteFocusLost(evt);
-            }
-        });
-        t_email_cliente.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                t_email_clienteActionPerformed(evt);
-            }
-        });
-        t_email_cliente.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                t_email_clienteKeyTyped(evt);
-            }
-        });
-
-        t_telefono_cliente.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_telefono_cliente.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("##0"))));
-        t_telefono_cliente.setEnabled(false);
-        t_telefono_cliente.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                t_telefono_clienteFocusLost(evt);
-            }
-        });
-        t_telefono_cliente.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                t_telefono_clienteKeyTyped(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(l_id_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel8)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(t_nombre_cliente))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel25)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(t_nextel_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jLabel13)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(t_poblacion_cliente))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(t_contacto_cliente)))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel14, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel15, javax.swing.GroupLayout.Alignment.TRAILING))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(c_estado_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(t_telefono_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel9)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(t_direccion_cliente))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel10)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(t_colonia_cliente)
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel12)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(t_rfc_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel16)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(t_email_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel11)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(t_cp_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(t_nombre_cliente, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(t_direccion_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(t_cp_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(t_colonia_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(t_rfc_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(t_contacto_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(jPanel2Layout.createSequentialGroup()
-                                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                            .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(t_telefono_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGap(9, 9, 9)
-                                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                                .addComponent(t_nextel_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addComponent(jLabel25, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                                .addComponent(jLabel14)
-                                                .addComponent(t_poblacion_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(t_email_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(38, 38, 38)
-                                .addComponent(c_estado_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(74, 74, 74)
-                .addComponent(l_id_cliente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
+        setBackground(new java.awt.Color(255, 255, 255));
+        setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 204, 204), 3, true), "Apertura de Ordenes", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Tahoma", 1, 16), new java.awt.Color(1, 42, 102))); // NOI18N
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(90, 66, 126), 1, true), "Datos de la Unidad", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Arial", 1, 11))); // NOI18N
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 204, 204), 2, true), "Datos de la Unidad", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Arial", 1, 11), new java.awt.Color(0, 204, 204))); // NOI18N
 
-        t_fecha_interna.setBackground(new java.awt.Color(204, 255, 255));
-        t_fecha_interna.setText("DD-MM-AAAA");
-        t_fecha_interna.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_fecha_interna.setEnabled(false);
-
-        b_fecha_interna.setBackground(new java.awt.Color(2, 135, 242));
-        b_fecha_interna.setForeground(new java.awt.Color(255, 255, 255));
-        b_fecha_interna.setText("F.Interna");
-        b_fecha_interna.setToolTipText("Calendario");
-        b_fecha_interna.setMaximumSize(new java.awt.Dimension(32, 8));
-        b_fecha_interna.setMinimumSize(new java.awt.Dimension(32, 8));
-        b_fecha_interna.setPreferredSize(new java.awt.Dimension(28, 24));
-        b_fecha_interna.addActionListener(new java.awt.event.ActionListener() {
+        b_marca.setBackground(new java.awt.Color(2, 135, 242));
+        b_marca.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        b_marca.setForeground(new java.awt.Color(255, 255, 255));
+        b_marca.setText("Marca");
+        b_marca.setToolTipText("Consultar marcas");
+        b_marca.setMaximumSize(new java.awt.Dimension(32, 8));
+        b_marca.setMinimumSize(new java.awt.Dimension(32, 8));
+        b_marca.setPreferredSize(new java.awt.Dimension(28, 24));
+        b_marca.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                b_fecha_internaActionPerformed(evt);
+                b_marcaActionPerformed(evt);
             }
         });
 
-        t_tipo.setBackground(new java.awt.Color(204, 255, 255));
-        t_tipo.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_tipo.setNextFocusableComponent(t_marca);
+        l_nombre_marca.setBackground(new java.awt.Color(255, 255, 255));
+        l_nombre_marca.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        l_nombre_marca.setText("Seleccione una marca");
+        l_nombre_marca.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 204, 204)));
+
+        b_tipo.setBackground(new java.awt.Color(2, 135, 242));
+        b_tipo.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        b_tipo.setForeground(new java.awt.Color(255, 255, 255));
+        b_tipo.setText("Tipo");
+        b_tipo.setToolTipText("Consultar Tipos de vehículo");
+        b_tipo.setMargin(new java.awt.Insets(1, 14, 1, 14));
+        b_tipo.setMaximumSize(new java.awt.Dimension(28, 24));
+        b_tipo.setMinimumSize(new java.awt.Dimension(28, 24));
+        b_tipo.setPreferredSize(new java.awt.Dimension(28, 24));
+        b_tipo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_tipoActionPerformed(evt);
+            }
+        });
+
+        t_tipo.setEditable(false);
+        t_tipo.setBackground(new java.awt.Color(255, 255, 255));
+        t_tipo.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        t_tipo.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 204, 204)));
         t_tipo.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 t_tipoFocusLost(evt);
@@ -872,108 +271,11 @@ public class AperturaOrden extends javax.swing.JPanel {
             }
         });
 
-        b_tipo.setBackground(new java.awt.Color(2, 135, 242));
-        b_tipo.setForeground(new java.awt.Color(255, 255, 255));
-        b_tipo.setText("Tipo");
-        b_tipo.setToolTipText("Consultar Tipos de vehículo");
-        b_tipo.setMargin(new java.awt.Insets(1, 14, 1, 14));
-        b_tipo.setMaximumSize(new java.awt.Dimension(28, 24));
-        b_tipo.setMinimumSize(new java.awt.Dimension(28, 24));
-        b_tipo.setNextFocusableComponent(t_marca);
-        b_tipo.setPreferredSize(new java.awt.Dimension(28, 24));
-        b_tipo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                b_tipoActionPerformed(evt);
-            }
-        });
+        l_serie.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        l_serie.setText("Serie:");
 
-        t_marca.setBackground(new java.awt.Color(204, 255, 255));
-        t_marca.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_marca.setNextFocusableComponent(t_motor);
-        t_marca.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                t_marcaFocusLost(evt);
-            }
-        });
-        t_marca.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                t_marcaActionPerformed(evt);
-            }
-        });
-        t_marca.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                t_marcaKeyTyped(evt);
-            }
-        });
-
-        b_marca.setBackground(new java.awt.Color(2, 135, 242));
-        b_marca.setForeground(new java.awt.Color(255, 255, 255));
-        b_marca.setText("Marca");
-        b_marca.setToolTipText("Consultar marcas");
-        b_marca.setMaximumSize(new java.awt.Dimension(32, 8));
-        b_marca.setMinimumSize(new java.awt.Dimension(32, 8));
-        b_marca.setNextFocusableComponent(t_motor);
-        b_marca.setPreferredSize(new java.awt.Dimension(28, 24));
-        b_marca.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                b_marcaActionPerformed(evt);
-            }
-        });
-
-        jLabel22.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel22.setText("Motor:");
-
-        t_motor.setBackground(new java.awt.Color(204, 255, 255));
-        t_motor.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_motor.setNextFocusableComponent(t_placas);
-        t_motor.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                t_motorFocusLost(evt);
-            }
-        });
-        t_motor.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                t_motorActionPerformed(evt);
-            }
-        });
-        t_motor.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                t_motorKeyTyped(evt);
-            }
-        });
-
-        t_placas.setBackground(new java.awt.Color(204, 255, 255));
-        t_placas.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_placas.setNextFocusableComponent(t_modelo);
-        t_placas.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                t_placasFocusLost(evt);
-            }
-        });
-        t_placas.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                t_placasActionPerformed(evt);
-            }
-        });
-        t_placas.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                t_placasKeyTyped(evt);
-            }
-        });
-
-        jLabel23.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel23.setText("Placas:");
-
-        jLabel26.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel26.setForeground(new java.awt.Color(51, 0, 255));
-        jLabel26.setText("Año:");
-
-        jLabel27.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel27.setText("Serie:");
-
-        t_serie.setBackground(new java.awt.Color(204, 255, 255));
-        t_serie.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_serie.setNextFocusableComponent(t_economico);
+        t_serie.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        t_serie.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 204, 204)));
         t_serie.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 t_serieFocusLost(evt);
@@ -990,11 +292,53 @@ public class AperturaOrden extends javax.swing.JPanel {
             }
         });
 
-        jLabel28.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel28.setText("No. Económico:");
+        l_motor.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        l_motor.setText("Motor:");
 
-        t_economico.setBackground(new java.awt.Color(204, 255, 255));
-        t_economico.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        t_motor.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        t_motor.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 204, 204)));
+        t_motor.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                t_motorFocusLost(evt);
+            }
+        });
+        t_motor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                t_motorActionPerformed(evt);
+            }
+        });
+        t_motor.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                t_motorKeyTyped(evt);
+            }
+        });
+
+        l_placas.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        l_placas.setText("Placas:");
+
+        t_placas.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        t_placas.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 204, 204)));
+        t_placas.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                t_placasFocusLost(evt);
+            }
+        });
+        t_placas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                t_placasActionPerformed(evt);
+            }
+        });
+        t_placas.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                t_placasKeyTyped(evt);
+            }
+        });
+
+        l_economico.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        l_economico.setText("Económico:");
+
+        t_economico.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        t_economico.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 204, 204)));
         t_economico.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 t_economicoFocusLost(evt);
@@ -1011,143 +355,29 @@ public class AperturaOrden extends javax.swing.JPanel {
             }
         });
 
-        jPanel4.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel4.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(90, 66, 126), 1, true));
+        l_modelo.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        l_modelo.setForeground(new java.awt.Color(51, 0, 255));
+        l_modelo.setText("Año:");
 
-        c_estatus.setBackground(new java.awt.Color(204, 255, 255));
-        c_estatus.setForeground(new java.awt.Color(51, 0, 255));
-        c_estatus.setNextFocusableComponent(b_guardar);
-        c_estatus.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                c_estatusActionPerformed(evt);
-            }
-        });
-
-        t_fecha_estatus.setBackground(new java.awt.Color(204, 255, 255));
-        t_fecha_estatus.setForeground(new java.awt.Color(51, 0, 255));
-        t_fecha_estatus.setText("DD-MM-AAAA");
-        t_fecha_estatus.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_fecha_estatus.setEnabled(false);
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(c_estatus, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(t_fecha_estatus, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(c_estatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(t_fecha_estatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
-
-        b_cancelar.setBackground(new java.awt.Color(2, 135, 242));
-        b_cancelar.setForeground(new java.awt.Color(255, 255, 255));
-        b_cancelar.setIcon(new ImageIcon("imagenes/cancelar.png"));
-        b_cancelar.setText("Cancelar");
-        b_cancelar.setToolTipText("Cancelar orden actual");
-        b_cancelar.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        b_cancelar.setNextFocusableComponent(b_guardar);
-        b_cancelar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                b_cancelarActionPerformed(evt);
-            }
-        });
-
-        b_guardar.setBackground(new java.awt.Color(2, 135, 242));
-        b_guardar.setForeground(new java.awt.Color(255, 255, 255));
-        b_guardar.setIcon(new ImageIcon("imagenes/guardar.png"));
-        b_guardar.setText("Guardar");
-        b_guardar.setToolTipText("Guardar orden actual");
-        b_guardar.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        b_guardar.setNextFocusableComponent(b_cancelar);
-        b_guardar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                b_guardarActionPerformed(evt);
-            }
-        });
-
-        t_fecha_cliente.setBackground(new java.awt.Color(204, 255, 255));
-        t_fecha_cliente.setText("DD-MM-AAAA");
-        t_fecha_cliente.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_fecha_cliente.setEnabled(false);
-
-        b_fecha_cliente.setBackground(new java.awt.Color(2, 135, 242));
-        b_fecha_cliente.setForeground(new java.awt.Color(255, 255, 255));
-        b_fecha_cliente.setText("F.Cliente");
-        b_fecha_cliente.setToolTipText("Calendario");
-        b_fecha_cliente.setMaximumSize(new java.awt.Dimension(32, 8));
-        b_fecha_cliente.setMinimumSize(new java.awt.Dimension(32, 8));
-        b_fecha_cliente.setPreferredSize(new java.awt.Dimension(28, 24));
-        b_fecha_cliente.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                b_fecha_clienteActionPerformed(evt);
-            }
-        });
-
-        l_nombre_marca.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        l_nombre_marca.setText("Seleccione una marca");
-
-        jLabel17.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel17.setForeground(new java.awt.Color(51, 0, 255));
-        jLabel17.setText("Nota: Los campos en azul son obligatorios");
-
-        jPanel6.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel6.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(90, 66, 126), 1, true));
-
-        c_siniestro.setBackground(new java.awt.Color(204, 255, 255));
-        c_siniestro.setForeground(new java.awt.Color(51, 0, 255));
-        c_siniestro.setNextFocusableComponent(b_guardar);
-        c_siniestro.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                c_siniestroActionPerformed(evt);
-            }
-        });
-
-        jLabel29.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel29.setText("tipo Siniestro:");
-
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addGap(11, 11, 11)
-                .addComponent(jLabel29)
-                .addGap(18, 18, 18)
-                .addComponent(c_siniestro, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(c_siniestro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel29))
-                .addContainerGap())
-        );
-
-        t_modelo.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        t_modelo.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 204, 204)));
         t_modelo.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("##0"))));
+        t_modelo.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         t_modelo.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 t_modeloFocusLost(evt);
             }
         });
+        t_modelo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                t_modeloActionPerformed(evt);
+            }
+        });
 
-        t_km.setBackground(new java.awt.Color(204, 255, 255));
-        t_km.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_km.setNextFocusableComponent(t_economico);
+        l_km.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        l_km.setText("Km:");
+
+        t_km.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        t_km.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 204, 204)));
         t_km.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 t_kmFocusLost(evt);
@@ -1164,12 +394,11 @@ public class AperturaOrden extends javax.swing.JPanel {
             }
         });
 
-        jLabel30.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel30.setText("Km:");
+        l_color.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        l_color.setText("Color:");
 
-        t_color.setBackground(new java.awt.Color(204, 255, 255));
-        t_color.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_color.setNextFocusableComponent(t_economico);
+        t_color.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        t_color.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 204, 204)));
         t_color.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 t_colorFocusLost(evt);
@@ -1186,67 +415,369 @@ public class AperturaOrden extends javax.swing.JPanel {
             }
         });
 
-        jLabel31.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel31.setText("Color:");
+        l_cliente.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        l_cliente.setText("Cliente:");
 
-        t_tecnico.setBackground(new java.awt.Color(204, 255, 255));
-        t_tecnico.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_tecnico.setEnabled(false);
-
-        b_buscarh.setBackground(new java.awt.Color(2, 135, 242));
-        b_buscarh.setForeground(new java.awt.Color(255, 255, 255));
-        b_buscarh.setText("Supervisor");
-        b_buscarh.setToolTipText("Consultar empleados");
-        b_buscarh.setMaximumSize(new java.awt.Dimension(32, 8));
-        b_buscarh.setMinimumSize(new java.awt.Dimension(32, 8));
-        b_buscarh.setPreferredSize(new java.awt.Dimension(32, 8));
-        b_buscarh.addActionListener(new java.awt.event.ActionListener() {
+        cb_tipo_cliente.setBackground(new java.awt.Color(204, 255, 255));
+        cb_tipo_cliente.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        cb_tipo_cliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                b_buscarhActionPerformed(evt);
+                cb_tipo_clienteActionPerformed(evt);
             }
         });
 
-        t_ajustador.setEditable(false);
-        t_ajustador.setBackground(new java.awt.Color(204, 255, 255));
-        t_ajustador.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_ajustador.setNextFocusableComponent(t_placas);
-        t_ajustador.addFocusListener(new java.awt.event.FocusAdapter() {
+        p_foto.setBackground(new java.awt.Color(2, 135, 242));
+        p_foto.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
+        p_foto.setToolTipText("Agregar imagen de la unidad");
+        p_foto.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        p_foto.setPreferredSize(new java.awt.Dimension(84, 94));
+        p_foto.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                p_fotoMouseClicked(evt);
+            }
+        });
+
+        javax.swing.GroupLayout p_fotoLayout = new javax.swing.GroupLayout(p_foto);
+        p_foto.setLayout(p_fotoLayout);
+        p_fotoLayout.setHorizontalGroup(
+            p_fotoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 130, Short.MAX_VALUE)
+        );
+        p_fotoLayout.setVerticalGroup(
+            p_fotoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
+                        .addComponent(p_foto, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(l_modelo)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(t_modelo)
+                                .addGap(63, 63, 63)
+                                .addComponent(l_km)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(t_km))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
+                                .addComponent(b_marca, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(l_nombre_marca, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
+                                .addComponent(b_tipo, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(t_tipo))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
+                                .addComponent(l_serie)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(t_serie))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
+                                .addComponent(l_motor)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(t_motor))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(l_placas)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(t_placas)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(l_economico)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(t_economico))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
+                        .addComponent(l_color)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(t_color, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(l_cliente)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cb_tipo_cliente, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(b_marca, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(l_nombre_marca, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(b_tipo, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(t_tipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(l_serie)
+                            .addComponent(t_serie, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(l_motor)
+                            .addComponent(t_motor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(t_placas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(l_economico)
+                                .addComponent(t_economico, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(l_placas))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(l_modelo)
+                            .addComponent(t_modelo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(t_km, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(l_km)))
+                    .addComponent(p_foto, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(cb_tipo_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(l_cliente))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(1, 1, 1)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(l_color)
+                            .addComponent(t_color, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap())
+        );
+
+        b_guardar.setBackground(new java.awt.Color(2, 135, 242));
+        b_guardar.setForeground(new java.awt.Color(255, 255, 255));
+        b_guardar.setIcon(new ImageIcon("imagenes/guardar.png"));
+        b_guardar.setText("Guardar");
+        b_guardar.setToolTipText("Guardar orden actual");
+        b_guardar.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        b_guardar.setNextFocusableComponent(b_cancelar);
+        b_guardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_guardarActionPerformed(evt);
+            }
+        });
+
+        b_cancelar.setBackground(new java.awt.Color(2, 135, 242));
+        b_cancelar.setForeground(new java.awt.Color(255, 255, 255));
+        b_cancelar.setIcon(new ImageIcon("imagenes/cancelar.png"));
+        b_cancelar.setText("Cancelar");
+        b_cancelar.setToolTipText("Cancelar orden actual");
+        b_cancelar.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        b_cancelar.setNextFocusableComponent(b_marca);
+        b_cancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_cancelarActionPerformed(evt);
+            }
+        });
+
+        jLabel17.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
+        jLabel17.setForeground(new java.awt.Color(51, 0, 255));
+        jLabel17.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel17.setText("Nota: Los campos en azul son obligatorios");
+
+        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 204, 204), 2, true), "Fecha de Entrega", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Arial", 1, 11), new java.awt.Color(0, 204, 204))); // NOI18N
+        jPanel5.setOpaque(false);
+
+        b_fecha_interna.setBackground(new java.awt.Color(2, 135, 242));
+        b_fecha_interna.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        b_fecha_interna.setForeground(new java.awt.Color(255, 255, 255));
+        b_fecha_interna.setText("Interna");
+        b_fecha_interna.setToolTipText("Calendario");
+        b_fecha_interna.setMaximumSize(new java.awt.Dimension(32, 8));
+        b_fecha_interna.setMinimumSize(new java.awt.Dimension(32, 8));
+        b_fecha_interna.setPreferredSize(new java.awt.Dimension(28, 24));
+        b_fecha_interna.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_fecha_internaActionPerformed(evt);
+            }
+        });
+
+        t_fecha_interna.setEditable(false);
+        t_fecha_interna.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        t_fecha_interna.setText("DD-MM-AAAA HH:MM:SS");
+        t_fecha_interna.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 204, 204)));
+
+        b_fecha_cliente.setBackground(new java.awt.Color(2, 135, 242));
+        b_fecha_cliente.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        b_fecha_cliente.setForeground(new java.awt.Color(255, 255, 255));
+        b_fecha_cliente.setText("Cliente");
+        b_fecha_cliente.setToolTipText("Calendario");
+        b_fecha_cliente.setMaximumSize(new java.awt.Dimension(32, 8));
+        b_fecha_cliente.setMinimumSize(new java.awt.Dimension(32, 8));
+        b_fecha_cliente.setPreferredSize(new java.awt.Dimension(28, 24));
+        b_fecha_cliente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_fecha_clienteActionPerformed(evt);
+            }
+        });
+
+        t_fecha_cliente.setEditable(false);
+        t_fecha_cliente.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        t_fecha_cliente.setText("DD-MM-AAAA HH:MM:SS");
+        t_fecha_cliente.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 204, 204)));
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(b_fecha_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(t_fecha_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(b_fecha_interna, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(t_fecha_interna, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(b_fecha_interna, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(t_fecha_interna, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(b_fecha_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(t_fecha_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 204, 204), 2, true), "Datos de la Aseguradora", javax.swing.border.TitledBorder.RIGHT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Arial", 1, 11), new java.awt.Color(0, 204, 204))); // NOI18N
+
+        b_buscar_aseguradora.setBackground(new java.awt.Color(2, 135, 242));
+        b_buscar_aseguradora.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/buscar.png"))); // NOI18N
+        b_buscar_aseguradora.setToolTipText("Consultar aseguradoras");
+        b_buscar_aseguradora.setMaximumSize(new java.awt.Dimension(32, 8));
+        b_buscar_aseguradora.setMinimumSize(new java.awt.Dimension(32, 8));
+        b_buscar_aseguradora.setPreferredSize(new java.awt.Dimension(32, 8));
+        b_buscar_aseguradora.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_buscar_aseguradoraActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        jLabel3.setText("Siniestro:");
+
+        t_siniestro.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        t_siniestro.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 204, 204)));
+        t_siniestro.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
-                t_ajustadorFocusLost(evt);
+                t_siniestroFocusLost(evt);
             }
         });
-        t_ajustador.addActionListener(new java.awt.event.ActionListener() {
+        t_siniestro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                t_ajustadorActionPerformed(evt);
+                t_siniestroActionPerformed(evt);
             }
         });
-        t_ajustador.addKeyListener(new java.awt.event.KeyAdapter() {
+        t_siniestro.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                t_ajustadorKeyTyped(evt);
+                t_siniestroKeyTyped(evt);
             }
         });
 
-        t_agente.setEditable(false);
-        t_agente.setBackground(new java.awt.Color(204, 255, 255));
-        t_agente.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_agente.setNextFocusableComponent(t_placas);
-        t_agente.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                t_agenteFocusLost(evt);
-            }
-        });
-        t_agente.addActionListener(new java.awt.event.ActionListener() {
+        jLabel4.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        jLabel4.setText("Fecha:");
+
+        b_fecha_siniestro.setBackground(new java.awt.Color(2, 135, 242));
+        b_fecha_siniestro.setIcon(new ImageIcon("imagenes/calendario.png"));
+        b_fecha_siniestro.setToolTipText("Calendario");
+        b_fecha_siniestro.setMaximumSize(new java.awt.Dimension(32, 8));
+        b_fecha_siniestro.setMinimumSize(new java.awt.Dimension(32, 8));
+        b_fecha_siniestro.setPreferredSize(new java.awt.Dimension(32, 8));
+        b_fecha_siniestro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                t_agenteActionPerformed(evt);
+                b_fecha_siniestroActionPerformed(evt);
             }
         });
-        t_agente.addKeyListener(new java.awt.event.KeyAdapter() {
+
+        jLabel5.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        jLabel5.setText("Poliza:");
+
+        t_poliza.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        t_poliza.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 204, 204)));
+        t_poliza.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                t_polizaFocusLost(evt);
+            }
+        });
+        t_poliza.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                t_polizaActionPerformed(evt);
+            }
+        });
+        t_poliza.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                t_agenteKeyTyped(evt);
+                t_polizaKeyTyped(evt);
             }
         });
+
+        t_inciso.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        t_inciso.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 204, 204)));
+        t_inciso.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                t_incisoFocusLost(evt);
+            }
+        });
+        t_inciso.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                t_incisoActionPerformed(evt);
+            }
+        });
+        t_inciso.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                t_incisoKeyTyped(evt);
+            }
+        });
+
+        jLabel6.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        jLabel6.setText("Inciso:");
+
+        jLabel7.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        jLabel7.setText("Reporte:");
+
+        t_reporte.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        t_reporte.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 204, 204)));
+        t_reporte.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                t_reporteFocusLost(evt);
+            }
+        });
+        t_reporte.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                t_reporteActionPerformed(evt);
+            }
+        });
+        t_reporte.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                t_reporteKeyTyped(evt);
+            }
+        });
+
+        l_nombre_aseguradora.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        l_nombre_aseguradora.setText("Seleccione una aseguradora");
+        l_nombre_aseguradora.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 204, 204)));
+        l_nombre_aseguradora.setNextFocusableComponent(t_siniestro);
+
+        t_fecha_siniestro.setEditable(false);
+        t_fecha_siniestro.setBackground(new java.awt.Color(204, 255, 255));
+        t_fecha_siniestro.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        t_fecha_siniestro.setText("DD-MM-AAAA");
+        t_fecha_siniestro.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        t_fecha_siniestro.setEnabled(false);
 
         b_ajustador.setBackground(new java.awt.Color(2, 135, 242));
+        b_ajustador.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         b_ajustador.setForeground(new java.awt.Color(255, 255, 255));
         b_ajustador.setText("Ajustador");
         b_ajustador.setToolTipText("Calendario");
@@ -1259,7 +790,14 @@ public class AperturaOrden extends javax.swing.JPanel {
             }
         });
 
+        t_ajustador.setEditable(false);
+        t_ajustador.setBackground(new java.awt.Color(204, 255, 255));
+        t_ajustador.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        t_ajustador.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 204, 204)));
+        t_ajustador.setNextFocusableComponent(t_placas);
+
         b_agente.setBackground(new java.awt.Color(2, 135, 242));
+        b_agente.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         b_agente.setForeground(new java.awt.Color(255, 255, 255));
         b_agente.setText("Agente");
         b_agente.setToolTipText("Calendario");
@@ -1272,182 +810,618 @@ public class AperturaOrden extends javax.swing.JPanel {
             }
         });
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jLabel17))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(b_fecha_interna, javax.swing.GroupLayout.DEFAULT_SIZE, 82, Short.MAX_VALUE)
-                                    .addComponent(b_agente, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(b_ajustador, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(jPanel3Layout.createSequentialGroup()
-                                        .addComponent(t_fecha_interna, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(b_fecha_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+        t_agente.setEditable(false);
+        t_agente.setBackground(new java.awt.Color(204, 255, 255));
+        t_agente.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        t_agente.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 204, 204)));
+        t_agente.setNextFocusableComponent(t_placas);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(b_ajustador, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(t_ajustador))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                .addGap(5, 5, 5)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(b_buscar_aseguradora, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(t_fecha_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(t_agente)
-                                    .addComponent(t_ajustador, javax.swing.GroupLayout.Alignment.LEADING)))
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel3Layout.createSequentialGroup()
-                                        .addComponent(jLabel23)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(t_placas, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(jLabel22)
+                                        .addComponent(l_nombre_aseguradora, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jLabel6)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(t_motor, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(jPanel3Layout.createSequentialGroup()
-                                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(b_marca, javax.swing.GroupLayout.DEFAULT_SIZE, 81, Short.MAX_VALUE)
-                                            .addComponent(b_tipo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addComponent(t_inciso))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jLabel3)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
-                                                .addComponent(t_marca, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(l_nombre_marca, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                            .addComponent(t_tipo, javax.swing.GroupLayout.PREFERRED_SIZE, 277, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                                .addGap(0, 9, Short.MAX_VALUE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                                .addComponent(b_buscarh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(t_tecnico, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(114, 114, 114)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(jLabel30)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(t_km, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(t_siniestro))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jLabel5)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(t_poliza))))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel7)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel31)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(t_color))
-                            .addComponent(jPanel6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(jLabel26)
+                                .addComponent(t_reporte, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(t_modelo, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel27)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(t_serie, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
-                                .addComponent(jLabel28)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(t_economico))
-                            .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(b_guardar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(b_cancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(t_fecha_siniestro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(b_fecha_siniestro, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(b_agente, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(t_agente)))
                 .addContainerGap())
         );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(b_buscar_aseguradora, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(l_nombre_aseguradora, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(t_siniestro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(t_poliza, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(t_inciso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(t_reporte, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(t_fecha_siniestro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel4)
+                        .addComponent(jLabel7))
+                    .addComponent(b_fecha_siniestro, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(b_ajustador, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(t_ajustador, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(b_agente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(t_agente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 204, 204), 2, true), "Datos del Cliente", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Arial", 1, 11), new java.awt.Color(0, 204, 204))); // NOI18N
+        jPanel2.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+
+        l_nombre.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        l_nombre.setForeground(new java.awt.Color(51, 0, 255));
+        l_nombre.setText("Nombre:");
+
+        t_nombre_cliente.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        t_nombre_cliente.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 204, 204)));
+        t_nombre_cliente.setNextFocusableComponent(t_rfc_cliente);
+        t_nombre_cliente.setOpaque(false);
+        t_nombre_cliente.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                t_nombre_clienteFocusLost(evt);
+            }
+        });
+        t_nombre_cliente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                t_nombre_clienteActionPerformed(evt);
+            }
+        });
+        t_nombre_cliente.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                t_nombre_clienteKeyTyped(evt);
+            }
+        });
+
+        l_rfc_cliente.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        l_rfc_cliente.setText("RFC:");
+
+        t_rfc_cliente.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        t_rfc_cliente.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 204, 204)));
+        t_rfc_cliente.setNextFocusableComponent(t_cp_cliente);
+        t_rfc_cliente.setOpaque(false);
+        t_rfc_cliente.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                t_rfc_clienteFocusLost(evt);
+            }
+        });
+        t_rfc_cliente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                t_rfc_clienteActionPerformed(evt);
+            }
+        });
+        t_rfc_cliente.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                t_rfc_clienteKeyTyped(evt);
+            }
+        });
+
+        l_direccion_cliente.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        l_direccion_cliente.setText("Dir:");
+
+        t_direccion_cliente.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        t_direccion_cliente.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 204, 204)));
+        t_direccion_cliente.setNextFocusableComponent(t_numero_cliente);
+        t_direccion_cliente.setOpaque(false);
+        t_direccion_cliente.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                t_direccion_clienteFocusLost(evt);
+            }
+        });
+        t_direccion_cliente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                t_direccion_clienteActionPerformed(evt);
+            }
+        });
+        t_direccion_cliente.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                t_direccion_clienteKeyTyped(evt);
+            }
+        });
+
+        l_contacto_cliente.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        l_contacto_cliente.setText("Contacto:");
+
+        t_contacto_cliente.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        t_contacto_cliente.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 204, 204)));
+        t_contacto_cliente.setNextFocusableComponent(t_email_cliente);
+        t_contacto_cliente.setOpaque(false);
+        t_contacto_cliente.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                t_contacto_clienteFocusLost(evt);
+            }
+        });
+        t_contacto_cliente.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                t_contacto_clienteKeyTyped(evt);
+            }
+        });
+
+        l_email_cliente.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        l_email_cliente.setForeground(new java.awt.Color(51, 0, 255));
+        l_email_cliente.setText("email:");
+
+        t_email_cliente.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        t_email_cliente.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 204, 204)));
+        t_email_cliente.setNextFocusableComponent(t_telefono_cliente);
+        t_email_cliente.setOpaque(false);
+        t_email_cliente.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                t_email_clienteFocusLost(evt);
+            }
+        });
+        t_email_cliente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                t_email_clienteActionPerformed(evt);
+            }
+        });
+        t_email_cliente.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                t_email_clienteKeyTyped(evt);
+            }
+        });
+
+        l_telefono_cliente.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        l_telefono_cliente.setText("Tel:");
+
+        t_telefono_cliente.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 204, 204)));
+        try {
+            t_telefono_cliente.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("##########")));
+        } catch (java.text.ParseException ex) {
+            ex.printStackTrace();
+        }
+        t_telefono_cliente.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        t_telefono_cliente.setNextFocusableComponent(b_buscarh);
+        t_telefono_cliente.setOpaque(false);
+        t_telefono_cliente.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                t_telefono_clienteFocusLost(evt);
+            }
+        });
+        t_telefono_cliente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                t_telefono_clienteActionPerformed(evt);
+            }
+        });
+        t_telefono_cliente.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                t_telefono_clienteKeyTyped(evt);
+            }
+        });
+
+        b_guardar_cliente.setBackground(new java.awt.Color(2, 135, 242));
+        b_guardar_cliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/guardar.png"))); // NOI18N
+        b_guardar_cliente.setToolTipText("Guardar Cliente");
+        b_guardar_cliente.setMaximumSize(new java.awt.Dimension(32, 8));
+        b_guardar_cliente.setMinimumSize(new java.awt.Dimension(32, 8));
+        b_guardar_cliente.setPreferredSize(new java.awt.Dimension(32, 8));
+        b_guardar_cliente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_guardar_clienteActionPerformed(evt);
+            }
+        });
+
+        b_busca_cliente.setBackground(new java.awt.Color(2, 135, 242));
+        b_busca_cliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/buscar.png"))); // NOI18N
+        b_busca_cliente.setToolTipText("Consultar clientes");
+        b_busca_cliente.setMaximumSize(new java.awt.Dimension(32, 8));
+        b_busca_cliente.setMinimumSize(new java.awt.Dimension(32, 8));
+        b_busca_cliente.setPreferredSize(new java.awt.Dimension(32, 8));
+        b_busca_cliente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_busca_clienteActionPerformed(evt);
+            }
+        });
+
+        b_nuevo_cliente.setBackground(new java.awt.Color(2, 135, 242));
+        b_nuevo_cliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/add-user.png"))); // NOI18N
+        b_nuevo_cliente.setToolTipText("Nuevo Cliente");
+        b_nuevo_cliente.setMaximumSize(new java.awt.Dimension(32, 8));
+        b_nuevo_cliente.setMinimumSize(new java.awt.Dimension(32, 8));
+        b_nuevo_cliente.setPreferredSize(new java.awt.Dimension(32, 8));
+        b_nuevo_cliente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_nuevo_clienteActionPerformed(evt);
+            }
+        });
+
+        l_numero_cliente.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        l_numero_cliente.setText("No°");
+
+        t_numero_cliente.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        t_numero_cliente.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 204, 204)));
+        t_numero_cliente.setNextFocusableComponent(cb_edo_cliente);
+        t_numero_cliente.setOpaque(false);
+        t_numero_cliente.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                t_numero_clienteKeyTyped(evt);
+            }
+        });
+
+        l_cp_cliente.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        l_cp_cliente.setText("C.P.");
+
+        t_cp_cliente.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        t_cp_cliente.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 204, 204)));
+        t_cp_cliente.setNextFocusableComponent(t_direccion_cliente);
+        t_cp_cliente.setOpaque(false);
+        t_cp_cliente.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                t_cp_clienteKeyTyped(evt);
+            }
+        });
+
+        cb_edo_cliente.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        cb_edo_cliente.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "AGUASCALIENTES", "BAJA CALIFORNIA", "BAJA CALIFORNIA SUR", "CAMPECHE", "CHIAPAS", "CHIHUAHUA", "COAHUILA", "COLIMA", "CIUDAD DE MÉXICO", "DURANGO", "ESTADO DE MÉXICO", "GUANAJUATO", "GUERRERO", "HIDALGO", "JALISCO", "MICHOACAN", "MORELOS", "NAYARIT", "NUEVO LEON", "OAXACA", "PUEBLA", "QUERETARO", "QUINTANA ROO", "SAN LUIS POTOSI", "SINALOA", "SONORA", "TABASCO", "TAMAULIPAS", "TLAXCALA", "VERACRUZ", "YUCATAN", "ZACATECAS" }));
+        cb_edo_cliente.setSelectedItem("CIUDAD DE MÉXICO");
+        cb_edo_cliente.setName(""); // NOI18N
+        cb_edo_cliente.setNextFocusableComponent(t_municipio_cliente);
+
+        t_municipio_cliente.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        t_municipio_cliente.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 204, 204)));
+        t_municipio_cliente.setNextFocusableComponent(t_poblacion_cliente);
+        t_municipio_cliente.setOpaque(false);
+        t_municipio_cliente.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                t_municipio_clienteKeyTyped(evt);
+            }
+        });
+
+        l_municipio_cliente.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        l_municipio_cliente.setText("Mpio:");
+
+        l_edo_cliente.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        l_edo_cliente.setForeground(new java.awt.Color(51, 0, 255));
+        l_edo_cliente.setText("Edo:");
+
+        t_poblacion_cliente.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        t_poblacion_cliente.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 204, 204)));
+        t_poblacion_cliente.setNextFocusableComponent(t_colonia_cliente);
+        t_poblacion_cliente.setOpaque(false);
+        t_poblacion_cliente.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                t_poblacion_clienteKeyTyped(evt);
+            }
+        });
+
+        l_poblacion_cliente.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        l_poblacion_cliente.setText("Población:");
+
+        t_colonia_cliente.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        t_colonia_cliente.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 204, 204)));
+        t_colonia_cliente.setNextFocusableComponent(t_contacto_cliente);
+        t_colonia_cliente.setOpaque(false);
+        t_colonia_cliente.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                t_colonia_clienteKeyTyped(evt);
+            }
+        });
+
+        l_colonia_cliente.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        l_colonia_cliente.setText("Colonia:");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel27)
-                                    .addComponent(t_serie, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel26)
-                                    .addComponent(t_modelo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel28)
-                                    .addComponent(t_economico, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(4, 4, 4)
-                                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(b_cancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(b_guardar, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(b_busca_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(b_nuevo_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(b_guardar_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(4, 4, 4)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(l_contacto_cliente)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jLabel31)
-                                .addComponent(t_color, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jLabel30)
-                                .addComponent(t_km, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(b_tipo, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(t_tipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(t_contacto_cliente)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(l_nombre_marca, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(b_marca, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(t_marca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(7, 7, 7)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel23)
-                            .addComponent(t_placas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel22)
-                            .addComponent(t_motor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(l_email_cliente)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(b_fecha_interna, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(t_fecha_interna, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(b_fecha_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(t_fecha_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(t_email_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(b_ajustador, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(t_ajustador, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(l_telefono_cliente)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(b_agente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(t_agente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(t_telefono_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(l_nombre)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(t_nombre_cliente)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(l_rfc_cliente)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(t_rfc_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(l_cp_cliente)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(t_cp_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(l_direccion_cliente)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(t_direccion_cliente)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(l_numero_cliente)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(t_numero_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(l_edo_cliente)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cb_edo_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(l_municipio_cliente)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(t_municipio_cliente))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(l_poblacion_cliente)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(t_poblacion_cliente)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(l_colonia_cliente)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(t_colonia_cliente)))
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(b_busca_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(b_nuevo_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(t_nombre_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(l_cp_cliente)
+                            .addComponent(t_cp_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(t_rfc_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(l_rfc_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(l_nombre, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(t_direccion_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(t_municipio_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(l_direccion_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(cb_edo_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(l_edo_cliente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(l_municipio_cliente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(l_numero_cliente)
+                                    .addComponent(t_numero_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(2, 2, 2)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(t_poblacion_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(l_poblacion_cliente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(t_colonia_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(l_colonia_cliente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(b_guardar_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(l_contacto_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(t_contacto_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(t_telefono_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(l_telefono_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(l_email_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(t_email_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap())
+        );
+
+        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 204, 204), 2, true), "Control Taller", javax.swing.border.TitledBorder.RIGHT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Arial", 1, 11), new java.awt.Color(0, 204, 204))); // NOI18N
+        jPanel4.setOpaque(false);
+
+        c_estatus.setBackground(new java.awt.Color(204, 255, 255));
+        c_estatus.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        c_estatus.setForeground(new java.awt.Color(51, 0, 255));
+        c_estatus.setNextFocusableComponent(c_siniestro);
+        c_estatus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                c_estatusActionPerformed(evt);
+            }
+        });
+
+        b_buscarh.setBackground(new java.awt.Color(2, 135, 242));
+        b_buscarh.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        b_buscarh.setForeground(new java.awt.Color(255, 255, 255));
+        b_buscarh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/buscar.png"))); // NOI18N
+        b_buscarh.setText("Supervisor");
+        b_buscarh.setToolTipText("Consultar Supervisor");
+        b_buscarh.setMaximumSize(new java.awt.Dimension(32, 8));
+        b_buscarh.setMinimumSize(new java.awt.Dimension(32, 8));
+        b_buscarh.setPreferredSize(new java.awt.Dimension(32, 8));
+        b_buscarh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_buscarhActionPerformed(evt);
+            }
+        });
+
+        t_tecnico.setEditable(false);
+        t_tecnico.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        t_tecnico.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 204, 204)));
+
+        jLabel34.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        jLabel34.setText("Estatus");
+
+        jLabel33.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        jLabel33.setText("Siniestro:");
+
+        c_siniestro.setBackground(new java.awt.Color(204, 255, 255));
+        c_siniestro.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        c_siniestro.setForeground(new java.awt.Color(51, 0, 255));
+        c_siniestro.setNextFocusableComponent(cb_garantia);
+        c_siniestro.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                c_siniestroActionPerformed(evt);
+            }
+        });
+
+        t_garantia.setEditable(false);
+        t_garantia.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        t_garantia.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 204, 204)));
+
+        cb_garantia.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        cb_garantia.setText("Garantia");
+        cb_garantia.setNextFocusableComponent(b_guardar);
+        cb_garantia.setOpaque(false);
+        cb_garantia.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cb_garantiaActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel34)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(c_estatus, 0, 1, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel33)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(c_siniestro, 0, 1, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cb_garantia)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(t_garantia, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(b_buscarh, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(t_tecnico)))
+                .addContainerGap())
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(b_buscarh, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(t_tecnico, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
-                .addComponent(jLabel17)
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel34)
+                    .addComponent(c_estatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel33)
+                    .addComponent(c_siniestro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(t_garantia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cb_garantia))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 387, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(26, 26, 26))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(b_guardar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(b_cancelar, javax.swing.GroupLayout.DEFAULT_SIZE, 111, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 170, Short.MAX_VALUE))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(b_guardar, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(b_cancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel17)))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -1458,358 +1432,18 @@ public class AperturaOrden extends javax.swing.JPanel {
 
     private void t_polizaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_polizaActionPerformed
         // TODO add your handling code here:
-        t_reporte.requestFocus();
+        t_inciso.requestFocus();
     }//GEN-LAST:event_t_polizaActionPerformed
 
     private void t_incisoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_incisoActionPerformed
         // TODO add your handling code here:
-        this.b_fecha_siniestro.requestFocus();
+        this.t_reporte.requestFocus();
     }//GEN-LAST:event_t_incisoActionPerformed
 
     private void t_reporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_reporteActionPerformed
         // TODO add your handling code here:
-        t_inciso.requestFocus();
+        b_fecha_siniestro.requestFocus();
     }//GEN-LAST:event_t_reporteActionPerformed
-
-    private void cb_terceroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_terceroActionPerformed
-        // TODO add your handling code here:
-        if(cb_tercero.isSelected())
-        {
-            cb_asegurado.setSelected(false);
-            cb_tercero_asegurado.setSelected(false);
-            cb_particular.setSelected(false);
-        }
-        else
-            cb_tercero.setSelected(true);
-        this.b_busca_cliente.requestFocus();
-    }//GEN-LAST:event_cb_terceroActionPerformed
-
-    private void cb_aseguradoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_aseguradoActionPerformed
-        // TODO add your handling code here:
-        if(cb_asegurado.isSelected())
-        {
-            cb_tercero.setSelected(false);
-            cb_tercero_asegurado.setSelected(false);
-            cb_particular.setSelected(false);
-        }
-        else
-            cb_asegurado.setSelected(true);
-        this.b_busca_cliente.requestFocus();
-    }//GEN-LAST:event_cb_aseguradoActionPerformed
-
-    private void cb_tercero_aseguradoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_tercero_aseguradoActionPerformed
-        // TODO add your handling code here:
-        if(cb_tercero_asegurado.isSelected())
-        {
-            cb_tercero.setSelected(false);
-            cb_asegurado.setSelected(false);
-            cb_particular.setSelected(false);
-        }
-        else
-            cb_tercero_asegurado.setSelected(true);
-        this.b_busca_cliente.requestFocus();
-    }//GEN-LAST:event_cb_tercero_aseguradoActionPerformed
-
-    private void b_fecha_siniestroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_fecha_siniestroActionPerformed
-        // TODO add your handling code here:
-        h=new Herramientas(usr, 0);
-        h.session(sessionPrograma);
-        
-        calendario cal =new calendario(new javax.swing.JFrame(), true);
-        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-        cal.setLocation((d.width/2)-(cal.getWidth()/2), (d.height/2)-(cal.getHeight()/2));
-        cal.setVisible(true);
-        
-        Calendar miCalendario=cal.getReturnStatus();
-        if(miCalendario!=null)
-        {
-            String dia=Integer.toString(miCalendario.get(Calendar.DATE));;
-            String mes = Integer.toString(miCalendario.get(Calendar.MONTH)+1);
-            String anio = Integer.toString(miCalendario.get(Calendar.YEAR));
-            t_fecha_siniestro.setText(dia+"-"+mes+"-"+anio);
-            b_busca_cliente.requestFocus();
-        }
-        else
-            t_fecha_siniestro.setText("DD-MM-AAAA");
-    }//GEN-LAST:event_b_fecha_siniestroActionPerformed
-
-    private void t_aseguradoraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_aseguradoraActionPerformed
-        // TODO add your handling code here:
-            t_siniestro.requestFocus();
-        //buscaCompania();
-    }//GEN-LAST:event_t_aseguradoraActionPerformed
-
-    private void t_aseguradoraFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_aseguradoraFocusLost
-        // TODO add your handling code here:
-        if(t_aseguradora.getText().compareTo("")!=0)
-            buscaCompania();
-        else
-            this.l_nombre_aseguradora.setText("Selecciones una aseguradora");
-    }//GEN-LAST:event_t_aseguradoraFocusLost
-
-    private void cb_particularActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_particularActionPerformed
-        // TODO add your handling code here:
-        if(cb_particular.isSelected())
-        {
-            cb_asegurado.setSelected(false);
-            cb_tercero_asegurado.setSelected(false);
-            cb_tercero.setSelected(false);
-        }
-        else
-            cb_particular.setSelected(true);
-        this.b_busca_cliente.requestFocus();
-    }//GEN-LAST:event_cb_particularActionPerformed
-
-    private void t_nombre_clienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_nombre_clienteActionPerformed
-        // TODO add your handling code here:
-        t_direccion_cliente.requestFocus();
-    }//GEN-LAST:event_t_nombre_clienteActionPerformed
-
-    private void t_direccion_clienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_direccion_clienteActionPerformed
-        // TODO add your handling code here:
-        t_colonia_cliente.requestFocus();
-    }//GEN-LAST:event_t_direccion_clienteActionPerformed
-
-    private void t_colonia_clienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_colonia_clienteActionPerformed
-        // TODO add your handling code here:
-        t_cp_cliente.requestFocus();
-    }//GEN-LAST:event_t_colonia_clienteActionPerformed
-
-    private void t_rfc_clienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_rfc_clienteActionPerformed
-        // TODO add your handling code here:
-        t_poblacion_cliente.requestFocus();
-    }//GEN-LAST:event_t_rfc_clienteActionPerformed
-
-    private void t_poblacion_clienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_poblacion_clienteActionPerformed
-        // TODO add your handling code here:
-        c_estado_cliente.requestFocus();
-    }//GEN-LAST:event_t_poblacion_clienteActionPerformed
-
-    private void c_estado_clienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_c_estado_clienteActionPerformed
-        // TODO add your handling code here:
-        //t_telefono_cliente.requestFocus();
-    }//GEN-LAST:event_c_estado_clienteActionPerformed
-
-    private void b_busca_clienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_busca_clienteActionPerformed
-        // TODO add your handling code here:
-        h=new Herramientas(usr, 0);
-        h.session(sessionPrograma);
-        
-        buscaCliente obj = new buscaCliente(new javax.swing.JFrame(), true);
-        obj.t_busca.requestFocus();
-        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-        obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
-        obj.setVisible(true);
-        
-        Clientes actor=obj.getReturnStatus();
-        if(actor!=null)
-        {
-            t_nombre_cliente.setText("");
-            t_direccion_cliente.setText("");
-            t_colonia_cliente.setText("");;
-            t_cp_cliente.setText("");;
-            t_cp_cliente.setValue(null);
-            t_rfc_cliente.setText("");;
-            t_poblacion_cliente.setText("");;
-            c_estado_cliente.setSelectedIndex(0);
-            t_telefono_cliente.setText("");
-            t_telefono_cliente.setValue(null);
-            t_email_cliente.setText("");
-            l_id_cliente.setText("");
-            t_contacto_cliente.setText("");
-            t_nextel_cliente.setText("");
-        
-            l_id_cliente.setText(actor.getIdClientes().toString());
-            t_nombre_cliente.setText(actor.getNombre());
-            try{
-                t_direccion_cliente.setText(actor.getDireccion());
-            }catch(Exception e){}
-            
-            try{
-                t_colonia_cliente.setText(actor.getColonia());
-            }catch(Exception e){}
-            
-            try{
-                t_cp_cliente.setText(actor.getCp().toString());
-            }catch(Exception e){}
-            
-            try{
-                t_rfc_cliente.setText(actor.getRfc());
-            }catch(Exception e){}
-            
-            try{
-                t_poblacion_cliente.setText(actor.getPoblacion());
-            }catch(Exception e){}
-            
-            try{
-                t_telefono_cliente.setText(actor.getTelefono());
-            }catch(Exception e){}
-            
-            try{
-                t_email_cliente.setText(actor.getEmail());
-            }catch(Exception e){}
-            
-            try{
-                t_contacto_cliente.setText(actor.getContacto());
-            }catch(Exception e){}
-            
-            try{
-                t_nextel_cliente.setText(actor.getNextel());
-            }catch(Exception e){}
-            
-            c_estado_cliente.setSelectedItem(actor.getEstado());
-
-            t_nombre_cliente.setEnabled(false);
-            t_direccion_cliente.setEnabled(false);
-            t_colonia_cliente.setEnabled(false);
-            t_cp_cliente.setEnabled(false);
-            t_rfc_cliente.setEnabled(false);
-            t_poblacion_cliente.setEnabled(false);
-            c_estado_cliente.setEnabled(false);
-            t_telefono_cliente.setEnabled(false);
-            t_email_cliente.setEnabled(false);
-            t_contacto_cliente.setEnabled(false);
-            t_nextel_cliente.setEnabled(false);
-
-            b_nuevo_cliente.setEnabled(true);
-            b_guardar_cliente.setEnabled(false);
-        }
-        
-    }//GEN-LAST:event_b_busca_clienteActionPerformed
-
-    private void b_nuevo_clienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_nuevo_clienteActionPerformed
-        // TODO add your handling code here:
-        h=new Herramientas(usr, 0);
-        h.session(sessionPrograma);
-        
-        t_nombre_cliente.setText("");
-        t_direccion_cliente.setText("");
-        t_colonia_cliente.setText("");
-        t_cp_cliente.setText("");
-        t_cp_cliente.setValue(null);
-        t_rfc_cliente.setText("");
-        t_poblacion_cliente.setText("");
-        c_estado_cliente.setSelectedIndex(0);
-        t_telefono_cliente.setText("");
-        t_telefono_cliente.setValue(null);
-        t_email_cliente.setText("");
-        l_id_cliente.setText("");
-        t_contacto_cliente.setText("");
-        t_nextel_cliente.setText("");
-        
-        t_nombre_cliente.setEnabled(true);
-        t_direccion_cliente.setEnabled(true);
-        t_colonia_cliente.setEnabled(true);
-        t_cp_cliente.setEnabled(true);
-        t_rfc_cliente.setEnabled(true);
-        t_poblacion_cliente.setEnabled(true);
-        c_estado_cliente.setEnabled(true);
-        t_telefono_cliente.setEnabled(true);
-        t_email_cliente.setEnabled(true);
-        t_contacto_cliente.setEnabled(true);
-        t_nextel_cliente.setEnabled(true);
-        
-        b_nuevo_cliente.setEnabled(false);
-        b_guardar_cliente.setEnabled(true);
-        
-        t_nombre_cliente.requestFocus();
-    }//GEN-LAST:event_b_nuevo_clienteActionPerformed
-
-    private void b_guardar_clienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_guardar_clienteActionPerformed
-        // TODO add your handling code here:        
-        h=new Herramientas(usr, 0);
-        h.session(sessionPrograma);
-        
-        if(t_nombre_cliente.getText().compareTo("")==0)
-        {
-            JOptionPane.showMessageDialog(null, "¡Debe introducir el nombre del cliente!");
-            t_nombre_cliente.requestFocus();
-        }
-        else
-        {
-            if(this.t_email_cliente.getText().compareTo("")==0)
-            {
-                JOptionPane.showMessageDialog(null, "¡Debe introducir el email del cliente!");
-                t_email_cliente.requestFocus();
-            }
-            else
-            {
-                if(consultaCliente(t_nombre_cliente.getText())==false)
-                {
-                    Clientes nuevoCliente = new Clientes();
-                    if(t_nombre_cliente.getText().compareTo("")!=0)
-                        nuevoCliente.setNombre(t_nombre_cliente.getText());
-
-                    if(t_direccion_cliente.getText().compareTo("")!=0)
-                        nuevoCliente.setDireccion(t_direccion_cliente.getText());
-
-                    if(t_colonia_cliente.getText().compareTo("")!=0)
-                        nuevoCliente.setColonia(t_colonia_cliente.getText());
-
-                    if(t_cp_cliente.getText().compareTo("")!=0)
-                        nuevoCliente.setCp(Integer.parseInt(t_cp_cliente.getText()));
-
-                    if(t_rfc_cliente.getText().compareTo("")!=0)
-                        nuevoCliente.setRfc(t_rfc_cliente.getText());
-
-                    if(t_poblacion_cliente.getText().compareTo("")!=0)
-                        nuevoCliente.setPoblacion(t_poblacion_cliente.getText());
-
-                    if(c_estado_cliente.getSelectedItem().toString().compareTo("")!=0)
-                        nuevoCliente.setEstado(c_estado_cliente.getSelectedItem().toString());
-
-                    if(t_telefono_cliente.getText().compareTo("")!=0)
-                        nuevoCliente.setTelefono(t_telefono_cliente.getText());
-
-                    if(t_email_cliente.getText().compareTo("")!=0)
-                        nuevoCliente.setEmail(t_email_cliente.getText());
-
-                    if(t_contacto_cliente.getText().compareTo("")!=0)
-                        nuevoCliente.setContacto(t_contacto_cliente.getText());
-
-                    if(t_nextel_cliente.getText().compareTo("")!=0)
-                        nuevoCliente.setNextel(t_nextel_cliente.getText());
-                    
-                    nuevoCliente.setPais("MX");
-
-                    boolean respuesta=guardarCliente(nuevoCliente);
-                    System.out.println(nuevoCliente.getIdClientes());
-                    if(respuesta==true)
-                    {
-                        t_nombre_cliente.setEnabled(false);
-                        t_direccion_cliente.setEnabled(false);
-                        t_colonia_cliente.setEnabled(false);
-                        t_cp_cliente.setEnabled(false);
-                        t_rfc_cliente.setEnabled(false);
-                        t_poblacion_cliente.setEnabled(false);
-                        c_estado_cliente.setEnabled(false);
-                        t_telefono_cliente.setEnabled(false);
-                        t_email_cliente.setEnabled(false);
-                        t_contacto_cliente.setEnabled(false);
-                        t_nextel_cliente.setEnabled(false);
-
-
-                        b_nuevo_cliente.setEnabled(true);
-                        b_guardar_cliente.setEnabled(false);
-
-                        JOptionPane.showMessageDialog(null, "¡El Cliente se ha guardado!");
-
-                        cb_asegurado.requestFocus();
-                    }
-                    else
-                    {
-                        JOptionPane.showMessageDialog(null, "¡Error al guardar!");
-                        t_tipo.requestFocus();
-                    }
-                }
-                else
-                {
-                    JOptionPane.showMessageDialog(null, "¡En nombre del cliente ya existe!");
-                    t_nombre_cliente.requestFocus();
-                }
-            }
-        }
-    }//GEN-LAST:event_b_guardar_clienteActionPerformed
 
     private void b_buscar_aseguradoraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_buscar_aseguradoraActionPerformed
         // TODO add your handling code here:
@@ -1833,6 +1467,7 @@ public class AperturaOrden extends javax.swing.JPanel {
             t_aseguradora.setText("");
             l_nombre_aseguradora.setText("Selecciones una aseguradora");
         }
+        t_siniestro.requestFocus();
     }//GEN-LAST:event_b_buscar_aseguradoraActionPerformed
 
     private void p_fotoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_p_fotoMouseClicked
@@ -1850,7 +1485,7 @@ public class AperturaOrden extends javax.swing.JPanel {
                     {
                         String ruta=archivo.getPath();
                         p_foto.removeAll();
-                        p_foto.add(new Imagen(ruta, 82, 92, 1, 1, 83,93));
+                        p_foto.add(new Imagen(ruta, 128, 168, 4, 4, 128,168));
                         p_foto.repaint();
                         entro_foto=1;
                     }
@@ -1862,87 +1497,37 @@ public class AperturaOrden extends javax.swing.JPanel {
              }
     }//GEN-LAST:event_p_fotoMouseClicked
 
-    private void t_aseguradoraKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_aseguradoraKeyTyped
-        // TODO add your handling code here:
-        char car = evt.getKeyChar();
-        if(t_aseguradora.getText().length()>=4)
-            evt.consume();
-        if((car<'0' || car>'9')) 
-            evt.consume();
-    }//GEN-LAST:event_t_aseguradoraKeyTyped
-
     private void t_siniestroKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_siniestroKeyTyped
         // TODO add your handling code here:
         evt.setKeyChar(Character.toUpperCase(evt.getKeyChar()));
-        char car = evt.getKeyChar();
         if(t_siniestro.getText().length()>=20)
             evt.consume();
     }//GEN-LAST:event_t_siniestroKeyTyped
 
     private void t_polizaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_polizaKeyTyped
         // TODO add your handling code here:
-        char car = evt.getKeyChar();
+        evt.setKeyChar(Character.toUpperCase(evt.getKeyChar()));
         if(t_poliza.getText().length()>=20) 
             evt.consume();
     }//GEN-LAST:event_t_polizaKeyTyped
 
     private void t_reporteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_reporteKeyTyped
         // TODO add your handling code here:
-        char car = evt.getKeyChar();
+        evt.setKeyChar(Character.toUpperCase(evt.getKeyChar()));
         if(t_reporte.getText().length()>=19) 
             evt.consume();
     }//GEN-LAST:event_t_reporteKeyTyped
 
     private void t_incisoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_incisoKeyTyped
         // TODO add your handling code here:
-        char car = evt.getKeyChar();
-        if(t_inciso.getText().length()>=10) 
+        evt.setKeyChar(Character.toUpperCase(evt.getKeyChar()));
+        if(t_inciso.getText().length()>=13) 
             evt.consume();
     }//GEN-LAST:event_t_incisoKeyTyped
 
-    private void t_nombre_clienteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_nombre_clienteKeyTyped
-        // TODO add your handling code here:
-        char car = evt.getKeyChar();
-        evt.setKeyChar(Character.toUpperCase(evt.getKeyChar()));
-        if(t_nombre_cliente.getText().length()>=150) 
-            evt.consume();
-    }//GEN-LAST:event_t_nombre_clienteKeyTyped
-
-    private void t_direccion_clienteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_direccion_clienteKeyTyped
-        // TODO add your handling code here:
-        evt.setKeyChar(Character.toUpperCase(evt.getKeyChar()));
-        char car = evt.getKeyChar();
-        if(t_direccion_cliente.getText().length()>=150) 
-            evt.consume();
-    }//GEN-LAST:event_t_direccion_clienteKeyTyped
-
-    private void t_colonia_clienteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_colonia_clienteKeyTyped
-        // TODO add your handling code here:
-        evt.setKeyChar(Character.toUpperCase(evt.getKeyChar()));
-        char car = evt.getKeyChar();
-        if(t_colonia_cliente.getText().length()>=150) 
-            evt.consume();
-    }//GEN-LAST:event_t_colonia_clienteKeyTyped
-
-    private void t_rfc_clienteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_rfc_clienteKeyTyped
-        // TODO add your handling code here:
-        evt.setKeyChar(Character.toUpperCase(evt.getKeyChar()));
-        char car = evt.getKeyChar();
-        if(t_rfc_cliente.getText().length()>=13) 
-            evt.consume();
-    }//GEN-LAST:event_t_rfc_clienteKeyTyped
-
-    private void t_poblacion_clienteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_poblacion_clienteKeyTyped
-        // TODO add your handling code here:
-        evt.setKeyChar(Character.toUpperCase(evt.getKeyChar()));
-        char car = evt.getKeyChar();
-        if(t_poblacion_cliente.getText().length()>=150) 
-            evt.consume();
-    }//GEN-LAST:event_t_poblacion_clienteKeyTyped
-
     private void b_fecha_clienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_fecha_clienteActionPerformed
         // TODO add your handling code here:
-        calendario cal =new calendario(new javax.swing.JFrame(), true);
+        calendario cal =new calendario(new javax.swing.JFrame(), true, true);
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         cal.setLocation((d.width/2)-(cal.getWidth()/2), (d.height/2)-(cal.getHeight()/2));
         cal.setVisible(true);
@@ -1950,14 +1535,17 @@ public class AperturaOrden extends javax.swing.JPanel {
         Calendar miCalendario=cal.getReturnStatus();
         if(miCalendario!=null)
         {
-            String dia=Integer.toString(miCalendario.get(Calendar.DATE));;
+            String dia=Integer.toString(miCalendario.get(Calendar.DATE));
             String mes = Integer.toString(miCalendario.get(Calendar.MONTH)+1);
             String anio = Integer.toString(miCalendario.get(Calendar.YEAR));
-            t_fecha_cliente.setText(dia+"-"+mes+"-"+anio);
+            String hora = Integer.toString(miCalendario.get(Calendar.HOUR_OF_DAY));
+            String minuto = Integer.toString(miCalendario.get(Calendar.MINUTE));
+            String segundo = Integer.toString(miCalendario.get(Calendar.SECOND));
+            t_fecha_cliente.setText(dia+"-"+mes+"-"+anio+" "+hora+":"+minuto+":"+segundo);
         }
         else
-        t_fecha_cliente.setText("DD-MM-AAAA");
-        b_guardar.requestFocus();
+            t_fecha_cliente.setText("DD-MM-AAAA HH:MM:SS");
+        b_buscarh.requestFocus();
     }//GEN-LAST:event_b_fecha_clienteActionPerformed
 
     private void b_guardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_guardarActionPerformed
@@ -2041,26 +1629,36 @@ public class AperturaOrden extends javax.swing.JPanel {
                                     registro.setClientes(cliente);
                                 }
 
-                                if(t_fecha_interna.getText().compareTo("DD-MM-AAAA")!=0)
+                                if(t_fecha_interna.getText().compareTo("DD-MM-AAAA HH:MM:SS")!=0)
                                 {
-                                    String [] campos = t_fecha_interna.getText().split("-");
+                                    String [] cadena = t_fecha_interna.getText().split(" ");
+                                    String [] fecha = cadena[0].split("-");
+                                    String [] hora = cadena[1].split(":");
 
                                     Calendar calendario1 = Calendar.getInstance();
-                                    calendario1.set(Calendar.MONTH, Integer.parseInt(campos[1])-1);
-                                    calendario1.set(Calendar.YEAR, Integer.parseInt(campos[2]));
-                                    calendario1.set(Calendar.DAY_OF_MONTH, Integer.parseInt(campos[0]));
+                                    calendario1.set(Calendar.MONTH, Integer.parseInt(fecha[1])-1);
+                                    calendario1.set(Calendar.YEAR, Integer.parseInt(fecha[2]));
+                                    calendario1.set(Calendar.DAY_OF_MONTH, Integer.parseInt(fecha[0]));
+                                    calendario1.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hora[0]));
+                                    calendario1.set(Calendar.MINUTE, Integer.parseInt(hora[1]));
+                                    calendario1.set(Calendar.SECOND, Integer.parseInt(hora[2]));
 
                                     registro.setFechaTaller(calendario1.getTime());
                                 }
 
-                                if(t_fecha_cliente.getText().compareTo("DD-MM-AAAA")!=0)
+                                if(t_fecha_cliente.getText().compareTo("DD-MM-AAAA HH:MM:SS")!=0)
                                 {
-                                    String [] campos = t_fecha_cliente.getText().split("-");
+                                    String [] cadena = t_fecha_cliente.getText().split(" ");
+                                    String [] fecha = cadena[0].split("-");
+                                    String [] hora = cadena[1].split(":");
 
                                     Calendar calendario2 = Calendar.getInstance();
-                                    calendario2.set(Calendar.MONTH, Integer.parseInt(campos[1])-1);
-                                    calendario2.set(Calendar.YEAR, Integer.parseInt(campos[2]));
-                                    calendario2.set(Calendar.DAY_OF_MONTH, Integer.parseInt(campos[0]));
+                                    calendario2.set(Calendar.MONTH, Integer.parseInt(fecha[1])-1);
+                                    calendario2.set(Calendar.YEAR, Integer.parseInt(fecha[2]));
+                                    calendario2.set(Calendar.DAY_OF_MONTH, Integer.parseInt(fecha[0]));
+                                    calendario2.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hora[0]));
+                                    calendario2.set(Calendar.MINUTE, Integer.parseInt(hora[1]));
+                                    calendario2.set(Calendar.SECOND, Integer.parseInt(hora[2]));
 
                                     registro.setFechaCliente(calendario2.getTime());
                                 }
@@ -2074,6 +1672,7 @@ public class AperturaOrden extends javax.swing.JPanel {
                                 calendario3.set(Calendar.DAY_OF_MONTH, Integer.parseInt(campos[0]));
 
                                 registro.setFechaEstatus(calendario3.getTime());
+                                registro.setValesConsumibles(0.0);
 
                                 Estatus est = new Estatus();
                                 est.setEstatusNombre(c_estatus.getSelectedItem().toString());
@@ -2081,17 +1680,8 @@ public class AperturaOrden extends javax.swing.JPanel {
                                 
                                 //***************************************************************
 
-                                if(cb_asegurado.isSelected())
-                                    registro.setTipoCliente("1");
-
-                                if(cb_tercero.isSelected())
-                                    registro.setTipoCliente("2");
-
-                                if(cb_tercero_asegurado.isSelected())
-                                    registro.setTipoCliente("3");
-
-                                if(cb_particular.isSelected())
-                                    registro.setTipoCliente("4");
+                                int opcion=cb_tipo_cliente.getSelectedIndex()+1;
+                                    registro.setTipoCliente(""+opcion);
 
                                 registro.setCiclo(new Ciclo(Integer.parseInt(periodo)));
                                 //************Guardamos el usuario que apertura*****************
@@ -2145,83 +1735,14 @@ public class AperturaOrden extends javax.swing.JPanel {
                                     emp.setIdEmpleado(Integer.parseInt(id_tecnico));
                                     registro.setEmpleadoByRTecnico(emp);
                                 }
+                                registro.setGarantia(t_garantia.getText());
+                                
                                 Integer respuesta=guardarOrden(registro);
 
                                 if(respuesta!=null)
                                 {
-                                    t_ajustador.setText("");
-                                    t_agente.setText("");
-                                    t_aseguradora.setText("");
-                                    t_siniestro.setText("");
-                                    t_poliza.setText("");
-                                    t_reporte.setText("");
-                                    t_inciso.setText("");
-                                    t_fecha_siniestro.setText("DD-MM-AAAA");
-                                    t_tipo.setText("");
-                                    l_nombre_marca.setText("Seleccione una marca");
-                                    t_marca.setText("");
-                                    t_motor.setText("");
-                                    t_placas.setText("");
-                                    t_nombre_cliente.setText("");
-                                    t_direccion_cliente.setText("");
-                                    t_colonia_cliente.setText("");
-                                    t_cp_cliente.setText("");
-                                    t_rfc_cliente.setText("");
-                                    t_poblacion_cliente.setText("");
-                                    c_estado_cliente.setSelectedIndex(0);
-                                    t_telefono_cliente.setText("");
-                                    t_email_cliente.setText("");
-                                    t_contacto_cliente.setText("");
-                                    t_nextel_cliente.setText("");
-                                    t_modelo.setText("");
-                                    t_serie.setText("");
-                                    t_economico.setText("");
-                                    t_km.setText("");
-                                    t_color.setText("");
-                                    t_tecnico.setText("");
-                                    id_tecnico="";
-                                    this.cargaEstatus();
-                                    //this.cargaSiniestro();
-                                    c_estatus.setSelectedItem(0);
-                                    t_fecha_interna.setText("DD-MM-AAAA");
-                                    t_fecha_cliente.setText("DD-MM-AAAA");
-                                    cb_asegurado.setSelected(true);
-                                    cb_tercero.setSelected(false);
-                                    cb_tercero_asegurado.setSelected(false);
-                                    cb_particular.setSelected(false);
-
-                                    p_foto.removeAll();
-                                    p_foto.add(new Imagen("imagenes/foto.png", 83, 43, 1, 25, 83, 88));
-                                    p_foto.repaint();
-
-                                    t_nombre_cliente.setEnabled(false);
-                                    t_direccion_cliente.setEnabled(false);
-                                    t_colonia_cliente.setEnabled(false);
-                                    t_cp_cliente.setEnabled(false);
-                                    t_rfc_cliente.setEnabled(false);
-                                    t_poblacion_cliente.setEnabled(false);
-                                    c_estado_cliente.setEnabled(false);
-                                    t_telefono_cliente.setEnabled(false);
-                                    t_email_cliente.setEnabled(false);
-                                    t_contacto_cliente.setEnabled(false);
-                                    t_nextel_cliente.setEnabled(false);
-
-                                    b_nuevo_cliente.setEnabled(true);
-                                    b_guardar_cliente.setEnabled(false);
-                                    l_nombre_aseguradora.setText("Seleccione una aseguradora");
-
-                                    Date fecha = new Date();
-                                    DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-                                    t_fecha_estatus.setText(dateFormat.format(fecha));
-                                    b_fecha_interna.requestFocus();
-
-                                    entro_foto=0;
-                                    
-                                    edita_cliente();
-
+                                    borra();
                                     JOptionPane.showMessageDialog(null, "¡La orden No:"+respuesta+" se ha guardado");
-
-                                    t_aseguradora.requestFocus();
                                 }
                                 else
                                 {
@@ -2265,6 +1786,7 @@ public class AperturaOrden extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(null, "¡Debe introducir numero de aseguradora!");
             t_aseguradora.requestFocus();
         }
+        b_cancelar.requestFocus();
     }//GEN-LAST:event_b_guardarActionPerformed
 
     private void b_cancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_cancelarActionPerformed
@@ -2275,77 +1797,7 @@ public class AperturaOrden extends javax.swing.JPanel {
         int opt=JOptionPane.showConfirmDialog(this, "¡Los datos capturados se eliminaran!");
         System.out.println(opt);
         if(opt==0)
-        {
-            t_aseguradora.setText("");
-            t_siniestro.setText("");
-            t_poliza.setText("");
-            t_reporte.setText("");
-            t_inciso.setText("");
-            t_fecha_siniestro.setText("DD-MM-AAAA");
-            t_tipo.setText("");
-            l_nombre_marca.setText("Seleccione una marca");
-            t_marca.setText("");
-            t_motor.setText("");
-            t_ajustador.setText("");
-            t_agente.setText("");
-            id_ajustador="";
-            id_agente="";
-            t_placas.setText("");
-            t_nombre_cliente.setText("");
-            t_direccion_cliente.setText("");
-            t_colonia_cliente.setText("");
-            t_cp_cliente.setText("");
-            t_rfc_cliente.setText("");
-            t_poblacion_cliente.setText("");
-            c_estado_cliente.setSelectedIndex(0);
-            t_telefono_cliente.setText("");
-            t_email_cliente.setText("");
-            t_contacto_cliente.setText("");
-            t_nextel_cliente.setText("");
-            t_modelo.setText("");
-            t_modelo.setValue(null);
-            t_serie.setText("");
-            t_economico.setText("");
-            t_km.setText("");
-            t_color.setText("");
-            this.cargaEstatus();
-            //this.cargaSiniestro();
-            c_estatus.setSelectedItem(0);
-            t_fecha_interna.setText("DD-MM-AAAA");
-            t_fecha_cliente.setText("DD-MM-AAAA");
-            cb_asegurado.setSelected(true);
-            cb_tercero.setSelected(false);
-            cb_tercero_asegurado.setSelected(false);
-            cb_particular.setSelected(false);
-            p_foto.removeAll();
-            p_foto.add(new Imagen("imagenes/foto.png", 83, 43, 1, 25, 83, 88));
-            p_foto.repaint();
-
-            t_nombre_cliente.setEnabled(false);
-            t_direccion_cliente.setEnabled(false);
-            t_colonia_cliente.setEnabled(false);
-            t_cp_cliente.setEnabled(false);
-            t_rfc_cliente.setEnabled(false);
-            t_poblacion_cliente.setEnabled(false);
-            c_estado_cliente.setEnabled(false);
-            t_telefono_cliente.setEnabled(false);
-            t_email_cliente.setEnabled(false);
-            t_contacto_cliente.setEnabled(false);
-            t_nextel_cliente.setEnabled(false);
-
-            b_nuevo_cliente.setEnabled(true);
-            b_guardar_cliente.setEnabled(false);
-
-            entro_foto=0;
-
-            l_nombre_aseguradora.setText("Selecciones una aseguradora");
-
-            Date fecha = new Date();
-            DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-            t_fecha_estatus.setText(dateFormat.format(fecha));
-            edita_cliente();
-            b_fecha_interna.requestFocus();
-        }
+            borra();
     }//GEN-LAST:event_b_cancelarActionPerformed
 
     private void c_estatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_c_estatusActionPerformed
@@ -2353,50 +1805,50 @@ public class AperturaOrden extends javax.swing.JPanel {
         Date fecha = new Date();
         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
         t_fecha_estatus.setText(dateFormat.format(fecha));
-        b_fecha_interna.requestFocus();
+        c_siniestro.requestFocus();
     }//GEN-LAST:event_c_estatusActionPerformed
 
     private void t_economicoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_economicoKeyTyped
         // TODO add your handling code here:char car = evt.getKeyChar();
-        if(t_economico.getText().length()>=6)
-        evt.consume();
+        evt.setKeyChar(Character.toUpperCase(evt.getKeyChar()));
+        if(t_economico.getText().length()>=15)
+            evt.consume();
     }//GEN-LAST:event_t_economicoKeyTyped
 
     private void t_economicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_economicoActionPerformed
         // TODO add your handling code here:
-        t_km.requestFocus();
+        t_modelo.requestFocus();
     }//GEN-LAST:event_t_economicoActionPerformed
 
     private void t_serieKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_serieKeyTyped
         // TODO add your handling code here:
         evt.setKeyChar(Character.toUpperCase(evt.getKeyChar()));
         if(t_serie.getText().length()>=20)
-        evt.consume();
+            evt.consume();
     }//GEN-LAST:event_t_serieKeyTyped
 
     private void t_serieActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_serieActionPerformed
         // TODO add your handling code here:
-        t_economico.requestFocus();
+        t_motor.requestFocus();
     }//GEN-LAST:event_t_serieActionPerformed
 
     private void t_placasKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_placasKeyTyped
         // TODO add your handling code here:
         evt.setKeyChar(Character.toUpperCase(evt.getKeyChar()));
-        char car = evt.getKeyChar();
         if(t_placas.getText().length()>=8)
-        evt.consume();
+            evt.consume();
     }//GEN-LAST:event_t_placasKeyTyped
 
     private void t_placasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_placasActionPerformed
         // TODO add your handling code here:
-        t_modelo.requestFocus();
+        t_economico.requestFocus();
     }//GEN-LAST:event_t_placasActionPerformed
 
     private void t_motorKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_motorKeyTyped
         // TODO add your handling code here:
         evt.setKeyChar(Character.toUpperCase(evt.getKeyChar()));
         if(t_motor.getText().length()>=15)
-        evt.consume();
+            evt.consume();
     }//GEN-LAST:event_t_motorKeyTyped
 
     private void t_motorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_motorActionPerformed
@@ -2409,7 +1861,7 @@ public class AperturaOrden extends javax.swing.JPanel {
         h=new Herramientas(usr, 0);
         h.session(sessionPrograma);
 
-        buscaMarca obj = new buscaMarca(new javax.swing.JFrame(), true, this.sessionPrograma, this.usr);
+        buscaMarca obj = new buscaMarca(new javax.swing.JFrame(), true, this.sessionPrograma, this.usr, false);
         obj.t_busca.requestFocus();
         obj.formatoTabla();
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
@@ -2427,30 +1879,8 @@ public class AperturaOrden extends javax.swing.JPanel {
             l_nombre_marca.setText("Seleccione una marca");
             t_marca.setText("");
         }
-        t_motor.requestFocus();
+        b_tipo.requestFocus();
     }//GEN-LAST:event_b_marcaActionPerformed
-
-    private void t_marcaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_marcaKeyTyped
-        // TODO add your handling code here:
-        char car = evt.getKeyChar();
-        if(t_marca.getText().length()>=4)
-            evt.consume();
-    }//GEN-LAST:event_t_marcaKeyTyped
-
-    private void t_marcaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_marcaFocusLost
-        // TODO add your handling code here:
-        if(t_marca.getText().length()>4)
-        {
-            t_marca.setText(t_marca.getText().substring(0, 4));
-        }
-        buscaMarca();
-    }//GEN-LAST:event_t_marcaFocusLost
-
-    private void t_marcaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_marcaActionPerformed
-        // TODO add your handling code here:
-        t_marca.setText(t_marca.getText().toUpperCase());
-        t_motor.requestFocus();
-    }//GEN-LAST:event_t_marcaActionPerformed
 
     private void b_tipoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_tipoActionPerformed
         // TODO add your handling code here:
@@ -2465,35 +1895,26 @@ public class AperturaOrden extends javax.swing.JPanel {
 
         String actor=obj.getReturnStatus();
         if(actor!=null)
-        {
             t_tipo.setText(actor);
-        }
         else
-        {
             t_tipo.setText("");
-        }
+        t_serie.requestFocus();
     }//GEN-LAST:event_b_tipoActionPerformed
 
     private void t_tipoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_tipoKeyTyped
         // TODO add your handling code here:
-        char car = evt.getKeyChar();
+        evt.setKeyChar(Character.toUpperCase(evt.getKeyChar()));
         if(t_tipo.getText().length()>=10)
             evt.consume();
     }//GEN-LAST:event_t_tipoKeyTyped
 
     private void t_tipoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_tipoFocusLost
         // TODO add your handling code here:
-        if(t_tipo.getText().length()>10)
-        {
-            t_tipo.setText(t_tipo.getText().substring(0, 10));
-        }
-        buscaTipo();
     }//GEN-LAST:event_t_tipoFocusLost
 
     private void t_tipoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_tipoActionPerformed
         // TODO add your handling code here:
         t_tipo.setText(t_tipo.getText().toUpperCase());
-        b_tipo.requestFocus();
     }//GEN-LAST:event_t_tipoActionPerformed
 
     private void b_fecha_internaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_fecha_internaActionPerformed
@@ -2501,7 +1922,9 @@ public class AperturaOrden extends javax.swing.JPanel {
         h=new Herramientas(usr, 0);
         h.session(sessionPrograma);
 
-        calendario cal =new calendario(new javax.swing.JFrame(), true);
+        calendario cal =new calendario(new javax.swing.JFrame(), true, true);
+        Calendar hoy=Calendar.getInstance();
+        cal.p_fecha.setCurrent(hoy);
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         cal.setLocation((d.width/2)-(cal.getWidth()/2), (d.height/2)-(cal.getHeight()/2));
         cal.setVisible(true);
@@ -2512,212 +1935,63 @@ public class AperturaOrden extends javax.swing.JPanel {
             String dia=Integer.toString(miCalendario.get(Calendar.DATE));;
             String mes = Integer.toString(miCalendario.get(Calendar.MONTH)+1);
             String anio = Integer.toString(miCalendario.get(Calendar.YEAR));
-            t_fecha_interna.setText(dia+"-"+mes+"-"+anio);
+            String hora = Integer.toString(miCalendario.get(Calendar.HOUR_OF_DAY));
+            String minuto = Integer.toString(miCalendario.get(Calendar.MINUTE));
+            String segundo = Integer.toString(miCalendario.get(Calendar.SECOND));
+            t_fecha_interna.setText(dia+"-"+mes+"-"+anio+" "+hora+":"+minuto+":"+segundo);
         }
         else
-        t_fecha_interna.setText("DD-MM-AAAA");
+        t_fecha_interna.setText("DD-MM-AAAA HH:MM:SS");
         b_fecha_cliente.requestFocus();
     }//GEN-LAST:event_b_fecha_internaActionPerformed
-
-    private void t_contacto_clienteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_contacto_clienteKeyTyped
-        // TODO add your handling code here:
-        evt.setKeyChar(Character.toUpperCase(evt.getKeyChar()));
-        if(t_contacto_cliente.getText().length()>=150) 
-            evt.consume();
-    }//GEN-LAST:event_t_contacto_clienteKeyTyped
-
-    private void t_nextel_clienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_nextel_clienteActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_t_nextel_clienteActionPerformed
-
-    private void t_nextel_clienteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_nextel_clienteKeyTyped
-        // TODO add your handling code here:
-        evt.setKeyChar(Character.toUpperCase(evt.getKeyChar()));
-        if(t_nextel_cliente.getText().length()>=13) 
-            evt.consume();
-    }//GEN-LAST:event_t_nextel_clienteKeyTyped
-
-    private void c_siniestroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_c_siniestroActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_c_siniestroActionPerformed
 
     private void t_siniestroFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_siniestroFocusLost
         // TODO add your handling code here:
         if(t_siniestro.getText().length()>20)
-        {
             t_siniestro.setText(t_siniestro.getText().substring(0, 20));
-        }
     }//GEN-LAST:event_t_siniestroFocusLost
 
     private void t_polizaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_polizaFocusLost
         // TODO add your handling code here:
         if(t_poliza.getText().length()>20)
-        {
             t_poliza.setText(t_poliza.getText().substring(0, 20));
-        }
     }//GEN-LAST:event_t_polizaFocusLost
 
     private void t_reporteFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_reporteFocusLost
         // TODO add your handling code here:
         if(t_reporte.getText().length()>19)
-        {
             t_reporte.setText(t_reporte.getText().substring(0, 19));
-        }
     }//GEN-LAST:event_t_reporteFocusLost
 
     private void t_incisoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_incisoFocusLost
         // TODO add your handling code here:
         if(t_inciso.getText().length()>10)
-        {
             t_inciso.setText(t_inciso.getText().substring(0, 10));
-        }
     }//GEN-LAST:event_t_incisoFocusLost
 
     private void t_placasFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_placasFocusLost
         // TODO add your handling code here:
         if(t_placas.getText().length()>8)
-        {
             t_placas.setText(t_placas.getText().substring(0, 8));
-        }
     }//GEN-LAST:event_t_placasFocusLost
 
     private void t_motorFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_motorFocusLost
         // TODO add your handling code here:
         if(t_motor.getText().length()>15)
-        {
             t_motor.setText(t_motor.getText().substring(0, 15));
-        }
     }//GEN-LAST:event_t_motorFocusLost
 
     private void t_serieFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_serieFocusLost
         // TODO add your handling code here:
         if(t_serie.getText().length()>20)
-        {
             t_serie.setText(t_serie.getText().substring(0, 20));
-        }
     }//GEN-LAST:event_t_serieFocusLost
 
     private void t_economicoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_economicoFocusLost
         // TODO add your handling code here:
-        if(t_economico.getText().length()>6)
-        {
-            t_economico.setText(t_economico.getText().substring(0, 6));
-        }
+        if(t_economico.getText().length()>15)
+            t_economico.setText(t_economico.getText().substring(0, 15));
     }//GEN-LAST:event_t_economicoFocusLost
-
-    private void t_nombre_clienteFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_nombre_clienteFocusLost
-        // TODO add your handling code here:
-        if(t_nombre_cliente.getText().length()>150)
-        {
-            t_nombre_cliente.setText(t_nombre_cliente.getText().substring(0, 150));
-        }
-    }//GEN-LAST:event_t_nombre_clienteFocusLost
-
-    private void t_direccion_clienteFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_direccion_clienteFocusLost
-        // TODO add your handling code here:
-        if(t_direccion_cliente.getText().length()>150)
-        {
-            t_direccion_cliente.setText(t_direccion_cliente.getText().substring(0, 150));
-        }
-    }//GEN-LAST:event_t_direccion_clienteFocusLost
-
-    private void t_colonia_clienteFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_colonia_clienteFocusLost
-        // TODO add your handling code here:
-        if(t_colonia_cliente.getText().length()>150)
-        {
-            t_colonia_cliente.setText(t_colonia_cliente.getText().substring(0, 150));
-        }
-    }//GEN-LAST:event_t_colonia_clienteFocusLost
-
-    private void t_contacto_clienteFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_contacto_clienteFocusLost
-        // TODO add your handling code here:
-        if(t_contacto_cliente.getText().length()>150)
-        {
-            t_contacto_cliente.setText(t_contacto_cliente.getText().substring(0, 150));
-        }
-    }//GEN-LAST:event_t_contacto_clienteFocusLost
-
-    private void t_nextel_clienteFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_nextel_clienteFocusLost
-        // TODO add your handling code here:
-        if(t_nextel_cliente.getText().length()>13)
-        {
-            t_nextel_cliente.setText(t_nextel_cliente.getText().substring(0, 13));
-        }
-    }//GEN-LAST:event_t_nextel_clienteFocusLost
-
-    private void t_poblacion_clienteFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_poblacion_clienteFocusLost
-        // TODO add your handling code here:
-        if(t_poblacion_cliente.getText().length()>150)
-        {
-            t_poblacion_cliente.setText(t_poblacion_cliente.getText().substring(0, 150));
-        }
-    }//GEN-LAST:event_t_poblacion_clienteFocusLost
-
-    private void t_rfc_clienteFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_rfc_clienteFocusLost
-        // TODO add your handling code here:
-        if(t_rfc_cliente.getText().length()>13)
-        {
-            t_rfc_cliente.setText(t_rfc_cliente.getText().substring(0, 13));
-        }
-    }//GEN-LAST:event_t_rfc_clienteFocusLost
-
-    private void t_email_clienteFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_email_clienteFocusLost
-        // TODO add your handling code here:
-        if(t_email_cliente.getText().length()>100)
-        {
-            t_email_cliente.setText(t_email_cliente.getText().substring(0, 100));
-        }
-    }//GEN-LAST:event_t_email_clienteFocusLost
-
-    private void t_email_clienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_email_clienteActionPerformed
-        b_guardar_cliente.requestFocus();
-    }//GEN-LAST:event_t_email_clienteActionPerformed
-
-    private void t_email_clienteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_email_clienteKeyTyped
-        char car = evt.getKeyChar();
-        if(t_email_cliente.getText().length()>=100)
-        evt.consume();
-    }//GEN-LAST:event_t_email_clienteKeyTyped
-
-    private void t_cp_clienteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_cp_clienteKeyTyped
-        // TODO add your handling code here:
-        char car = evt.getKeyChar();
-        if(t_cp_cliente.getText().length()>=5)
-            evt.consume();
-        if((car<'0' || car>'9'))
-            evt.consume();
-    }//GEN-LAST:event_t_cp_clienteKeyTyped
-
-    private void t_telefono_clienteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_telefono_clienteKeyTyped
-        // TODO add your handling code here:
-        char car = evt.getKeyChar();
-        if(t_telefono_cliente.getText().length()>=13) 
-            evt.consume();
-        if((car<'0' || car>'9')) 
-            evt.consume();
-    }//GEN-LAST:event_t_telefono_clienteKeyTyped
-
-    private void t_cp_clienteFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_cp_clienteFocusLost
-        // TODO add your handling code here:
-        if(t_cp_cliente.getText().length()>5)
-        {
-            t_cp_cliente.setText(t_cp_cliente.getText().substring(0, 5));
-            try{
-                t_cp_cliente.commitEdit();
-            }catch(Exception e){}
-        }
-    }//GEN-LAST:event_t_cp_clienteFocusLost
-
-    private void t_telefono_clienteFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_telefono_clienteFocusLost
-        // TODO add your handling code here:
-        if(t_telefono_cliente.getText().length()>13)
-        {
-            t_telefono_cliente.setText(t_telefono_cliente.getText().substring(0, 13));
-            try{
-                t_telefono_cliente.commitEdit();
-            }catch(Exception e){}
-        }
-    }//GEN-LAST:event_t_telefono_clienteFocusLost
 
     private void t_modeloFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_modeloFocusLost
         // TODO add your handling code here:
@@ -2733,9 +2007,7 @@ public class AperturaOrden extends javax.swing.JPanel {
     private void t_kmFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_kmFocusLost
         // TODO add your handling code here:
         if(t_km.getText().length()>10)
-        {
             t_km.setText(t_km.getText().substring(0, 10));
-        }
     }//GEN-LAST:event_t_kmFocusLost
 
     private void t_kmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_kmActionPerformed
@@ -2753,14 +2025,12 @@ public class AperturaOrden extends javax.swing.JPanel {
     private void t_colorFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_colorFocusLost
         // TODO add your handling code here:
         if(t_color.getText().length()>20)
-        {
             t_color.setText(t_color.getText().substring(0, 19));
-        }
     }//GEN-LAST:event_t_colorFocusLost
 
     private void t_colorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_colorActionPerformed
         // TODO add your handling code here:
-        b_guardar.requestFocus();
+        cb_tipo_cliente.requestFocus();
     }//GEN-LAST:event_t_colorActionPerformed
 
     private void t_colorKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_colorKeyTyped
@@ -2788,31 +2058,8 @@ public class AperturaOrden extends javax.swing.JPanel {
             id_tecnico="";
             t_tecnico.setText("");
         }
+        c_estatus.requestFocus();
     }//GEN-LAST:event_b_buscarhActionPerformed
-
-    private void t_ajustadorFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_ajustadorFocusLost
-        // TODO add your handling code here:
-    }//GEN-LAST:event_t_ajustadorFocusLost
-
-    private void t_ajustadorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_ajustadorActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_t_ajustadorActionPerformed
-
-    private void t_ajustadorKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_ajustadorKeyTyped
-        // TODO add your handling code here:
-    }//GEN-LAST:event_t_ajustadorKeyTyped
-
-    private void t_agenteFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_agenteFocusLost
-        // TODO add your handling code here:
-    }//GEN-LAST:event_t_agenteFocusLost
-
-    private void t_agenteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_agenteActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_t_agenteActionPerformed
-
-    private void t_agenteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_agenteKeyTyped
-        // TODO add your handling code here:
-    }//GEN-LAST:event_t_agenteKeyTyped
 
     private void b_ajustadorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_ajustadorActionPerformed
         // TODO add your handling code here:
@@ -2834,7 +2081,7 @@ public class AperturaOrden extends javax.swing.JPanel {
             id_ajustador="";
             t_ajustador.setText("");
         }
-        t_motor.requestFocus();
+        b_agente.requestFocus();
     }//GEN-LAST:event_b_ajustadorActionPerformed
 
     private void b_agenteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_agenteActionPerformed
@@ -2857,8 +2104,419 @@ public class AperturaOrden extends javax.swing.JPanel {
             id_agente="";
             t_agente.setText("");
         }
-        t_motor.requestFocus();
+        b_busca_cliente.requestFocus();
     }//GEN-LAST:event_b_agenteActionPerformed
+
+    private void b_fecha_siniestroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_fecha_siniestroActionPerformed
+        // TODO add your handling code here:
+        h=new Herramientas(usr, 0);
+        h.session(sessionPrograma);
+
+        calendario cal =new calendario(new javax.swing.JFrame(), true, false);
+        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+        cal.setLocation((d.width/2)-(cal.getWidth()/2), (d.height/2)-(cal.getHeight()/2));
+        cal.setVisible(true);
+
+        Calendar miCalendario=cal.getReturnStatus();
+        if(miCalendario!=null)
+        {
+            String dia=Integer.toString(miCalendario.get(Calendar.DATE));;
+            String mes = Integer.toString(miCalendario.get(Calendar.MONTH)+1);
+            String anio = Integer.toString(miCalendario.get(Calendar.YEAR));
+            t_fecha_siniestro.setText(dia+"-"+mes+"-"+anio);
+            b_busca_cliente.requestFocus();
+        }
+        else
+        t_fecha_siniestro.setText("DD-MM-AAAA");
+        b_ajustador.requestFocus();
+    }//GEN-LAST:event_b_fecha_siniestroActionPerformed
+
+    private void b_guardar_clienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_guardar_clienteActionPerformed
+        // TODO add your handling code here:
+        h=new Herramientas(usr, 0);
+        h.session(sessionPrograma);
+        if(t_nombre_cliente.getText().compareTo("")==0)
+        {
+            JOptionPane.showMessageDialog(null, "¡Debe introducir el nombre del cliente!");
+            t_nombre_cliente.requestFocus();
+        }
+        else
+        {
+            if(this.t_email_cliente.getText().compareTo("")==0)
+            {
+                JOptionPane.showMessageDialog(null, "¡Debe introducir el email del cliente!");
+                t_email_cliente.requestFocus();
+            }
+            else
+            {
+                Session session = HibernateUtil.getSessionFactory().openSession();
+                if(this.l_id_cliente.getText().compareToIgnoreCase("")==0)
+                {
+                    if(consultaCliente("from Clientes obj where obj.nombre='"+t_nombre_cliente.getText()+"'", session)==false)
+                    {
+                        Clientes nuevoCliente = new Clientes();
+                        nuevoCliente.setNombre(this.t_nombre_cliente.getText());
+                        nuevoCliente.setRfc(this.t_rfc_cliente.getText());
+                        if(this.t_cp_cliente.getText().compareTo("")!=0)
+                            nuevoCliente.setCp(Integer.parseInt(this.t_cp_cliente.getText()));
+                        nuevoCliente.setDireccion(this.t_direccion_cliente.getText());
+                        nuevoCliente.setNumeroExterior(this.t_numero_cliente.getText());
+                        nuevoCliente.setEstado(this.cb_edo_cliente.getSelectedItem().toString());
+                        nuevoCliente.setMunicipio(this.t_municipio_cliente.getText());
+                        nuevoCliente.setPoblacion(this.t_poblacion_cliente.getText());
+                        nuevoCliente.setColonia(this.t_colonia_cliente.getText());
+                        nuevoCliente.setContacto(t_contacto_cliente.getText());
+                        nuevoCliente.setEmail(t_email_cliente.getText());
+                        nuevoCliente.setTelefono(t_telefono_cliente.getText());
+                        nuevoCliente.setPais("MX");
+
+                        try 
+                        {
+                            session.beginTransaction().begin();
+                            session.save(nuevoCliente);
+                            l_id_cliente.setText(nuevoCliente.getIdClientes().toString());
+                            session.getTransaction().commit();
+                            JOptionPane.showMessageDialog(null, "¡El Cliente se ha guardado!");
+                            this.b_buscarh.requestFocus();
+                        } 
+                        catch (HibernateException he) 
+                        {
+                            he.printStackTrace();
+                            session.getTransaction().rollback();
+                            
+                            JOptionPane.showMessageDialog(null, "¡Error al guardar!");
+                            t_tipo.requestFocus();
+                        }
+                        finally
+                        {
+                            if(session!=null)
+                                if(session.isOpen())
+                                    session.close();
+                        }
+                    }
+                    else
+                    {
+                        JOptionPane.showMessageDialog(null, "¡En nombre del cliente ya existe!");
+                        t_nombre_cliente.requestFocus();
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        session.beginTransaction();
+                        if(consultaCliente("from Clientes obj where obj.nombre='"+t_nombre_cliente.getText()+"' and obj.idClientes!="+l_id_cliente.getText(), session)==false)
+                        {
+                            Clientes objeto = (Clientes)session.get(Clientes.class, Integer.parseInt(l_id_cliente.getText()));
+                            objeto.setNombre(this.t_nombre_cliente.getText());
+                            objeto.setRfc(this.t_rfc_cliente.getText());
+                            if(this.t_cp_cliente.getText().compareTo("")!=0)
+                                objeto.setCp(Integer.parseInt(this.t_cp_cliente.getText()));
+                            objeto.setDireccion(this.t_direccion_cliente.getText());
+                            objeto.setNumeroExterior(this.t_numero_cliente.getText());
+                            objeto.setEstado(this.cb_edo_cliente.getSelectedItem().toString());
+                            objeto.setMunicipio(this.t_municipio_cliente.getText());
+                            objeto.setPoblacion(this.t_poblacion_cliente.getText());
+                            objeto.setColonia(this.t_colonia_cliente.getText());
+                            objeto.setContacto(t_contacto_cliente.getText());
+                            objeto.setEmail(t_email_cliente.getText());
+                            objeto.setTelefono(t_telefono_cliente.getText());
+                            session.update(objeto);
+                            session.getTransaction().commit();
+                            JOptionPane.showMessageDialog(null, "¡Datos Actualizados!");  
+                        }
+                        else
+                        {
+                            JOptionPane.showMessageDialog(null, "¡No se pueden guardar nombres duplicados!");  
+                        }
+                    }
+                    catch (HibernateException he)
+                    {
+                        he.printStackTrace(); 
+                        System.out.println(he.hashCode());
+                        session.getTransaction().rollback();
+                    }
+                    finally
+                    {
+                        if(session.isOpen())
+                            session.close();
+                    }
+                }
+            }
+        }
+        b_fecha_interna.requestFocus();
+    }//GEN-LAST:event_b_guardar_clienteActionPerformed
+
+    private void b_nuevo_clienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_nuevo_clienteActionPerformed
+        // TODO add your handling code here:
+        this.t_nombre_cliente.setText("");
+        this.t_rfc_cliente.setText("");
+        this.t_cp_cliente.setText("");
+        this.t_direccion_cliente.setText("");
+        this.t_numero_cliente.setText("");
+        this.cb_edo_cliente.setSelectedItem("ESTADO DE MÉXICO");
+        this.t_municipio_cliente.setText("");
+        this.t_poblacion_cliente.setText("");
+        this.t_colonia_cliente.setText("");
+        this.t_contacto_cliente.setText("");
+        this.t_email_cliente.setText("");
+        this.t_telefono_cliente.setText("");
+        this.t_telefono_cliente.setValue(null);
+        l_id_cliente.setText("");
+        this.t_nombre_cliente.requestFocus();
+    }//GEN-LAST:event_b_nuevo_clienteActionPerformed
+
+    private void b_busca_clienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_busca_clienteActionPerformed
+        // TODO add your handling code here:
+        h=new Herramientas(usr, 0);
+        h.session(sessionPrograma);
+
+        buscaCliente obj = new buscaCliente(new javax.swing.JFrame(), true);
+        obj.t_busca.requestFocus();
+        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+        obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
+        obj.setVisible(true);
+
+        Clientes actor=obj.getReturnStatus();
+        
+        b_nuevo_clienteActionPerformed(null);
+        if(actor!=null)
+        {
+            this.l_id_cliente.setText(actor.getIdClientes().toString());
+            this.t_nombre_cliente.setText(actor.getNombre());
+            try{
+                this.t_rfc_cliente.setText(actor.getRfc());
+            }catch(Exception e){}
+            
+            try{
+                if(actor.getCp()!=null)
+                    this.t_cp_cliente.setText(""+actor.getCp());
+            }catch(Exception e){}
+            
+            try{
+                this.t_direccion_cliente.setText(actor.getDireccion());
+            }catch(Exception e){}
+
+            try{
+                this.t_numero_cliente.setText(actor.getNumeroExterior());
+            }catch(Exception e){}
+            
+            try{
+                this.cb_edo_cliente.setSelectedItem(actor.getEstado());
+            }catch(Exception e){}
+            
+            try{
+                this.t_municipio_cliente.setText(actor.getMunicipio());
+            }catch(Exception e){}
+            
+            try{
+                this.t_poblacion_cliente.setText(actor.getPoblacion());
+            }catch(Exception e){}
+            
+            try{
+                this.t_colonia_cliente.setText(actor.getColonia());
+            }catch(Exception e){}
+            
+            try{
+                t_contacto_cliente.setText(actor.getContacto());
+            }catch(Exception e){}
+
+            try{
+                t_email_cliente.setText(actor.getEmail());
+            }catch(Exception e){}
+
+            try{
+                t_telefono_cliente.setText(actor.getTelefono());
+            }catch(Exception e){}
+        }
+        b_nuevo_cliente.requestFocus();
+    }//GEN-LAST:event_b_busca_clienteActionPerformed
+
+    private void t_telefono_clienteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_telefono_clienteKeyTyped
+        // TODO add your handling code here:
+        char car = evt.getKeyChar();
+        if(t_telefono_cliente.getText().length()>=13)
+            evt.consume();
+        if((car<'0' || car>'9'))
+            evt.consume();
+    }//GEN-LAST:event_t_telefono_clienteKeyTyped
+
+    private void t_telefono_clienteFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_telefono_clienteFocusLost
+        // TODO add your handling code here:
+        if(t_telefono_cliente.getText().length()>13)
+        {
+            t_telefono_cliente.setText(t_telefono_cliente.getText().substring(0, 13));
+            try{
+                t_telefono_cliente.commitEdit();
+            }catch(Exception e){}
+        }
+    }//GEN-LAST:event_t_telefono_clienteFocusLost
+
+    private void t_email_clienteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_email_clienteKeyTyped
+        char car = evt.getKeyChar();
+        if(t_email_cliente.getText().length()>=100)
+        evt.consume();
+    }//GEN-LAST:event_t_email_clienteKeyTyped
+
+    private void t_email_clienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_email_clienteActionPerformed
+        b_guardar_cliente.requestFocus();
+    }//GEN-LAST:event_t_email_clienteActionPerformed
+
+    private void t_email_clienteFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_email_clienteFocusLost
+        // TODO add your handling code here:
+        if(t_email_cliente.getText().length()>100)
+            t_email_cliente.setText(t_email_cliente.getText().substring(0, 100));
+    }//GEN-LAST:event_t_email_clienteFocusLost
+
+    private void t_contacto_clienteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_contacto_clienteKeyTyped
+        // TODO add your handling code here:
+        evt.setKeyChar(Character.toUpperCase(evt.getKeyChar()));
+        if(t_contacto_cliente.getText().length()>=150)
+            evt.consume();
+    }//GEN-LAST:event_t_contacto_clienteKeyTyped
+
+    private void t_contacto_clienteFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_contacto_clienteFocusLost
+        // TODO add your handling code here:
+        if(t_contacto_cliente.getText().length()>150)
+            t_contacto_cliente.setText(t_contacto_cliente.getText().substring(0, 150));
+    }//GEN-LAST:event_t_contacto_clienteFocusLost
+
+    private void t_rfc_clienteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_rfc_clienteKeyTyped
+        // TODO add your handling code here:
+        evt.setKeyChar(Character.toUpperCase(evt.getKeyChar()));
+        char car = evt.getKeyChar();
+        if(t_rfc_cliente.getText().length()>=13)
+        evt.consume();
+    }//GEN-LAST:event_t_rfc_clienteKeyTyped
+
+    private void t_rfc_clienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_rfc_clienteActionPerformed
+        // TODO add your handling code here:
+        t_contacto_cliente.requestFocus();
+    }//GEN-LAST:event_t_rfc_clienteActionPerformed
+
+    private void t_rfc_clienteFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_rfc_clienteFocusLost
+        // TODO add your handling code here:
+        if(t_rfc_cliente.getText().length()>13)
+            t_rfc_cliente.setText(t_rfc_cliente.getText().substring(0, 13));
+    }//GEN-LAST:event_t_rfc_clienteFocusLost
+
+    private void t_direccion_clienteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_direccion_clienteKeyTyped
+        // TODO add your handling code here:
+        evt.setKeyChar(Character.toUpperCase(evt.getKeyChar()));
+        char car = evt.getKeyChar();
+        if(t_direccion_cliente.getText().length()>=150)
+        evt.consume();
+    }//GEN-LAST:event_t_direccion_clienteKeyTyped
+
+    private void t_direccion_clienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_direccion_clienteActionPerformed
+        // TODO add your handling code here:
+        t_rfc_cliente.requestFocus();
+    }//GEN-LAST:event_t_direccion_clienteActionPerformed
+
+    private void t_direccion_clienteFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_direccion_clienteFocusLost
+        // TODO add your handling code here:
+        if(t_direccion_cliente.getText().length()>150)
+            t_direccion_cliente.setText(t_direccion_cliente.getText().substring(0, 150));
+    }//GEN-LAST:event_t_direccion_clienteFocusLost
+
+    private void t_nombre_clienteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_nombre_clienteKeyTyped
+        // TODO add your handling code here:
+        char car = evt.getKeyChar();
+        evt.setKeyChar(Character.toUpperCase(evt.getKeyChar()));
+        if(t_nombre_cliente.getText().length()>=150)
+        evt.consume();
+    }//GEN-LAST:event_t_nombre_clienteKeyTyped
+
+    private void t_nombre_clienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_nombre_clienteActionPerformed
+        // TODO add your handling code here:
+        t_direccion_cliente.requestFocus();
+    }//GEN-LAST:event_t_nombre_clienteActionPerformed
+
+    private void t_nombre_clienteFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_nombre_clienteFocusLost
+        // TODO add your handling code here:
+        if(t_nombre_cliente.getText().length()>150)
+            t_nombre_cliente.setText(t_nombre_cliente.getText().substring(0, 150));
+    }//GEN-LAST:event_t_nombre_clienteFocusLost
+
+    private void t_numero_clienteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_numero_clienteKeyTyped
+        // TODO add your handling code here:
+        evt.setKeyChar(Character.toUpperCase(evt.getKeyChar()));
+        if(t_numero_cliente.getText().length()>=10)
+        evt.consume();
+    }//GEN-LAST:event_t_numero_clienteKeyTyped
+
+    private void t_cp_clienteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_cp_clienteKeyTyped
+        char car = evt.getKeyChar();
+        if(this.t_cp_cliente.getText().length()>=5)
+        evt.consume();
+        if((car<'0' || car>'9'))
+        evt.consume();
+    }//GEN-LAST:event_t_cp_clienteKeyTyped
+
+    private void t_municipio_clienteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_municipio_clienteKeyTyped
+        // TODO add your handling code here:
+        evt.setKeyChar(Character.toUpperCase(evt.getKeyChar()));
+        if(t_municipio_cliente.getText().length()>=20)
+        evt.consume();
+    }//GEN-LAST:event_t_municipio_clienteKeyTyped
+
+    private void t_poblacion_clienteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_poblacion_clienteKeyTyped
+        evt.setKeyChar(Character.toUpperCase(evt.getKeyChar()));
+        if(t_poblacion_cliente.getText().length()>=150)
+        evt.consume();
+    }//GEN-LAST:event_t_poblacion_clienteKeyTyped
+
+    private void t_colonia_clienteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_colonia_clienteKeyTyped
+        evt.setKeyChar(Character.toUpperCase(evt.getKeyChar()));
+        if(t_colonia_cliente.getText().length()>=150)
+        evt.consume();
+    }//GEN-LAST:event_t_colonia_clienteKeyTyped
+
+    private void t_telefono_clienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_telefono_clienteActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_t_telefono_clienteActionPerformed
+
+    private void cb_garantiaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_garantiaActionPerformed
+        // TODO add your handling code here:
+        if(cb_garantia.isSelected())
+        {
+            buscaOrden obj = new buscaOrden(new javax.swing.JFrame(), true, this.usr,0, configuracion);
+            obj.t_busca.requestFocus();
+            Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+            obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
+            obj.setVisible(true);        
+            Orden orden_act=obj.getReturnStatus();
+            if (orden_act!=null)
+            {
+                t_garantia.setText(""+orden_act.getIdOrden());
+            }
+            else
+            {
+                cb_garantia.setSelected(false);
+                 t_garantia.setText("");
+            }
+        }
+        else
+        {
+            t_garantia.setText("");
+        }
+        b_guardar.requestFocus();
+    }//GEN-LAST:event_cb_garantiaActionPerformed
+
+    private void t_modeloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_modeloActionPerformed
+        // TODO add your handling code here:
+        t_km.requestFocus();
+    }//GEN-LAST:event_t_modeloActionPerformed
+
+    private void cb_tipo_clienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_tipo_clienteActionPerformed
+        // TODO add your handling code here:
+        b_buscar_aseguradora.requestFocus();
+    }//GEN-LAST:event_cb_tipo_clienteActionPerformed
+
+    private void c_siniestroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_c_siniestroActionPerformed
+        // TODO add your handling code here:
+        cb_garantia.requestFocus();
+    }//GEN-LAST:event_c_siniestroActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -2876,56 +2534,56 @@ public class AperturaOrden extends javax.swing.JPanel {
     private javax.swing.JButton b_marca;
     private javax.swing.JButton b_nuevo_cliente;
     private javax.swing.JButton b_tipo;
-    private javax.swing.JComboBox c_estado_cliente;
     private javax.swing.JComboBox c_estatus;
     private javax.swing.JComboBox c_siniestro;
-    private javax.swing.JCheckBox cb_asegurado;
-    private javax.swing.JCheckBox cb_particular;
-    private javax.swing.JCheckBox cb_tercero;
-    private javax.swing.JCheckBox cb_tercero_asegurado;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel16;
+    public javax.swing.JComboBox cb_edo_cliente;
+    private javax.swing.JCheckBox cb_garantia;
+    private javax.swing.JComboBox cb_tipo_cliente;
+    private datechooser.beans.DateChooserDialog dateChooserDialog1;
     private javax.swing.JLabel jLabel17;
-    private javax.swing.JLabel jLabel18;
-    private javax.swing.JLabel jLabel22;
-    private javax.swing.JLabel jLabel23;
-    private javax.swing.JLabel jLabel25;
-    private javax.swing.JLabel jLabel26;
-    private javax.swing.JLabel jLabel27;
-    private javax.swing.JLabel jLabel28;
-    private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel30;
-    private javax.swing.JLabel jLabel31;
+    private javax.swing.JLabel jLabel33;
+    private javax.swing.JLabel jLabel34;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel6;
+    private javax.swing.JLabel l_cliente;
+    private javax.swing.JLabel l_colonia_cliente;
+    private javax.swing.JLabel l_color;
+    private javax.swing.JLabel l_contacto_cliente;
+    private javax.swing.JLabel l_cp_cliente;
+    private javax.swing.JLabel l_direccion_cliente;
+    private javax.swing.JLabel l_economico;
+    private javax.swing.JLabel l_edo_cliente;
+    private javax.swing.JLabel l_email_cliente;
     private javax.swing.JLabel l_id_cliente;
+    private javax.swing.JLabel l_km;
+    private javax.swing.JLabel l_modelo;
+    private javax.swing.JLabel l_motor;
+    private javax.swing.JLabel l_municipio_cliente;
+    private javax.swing.JLabel l_nombre;
     private javax.swing.JLabel l_nombre_aseguradora;
     private javax.swing.JLabel l_nombre_marca;
+    private javax.swing.JLabel l_numero_cliente;
+    private javax.swing.JLabel l_placas;
+    private javax.swing.JLabel l_poblacion_cliente;
+    private javax.swing.JLabel l_rfc_cliente;
+    private javax.swing.JLabel l_serie;
+    private javax.swing.JLabel l_telefono_cliente;
     private javax.swing.JPanel p_foto;
     private javax.swing.JTextField t_agente;
     private javax.swing.JTextField t_ajustador;
     public javax.swing.JTextField t_aseguradora;
-    private javax.swing.JTextField t_colonia_cliente;
+    public javax.swing.JTextField t_colonia_cliente;
     private javax.swing.JTextField t_color;
     private javax.swing.JTextField t_contacto_cliente;
-    private javax.swing.JFormattedTextField t_cp_cliente;
+    public javax.swing.JTextField t_cp_cliente;
     private javax.swing.JTextField t_direccion_cliente;
     private javax.swing.JTextField t_economico;
     private javax.swing.JTextField t_email_cliente;
@@ -2933,15 +2591,17 @@ public class AperturaOrden extends javax.swing.JPanel {
     private javax.swing.JTextField t_fecha_estatus;
     private javax.swing.JTextField t_fecha_interna;
     private javax.swing.JTextField t_fecha_siniestro;
+    private javax.swing.JTextField t_garantia;
     private javax.swing.JTextField t_inciso;
     private javax.swing.JTextField t_km;
     private javax.swing.JTextField t_marca;
     private javax.swing.JFormattedTextField t_modelo;
     private javax.swing.JTextField t_motor;
-    private javax.swing.JTextField t_nextel_cliente;
+    public javax.swing.JTextField t_municipio_cliente;
     private javax.swing.JTextField t_nombre_cliente;
+    public javax.swing.JTextField t_numero_cliente;
     private javax.swing.JTextField t_placas;
-    private javax.swing.JTextField t_poblacion_cliente;
+    public javax.swing.JTextField t_poblacion_cliente;
     private javax.swing.JTextField t_poliza;
     private javax.swing.JTextField t_reporte;
     private javax.swing.JTextField t_rfc_cliente;
@@ -2955,6 +2615,7 @@ public class AperturaOrden extends javax.swing.JPanel {
 
 private Integer guardarOrden(Orden nueva)
 {
+    h=new Herramientas(usr, 0);
     Session session = HibernateUtil.getSessionFactory().openSession();
     Integer ID = null;
     try 
@@ -3001,7 +2662,7 @@ private Integer guardarOrden(Orden nueva)
                     if(emp1.getEmail()!=null)
                     {
                         String mensaje="<p>Asignaci&oacute;n de Orden De Taller <strong>"+ID+"</strong></p><p>Saludos. </p>";
-                        enviaCorreo("Asignaci&oacute;n OT("+ID+")", mensaje, emp1.getEmail()); 
+                        h.enviaCorreo("Asignaci&oacute;n OT("+ID+")", mensaje, emp1.getEmail()); 
                     }
                 }
             }
@@ -3018,12 +2679,23 @@ private Integer guardarOrden(Orden nueva)
                 if(emp1.getEmail()!=null)
                 {
                     String mensaje="<p>Asignaci&oacute;n de Orden De Taller <strong>"+ID+"</strong></p><p>Saludos. </p>";
-                    enviaCorreo("Asignaci&oacute;n OT("+ID+")", mensaje, emp1.getEmail()); 
+                    h.enviaCorreo("Asignaci&oacute;n OT("+ID+")", mensaje, emp1.getEmail()); 
                 }
             }
         }
-        File folder = new File(ruta+"ordenes/"+ID);
-        folder.mkdirs();
+        
+        Ftp miFtp=new Ftp();
+        boolean respuesta=true;
+        respuesta=miFtp.conectar(ruta, "compras", "04650077", 3310);
+        if(respuesta==true)   
+        {
+            if(!miFtp.cambiarDirectorio("/ordenes/"+ID))
+            {
+                if(miFtp.crearDirectorio("/ordenes/"+ID))
+                    miFtp.cambiarDirectorio("/ordenes/"+ID);
+            }
+            miFtp.desconectar();
+        }
         return ID;   
     } 
     catch (HibernateException he) 
@@ -3045,23 +2717,36 @@ private boolean guardaFoto(int no)
     try {        
         if(archivo.exists()==true)
         {
-            File folder = new File(ruta+"ordenes/"+no);
-            folder.mkdirs();
-            folder = new File(ruta+"ordenes/"+no+"/miniatura");
-            folder.mkdirs();
-            Random rng=new Random();
-            long  dig8 = rng.nextInt(90000000)+10000000;
-            File destino = new File(ruta+"ordenes/"+no+"/"+no+".jpg");
-            File miniatura = new File(ruta+"ordenes/"+no+"/miniatura/"+no+".jpg");
-            String ruta=archivo.getPath();
-            javax.swing.JPanel p=new Imagen(ruta, 385, 250, 0, 0, 385, 250);
-            BufferedImage dibujo =new BufferedImage(385, 250, BufferedImage.TYPE_INT_RGB);
-            Graphics g = dibujo.getGraphics();
-            p.paint(g);
-            ImageIO.write((RenderedImage)dibujo, "jpg", miniatura); // Salvar la imagen en el fichero
-            BufferedImage dibujoGrande =ImageIO.read(archivo);
-            ImageIO.write((RenderedImage)dibujoGrande, "jpg", destino); // Salvar la imagen en el fichero*/
-            return true;
+            Ftp miFtp=new Ftp();
+            boolean respuesta=true;
+            respuesta=miFtp.conectar(ruta, "compras", "04650077", 3310);
+            if(respuesta==true)
+            {   
+                if(!miFtp.cambiarDirectorio("/ordenes/"+no))
+                    if(miFtp.crearDirectorio("/ordenes/"+no))
+                        miFtp.cambiarDirectorio("/ordenes/"+no);
+                respuesta=miFtp.subirArchivo(archivo.getPath(), no+".jpg");
+
+                File temp = File.createTempFile("tmp", ".jpg");
+                String ruta=archivo.getPath();
+                javax.swing.JPanel p=new Imagen(ruta, 385, 250, 0, 0, 385, 250);
+                BufferedImage dibujo =new BufferedImage(385, 250, BufferedImage.TYPE_INT_RGB);
+                Graphics g = dibujo.getGraphics();
+                p.paint(g);
+                ImageIO.write((RenderedImage)dibujo, "jpg", temp); // Salvar la imagen en el fichero
+
+                if(!miFtp.cambiarDirectorio("/ordenes/"+no+"/miniatura"))
+                {
+                    miFtp.cambiarDirectorio(miFtp.raiz);
+                    if(miFtp.crearDirectorio("/ordenes/"+no+"/miniatura"))
+                        miFtp.cambiarDirectorio("/ordenes/"+no+"/miniatura");
+                }
+                respuesta=miFtp.subirArchivo(temp.getPath(), no+".jpg");
+                temp.delete();
+
+                miFtp.cambiarDirectorio("/");
+                return true;
+            }
         }
         return false;
     } 
@@ -3072,139 +2757,6 @@ private boolean guardaFoto(int no)
         return false;
     }
 }
-private boolean guardarCliente(Clientes obj)
-{
-    Session session = HibernateUtil.getSessionFactory().openSession();
-    try 
-    {
-        session.beginTransaction().begin();
-        session.save(obj);
-        l_id_cliente.setText(obj.getIdClientes().toString());
-        session.getTransaction().commit();
-        return true;
-    } 
-    catch (HibernateException he) 
-    {
-        he.printStackTrace();
-        session.getTransaction().rollback();
-        return false;
-    }
-    finally
-    {
-        if(session!=null)
-            if(session.isOpen())
-                session.close();    
-    }
-}
-private void buscaCompania()
-{
-    if(t_aseguradora.getText().length()>4)
-            t_aseguradora.setText(t_aseguradora.getText().substring(0, 4));
-        
-        if(t_aseguradora.getText().compareTo("")==0)
-            b_buscar_aseguradora.requestFocus();
-        else
-        {
-            Session session = HibernateUtil.getSessionFactory().openSession();
-            try
-            {
-                Query q = session.createQuery("from Compania com where com.idCompania='" + t_aseguradora.getText() + "'");
-                List resultList = q.list();        
-                if(resultList.size()>0)
-                {
-                    for (Object o : resultList) 
-                    {
-                        Compania actor = (Compania) o;
-                        l_nombre_aseguradora.setText(actor.getNombre());
-                    }
-                }
-                else
-                {
-                    l_nombre_aseguradora.setText("Selecciones una Aseguradora");
-                    t_aseguradora.setText("");
-                }
-            }catch(Exception e)
-            {
-                System.out.println(e);
-            }
-            finally
-            {
-                if(session!=null)
-                    if(session.isOpen())
-                        session.close();
-            }
-        }
-}
-
-    private void buscaTipo()
-    {
-        if(t_tipo.getText().length()>150)
-                t_tipo.setText(t_tipo.getText().substring(0, 150));
-
-            if(t_tipo.getText().compareTo("")!=0)
-            {
-                Session session = HibernateUtil.getSessionFactory().openSession();
-                try
-                {
-                    Query q = session.createQuery("from Tipo com where com.tipoNombre='" + t_tipo.getText() + "'");
-                    List resultList = q.list();        
-                    if(resultList.size()<=0)
-                    {
-                        t_tipo.setText("");
-                    }
-                }catch(Exception e)
-                {
-                    System.out.println(e);
-                }
-                finally
-                {
-                    if(session!=null)
-                        if(session.isOpen())
-                            session.close();
-                }
-            }
-    }
-
-    private void buscaMarca()
-    {
-        if(t_marca.getText().length()>20)
-                t_marca.setText(t_marca.getText().substring(0, 20));
-
-        if(t_marca.getText().compareTo("")!=0)
-        {
-            Session session = HibernateUtil.getSessionFactory().openSession();
-            try
-            {
-                Query q = session.createQuery("from Marca com where com.idMarca='" + t_marca.getText() + "'");
-                List resultList = q.list();
-                if(resultList.size()>0)
-                {
-                    for (Object o : resultList) 
-                    {
-                        Marca actor = (Marca) o;
-                        l_nombre_marca.setText(actor.getMarcaNombre());
-                    }
-                }
-                else
-                {
-                    l_nombre_marca.setText("Seleccione una aseguradora");
-                    t_marca.setText("");
-
-                }
-            }catch(Exception e)
-            {
-                System.out.println(e);
-            }
-            finally
-            {
-                if(session!=null)
-                    if(session.isOpen())
-                        session.close();
-            }
-        }
-        else
-            l_nombre_marca.setText("Seleccione una aseguradora");
-    }
 
     public void cargaEstatus()
     {
@@ -3234,33 +2786,17 @@ private void buscaCompania()
                     this.c_siniestro.addItem(actor.getNombre());
                 }
             }
-        }catch(Exception e)
-        {
-            System.out.println(e);
-        }
-        finally
-        {
-            if(session!=null)
-                if(session.isOpen())
-                    session.close();
-        }
-    }
-    
-    public void cargaSiniestro1()
-    {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        try
-        {
-            Query q = session.createQuery("from Reparacion es");
-            List resultList = q.list();
-            if(resultList.size()>0)
+            
+            usr = (Usuario)session.get(Usuario.class, usr.getIdUsuario());
+            if(usr.getCrearClientes()==true)
             {
-                this.c_siniestro.removeAllItems();
-                for (Object o : resultList)
-                {
-                    Reparacion actor = (Reparacion) o;
-                    this.c_siniestro.addItem(actor.getNombre());
-                }
+                this.b_nuevo_cliente.setEnabled(true);
+                this.b_guardar_cliente.setEnabled(true);
+            }
+            else
+            {
+                this.b_nuevo_cliente.setEnabled(false);
+                this.b_guardar_cliente.setEnabled(false);
             }
         }catch(Exception e)
         {
@@ -3275,13 +2811,12 @@ private void buscaCompania()
     }
     
 
-    public boolean consultaCliente(String nombre)
+    public boolean consultaCliente(String consulta, Session session)
     {
         boolean var=false;
-        Session session = HibernateUtil.getSessionFactory().openSession();
         try
         {
-            Query q = session.createQuery("from Clientes obj where obj.nombre='"+nombre+"'");
+            Query q = session.createQuery(consulta);
             List resultList = q.list();
             if(resultList.size()>0)
                 return true;
@@ -3289,137 +2824,70 @@ private void buscaCompania()
                 return false;
         }catch(Exception e)
         {
-            System.out.println(e);
+            e.printStackTrace();
             return false;
         }
-        finally
-        {
-            if(session!=null)
-                if(session.isOpen())
-                    session.close();
-        }
     }
     
-    public void edita_cliente()
+    public void borra()
     {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        try
-        {
-            usr = (Usuario)session.get(Usuario.class, usr.getIdUsuario());
-            if(usr.getCrearClientes()==true)
-            {
-                this.b_nuevo_cliente.setEnabled(true);
-            }
-            else
-            {
-                this.b_nuevo_cliente.setEnabled(false);
-            }
-        }catch(Exception e)
-        {
-            System.out.println(e);
-        }
-        finally
-        {
-            if(session!=null)
-                if(session.isOpen())
-                    session.close();    
-        }
-    }
-    
-    public void enviaCorreo(String asunto, String mensaje, String from)
-    {
-        String smtp="";
-        boolean ttl=false;
-        String puerto="";
-        String envia="";
-        String clave="";
-        //String from="";
-        String cc="";
-        String texto = null;
+        l_nombre_marca.setText("Seleccione una marca");
+        t_marca.setText("");
+        t_tipo.setText("");
+        t_serie.setText("");
+        t_motor.setText("");
+        t_placas.setText("");
+        t_economico.setText("");
+        t_modelo.setText("");
+        t_modelo.setValue(null);
+        t_km.setText("");
+        t_color.setText("");
+        cb_tipo_cliente.setSelectedIndex(0);
         
-        try
-        {
-            FileReader f = new FileReader("correo.ml");
-            BufferedReader b = new BufferedReader(f);
-            int renglon=0;
-            while((texto = b.readLine())!=null)
-            {
-                switch(renglon)
-                {
-                    case 1://smtp
-                        smtp=texto.trim();
-                        break;
-                    case 2://ttl
-                        if(texto.compareToIgnoreCase("true")==0)
-                            ttl=true;
-                        else
-                            ttl=false;
-                        break;
-                    case 3://puerto
-                        puerto=texto.trim();
-                        break;
-                    case 4://cuenta
-                        envia=texto.trim();
-                        break;
-                    case 5://contraseña
-                        clave=texto.trim();
-                        break;
-                }
-                renglon+=1;
-            }
-            b.close();
-        }catch(Exception e){e.printStackTrace();}
+        t_aseguradora.setText("");
+        l_nombre_aseguradora.setText("Selecciones una aseguradora");
+        t_siniestro.setText("");
+        t_poliza.setText("");
+        t_inciso.setText("");
+        t_reporte.setText("");
+        t_fecha_siniestro.setText("DD-MM-AAAA");
+        t_ajustador.setText("");
+        id_ajustador="";
+        t_agente.setText("");
+        id_agente="";
         
-        try
-        {
-            // se obtiene el objeto Session.
-            Properties props = new Properties();
-            props.put("mail.smtp.host", smtp);
-            props.setProperty("mail.smtp.starttls.enable", ""+ttl);
-            props.setProperty("mail.smtp.port", puerto);
-            props.setProperty("mail.smtp.user", envia);
-            props.setProperty("mail.smtp.auth", "true");
-
-            javax.mail.Session session = javax.mail.Session.getDefaultInstance(props, null);
-            // session.setDebug(true);
-
-            // Se compone la parte del texto
-            BodyPart texto_mensaje = new MimeBodyPart();
-            texto_mensaje.setContent(mensaje, "text/html");
-
-            // Una MultiParte para agrupar texto e imagen.
-            MimeMultipart multiParte = new MimeMultipart();
-            multiParte.addBodyPart(texto_mensaje);
-
-            // Se compone el correo, dando to, from, subject y el contenido.
-            MimeMessage message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(envia));
-
-            String [] direcciones=from.split(";");
-            for(int x=0; x<direcciones.length; x++)
-            {
-                if(direcciones[x].compareTo("")!=0)
-                    message.addRecipient(Message.RecipientType.TO, new InternetAddress(direcciones[x].replace(" ","")));
-            }
-
-            String [] dirCC=cc.split(";");
-            for(int y=0; y<dirCC.length; y++)
-            {
-                if(dirCC[y].compareTo("")!=0)
-                    message.addRecipient(Message.RecipientType.CC, new InternetAddress(dirCC[y].replace(" ","")));
-            }
-
-            message.setSubject(asunto);
-            message.setContent(multiParte);
-
-            Transport t = session.getTransport("smtp");
-            t.connect(envia, clave);
-            t.sendMessage(message, message.getAllRecipients());
-            t.close();
-        }
-        catch (Exception e)
-        {
-            JOptionPane.showMessageDialog(null, "¡No se pudo enviar el correo error de red!"); 
-        }
+        
+        t_nombre_cliente.setText("");
+        t_rfc_cliente.setText("");
+        t_cp_cliente.setText("");
+        t_direccion_cliente.setText("");
+        t_numero_cliente.setText("");
+        cb_edo_cliente.setSelectedItem("ESTADO DE MÉXICO");
+        t_municipio_cliente.setText("");
+        t_poblacion_cliente.setText("");
+        t_colonia_cliente.setText("");
+        t_contacto_cliente.setText("");
+        t_email_cliente.setText("");
+        t_telefono_cliente.setText("");
+        
+        t_fecha_interna.setText("DD-MM-AAAA");
+        t_fecha_cliente.setText("DD-MM-AAAA");
+        
+        t_tecnico.setText("");
+        this.cargaEstatus();
+        c_estatus.setSelectedItem(0);
+        this.c_siniestro.setSelectedIndex(0);
+        cb_garantia.setSelected(false);
+        t_garantia.setText("");
+        
+        p_foto.removeAll();
+        p_foto.add(new Imagen("imagenes/foto.png", 128, 168, 4, 4, 128,168));
+        p_foto.repaint();
+        entro_foto=0;
+        
+        Date fecha = new Date();
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        t_fecha_estatus.setText(dateFormat.format(fecha));
+        b_marca.requestFocus();
     }
 }

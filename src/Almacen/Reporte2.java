@@ -78,6 +78,7 @@ public class Reporte2 extends javax.swing.JPanel {
     int menu, x=0;
     String sessionPrograma="";
     Herramientas h;
+    CotConsumible ord= null;
     muestraAlmacen muestra_almacen;
     String[] columnas = new String [] {"Pedido", "Proveedor", "Fecha De Mov.", "N° Mov.", "Tipo", "Operación", "Orden", "Tipo Doc.", "N° Doc."};
     String[] columnas1 = new String [] {"Partida", "Descripción", "Cant", "Recibió/Entrego", "Fecha", "Movimiento", "T.Movimiento"};
@@ -93,15 +94,17 @@ public class Reporte2 extends javax.swing.JPanel {
     String query;
     boolean val;
     boolean bandera=false;
+    int configuracion=1;
     List elimina=new ArrayList();
     /**
      * Creates new form Reporte2
      */
-    public Reporte2(Usuario usuario, String ses, int op) {
+    public Reporte2(Usuario usuario, String ses, int op, int configuracion) {
         initComponents();
         menu=op;
         usr=usuario;
         sessionPrograma=ses;
+        this.configuracion=configuracion;
         Class[] t1 = new Class [] {
                 java.lang.String.class, 
                 java.lang.String.class, 
@@ -195,7 +198,7 @@ public class Reporte2 extends javax.swing.JPanel {
         
         if(valor.compareTo("") != 0)
         {
-            query = "select if(almacen.tipo_movimiento=1, 'DEVOLUCION', 'SALIDA')as tipo, DATE_FORMAT(almacen.fecha, '%Y-%d-%m')as fecha, almacen.entrego, movimiento.id_Parte, ejemplar.id_catalogo, movimiento.cantidad, ejemplar.medida, movimiento.valor, (movimiento.cantidad*movimiento.valor) as total " +
+            query = "select if(almacen.tipo_movimiento=1, 'DEVOLUCION', 'SALIDA')as tipo, DATE_FORMAT(almacen.fecha, '%Y-%d-%m')as fecha, almacen.entrego, movimiento.id_Parte, ejemplar.comentario, movimiento.cantidad, ejemplar.medida, movimiento.valor, (movimiento.cantidad*movimiento.valor) as total " +
             "from movimiento left join ejemplar on ejemplar.id_Parte=movimiento.id_Parte left join almacen on almacen.id_almacen=movimiento.id_almacen where almacen.id_orden="+valor+" and almacen.operacion=8";
             switch(busca)
             {
@@ -232,7 +235,7 @@ public class Reporte2 extends javax.swing.JPanel {
                 for(int c=0; c<num_d; c++)
                 {
                     java.util.HashMap map = (java.util.HashMap) datos.get(c);
-                    modelo.addRow(new Object[]{map.get("tipo"),map.get("fecha"),map.get("entrego"),map.get("id_Parte"),map.get("id_catalogo"),map.get("cantidad"),map.get("medida"),map.get("valor"),map.get("total")});
+                    modelo.addRow(new Object[]{map.get("tipo"),map.get("fecha"),map.get("entrego"),map.get("id_Parte"),map.get("comentario"),map.get("cantidad"),map.get("medida"),map.get("valor"),map.get("total")});
                 }
             }
             if(num_d <= 0)
@@ -737,7 +740,7 @@ public class Reporte2 extends javax.swing.JPanel {
 
         jLabel5.setText("Nota: S.OPERARIOS=Entrega a Operarios    D.OPERARIOS=Devolucion Operarios  E.Proveedor=Entrada Almacen    S.Proveedor: Devolucion a Proveedor");
 
-        cb_tipo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "OPERARIOS", "PROVEEDORES" }));
+        cb_tipo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "OPERARIOS", "PROVEEDORES", "COMPAÑIA" }));
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -1367,7 +1370,7 @@ public class Reporte2 extends javax.swing.JPanel {
             }
         });
 
-        b_guardar2.setText("Recargar");
+        b_guardar2.setText("Nuevo");
         b_guardar2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 b_guardar2ActionPerformed(evt);
@@ -1768,17 +1771,23 @@ public class Reporte2 extends javax.swing.JPanel {
 
             String consultaEx="";
             
-            if(cb_tipo.getSelectedItem().toString().compareTo("PROVEEDORES")==0)
+            switch(cb_tipo.getSelectedItem().toString())
             {
-                consultaEx="select movimiento.id_Parte as np, '-' as id, if(partida_externa.descripcion is null, (select id_catalogo from ejemplar where id_parte=np), partida_externa.descripcion)as descripcion, movimiento.cantidad,  almacen.entrego, almacen.fecha, almacen.id_almacen, almacen.tipo_movimiento, almacen.operacion " +
-                            "from movimiento left join partida_externa on movimiento.id_externos=partida_externa.id_partida_externa left join almacen on movimiento.id_almacen=almacen.id_almacen left join pedido on almacen.id_pedido=pedido.id_pedido where(pedido.id_orden='"+t_busca.getText()+"' and almacen.operacion=3) or (almacen.id_orden='"+t_busca.getText()+"' and almacen.operacion=7) ";
-                consulta+="and almacen.operacion in(1,3) order by partida.id_evaluacion, partida.sub_partida asc;";
-            }
-            else
-            {
-                consultaEx="select movimiento.id_Parte as np, '-' as id, if(partida_externa.descripcion is null, (select id_catalogo from ejemplar where id_parte=np), partida_externa.descripcion)as descripcion, movimiento.cantidad,  almacen.entrego, almacen.fecha, almacen.id_almacen, almacen.tipo_movimiento, almacen.operacion " +
-                            "from movimiento left join partida_externa on movimiento.id_externos=partida_externa.id_partida_externa left join pedido on partida_externa.id_pedido=pedido.id_pedido left join almacen on movimiento.id_almacen=almacen.id_almacen where(pedido.id_orden='"+t_busca.getText()+"' and almacen.operacion=5) or (almacen.id_orden='"+t_busca.getText()+"' and almacen.operacion=8) ";                
-                consulta+="and almacen.operacion=5 order by partida.id_evaluacion, partida.sub_partida asc;";
+                case "PROVEEDORES":
+                    consultaEx="select movimiento.id_Parte as np, '-' as id, if(partida_externa.descripcion is null, (select id_catalogo from ejemplar where id_parte=np), partida_externa.descripcion)as descripcion, movimiento.cantidad,  almacen.entrego, almacen.fecha, almacen.id_almacen, almacen.tipo_movimiento, almacen.operacion " +
+                                "from movimiento left join partida_externa on movimiento.id_externos=partida_externa.id_partida_externa left join almacen on movimiento.id_almacen=almacen.id_almacen left join pedido on almacen.id_pedido=pedido.id_pedido where(pedido.id_orden='"+t_busca.getText()+"' and almacen.operacion=3) or (almacen.id_orden='"+t_busca.getText()+"' and almacen.operacion=7) ";
+                    consulta+="and almacen.operacion in(1,3) order by partida.id_evaluacion, partida.sub_partida asc;";
+                    break;
+                
+                case "OPERARIOS":
+                    consultaEx="select movimiento.id_Parte as np, '-' as id, if(partida_externa.descripcion is null, (select id_catalogo from ejemplar where id_parte=np), partida_externa.descripcion)as descripcion, movimiento.cantidad,  almacen.entrego, almacen.fecha, almacen.id_almacen, almacen.tipo_movimiento, almacen.operacion " +
+                                "from movimiento left join partida_externa on movimiento.id_externos=partida_externa.id_partida_externa left join pedido on partida_externa.id_pedido=pedido.id_pedido left join almacen on movimiento.id_almacen=almacen.id_almacen where(pedido.id_orden='"+t_busca.getText()+"' and almacen.operacion=5) or (almacen.id_orden='"+t_busca.getText()+"' and almacen.operacion=8) ";                
+                    consulta+="and almacen.operacion=5 order by partida.id_evaluacion, partida.sub_partida asc;";
+                    break;
+                    
+                case "COMPAÑIA":
+                    consulta+="and almacen.operacion=4 order by partida.id_evaluacion, partida.sub_partida asc;";
+                    break;    
             }
 
 
@@ -1786,13 +1795,19 @@ public class Reporte2 extends javax.swing.JPanel {
             try
             {
                 Query q = session.createSQLQuery(consulta);
-                Query qEx = session.createSQLQuery(consultaEx);
                 q.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
-                qEx.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
                 ArrayList resultList = (ArrayList) q.list();
-                ArrayList resultListEx = (ArrayList) qEx.list();
+                int num_d1=0;
+                ArrayList resultListEx=null;
+                if(consultaEx.compareTo("")!=0)
+                {
+                    Query qEx= session.createSQLQuery(consultaEx);
+                    qEx.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+                    resultListEx = (ArrayList) qEx.list();
+                    num_d1=resultListEx.size();
+                }
                 int num_d=resultList.size();
-                int num_d1=resultListEx.size();
+                
                 model1=(DefaultTableModel)t_datos1.getModel();
                 model1.setNumRows(0);
                 if(num_d>0 || num_d1>0)
@@ -1872,7 +1887,7 @@ public class Reporte2 extends javax.swing.JPanel {
 
     private void b_fecha_siniestro1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_fecha_siniestro1ActionPerformed
         // TODO add your handling code here:
-        calendario cal =new calendario(new javax.swing.JFrame(), true);
+        calendario cal =new calendario(new javax.swing.JFrame(), true, false);
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         cal.setLocation((d.width/2)-(cal.getWidth()/2), (d.height/2)-(cal.getHeight()/2));
         cal.setVisible(true);
@@ -1900,7 +1915,7 @@ public class Reporte2 extends javax.swing.JPanel {
 
     private void b_fecha_siniestroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_fecha_siniestroActionPerformed
         // TODO add your handling code here:
-        calendario cal =new calendario(new javax.swing.JFrame(), true);
+        calendario cal =new calendario(new javax.swing.JFrame(), true, false);
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         cal.setLocation((d.width/2)-(cal.getWidth()/2), (d.height/2)-(cal.getHeight()/2));
         cal.setVisible(true);
@@ -2170,7 +2185,7 @@ public class Reporte2 extends javax.swing.JPanel {
             {
                 Almacen alm=new Almacen();
                 alm.setIdAlmacen(Integer.parseInt(t_datos1.getValueAt(t_datos1.getSelectedRow(), 5).toString()));
-                muestra_almacen = new muestraAlmacen(this.usr, sessionPrograma, alm);
+                muestra_almacen = new muestraAlmacen(this.usr, sessionPrograma, alm, configuracion);
                 muestra_almacen.busca();
                 Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
                 centro.removeAll();
@@ -2325,7 +2340,7 @@ public class Reporte2 extends javax.swing.JPanel {
                             
                             objeto[0]=map.get("id");
                             objeto[1]=map.get("proveedor");
-                            objeto[2]=map.get("fecha");
+                            objeto[2]=map.get("fecha").toString();
                             objeto[3]=map.get("id_almacen");
                             objeto[4]=map.get("operacion");
                             objeto[5]=map.get("tipo_documento");
@@ -2390,7 +2405,7 @@ public class Reporte2 extends javax.swing.JPanel {
             {
                 Almacen alm=new Almacen();
                 alm.setIdAlmacen(Integer.parseInt(t_datos.getValueAt(t_datos.getSelectedRow(), 3).toString()));
-                muestra_almacen = new muestraAlmacen(this.usr, sessionPrograma, alm);
+                muestra_almacen = new muestraAlmacen(this.usr, sessionPrograma, alm, configuracion);
                 muestra_almacen.busca();
                 Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
                 centro.removeAll();
@@ -2411,7 +2426,7 @@ public class Reporte2 extends javax.swing.JPanel {
             {
                 Almacen alm=new Almacen();
                 alm.setIdAlmacen(Integer.parseInt(t_datos2.getValueAt(t_datos2.getSelectedRow(), 3).toString()));
-                muestra_almacen = new muestraAlmacen(this.usr, sessionPrograma, alm);
+                muestra_almacen = new muestraAlmacen(this.usr, sessionPrograma, alm, configuracion);
                 muestra_almacen.busca();
                 Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
                 centro.removeAll();
@@ -2429,7 +2444,7 @@ public class Reporte2 extends javax.swing.JPanel {
         // TODO add your handling code here:
         ArrayList datos = new ArrayList();
         Session session = HibernateUtil.getSessionFactory().openSession();
-        Query query = session.createSQLQuery("select id_Parte, id_catalogo, maximo, minimo, existencias, (maximo-existencias)surtir, medida  from ejemplar where existencias<=minimo and minimo>0");
+        Query query = session.createSQLQuery("select id_Parte, ejemplar.comentario, maximo, minimo, existencias, (maximo-existencias)surtir, medida  from ejemplar where existencias<=minimo and minimo>0");
         query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
         datos = (ArrayList) query.list();
         DefaultTableModel modelo=(DefaultTableModel)t_surtir.getModel();
@@ -2437,7 +2452,7 @@ public class Reporte2 extends javax.swing.JPanel {
         for(int c=0; c<datos.size(); c++)
         {
             java.util.HashMap map = (java.util.HashMap) datos.get(c);
-            modelo.addRow(new Object[]{map.get("id_Parte"),map.get("id_catalogo"),map.get("maximo"),map.get("minimo"),map.get("existencias"),map.get("medida"),map.get("surtir")});
+            modelo.addRow(new Object[]{map.get("id_Parte"),map.get("comentario"),map.get("maximo"),map.get("minimo"),map.get("existencias"),map.get("medida"),map.get("surtir")});
         }
         if(session.isOpen())
             session.close();
@@ -2555,7 +2570,7 @@ public class Reporte2 extends javax.swing.JPanel {
 
     private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton17ActionPerformed
         // TODO add your handling code here:
-        buscaOrden obj = new buscaOrden(new javax.swing.JFrame(), true, this.usr,0);
+        buscaOrden obj = new buscaOrden(new javax.swing.JFrame(), true, this.usr,0, configuracion);
         obj.t_busca.requestFocus();
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
@@ -2737,7 +2752,7 @@ public class Reporte2 extends javax.swing.JPanel {
             Object vector[] = new Object[7];
             vector[0] = "";
             vector[1] = eje.getIdParte();
-            vector[2] = eje.getCatalogo();
+            vector[2] = eje.getComentario();
             vector[3] = 1.0d;
             vector[4] = eje.getMedida();
             vector[5] = 0.0d;
@@ -2752,7 +2767,7 @@ public class Reporte2 extends javax.swing.JPanel {
         if(t_solicitud.getRowCount()>0){
             Session session = HibernateUtil.getSessionFactory().openSession();
             session.beginTransaction().begin();
-            Configuracion con = (Configuracion)session.get(Configuracion.class, 1);
+            Configuracion con = (Configuracion)session.get(Configuracion.class, configuracion);
             
             for(int i =0; i<t_solicitud.getRowCount();i++){
                 subtotal += Double.parseDouble(t_solicitud.getValueAt(i, 3).toString())*Double.parseDouble(t_solicitud.getValueAt(i, 5).toString());
@@ -2837,46 +2852,49 @@ public class Reporte2 extends javax.swing.JPanel {
                 }else{
                     Session session = HibernateUtil.getSessionFactory().openSession();
                     try{
-                        session.beginTransaction().begin();
-                        CotConsumible solicitud = (CotConsumible)session.get(CotConsumible.class, Integer.parseInt(t_Cotsolicitud.getText()));
-                        
-                        Empleado em = new Empleado();
-                        em.setIdEmpleado(usr.getEmpleado().getIdEmpleado());
-                        solicitud.setEmpleado(em);
-                        
-                        Proveedor n=new Proveedor();
-                        n.setIdProveedor(Integer.parseInt(l_num_prov.getText()));
-                        solicitud.setProveedor(n);
-                        
-                        for(int ren=0; ren<t_solicitud.getRowCount(); ren++)
-                        {
-                            if(t_solicitud.getValueAt(ren, 0).toString().compareTo("")==0)
+                        if(t_Cotsolicitud.getText().compareTo("")!=0)
+                        { 
+                            session.beginTransaction().begin();
+                            ord = (CotConsumible)session.get(CotConsumible.class, Integer.parseInt(t_Cotsolicitud.getText()));
+
+                            Empleado em = new Empleado();
+                            em.setIdEmpleado(usr.getEmpleado().getIdEmpleado());
+                            ord.setEmpleado(em);
+
+                            Proveedor n=new Proveedor();
+                            n.setIdProveedor(Integer.parseInt(l_num_prov.getText()));
+                            ord.setProveedor(n);
+
+                            for(int ren=0; ren<t_solicitud.getRowCount(); ren++)
                             {
-                                PartidaSolicitud partidas = new PartidaSolicitud();
-                                Ejemplar ejem=(Ejemplar)session.get(Ejemplar.class, t_solicitud.getValueAt(ren, 1).toString());
-                                partidas.setEjemplar(ejem);
-                                CotConsumible sol = (CotConsumible)session.get(CotConsumible.class, Integer.parseInt(t_Cotsolicitud.getText()));
-                                partidas.setCotConsumible(sol);
-                                partidas.setCantidad((double)t_solicitud.getValueAt(ren, 3));
-                                partidas.setMedida(t_solicitud.getValueAt(ren, 4).toString());
-                                partidas.setCosto((double)t_solicitud.getValueAt(ren, 5));
-                                session.save(partidas);
-                            }else{
-                                PartidaSolicitud px=(PartidaSolicitud)session.get(PartidaSolicitud.class, Integer.parseInt(t_solicitud.getValueAt(ren, 0).toString()));
-                                px.setCantidad((double) t_solicitud.getValueAt(ren, 3));
-                                px.setCosto((double) t_solicitud.getValueAt(ren, 5));
-                                session.update(px);
+                                if(t_solicitud.getValueAt(ren, 0).toString().compareTo("")==0)
+                                {
+                                    PartidaSolicitud partidas = new PartidaSolicitud();
+                                    Ejemplar ejem=(Ejemplar)session.get(Ejemplar.class, t_solicitud.getValueAt(ren, 1).toString());
+                                    partidas.setEjemplar(ejem);
+                                    CotConsumible sol = (CotConsumible)session.get(CotConsumible.class, Integer.parseInt(t_Cotsolicitud.getText()));
+                                    partidas.setCotConsumible(sol);
+                                    partidas.setCantidad((double)t_solicitud.getValueAt(ren, 3));
+                                    partidas.setMedida(t_solicitud.getValueAt(ren, 4).toString());
+                                    partidas.setCosto((double)t_solicitud.getValueAt(ren, 5));
+                                    session.save(partidas);
+                                }else{
+                                    PartidaSolicitud px=(PartidaSolicitud)session.get(PartidaSolicitud.class, Integer.parseInt(t_solicitud.getValueAt(ren, 0).toString()));
+                                    px.setCantidad((double) t_solicitud.getValueAt(ren, 3));
+                                    px.setCosto((double) t_solicitud.getValueAt(ren, 5));
+                                    session.update(px);
+                                }
                             }
+                            for(int d=0; d<elimina.size(); d++)
+                            {
+                                PartidaSolicitud pe=(PartidaSolicitud)session.get(PartidaSolicitud.class, (int)elimina.get(d));
+                                session.delete(pe);
+                            }
+                            session.update(ord);
+                            session.beginTransaction().commit();
+                            JOptionPane.showMessageDialog(null, "Solicitud Actualizada");
+                            buscaSolicitud();
                         }
-                        for(int d=0; d<elimina.size(); d++)
-                        {
-                            PartidaSolicitud pe=(PartidaSolicitud)session.get(PartidaSolicitud.class, (int)elimina.get(d));
-                            session.delete(pe);
-                        }
-                        session.update(solicitud);
-                        session.beginTransaction().commit();
-                        JOptionPane.showMessageDialog(null, "Solicitud Actualizada");
-                        buscaSolicitud();
                     }catch (HibernateException he)
                     {
                         he.printStackTrace();
@@ -2960,7 +2978,7 @@ public class Reporte2 extends javax.swing.JPanel {
     private void b_proveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_proveedorActionPerformed
         h=new Herramientas(usr, 0);
         h.session(sessionPrograma);
-        buscaProveedor obj = new buscaProveedor(new javax.swing.JFrame(), true, this.usr, this.sessionPrograma);
+        buscaProveedor obj = new buscaProveedor(new javax.swing.JFrame(), true, this.usr, this.sessionPrograma, 0);
         obj.t_busca.requestFocus();
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
@@ -2988,9 +3006,9 @@ public class Reporte2 extends javax.swing.JPanel {
         if(t_Cotsolicitud.getText().compareTo("")!=0){
            Session session = HibernateUtil.getSessionFactory().openSession();
            try{
-                CotConsumible ord = (CotConsumible)session.get(CotConsumible.class, Integer.parseInt(t_Cotsolicitud.getText()));
+                ord = (CotConsumible)session.get(CotConsumible.class, Integer.parseInt(t_Cotsolicitud.getText()));
                 if(ord!=null){
-                    Query query = session.createSQLQuery("select partida_solicitud.id_partidas, partida_solicitud.id_Parte, ejemplar.id_catalogo, partida_solicitud.cantidad, partida_solicitud.medida, partida_solicitud.costo from partida_solicitud inner join ejemplar on ejemplar.id_Parte=partida_solicitud.id_Parte where id_solicitud="+ord.getIdSolicitud());  
+                    Query query = session.createSQLQuery("select partida_solicitud.id_partidas, partida_solicitud.id_Parte, ejemplar.comentario, partida_solicitud.cantidad, partida_solicitud.medida, partida_solicitud.costo from partida_solicitud inner join ejemplar on ejemplar.id_Parte=partida_solicitud.id_Parte where id_solicitud="+ord.getIdSolicitud());  
                     query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
                     ArrayList partidas=(ArrayList)query.list();
                     if(partidas.size()>0){
@@ -3005,7 +3023,7 @@ public class Reporte2 extends javax.swing.JPanel {
                             Object vector1[] = new Object[7];
                             vector1[0] = map.get("id_partidas");
                             vector1[1] = map.get("id_Parte");
-                            vector1[2] = map.get("id_catalogo");
+                            vector1[2] = map.get("comentario");
                             vector1[3] = Double.parseDouble(map.get("cantidad").toString());
                             vector1[4] = map.get("medida");
                             vector1[5] = Double.parseDouble(map.get("costo").toString());
@@ -3018,6 +3036,7 @@ public class Reporte2 extends javax.swing.JPanel {
                     }
                     
                 }else{
+                    ord=null;
                     JOptionPane.showMessageDialog(this, "El No. de Solicitud "+t_Cotsolicitud.getText()+" No Existe");
                     borrar();
                 }
@@ -3031,7 +3050,9 @@ public class Reporte2 extends javax.swing.JPanel {
                 session.close();
             }
         }else{
+            ord=null;
             JOptionPane.showMessageDialog(this, "Ingresa un No. de Solicitud");
+            borrar();
             t_Cotsolicitud.requestFocus();
         }
     }
@@ -3043,7 +3064,9 @@ public class Reporte2 extends javax.swing.JPanel {
 
     private void b_pdf_solicitudActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_pdf_solicitudActionPerformed
         // TODO add your handling code here:
-        if(t_solicitud.getRowCount()>0){
+        if(ord!=null){
+            t_Cotsolicitud.setText(""+ord.getIdSolicitud());
+            buscaSolicitud();
             javax.swing.JFileChooser jF1= new javax.swing.JFileChooser();
             jF1.setFileFilter(new ExtensionFileFilter("Excel document (*.pdf)", new String[] { "pdf" }));
             String ruta = null;
@@ -3055,7 +3078,7 @@ public class Reporte2 extends javax.swing.JPanel {
                     Session session = HibernateUtil.getSessionFactory().openSession();
                     try
                     {
-                        Configuracion con= (Configuracion)session.get(Configuracion.class, 1);
+                        Configuracion con= (Configuracion)session.get(Configuracion.class, configuracion);
                         BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.WINANSI, BaseFont.NOT_EMBEDDED);
                         PDF reporte = new PDF();
                         reporte.Abrir2(PageSize.LEDGER, "almacen", ruta+".pdf");
@@ -3067,7 +3090,7 @@ public class Reporte2 extends javax.swing.JPanel {
                         int centro=Element.ALIGN_CENTER;
                         int izquierda = Element.ALIGN_LEFT;
                         int derecha=Element.ALIGN_RIGHT;
-                        float[] nuevos=new float[]{120,350,70,70,70,70,70,70,70,70,250};
+                        float[] nuevos=new float[]{120,350,70,70,70,70,70,70,250};
                         
                         PdfPTable tabla=reporte.crearTabla(nuevos.length, nuevos, 100, Element.ALIGN_CENTER);
                         reporte.estatusAutoriza("ok", "NO AUTORIZADO");
@@ -3078,57 +3101,50 @@ public class Reporte2 extends javax.swing.JPanel {
                         
                         for(int i=0; i<t_solicitud.getRowCount();i++){
                             
-                            Query query = session.createSQLQuery("select partida_solicitud.id_Parte as id, ejemplar.id_catalogo, ejemplar.existencias, ejemplar.maximo, partida_solicitud.cantidad, ejemplar.medida, partida_solicitud.costo, \n" +
-                            "(select partida_externa.id_pedido from partida_externa inner join pedido on partida_externa.id_pedido=pedido.id_pedido where id_parte=id and pedido.autorizo2 is not null order by id_pedido desc limit 1) as pedido, \n" +
-                            "(select fecha_pedido from pedido where id_pedido=pedido) as fecha1, \n" +
-                            "(select GROUP_CONCAT(distinct id_orden) from movimiento join almacen on movimiento.id_almacen=almacen.id_almacen where id_Parte=id and operacion=8 and fecha>=fecha1\n" +
-                            "order by almacen.id_almacen) as ordenes\n" +
+                            Query query = session.createSQLQuery("select partida_solicitud.id_Parte as id, ejemplar.comentario, ejemplar.existencias, ejemplar.maximo, partida_solicitud.cantidad, ejemplar.medida, partida_solicitud.costo, \n" +
+                            "(select GROUP_CONCAT(distinct id_orden) from movimiento join almacen on movimiento.id_almacen=almacen.id_almacen where id_Parte=id and operacion=8 \n" +
+                            "order by almacen.id_almacen limit "+((Double)t_solicitud.getValueAt(i, 3)).intValue()+") as ordenes \n" +
                             "from partida_solicitud inner join ejemplar on partida_solicitud.id_Parte=ejemplar.id_Parte where partida_solicitud.id_Parte='"+t_solicitud.getValueAt(i, 1)+"' and partida_solicitud.id_solicitud="+t_Cotsolicitud.getText()+";");  
+
+                            System.out.println(query);
                             query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
                             ArrayList partidas=(ArrayList)query.list();
                             
-                            java.util.HashMap map=(java.util.HashMap)partidas.get(0);
+                            if(partidas.size()>0)
+                            {
+                                java.util.HashMap map=(java.util.HashMap)partidas.get(0);
 
-                            tabla.addCell(reporte.celda(""+map.get("id"), font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
-                            tabla.addCell(reporte.celda(""+map.get("id_catalogo"), font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
-                            tabla.addCell(reporte.celda(""+formatoPorcentaje.format(map.get("existencias")), font, contenido, centro, 0,1,Rectangle.RECTANGLE));
-                            tabla.addCell(reporte.celda(""+formatoPorcentaje.format(map.get("maximo")), font, contenido, centro, 0,1,Rectangle.RECTANGLE));
-                            tabla.addCell(reporte.celda(""+formatoPorcentaje.format(map.get("cantidad")), font, contenido, centro, 0,1,Rectangle.RECTANGLE));
-                            tabla.addCell(reporte.celda(""+map.get("medida"), font, contenido, centro, 0,1,Rectangle.RECTANGLE));
-                            tabla.addCell(reporte.celda(""+formatoPorcentaje.format(map.get("costo")), font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
-                            double total = Double.parseDouble(map.get("cantidad").toString())*Double.parseDouble(map.get("costo").toString());
-                            tabla.addCell(reporte.celda(""+formatoPorcentaje.format(total), font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
-                            if(map.get("pedido")!=null){
-                                tabla.addCell(reporte.celda(""+map.get("pedido"), font, contenido, centro, 0,1,Rectangle.RECTANGLE));
-                            }else{
-                                tabla.addCell(reporte.celda("", font, contenido, centro, 0,1,Rectangle.RECTANGLE));
+                                tabla.addCell(reporte.celda(""+map.get("id"), font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
+                                tabla.addCell(reporte.celda(""+map.get("comentario"), font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
+                                tabla.addCell(reporte.celda(""+formatoPorcentaje.format(map.get("existencias")), font, contenido, centro, 0,1,Rectangle.RECTANGLE));
+                                tabla.addCell(reporte.celda(""+formatoPorcentaje.format(map.get("maximo")), font, contenido, centro, 0,1,Rectangle.RECTANGLE));
+                                tabla.addCell(reporte.celda(""+formatoPorcentaje.format(map.get("cantidad")), font, contenido, centro, 0,1,Rectangle.RECTANGLE));
+                                tabla.addCell(reporte.celda(""+map.get("medida"), font, contenido, centro, 0,1,Rectangle.RECTANGLE));
+                                tabla.addCell(reporte.celda(""+formatoPorcentaje.format(map.get("costo")), font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
+                                double total = Double.parseDouble(map.get("cantidad").toString())*Double.parseDouble(map.get("costo").toString());
+                                tabla.addCell(reporte.celda(""+formatoPorcentaje.format(total), font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
+                                if(map.get("ordenes")!=null){
+                                    tabla.addCell(reporte.celda(""+map.get("ordenes"), font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
+                                }else{
+                                    tabla.addCell(reporte.celda("", font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
+                                }
+                                subtotal +=Double.parseDouble(map.get("cantidad").toString())*Double.parseDouble(map.get("costo").toString());
                             }
-                            if(map.get("fecha1")!=null){
-                                tabla.addCell(reporte.celda(""+dateFormat.format(map.get("fecha1")), font, contenido, centro, 0,1,Rectangle.RECTANGLE));
-                            }else{
-                                tabla.addCell(reporte.celda("", font, contenido, centro, 0,1,Rectangle.RECTANGLE));
-                            }
-                            if(map.get("ordenes")!=null){
-                                tabla.addCell(reporte.celda(""+map.get("ordenes"), font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
-                            }else{
-                                tabla.addCell(reporte.celda("", font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
-                            }
-                            subtotal +=Double.parseDouble(map.get("cantidad").toString())*Double.parseDouble(map.get("costo").toString());
                         }
                         
                         iva = subtotal*con.getIva()/100;
                         
                         tabla.addCell(reporte.celda("Subtotal:", font, contenido, derecha, 7, 1,Rectangle.NO_BORDER));
                         tabla.addCell(reporte.celda(""+formatoPorcentaje.format(subtotal), font, contenido, derecha, 0, 1,Rectangle.RECTANGLE));
-                        tabla.addCell(reporte.celda("", font, contenido, derecha, 3, 1,Rectangle.NO_BORDER));
+                        tabla.addCell(reporte.celda("", font, contenido, derecha, 1, 1,Rectangle.NO_BORDER));
                         
                         tabla.addCell(reporte.celda("Iva:", font, contenido, derecha, 7, 1,Rectangle.NO_BORDER));
                         tabla.addCell(reporte.celda(""+formatoPorcentaje.format(iva), font, contenido, derecha, 0, 1,Rectangle.RECTANGLE));
-                        tabla.addCell(reporte.celda("", font, contenido, derecha, 3, 1,Rectangle.NO_BORDER));
+                        tabla.addCell(reporte.celda("", font, contenido, derecha, 1, 1,Rectangle.NO_BORDER));
                         
                         tabla.addCell(reporte.celda("Total", font, contenido, derecha, 7, 1,Rectangle.NO_BORDER));
                         tabla.addCell(reporte.celda(""+formatoPorcentaje.format((subtotal+iva)), font, contenido, derecha, 0, 1,Rectangle.RECTANGLE));
-                        tabla.addCell(reporte.celda("", font, contenido, derecha, 3, 1,Rectangle.NO_BORDER));
+                        tabla.addCell(reporte.celda("", font, contenido, derecha, 1, 1,Rectangle.NO_BORDER));
                         
                         tabla.setHeaderRows(1);
                         reporte.agregaObjeto(tabla);
@@ -3137,7 +3153,6 @@ public class Reporte2 extends javax.swing.JPanel {
                     }
                     catch(Exception e)
                     {
-                        System.out.println(e);
                         e.printStackTrace();
                         JOptionPane.showMessageDialog(this, "No se pudo realizar el reporte si el archivo esta abierto.");
                     }
@@ -3164,7 +3179,7 @@ public class Reporte2 extends javax.swing.JPanel {
 
     private void b_fecha_siniestro2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_fecha_siniestro2ActionPerformed
         // TODO add your handling code here:
-        calendario cal =new calendario(new javax.swing.JFrame(), true);
+        calendario cal =new calendario(new javax.swing.JFrame(), true, false);
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         cal.setLocation((d.width/2)-(cal.getWidth()/2), (d.height/2)-(cal.getHeight()/2));
         cal.setVisible(true);
@@ -3183,6 +3198,7 @@ public class Reporte2 extends javax.swing.JPanel {
             model=(DefaultTableModel)t_datos.getModel();
             model.getDataVector().removeAllElements();
             t_datos3.revalidate();
+            ord=null;
         }
     }//GEN-LAST:event_b_fecha_siniestro2ActionPerformed
 
@@ -3192,7 +3208,7 @@ public class Reporte2 extends javax.swing.JPanel {
 
     private void b_fecha_siniestro3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_fecha_siniestro3ActionPerformed
         // TODO add your handling code here:
-        calendario cal =new calendario(new javax.swing.JFrame(), true);
+        calendario cal =new calendario(new javax.swing.JFrame(), true, false);
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         cal.setLocation((d.width/2)-(cal.getWidth()/2), (d.height/2)-(cal.getHeight()/2));
         cal.setVisible(true);
@@ -3223,7 +3239,7 @@ public class Reporte2 extends javax.swing.JPanel {
         String consulta="select almacen.id_almacen, if(almacen.tipo_movimiento=1, 'DEV', 'SAL') as tipo, "
                 + "if(almacen.id_orden is null, 'USO TALLER', almacen.id_orden) as OT, "
                 + "especialidad, almacen.entrego, DATE_FORMAT(almacen.fecha,'%Y-%m-%d') as fecha, "
-                + "movimiento.id_Parte, ejemplar.id_catalogo, movimiento.cantidad, movimiento.valor " 
+                + "movimiento.id_Parte, ejemplar.comentario, movimiento.cantidad, movimiento.valor " 
                 + "from movimiento "
                 + "left join almacen on almacen.id_almacen=movimiento.id_almacen "
                 + "left join ejemplar on ejemplar.id_Parte=movimiento.id_Parte "
@@ -3256,7 +3272,7 @@ public class Reporte2 extends javax.swing.JPanel {
                     renglon[4]=map.get("entrego");
                     renglon[5]=map.get("fecha");
                     renglon[6]=map.get("id_Parte");
-                    renglon[7]=map.get("id_catalogo");
+                    renglon[7]=map.get("comentario");
                     renglon[8]=(double)map.get("cantidad");
                     renglon[9]=(double)map.get("valor");
                     model.addRow(renglon);
@@ -3474,7 +3490,7 @@ public class Reporte2 extends javax.swing.JPanel {
             reporte.contenido.setColorStroke(new GrayColor(0.2f));
             reporte.contenido.setColorFill(new GrayColor(0.9f));
 
-            Configuracion con= (Configuracion)session.get(Configuracion.class, 1);
+            Configuracion con= (Configuracion)session.get(Configuracion.class, configuracion);
             reporte.inicioTexto();
             reporte.contenido.setFontAndSize(bf, 14);
             reporte.contenido.setColorFill(BaseColor.BLACK);
@@ -3512,7 +3528,7 @@ public void cabecera1(PDF reporte, BaseFont bf, PdfPTable tabla, String titulo1,
             reporte.contenido.setColorStroke(new GrayColor(0.2f));
             reporte.contenido.setColorFill(new GrayColor(0.9f));
 
-            Configuracion con= (Configuracion)session.get(Configuracion.class, 1);
+            Configuracion con= (Configuracion)session.get(Configuracion.class, configuracion);
             reporte.inicioTexto();
             reporte.contenido.setFontAndSize(bf, 14);
             reporte.contenido.setColorFill(BaseColor.BLACK);
@@ -3562,7 +3578,7 @@ public void cabecera1(PDF reporte, BaseFont bf, PdfPTable tabla, String titulo1,
             reporte.contenido.setColorFill(new GrayColor(0.9f));
             reporte.contenido.roundRectangle(35, 670, 1153, 70, 5);
 
-            Configuracion con= (Configuracion)session.get(Configuracion.class, 1);
+            Configuracion con= (Configuracion)session.get(Configuracion.class, configuracion);
             CotConsumible solicitud = (CotConsumible)session.get(CotConsumible.class, Integer.parseInt(t_Cotsolicitud.getText()));
             reporte.inicioTexto();
             reporte.contenido.setFontAndSize(bf, 15);
@@ -3604,8 +3620,6 @@ public void cabecera1(PDF reporte, BaseFont bf, PdfPTable tabla, String titulo1,
             tabla.addCell(reporte.celda("Medida", font, cabecera, centro, 0, 1, Rectangle.RECTANGLE));
             tabla.addCell(reporte.celda("Costo", font, cabecera, centro, 0, 1, Rectangle.RECTANGLE));
             tabla.addCell(reporte.celda("Total", font, cabecera, centro, 0, 1, Rectangle.RECTANGLE));
-            tabla.addCell(reporte.celda("Pedido", font, cabecera, centro, 0, 1, Rectangle.RECTANGLE));
-            tabla.addCell(reporte.celda("Fecha", font, cabecera, centro, 0, 1, Rectangle.RECTANGLE));
             tabla.addCell(reporte.celda("Ordenes", font, cabecera, centro, 0, 1, Rectangle.RECTANGLE));
               
        }catch(Exception e)

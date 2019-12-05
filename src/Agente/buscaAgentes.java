@@ -225,7 +225,6 @@ public class buscaAgentes extends javax.swing.JDialog {
         h=new Herramientas(usr, 0);
         h.session(sessionPrograma);
         Session session = HibernateUtil.getSessionFactory().openSession();
-        //usr = (Usuario)session.get(Usuario.class, usr.getIdUsuario());
         if(t_datos.getRowCount()>0)
         {
             if(t_datos.getSelectedRow()>=0)            

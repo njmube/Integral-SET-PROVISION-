@@ -74,6 +74,7 @@ public class editaUsuario extends javax.swing.JPanel {
         cb_consultar_agenda = new javax.swing.JCheckBox();
         cb_editar_agenda = new javax.swing.JCheckBox();
         cb_ver_fecha = new javax.swing.JCheckBox();
+        cb_edita_metas = new javax.swing.JCheckBox();
         panel_multimedia = new javax.swing.JPanel();
         cb_consulta_galeria = new javax.swing.JCheckBox();
         cb_edita_galeria = new javax.swing.JCheckBox();
@@ -116,6 +117,7 @@ public class editaUsuario extends javax.swing.JPanel {
         cb_dd = new javax.swing.JCheckBox();
         cb_consulta_consumible = new javax.swing.JCheckBox();
         cb_edita_consumible = new javax.swing.JCheckBox();
+        cb_conumibles = new javax.swing.JCheckBox();
         panel_cotizacion = new javax.swing.JPanel();
         cb_edita_cotizacion = new javax.swing.JCheckBox();
         cb_cerrar_cotizacion = new javax.swing.JCheckBox();
@@ -136,6 +138,7 @@ public class editaUsuario extends javax.swing.JPanel {
         cb_cerrar_compras = new javax.swing.JCheckBox();
         cb_autorizar_costos = new javax.swing.JCheckBox();
         cb_edita_costo = new javax.swing.JCheckBox();
+        cb_autoriza_adicional = new javax.swing.JCheckBox();
         panel_catalogos = new javax.swing.JPanel();
         cb_consultar_empleados = new javax.swing.JCheckBox();
         cb_editar_empleados = new javax.swing.JCheckBox();
@@ -171,6 +174,7 @@ public class editaUsuario extends javax.swing.JPanel {
         cb_autoriza_entregas = new javax.swing.JCheckBox();
         cb_herramienta = new javax.swing.JCheckBox();
         cb_responsiva = new javax.swing.JCheckBox();
+        cb_movimiento_almacen2 = new javax.swing.JCheckBox();
         jPanel2 = new javax.swing.JPanel();
         cb_consultar_sm = new javax.swing.JCheckBox();
         cb_editar_sm = new javax.swing.JCheckBox();
@@ -346,6 +350,9 @@ public class editaUsuario extends javax.swing.JPanel {
         cb_ver_fecha.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         cb_ver_fecha.setText("Ver fecha cliente");
 
+        cb_edita_metas.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        cb_edita_metas.setText("Edita metas");
+
         javax.swing.GroupLayout panel_serviciosLayout = new javax.swing.GroupLayout(panel_servicios);
         panel_servicios.setLayout(panel_serviciosLayout);
         panel_serviciosLayout.setHorizontalGroup(
@@ -360,7 +367,10 @@ public class editaUsuario extends javax.swing.JPanel {
                     .addComponent(cb_consulta_seguimiento)
                     .addComponent(cb_asignar_seguimiento)
                     .addComponent(cb_ver_fecha)
-                    .addComponent(cb_establecer_metas)
+                    .addGroup(panel_serviciosLayout.createSequentialGroup()
+                        .addComponent(cb_establecer_metas)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cb_edita_metas))
                     .addComponent(cb_consultar_agenda)
                     .addComponent(cb_editar_agenda))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -382,7 +392,9 @@ public class editaUsuario extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cb_ver_fecha)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cb_establecer_metas)
+                .addGroup(panel_serviciosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cb_establecer_metas)
+                    .addComponent(cb_edita_metas))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cb_consultar_agenda)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -522,7 +534,7 @@ public class editaUsuario extends javax.swing.JPanel {
                     .addComponent(cb_partidas_complementarias)
                     .addComponent(cb_partidas_adicionales)
                     .addComponent(cb_edita_levantamiento))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(44, Short.MAX_VALUE))
         );
         panel_levantamientoLayout.setVerticalGroup(
             panel_levantamientoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -610,6 +622,14 @@ public class editaUsuario extends javax.swing.JPanel {
         cb_edita_consumible.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         cb_edita_consumible.setText("Edita Presupuesto Consumible");
 
+        cb_conumibles.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        cb_conumibles.setText("Aut. Consum");
+        cb_conumibles.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cb_conumiblesActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panel_valuacionLayout = new javax.swing.GroupLayout(panel_valuacion);
         panel_valuacion.setLayout(panel_valuacionLayout);
         panel_valuacionLayout.setHorizontalGroup(
@@ -617,34 +637,37 @@ public class editaUsuario extends javax.swing.JPanel {
             .addGroup(panel_valuacionLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panel_valuacionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cb_edita_horas)
-                    .addComponent(cb_edita_codigo)
-                    .addComponent(cb_edita_precio_cu)
-                    .addComponent(cb_porcentaje)
-                    .addComponent(cb_edita_cantidad_autorizada)
-                    .addComponent(cb_edita_cosoto_autorizado)
-                    .addComponent(cb_edita_autorizar_partida)
-                    .addComponent(cb_consulta_valuacion)
-                    .addComponent(cb_consulta_consumible))
-                .addGap(26, 26, 26)
-                .addGroup(panel_valuacionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cb_edita_autorizar_compra)
-                    .addComponent(cb_edita_tipo_surtido)
-                    .addComponent(cb_edita_ref_presupuesto)
-                    .addComponent(cb_edita_ref_autorizado_dir)
-                    .addComponent(cb_edita_mo_presupuestada)
-                    .addComponent(cb_edita_mo_directa)
                     .addGroup(panel_valuacionLayout.createSequentialGroup()
                         .addGroup(panel_valuacionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cb_edita_cerrar_val)
-                            .addComponent(cb_reportes))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(cb_edita_horas)
+                            .addComponent(cb_edita_codigo)
+                            .addComponent(cb_edita_precio_cu)
+                            .addComponent(cb_porcentaje)
+                            .addComponent(cb_edita_cantidad_autorizada)
+                            .addComponent(cb_edita_cosoto_autorizado)
+                            .addComponent(cb_edita_autorizar_partida)
+                            .addComponent(cb_consulta_valuacion)
+                            .addComponent(cb_consulta_consumible))
+                        .addGap(26, 26, 26)
                         .addGroup(panel_valuacionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cb_edita_abrir_val)
-                            .addComponent(cb_dd)))
-                    .addGroup(panel_valuacionLayout.createSequentialGroup()
-                        .addGap(3, 3, 3)
-                        .addComponent(cb_edita_consumible)))
+                            .addComponent(cb_edita_autorizar_compra)
+                            .addComponent(cb_edita_tipo_surtido)
+                            .addComponent(cb_edita_ref_presupuesto)
+                            .addComponent(cb_edita_ref_autorizado_dir)
+                            .addComponent(cb_edita_mo_presupuestada)
+                            .addComponent(cb_edita_mo_directa)
+                            .addGroup(panel_valuacionLayout.createSequentialGroup()
+                                .addGroup(panel_valuacionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(cb_edita_cerrar_val)
+                                    .addComponent(cb_reportes))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(panel_valuacionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(cb_edita_abrir_val)
+                                    .addComponent(cb_dd)))
+                            .addGroup(panel_valuacionLayout.createSequentialGroup()
+                                .addGap(3, 3, 3)
+                                .addComponent(cb_edita_consumible))))
+                    .addComponent(cb_conumibles))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panel_valuacionLayout.setVerticalGroup(
@@ -691,6 +714,8 @@ public class editaUsuario extends javax.swing.JPanel {
                 .addGroup(panel_valuacionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(cb_consulta_consumible)
                     .addComponent(cb_edita_consumible))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cb_conumibles)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -804,10 +829,13 @@ public class editaUsuario extends javax.swing.JPanel {
         cb_cerrar_compras.setText("Cerrar Compras");
 
         cb_autorizar_costos.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
-        cb_autorizar_costos.setText("Autorizar Costos Mayores");
+        cb_autorizar_costos.setText("Costo Mayore y fuera de tiempo");
 
         cb_edita_costo.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         cb_edita_costo.setText("Edita costos autorizados");
+
+        cb_autoriza_adicional.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        cb_autoriza_adicional.setText("Autoriza Pedidos Adicionales");
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
@@ -824,7 +852,8 @@ public class editaUsuario extends javax.swing.JPanel {
                     .addComponent(cb_autoriza_pedido)
                     .addComponent(cb_cerrar_compras)
                     .addComponent(cb_autorizar_costos)
-                    .addComponent(cb_edita_costo))
+                    .addComponent(cb_edita_costo)
+                    .addComponent(cb_autoriza_adicional))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel8Layout.setVerticalGroup(
@@ -847,6 +876,8 @@ public class editaUsuario extends javax.swing.JPanel {
                 .addComponent(cb_autorizar_costos)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cb_edita_costo)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cb_autoriza_adicional)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -1030,7 +1061,7 @@ public class editaUsuario extends javax.swing.JPanel {
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "Almacén", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Arial", 1, 11))); // NOI18N
 
         cb_movimiento_almacen.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
-        cb_movimiento_almacen.setText("Movimientos Almacén");
+        cb_movimiento_almacen.setText("Movimientos Almacén 1");
 
         cb_consulta_almacen.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         cb_consulta_almacen.setText("Consulta Almacén");
@@ -1056,6 +1087,9 @@ public class editaUsuario extends javax.swing.JPanel {
         cb_responsiva.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         cb_responsiva.setText("Responsivas");
 
+        cb_movimiento_almacen2.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        cb_movimiento_almacen2.setText("Movimientos Almacén 2");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -1068,15 +1102,18 @@ public class editaUsuario extends javax.swing.JPanel {
                     .addComponent(cb_cancela_movimiento))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cb_movimiento_muestra)
                     .addComponent(cb_cancela_muestra)
-                    .addComponent(cb_consulta_muestra))
+                    .addComponent(cb_consulta_muestra)
+                    .addComponent(cb_movimiento_almacen2))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cb_responsiva)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(cb_responsiva)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(cb_herramienta))
                     .addComponent(cb_autoriza_entregas)
-                    .addComponent(cb_herramienta))
-                .addContainerGap(99, Short.MAX_VALUE))
+                    .addComponent(cb_movimiento_muestra))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1089,11 +1126,12 @@ public class editaUsuario extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cb_movimiento_muestra)
-                    .addComponent(cb_herramienta))
+                    .addComponent(cb_movimiento_almacen2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cb_consulta_muestra)
-                    .addComponent(cb_responsiva))
+                    .addComponent(cb_responsiva)
+                    .addComponent(cb_herramienta))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cb_cancela_muestra)
@@ -1374,6 +1412,7 @@ public class editaUsuario extends javax.swing.JPanel {
                             usr_edit.setAltaSeguimiento(this.cb_asignar_seguimiento.isSelected());
                             usr_edit.setVerFechaCliente(this.cb_ver_fecha.isSelected());
                             usr_edit.setAltaMetas(this.cb_establecer_metas.isSelected());
+                            usr_edit.setEditaMetas(this.cb_edita_metas.isSelected());
                             usr_edit.setConsultaAgenda(this.cb_consultar_agenda.isSelected());
                             usr_edit.setEditaAgenda(this.cb_editar_agenda.isSelected());
 
@@ -1396,6 +1435,7 @@ public class editaUsuario extends javax.swing.JPanel {
                             usr_edit.setAbrirLevantamiento(this.cb_abrir_levantamiento.isSelected());
                             usr_edit.setAValuacionLevantamiento(this.cb_a_valuacion.isSelected());
                             usr_edit.setEditarLevantamiento(this.cb_edita_levantamiento.isSelected());
+                            usr_edit.setAutorizaConsumibles(this.cb_conumibles.isSelected());
 
                             usr_edit.setConsultaEmpleados(this.cb_consultar_empleados.isSelected());
                             usr_edit.setEditaEmpleados(this.cb_editar_empleados.isSelected());
@@ -1481,6 +1521,8 @@ public class editaUsuario extends javax.swing.JPanel {
                             
                             usr_edit.setConsultaConsumible(this.cb_consulta_consumible.isSelected());
                             usr_edit.setEditaConsumible(this.cb_edita_consumible.isSelected());
+                            usr_edit.setMovimientoAlmacen2(this.cb_movimiento_almacen2.isSelected());
+                            usr_edit.setAutorizaAdicional(cb_autoriza_adicional.isSelected());
                             
                             session.update(usr_edit);
                             Query query= session.createQuery("update Usuario obj set obj.idUsuario='"+this.t_usuario.getText()+"' where obj.idUsuario='"+usr_edit.getIdUsuario()+"'");
@@ -1551,6 +1593,10 @@ public class editaUsuario extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_cb_editar_smActionPerformed
 
+    private void cb_conumiblesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_conumiblesActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cb_conumiblesActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton b_buscar_empleado;
@@ -1562,6 +1608,7 @@ public class editaUsuario extends javax.swing.JPanel {
     private javax.swing.JCheckBox cb_alta_cliente;
     private javax.swing.JCheckBox cb_apertura_orden;
     private javax.swing.JCheckBox cb_asignar_seguimiento;
+    private javax.swing.JCheckBox cb_autoriza_adicional;
     private javax.swing.JCheckBox cb_autoriza_entregas;
     private javax.swing.JCheckBox cb_autoriza_pedido;
     private javax.swing.JCheckBox cb_autorizar_costos;
@@ -1600,6 +1647,7 @@ public class editaUsuario extends javax.swing.JPanel {
     private javax.swing.JCheckBox cb_consultar_reparacion;
     private javax.swing.JCheckBox cb_consultar_sm;
     private javax.swing.JCheckBox cb_consultar_unidades;
+    private javax.swing.JCheckBox cb_conumibles;
     private javax.swing.JCheckBox cb_dd;
     private javax.swing.JCheckBox cb_edita_abrir_val;
     private javax.swing.JCheckBox cb_edita_autorizar_compra;
@@ -1618,6 +1666,7 @@ public class editaUsuario extends javax.swing.JPanel {
     private javax.swing.JCheckBox cb_edita_horas;
     private javax.swing.JCheckBox cb_edita_inventario;
     private javax.swing.JCheckBox cb_edita_levantamiento;
+    private javax.swing.JCheckBox cb_edita_metas;
     private javax.swing.JCheckBox cb_edita_mo_directa;
     private javax.swing.JCheckBox cb_edita_mo_presupuestada;
     private javax.swing.JCheckBox cb_edita_orden;
@@ -1648,6 +1697,7 @@ public class editaUsuario extends javax.swing.JPanel {
     private javax.swing.JCheckBox cb_generar_pedido;
     private javax.swing.JCheckBox cb_herramienta;
     private javax.swing.JCheckBox cb_movimiento_almacen;
+    private javax.swing.JCheckBox cb_movimiento_almacen2;
     private javax.swing.JCheckBox cb_movimiento_muestra;
     private javax.swing.JCheckBox cb_partidas_adicionales;
     private javax.swing.JCheckBox cb_partidas_complementarias;
@@ -1713,6 +1763,7 @@ public class editaUsuario extends javax.swing.JPanel {
                     this.cb_asignar_seguimiento.setSelected(usr_edit.getAltaSeguimiento());
                     this.cb_ver_fecha.setSelected(usr_edit.getVerFechaCliente());
                     this.cb_establecer_metas.setSelected(usr_edit.getAltaMetas());
+                    this.cb_edita_metas.setSelected(usr_edit.getEditaMetas());
                     this.cb_consultar_agenda.setSelected(usr_edit.getConsultaAgenda());
                     this.cb_editar_agenda.setSelected(usr_edit.getEditaAgenda());
 
@@ -1790,6 +1841,9 @@ public class editaUsuario extends javax.swing.JPanel {
                     this.cb_edita_costo.setSelected(usr_edit.getEditaPrecioAutorizado());
                     this.cb_consulta_valuacion.setSelected(usr_edit.getConsultaValuacion());
                     this.cb_dd.setSelected(usr_edit.getEditaDd());
+                    this.cb_consulta_consumible.setSelected(usr_edit.getConsultaConsumible());
+                    this.cb_edita_consumible.setSelected(usr_edit.getEditaConsumible());
+                    
                     this.cb_consultar_ejemplar.setSelected(usr_edit.getConsultarEjemplar());
                     this.cb_editar_ejemplar.setSelected(usr_edit.getEditarEjemplar());
                     this.cb_consultar_proveedores.setSelected(usr_edit.getConsultarProveedores());
@@ -1818,6 +1872,7 @@ public class editaUsuario extends javax.swing.JPanel {
                     
                     this.cb_consultar_sm.setSelected(usr_edit.getConsultaSm());
                     this.cb_editar_sm.setSelected(usr_edit.getEditaSm());
+                    this.cb_movimiento_almacen2.setSelected(usr_edit.getMovimientoAlmacen2());
                     
                     this.edo_cajas(true);
                 }
@@ -1906,6 +1961,7 @@ public class editaUsuario extends javax.swing.JPanel {
             this.cb_edita_abrir_val.setSelected(false);
             this.cb_reportes.setSelected(false);
             this.cb_dd.setSelected(false);
+            this.cb_conumibles.setSelected(false);
             
             //cotizacion
             this.cb_edita_cotizacion.setSelected(false);
@@ -1933,6 +1989,7 @@ public class editaUsuario extends javax.swing.JPanel {
             //almacen
             this.cb_autoriza_entregas.setSelected(false);
             this.cb_movimiento_almacen.setSelected(false);
+            this.cb_movimiento_almacen2.setSelected(false);
             this.cb_consulta_almacen.setSelected(false);
             this.cb_cancela_movimiento.setSelected(false);
             this.cb_movimiento_muestra.setSelected(false);
@@ -2067,6 +2124,7 @@ public class editaUsuario extends javax.swing.JPanel {
             //almacen
             this.cb_autoriza_entregas.setEnabled(op);
             this.cb_movimiento_almacen.setEnabled(op);
+            this.cb_movimiento_almacen2.setEnabled(op);
             this.cb_consulta_almacen.setEnabled(op);
             this.cb_cancela_movimiento.setEnabled(op);
             this.cb_movimiento_muestra.setEnabled(op);

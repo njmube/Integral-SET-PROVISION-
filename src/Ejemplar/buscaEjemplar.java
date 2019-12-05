@@ -3,15 +3,22 @@ package Ejemplar;
 import Integral.Herramientas;
 import Integral.Render1;
 import Hibernate.Util.HibernateUtil;
+import Hibernate.entidades.Catalogo;
 import java.util.List;
 import javax.swing.InputMap;
 import javax.swing.JOptionPane;
 import Hibernate.entidades.Ejemplar;
 import Hibernate.entidades.Usuario;
+import Integral.HorizontalBarUI;
+import Integral.VerticalBarUI;
 import java.awt.Color;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.Vector;
 import javax.swing.ImageIcon;
+import javax.swing.JScrollBar;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
@@ -27,11 +34,15 @@ public class buscaEjemplar extends javax.swing.JDialog {
     public static final Ejemplar RET_CANCEL =null;
     InputMap map = new InputMap();
     DefaultTableModel model;
-    String[] columnas = new String [] {"No Parte","Modelo","Marca", "Tipo", "Catalogo", "Medida"};
+    String[] columnas = new String [] {"No Parte","Marca", "Linea", "Descripcion", "Medida", "Ubicacion"};
     String sessionPrograma="";
     Herramientas h;
     Usuario usr;
     int tipo=0;
+    int inicio=0;
+    boolean parar=false;
+    final JScrollBar scrollBar;
+    ArrayList lista_id=new ArrayList();
     
     public buscaEjemplar(java.awt.Frame parent, boolean modal, String ses, Usuario usuario, int tipo) {
         super(parent, modal);
@@ -39,14 +50,56 @@ public class buscaEjemplar extends javax.swing.JDialog {
         sessionPrograma=ses;
         usr=usuario;
         initComponents();
+        scrollBar = scroll.getVerticalScrollBar();
+        scrollBar.addAdjustmentListener(new AdjustmentListener() {
+            public void adjustmentValueChanged(AdjustmentEvent ae) {
+                if(parar==false)
+                {
+                    int extent = scrollBar.getModel().getExtent();
+                    extent+=scrollBar.getValue();
+                    if(extent==scrollBar.getMaximum())
+                        buscaDato();
+                }
+            }
+          });
+        scroll.getVerticalScrollBar().setUI(new VerticalBarUI());
+        scroll.getHorizontalScrollBar().setUI(new HorizontalBarUI());
         getRootPane().setDefaultButton(jButton1);
         t_datos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        String consulta="from Ejemplar em where em.idParte like '%" + t_busca.getText() +"%'";        
+        /*String consulta="from Ejemplar em where em.idParte like '%" + t_busca.getText() +"%'";        
         if(tipo<2)
             consulta+=" and inventario="+tipo;
-        executeHQLQuery(consulta);
+        executeHQLQuery(consulta);*/
+        buscaDato();
+        this.formatoTabla();
     }
     
+    void buscaDato()
+    {
+        String consulta;
+        if(cb_tipo.getSelectedItem().toString().compareTo("Clave")==0)
+            consulta="from Ejemplar em where em.idParte like '%" + t_busca.getText() +"%'";
+        else
+            consulta="from Ejemplar em where em.comentario like '%" + t_busca.getText() +"%'";
+        switch(tipo)
+        {
+            case 0:
+                consulta+=" and inventario="+tipo;
+                break;
+            case 1:
+                consulta+=" and inventario="+tipo;
+                break;
+            case 2:
+                break;
+            case 3://Ejemplares que son consumibles no refacciones
+                consulta+=" and inventario=1 and grupo.descripcion!='REFACCIONES'";
+                break;
+            case 4://
+                consulta+=" and inventario=0 and grupo.descripcion!='REFACCIONES'";
+                break;
+        }
+        executeHQLQuery(consulta);
+    }
     DefaultTableModel ModeloTablaReporte(int renglones, String columnas[])
         {
             model = new DefaultTableModel(new Object [renglones][6], columnas)
@@ -122,7 +175,7 @@ public class buscaEjemplar extends javax.swing.JDialog {
         cb_tipo = new javax.swing.JComboBox();
         jLabel1 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        scroll = new javax.swing.JScrollPane();
         t_datos = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
 
@@ -145,7 +198,12 @@ public class buscaEjemplar extends javax.swing.JDialog {
             }
         });
 
-        cb_tipo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Catalogo", "clave", " " }));
+        cb_tipo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Clave", "Catalogo" }));
+        cb_tipo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cb_tipoActionPerformed(evt);
+            }
+        });
 
         jLabel1.setText("contiene:");
 
@@ -179,14 +237,14 @@ public class buscaEjemplar extends javax.swing.JDialog {
 
             },
             new String [] {
-                "Clave", "Modelo", "Marca", "Tipo", "Catálogo", "Medida"
+                "Clave", "Marca", "Linea", "Descripcion", "Medida"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, true, true, true, true
+                false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -204,7 +262,7 @@ public class buscaEjemplar extends javax.swing.JDialog {
                 t_datosKeyPressed(evt);
             }
         });
-        jScrollPane1.setViewportView(t_datos);
+        scroll.setViewportView(t_datos);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -212,13 +270,13 @@ public class buscaEjemplar extends javax.swing.JDialog {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 563, Short.MAX_VALUE)
+                .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 563, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(scroll, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -276,41 +334,47 @@ public class buscaEjemplar extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void t_buscaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_buscaKeyReleased
-        String consulta;
-        if(cb_tipo.getSelectedItem().toString().compareTo("clave")==0)
-            consulta="from Ejemplar em where em.idParte like '%" + t_busca.getText() +"%'";        
-        else
-            consulta="from Ejemplar em where em.catalogo like '%" + t_busca.getText() +"%'";        
-        if(tipo<2)
-            consulta+=" and inventario="+tipo;
-        executeHQLQuery(consulta);
+        inicio=0;
+        parar=false;
+        lista_id=new ArrayList();
+        buscaDato();
     }//GEN-LAST:event_t_buscaKeyReleased
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        h=new Herramientas(usr, 0);
-        h.session(sessionPrograma);
+        //h=new Herramientas(usr, 0);
+        //h.session(sessionPrograma);
         Session session = HibernateUtil.getSessionFactory().openSession();
-        usr = (Usuario)session.get(Usuario.class, usr.getIdUsuario());
-        if(usr.getEditarEjemplar()==true)
-        {
+        //usr = (Usuario)session.get(Usuario.class, usr.getIdUsuario());
+        /*if(usr.getEditarEjemplar()==true)
+        {*/
             if(t_datos.getSelectedRow()>=0)
             {
                 Ejemplar op= new Ejemplar();
                 op.setIdParte(t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString());
-                op.setCatalogo(t_datos.getValueAt(t_datos.getSelectedRow(), 4).toString());
-                if(t_datos.getValueAt(t_datos.getSelectedRow(), 5)!=null)
-                    op.setMedida(t_datos.getValueAt(t_datos.getSelectedRow(), 5).toString());
+                Catalogo cat=null;
+                //if(lista_id.get(t_datos.getSelectedRow())!=null)
+                //{
+                    ///*cat = new Catalogo();
+                    //cat.setNombre(t_datos.getValueAt(t_datos.getSelectedRow(), 3).toString());
+                    //cat.setIdCatalogo((int)lista_id.get(t_datos.getSelectedRow()));
+                //}
+                if(t_datos.getValueAt(t_datos.getSelectedRow(), 3)!=null)
+                    op.setComentario(t_datos.getValueAt(t_datos.getSelectedRow(), 3).toString());
+                else
+                    op.setComentario("");
+                op.setCatalogo(cat);
+                
+                if(t_datos.getValueAt(t_datos.getSelectedRow(), 4)!=null)
+                    op.setMedida(t_datos.getValueAt(t_datos.getSelectedRow(), 4).toString());
                 else
                     op.setMedida("");
-                if(t_datos.getValueAt(t_datos.getSelectedRow(), 1)!=null)
-                    op.setModelo(Integer.parseInt(t_datos.getValueAt(t_datos.getSelectedRow(), 1).toString()));
                 doClose(op);
             }
             else
                 JOptionPane.showMessageDialog(null, "¡No hay un ejemplar seleccionado!");
-        }
+        /*}
         else
-            JOptionPane.showMessageDialog(null, "¡Acceso denegado!");
+            JOptionPane.showMessageDialog(null, "¡Acceso denegado!");*/
         if(session!=null)
             if(session.isOpen())
                 session.close();
@@ -331,6 +395,14 @@ public class buscaEjemplar extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_t_datosKeyPressed
 
+    private void cb_tipoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_tipoActionPerformed
+        // TODO add your handling code here:
+        inicio=0;
+        parar=false;
+        lista_id=new ArrayList();
+        buscaDato();
+    }//GEN-LAST:event_cb_tipoActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox cb_tipo;
     private javax.swing.JButton jButton1;
@@ -338,7 +410,7 @@ public class buscaEjemplar extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane scroll;
     public javax.swing.JTextField t_busca;
     private javax.swing.JTable t_datos;
     // End of variables declaration//GEN-END:variables
@@ -348,29 +420,54 @@ public class buscaEjemplar extends javax.swing.JDialog {
         Session session = HibernateUtil.getSessionFactory().openSession();
         try {
             session.beginTransaction();
+            int siguente=inicio+20;
             Query q = session.createQuery(hql);
+            q.setFirstResult(inicio);
+            q.setMaxResults(20);
             List resultList = q.list();
             if(resultList.size()>0)
             {
-                t_datos.setModel(ModeloTablaReporte(resultList.size(), columnas));
-                int i=0;
+                DefaultTableModel modelo= (DefaultTableModel)t_datos.getModel();
+                if(inicio==0)
+                    modelo.setNumRows(0);
                 for (Object o : resultList) 
                 {
                     Ejemplar actor = (Ejemplar) o;
-                    model.setValueAt(actor.getIdParte(), i, 0);
-                    model.setValueAt(actor.getModelo(), i, 1);
+                    Object[] renglon=new Object[9];
+                    renglon[0]=actor.getIdParte();
                     if(actor.getMarca()!=null)
-                        model.setValueAt(actor.getMarca().getIdMarca(), i, 2);
-                    if(actor.getTipo()!=null)
-                        model.setValueAt(actor.getTipo().getTipoNombre(), i, 3);
-                    model.setValueAt(actor.getCatalogo(), i, 4);
-                    model.setValueAt(actor.getMedida(), i, 5);
-                    i++;
+                        renglon[1]=actor.getMarca().getIdMarca();
+                    else
+                        renglon[1]=null;
+                    if(actor.getGrupo()!=null)
+                    renglon[2]=actor.getGrupo().getDescripcion();
+                    else
+                        renglon[2]=null;
+                    /*if(actor.getCatalogo()!=null)
+                    {
+                        renglon[3]=actor.getCatalogo().getNombre();
+                        lista_id.add(actor.getCatalogo().getIdCatalogo());
+                    }
+                    else
+                    {*/
+                        renglon[3]=actor.getComentario();
+                        lista_id.add(null);
+                    //}
+                    renglon[4]=actor.getMedida();
+                    renglon[5]=actor.getUbicacion();
+                    modelo.addRow(renglon);
                 }
+                inicio=siguente;
             }
             else
-                t_datos.setModel(ModeloTablaReporte(0, columnas));
-                formatoTabla();
+            {
+                parar=true;
+                if(inicio==0)
+                {
+                    DefaultTableModel modelo= (DefaultTableModel)t_datos.getModel();
+                    modelo.setNumRows(0);
+                }
+            }
                 session.getTransaction().commit();
                 session.disconnect();
                 return resultList;
@@ -408,25 +505,16 @@ public class buscaEjemplar extends javax.swing.JDialog {
             switch(i)
             {
                 case 0:
-                    column.setPreferredWidth(100);
+                    column.setPreferredWidth(120);
                     break;
-                case 1:
-                    column.setPreferredWidth(10);
-                    break;
-                case 2:
-                    column.setPreferredWidth(10);
-                    break;      
                 case 3:
-                    column.setPreferredWidth(10);
+                    column.setPreferredWidth(300);
                     break; 
                 case 4:
-                    column.setPreferredWidth(150);
-                    break; 
-                case 5:
                     column.setPreferredWidth(50);
                     break; 
                 default:
-                    column.setPreferredWidth(40);
+                    column.setPreferredWidth(0);
                     break; 
             }
         }

@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 7/12/2017 01:20:51 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.Relacion" table="relacion">
+        <id name="idRelacion" type="java.lang.Integer">
+            <column name="id_relacion" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="notaByIdNota" class="Hibernate.entidades.Nota" fetch="select">
+            <column name="id_nota" />
+        </many-to-one>
+        <many-to-one name="facturaByRelacionFactura" class="Hibernate.entidades.Factura" fetch="select">
+            <column name="relacion_factura" />
+        </many-to-one>
+        <many-to-one name="notaByRelacionNota" class="Hibernate.entidades.Nota" fetch="select">
+            <column name="relacion_nota" />
+        </many-to-one>
+        <many-to-one name="facturaByIdFactura" class="Hibernate.entidades.Factura" fetch="select">
+            <column name="id_factura" />
+        </many-to-one>
+        <many-to-one name="pagoByIdPago" class="Hibernate.entidades.Pago" fetch="select">
+            <column name="id_pago" />
+        </many-to-one>
+        <many-to-one name="pagoByRelacionPago" class="Hibernate.entidades.Pago" fetch="select">
+            <column name="relacion_pago" />
+        </many-to-one>
+    </class>
+</hibernate-mapping>

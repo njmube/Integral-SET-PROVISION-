@@ -56,6 +56,9 @@
         <property name="emailReceptor" type="string">
             <column name="email_receptor" length="100" />
         </property>
+        <many-to-one name="usoCfdi" class="Hibernate.entidades.UsoCfdi" fetch="select">
+            <column name="id_uso_cfdi" length="6" />
+        </many-to-one>
         <set name="ordens" table="orden" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="id_cliente" not-null="true">

@@ -8,6 +8,7 @@ package Almacen;
 
 import Hibernate.Util.HibernateUtil;
 import Hibernate.entidades.Almacen;
+import Hibernate.entidades.Configuracion;
 import Hibernate.entidades.Movimiento;
 import Hibernate.entidades.Orden;
 import Hibernate.entidades.Usuario;
@@ -42,8 +43,10 @@ public class formatosAlmacen {
     String sessionPrograma="";
     Usuario usr;
     Almacen miAlmacen;
-    public formatosAlmacen(Usuario u, String ses, Almacen al)
+    int configuracion=1;
+    public formatosAlmacen(Usuario u, String ses, Almacen al, int configuracion)
     {
+        this.configuracion=1;
         sessionPrograma=ses;
         usr=u;
         miAlmacen=al;
@@ -176,13 +179,14 @@ public class formatosAlmacen {
             reporte.inicioTexto();
             reporte.contenido.setFontAndSize(bf, 13);
             reporte.contenido.setColorFill(BaseColor.BLACK);
-            reporte.agregaObjeto(reporte.crearImagen("imagenes/grande300115.jpg", 30, -40, 60));
+            Configuracion config=(Configuracion)session.get(Configuracion.class, configuracion);
+            reporte.agregaObjeto(reporte.crearImagen("imagenes/"+config.getLogo(), 30, -40, 60));
             reporte.contenido.setFontAndSize(bf, 12);
             reporte.contenido.setColorFill(BaseColor.BLACK);
             if(almacen.getPedido()!=null)
-                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Movimiento en almacen: "+almacen.getIdAlmacen()+ " Pedido:"+almacen.getPedido().getIdPedido(), 35, 710, 0);
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Movimiento en almacen:. "+almacen.getIdAlmacen()+ " Pedido:"+almacen.getPedido().getIdPedido(), 35, 710, 0);
             else
-                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Movimiento en almacen: "+almacen.getIdAlmacen(), 35, 710, 0);
+                reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Movimiento en almacen:. "+almacen.getIdAlmacen(), 35, 710, 0);
             reporte.contenido.setFontAndSize(bf, 7);
             reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "Fecha:"+new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()), 570, 710, 0);
 

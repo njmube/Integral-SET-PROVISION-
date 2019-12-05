@@ -39,6 +39,7 @@ public class editaAgente extends javax.swing.JPanel {
     private Agente actor1;
     String ic="";
     String[] columnas = new String [] {"Clave","Agente"};
+    int x=0;
     /**
      * Creates new form EditaCiclo
      */
@@ -59,23 +60,99 @@ public class editaAgente extends javax.swing.JPanel {
                 java.lang.String.class                
             };
             boolean[] canEdit = new boolean [] {
-                false,false
+                true,true
             };
             public void setValueAt(Object value, int row, int col)
             {
                 Vector vector = (Vector)this.dataVector.elementAt(row);
-                Object celda = ((Vector)this.dataVector.elementAt(row)).elementAt(col);
                 switch(col)
                 {
                     case 0:
-                        vector.setElementAt(value, col);
-                        this.dataVector.setElementAt(vector, row);
-                        fireTableCellUpdated(row, col);
+                        if(vector.get(col)==null)
+                        {
+                            vector.setElementAt(value, col);
+                            this.dataVector.setElementAt(vector, row);
+                            fireTableCellUpdated(row, col);
+                        }
+                        else
+                        {
+                            Session session = HibernateUtil.getSessionFactory().openSession();
+                            String valor = (String)value;
+                            String valorAnterior = t_datos.getValueAt(row, col).toString();
+                            if(valorAnterior.compareToIgnoreCase(valor)!=0)
+                            {
+                                try   
+                                {
+                                    session.beginTransaction();
+                                    Object resp = session.createQuery("from Agente obj where obj.idAgente='"+valor+"'").uniqueResult();
+                                    if(resp==null)
+                                    {
+                                        Query q = session.createQuery("update Agente obj set obj.idAgente='"+valor+"' where obj.idAgente = '"+valorAnterior+"'");
+                                        q.executeUpdate();
+                                        session.getTransaction().commit();
+                                        vector.setElementAt(value, col);
+                                        this.dataVector.setElementAt(vector, row);
+                                        fireTableCellUpdated(row, col);
+                                    }
+                                    else
+                                        JOptionPane.showMessageDialog(null, "No se pueden guardar Nombres duplicadas");  
+                                }
+                                catch (HibernateException he)
+                                {
+                                    he.printStackTrace(); 
+                                    session.getTransaction().rollback();
+                                }
+                                finally
+                                {
+                                    if(session.isOpen())
+                                        session.close();
+                                }
+                            }
+                        }
                         break;
                     default:
-                        vector.setElementAt(value, col);
-                        this.dataVector.setElementAt(vector, row);
-                        fireTableCellUpdated(row, col);
+                        if(vector.get(col)==null)
+                        {
+                            vector.setElementAt(value, col);
+                            this.dataVector.setElementAt(vector, row);
+                            fireTableCellUpdated(row, col);
+                        }
+                        else
+                        {
+                            Session session = HibernateUtil.getSessionFactory().openSession();
+                            String valor = (String)value;
+                            String valorAnterior = t_datos.getValueAt(row, col).toString();
+                            if(valorAnterior.compareToIgnoreCase(valor)!=0)
+                            {
+                                try   
+                                {
+                                    session.beginTransaction();
+                                    ic = t_datos.getValueAt(row, 0).toString();
+                                    Object resp = session.createQuery("from Agente obj where obj.nombre='"+valor+"'").uniqueResult();
+                                    if(resp==null)
+                                    {
+                                        Query q = session.createQuery("update Agente obj set obj.nombre='"+valor+"' where obj.idAgente = '"+ic+"'");
+                                        q.executeUpdate();
+                                        session.getTransaction().commit();
+                                        vector.setElementAt(value, col);
+                                        this.dataVector.setElementAt(vector, row);
+                                        fireTableCellUpdated(row, col);
+                                    }
+                                    else
+                                        JOptionPane.showMessageDialog(null, "No se pueden guardar Nombres duplicadas");  
+                                }
+                                catch (HibernateException he)
+                                {
+                                    he.printStackTrace(); 
+                                    session.getTransaction().rollback();
+                                }
+                                finally
+                                {
+                                    if(session.isOpen())
+                                        session.close();
+                                }
+                            }
+                        }
                         break;
                 }
             }
@@ -97,34 +174,17 @@ public class editaAgente extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel2 = new javax.swing.JPanel();
-        jPanel1 = new javax.swing.JPanel();
-        jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         t_datos = new javax.swing.JTable();
-        Selecciona2 = new javax.swing.JButton();
-        Eliminar1 = new javax.swing.JButton();
-        Selecciona1 = new javax.swing.JButton();
-        bt_actualiza1 = new javax.swing.JButton();
         t_busca = new javax.swing.JTextField();
+        bt_actualiza1 = new javax.swing.JButton();
+        Eliminar1 = new javax.swing.JButton();
+        Selecciona2 = new javax.swing.JButton();
         b_busca = new javax.swing.JButton();
-        jPanel4 = new javax.swing.JPanel();
-        jLabel8 = new javax.swing.JLabel();
-        t_agente = new javax.swing.JTextField();
-        jLabel9 = new javax.swing.JLabel();
-        t_descripcion = new javax.swing.JTextField();
-        b_cancelar = new javax.swing.JButton();
-        b_guardar = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(254, 254, 254));
-
-        jPanel2.setBackground(new java.awt.Color(254, 254, 254));
-
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "Edita Agente", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Arial", 1, 12))); // NOI18N
-
-        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "Lista", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Arial", 1, 11))); // NOI18N
+        setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "Lista de Agentes", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP));
 
         jScrollPane1.setBackground(new java.awt.Color(254, 254, 254));
 
@@ -137,7 +197,7 @@ public class editaAgente extends javax.swing.JPanel {
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.Object.class
+                java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
                 false, true
@@ -155,18 +215,23 @@ public class editaAgente extends javax.swing.JPanel {
         t_datos.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(t_datos);
 
-        Selecciona2.setBackground(new java.awt.Color(2, 135, 242));
-        Selecciona2.setForeground(new java.awt.Color(254, 254, 254));
-        Selecciona2.setIcon(new ImageIcon("imagenes/add-user.png"));
-        Selecciona2.setText("Nuevo");
-        Selecciona2.setToolTipText("Agregar un registo actual");
-        Selecciona2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        Selecciona2.setMaximumSize(new java.awt.Dimension(87, 23));
-        Selecciona2.setMinimumSize(new java.awt.Dimension(87, 23));
-        Selecciona2.setNextFocusableComponent(b_cancelar);
-        Selecciona2.addActionListener(new java.awt.event.ActionListener() {
+        t_busca.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Selecciona2ActionPerformed(evt);
+                t_buscaActionPerformed(evt);
+            }
+        });
+
+        bt_actualiza1.setBackground(new java.awt.Color(2, 135, 242));
+        bt_actualiza1.setForeground(new java.awt.Color(254, 254, 254));
+        bt_actualiza1.setIcon(new ImageIcon("imagenes/tabla.png"));
+        bt_actualiza1.setText("Actualizar");
+        bt_actualiza1.setToolTipText("Actualizar los datos de la tabla");
+        bt_actualiza1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        bt_actualiza1.setMaximumSize(new java.awt.Dimension(87, 23));
+        bt_actualiza1.setMinimumSize(new java.awt.Dimension(87, 23));
+        bt_actualiza1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt_actualiza1ActionPerformed(evt);
             }
         });
 
@@ -185,42 +250,17 @@ public class editaAgente extends javax.swing.JPanel {
             }
         });
 
-        Selecciona1.setBackground(new java.awt.Color(2, 135, 242));
-        Selecciona1.setForeground(new java.awt.Color(254, 254, 254));
-        Selecciona1.setIcon(new ImageIcon("imagenes/update-user.png"));
-        Selecciona1.setText("Seleccionar");
-        Selecciona1.setToolTipText("Seleccionar un registro de la tabla para editar");
-        Selecciona1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        Selecciona1.setNextFocusableComponent(Eliminar1);
-        Selecciona1.addActionListener(new java.awt.event.ActionListener() {
+        Selecciona2.setBackground(new java.awt.Color(2, 135, 242));
+        Selecciona2.setForeground(new java.awt.Color(254, 254, 254));
+        Selecciona2.setIcon(new ImageIcon("imagenes/add-user.png"));
+        Selecciona2.setText("Nuevo");
+        Selecciona2.setToolTipText("Agregar un registo actual");
+        Selecciona2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        Selecciona2.setMaximumSize(new java.awt.Dimension(87, 23));
+        Selecciona2.setMinimumSize(new java.awt.Dimension(87, 23));
+        Selecciona2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Selecciona1ActionPerformed(evt);
-            }
-        });
-
-        bt_actualiza1.setBackground(new java.awt.Color(2, 135, 242));
-        bt_actualiza1.setForeground(new java.awt.Color(254, 254, 254));
-        bt_actualiza1.setIcon(new ImageIcon("imagenes/tabla.png"));
-        bt_actualiza1.setText("Actualizar");
-        bt_actualiza1.setToolTipText("Actualizar los datos de la tabla");
-        bt_actualiza1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        bt_actualiza1.setMaximumSize(new java.awt.Dimension(87, 23));
-        bt_actualiza1.setMinimumSize(new java.awt.Dimension(87, 23));
-        bt_actualiza1.setNextFocusableComponent(Selecciona1);
-        bt_actualiza1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bt_actualiza1ActionPerformed(evt);
-            }
-        });
-
-        t_busca.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                t_buscaActionPerformed(evt);
-            }
-        });
-        t_busca.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                t_buscaKeyTyped(evt);
+                Selecciona2ActionPerformed(evt);
             }
         });
 
@@ -232,225 +272,58 @@ public class editaAgente extends javax.swing.JPanel {
             }
         });
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addGap(0, 106, Short.MAX_VALUE)
-                        .addComponent(bt_actualiza1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(Selecciona1)
-                        .addGap(18, 18, 18)
-                        .addComponent(Eliminar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(Selecciona2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(t_busca)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(b_busca, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 403, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(t_busca)
-                    .addComponent(b_busca, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(Selecciona2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Eliminar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Selecciona1)
-                    .addComponent(bt_actualiza1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
-
-        jPanel4.setBackground(new java.awt.Color(254, 254, 254));
-        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "Actualizar", javax.swing.border.TitledBorder.RIGHT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Arial", 1, 11))); // NOI18N
-
-        jLabel8.setText("Clave:");
-
-        t_agente.setEnabled(false);
-        t_agente.setNextFocusableComponent(t_descripcion);
-        t_agente.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                t_agenteActionPerformed(evt);
-            }
-        });
-        t_agente.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                t_agenteKeyTyped(evt);
-            }
-        });
-
-        jLabel9.setText("Agente:");
-
-        t_descripcion.setNextFocusableComponent(b_guardar);
-        t_descripcion.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                t_descripcionActionPerformed(evt);
-            }
-        });
-        t_descripcion.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                t_descripcionKeyTyped(evt);
-            }
-        });
-
-        b_cancelar.setBackground(new java.awt.Color(2, 135, 242));
-        b_cancelar.setForeground(new java.awt.Color(254, 254, 254));
-        b_cancelar.setIcon(new ImageIcon("imagenes/cancelar.png"));
-        b_cancelar.setText("Cancelar");
-        b_cancelar.setEnabled(false);
-        b_cancelar.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        b_cancelar.setMaximumSize(new java.awt.Dimension(87, 23));
-        b_cancelar.setMinimumSize(new java.awt.Dimension(87, 23));
-        b_cancelar.setNextFocusableComponent(t_agente);
-        b_cancelar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                b_cancelarActionPerformed(evt);
-            }
-        });
-
-        b_guardar.setBackground(new java.awt.Color(2, 135, 242));
-        b_guardar.setForeground(new java.awt.Color(254, 254, 254));
-        b_guardar.setIcon(new ImageIcon("imagenes/guardar.png"));
-        b_guardar.setText("Actualizar");
-        b_guardar.setEnabled(false);
-        b_guardar.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        b_guardar.setMaximumSize(new java.awt.Dimension(87, 23));
-        b_guardar.setMinimumSize(new java.awt.Dimension(87, 23));
-        b_guardar.setNextFocusableComponent(bt_actualiza1);
-        b_guardar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                b_guardarActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(b_cancelar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(b_guardar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(32, 32, 32)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel8)
-                    .addComponent(jLabel9))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(t_descripcion, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(t_agente, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(24, Short.MAX_VALUE))
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(127, 127, 127)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(t_agente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(38, 38, 38)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(t_descripcion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(134, 134, 134)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(b_guardar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(b_cancelar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(29, 29, 29))
-        );
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(44, 44, 44)
-                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(32, 32, 32))
-        );
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        jLabel1.setText("Buscar:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 996, Short.MAX_VALUE)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(t_busca, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(b_busca, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 478, Short.MAX_VALUE)
+                        .addComponent(Selecciona2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(bt_actualiza1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(Eliminar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 501, Short.MAX_VALUE)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(7, 7, 7)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(t_busca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel1))
+                    .addComponent(b_busca, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Eliminar1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(bt_actualiza1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Selecciona2, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void Selecciona2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Selecciona2ActionPerformed
-        b_cancelar.requestFocus();
         h=new Herramientas(usr, 0);
         h.session(sessionPrograma);
         Session session = HibernateUtil.getSessionFactory().openSession();
         usr = (Usuario)session.get(Usuario.class, usr.getIdUsuario());
-//        if(usr.getEditarCiclo()==true)
-//        {
-            altaAgente obj = new altaAgente(new javax.swing.JFrame(), true, usr, sessionPrograma);
-            Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-            obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
-            obj.setVisible(true);
-            borra_cajas();
-            cajas(false, false, false, false);
-            buscaDato();
-//        }
-//        else
-//            JOptionPane.showMessageDialog(null, "¡Acceso denegado!");
+        altaAgente obj = new altaAgente(new javax.swing.JFrame(), true, usr, sessionPrograma);
+        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+        obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
+        obj.setVisible(true);
+        buscaDato();
         if(session!=null)
             if(session.isOpen())
                 session.close();
@@ -461,140 +334,34 @@ public class editaAgente extends javax.swing.JPanel {
         h=new Herramientas(usr, 0);
         h.session(sessionPrograma);
         Session session = HibernateUtil.getSessionFactory().openSession();
-        usr = (Usuario)session.get(Usuario.class, usr.getIdUsuario());
-        /*if(usr.getEditaCiclo()==true)
-        {*/
-            if(this.t_datos.getSelectedRow()>=0)
+        if(this.t_datos.getSelectedRow()>=0)
+        {
+            DefaultTableModel model = (DefaultTableModel) t_datos.getModel();
+            int a = t_datos.getSelectedRow();
+            int opt=JOptionPane.showConfirmDialog(this, "¡Los datos capturados se eliminarán!");
+            if (JOptionPane.YES_OPTION == opt)
             {
-                DefaultTableModel model = (DefaultTableModel) t_datos.getModel();
-                int a = t_datos.getSelectedRow();
-                int opt=JOptionPane.showConfirmDialog(this, "¡Los datos capturados se eliminarán!");
-                if (JOptionPane.YES_OPTION == opt)
+                boolean respuesta=eliminar(t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString());
+                if(respuesta==true)
                 {
-                    boolean respuesta=eliminar(t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString());
-                    if(respuesta==true)
-                    {
-                        JOptionPane.showMessageDialog(null, "El Agente ha sido eliminado");
-                        model.removeRow(a);
-                        borra_cajas();
-                        cajas(false, false, false, false);
-                        buscaDato();
-                    }
+                    JOptionPane.showMessageDialog(null, "El Agente ha sido eliminado");
+                    model.removeRow(a);
+                    buscaDato();
                 }
             }
-            else
-            cajas(false, false, false, false);
-        /*}
-        else
-        JOptionPane.showMessageDialog(null, "Acceso denegado");*/
-            if(session!=null)
+        }
+        if(session!=null)
             if(session.isOpen())
                 session.close();
     }//GEN-LAST:event_Eliminar1ActionPerformed
 
-    private void Selecciona1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Selecciona1ActionPerformed
-        Eliminar1.requestFocus();
-        h=new Herramientas(usr, 0);
-        h.session(sessionPrograma);
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        usr = (Usuario)session.get(Usuario.class, usr.getIdUsuario());
-//        if(usr!=null)
-//        {
-            if(t_datos.getSelectedRow()>=0)
-            {
-                this.borra_cajas();
-                t_agente.setText(t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString());
-                ic=t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString();
-                t_descripcion.setText(t_datos.getValueAt(t_datos.getSelectedRow(), 1).toString());         
-                this.cajas(true, true, true, true);
-            }
-            else
-                JOptionPane.showMessageDialog(null, "¡No hay un Ajuste seleccionado!");
-//        }
-//        else
-//            JOptionPane.showMessageDialog(null, "¡Acceso denegado!");
-        if(session!=null)
-            if(session.isOpen())
-                session.close();
-    }//GEN-LAST:event_Selecciona1ActionPerformed
-
     private void bt_actualiza1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_actualiza1ActionPerformed
-        Selecciona1.requestFocus();
-        borra_cajas();
-        cajas(false, false, false, false);
         buscaDato();
     }//GEN-LAST:event_bt_actualiza1ActionPerformed
-
-    private void t_agenteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_agenteActionPerformed
-        t_descripcion.requestFocus();
-    }//GEN-LAST:event_t_agenteActionPerformed
-
-    private void t_agenteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_agenteKeyTyped
-        char car = evt.getKeyChar();
-        if(this.t_agente.getText().length()>=2)
-            evt.consume();
-        if((car<'0' || car>'9'))
-            evt.consume();
-    }//GEN-LAST:event_t_agenteKeyTyped
-
-    private void t_descripcionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_descripcionActionPerformed
-        b_guardar.requestFocus();
-    }//GEN-LAST:event_t_descripcionActionPerformed
-
-    private void t_descripcionKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_descripcionKeyTyped
-        evt.setKeyChar(Character.toUpperCase(evt.getKeyChar()));
-        char car = evt.getKeyChar();
-        if(t_descripcion.getText().length()>=200)
-        evt.consume();
-    }//GEN-LAST:event_t_descripcionKeyTyped
-
-    private void b_cancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_cancelarActionPerformed
-        t_agente.requestFocus();
-        int opt=JOptionPane.showConfirmDialog(this, "¡Los datos capturados se eliminarán!");
-        if(opt==0)
-        {
-            borra_cajas();
-            cajas(false, false, false, false);
-            t_agente.requestFocus();
-        }
-    }//GEN-LAST:event_b_cancelarActionPerformed
-
-    private void b_guardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_guardarActionPerformed
-        h=new Herramientas(usr, 0);
-        h.session(sessionPrograma);
-        bt_actualiza1.requestFocus();
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        usr = (Usuario)session.get(Usuario.class, usr.getIdUsuario());
-//        if(usr!=null)
-//        {
-            if(t_agente.getText().compareTo("")!=0)
-            {
-                boolean respuesta=modifica();
-                if(respuesta==true)
-                {
-                    this.borra_cajas();
-                    cajas(false, false, false, false);
-                    buscaDato();
-                }
-            }
-            else
-            {
-                JOptionPane.showMessageDialog(null, "¡Debe introducir el Agente que desees modificar!");
-                t_agente.requestFocus();
-            }
-//        }
-//        else
-//            JOptionPane.showMessageDialog(null, "¡Acceso denegado!");
-        if(session!=null)
-            if(session.isOpen())
-                session.close();
-    }//GEN-LAST:event_b_guardarActionPerformed
-int x=0;
     private void t_buscaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_buscaActionPerformed
         // TODO add your handling code here:
        if(this.t_busca.getText().compareToIgnoreCase("")!=0)
         {
-            //buscaCuentas();
             if(x>=t_datos.getRowCount())
             {
                 x=0;
@@ -621,61 +388,17 @@ int x=0;
          this.t_buscaActionPerformed(null);
     }//GEN-LAST:event_b_buscaActionPerformed
 
-    private void t_buscaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_buscaKeyTyped
-        // TODO add your handling code here:
-         
-    }//GEN-LAST:event_t_buscaKeyTyped
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Eliminar1;
-    private javax.swing.JButton Selecciona1;
     private javax.swing.JButton Selecciona2;
     private javax.swing.JButton b_busca;
-    private javax.swing.JButton b_cancelar;
-    private javax.swing.JButton b_guardar;
     private javax.swing.JButton bt_actualiza1;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    public javax.swing.JPanel jPanel4;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
-    public javax.swing.JTextField t_agente;
     private javax.swing.JTextField t_busca;
     private javax.swing.JTable t_datos;
-    public javax.swing.JTextField t_descripcion;
     // End of variables declaration//GEN-END:variables
-
-    public void borra_cajas()
-    {
-        this.t_agente.setText("");
-        this.t_descripcion.setText("");
-    }
-
-    public void cajas(boolean agente, boolean descripcion, boolean cancelar, boolean guardar)
-    {
-        //this.t_agente.setEnabled(agente);
-        this.t_descripcion.setEnabled(descripcion);
-        this.b_cancelar.setEnabled(cancelar);
-        this.b_guardar.setEnabled(guardar);
-    }
     
-    private List<Object[]> executeHQLQuery(String hql) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        try {
-            session.beginTransaction();
-            Query q = session.createQuery(hql);
-            List resultList = q.list();
-            session.getTransaction().commit();
-            session.disconnect();
-            return resultList;
-        } catch (HibernateException he) {
-            he.printStackTrace();
-            List lista= null;
-            return lista;
-        }
-    }
     
     private boolean eliminar(String idAgente)
     {
@@ -710,64 +433,34 @@ int x=0;
         }
     }
     
-    private boolean modifica()
-    {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        try   
-        {   
-            session.beginTransaction();
-            ic=t_agente.getText();
-            Object resp=session.createQuery("from Agente obj where obj.idAgente='"+t_agente.getText()+"' and obj.idAgente!='"+ic+"'").uniqueResult();
-            
-            actor1 = (Agente)session.get(Agente.class, (Integer.parseInt(t_agente.getText())));
-            
-                if(resp==null)
-                {
-                    Query q = session.createQuery("update Agente obj set obj.nombre='"+t_descripcion.getText()+"', obj.idAgente='"+t_agente.getText()+"'where obj.idAgente='"+ic+"'");
-                    q.executeUpdate();
-                    session.getTransaction().commit();
-                    JOptionPane.showMessageDialog(null, "Registro modificado");
-                    return true;
-                }
-                else
-                {
-                    JOptionPane.showMessageDialog(null, "No se pueden guardar claves duplicadas");  
-                    return false;
-                }
-            //}
-        }
-        catch (HibernateException he)
-        {
-            he.printStackTrace(); 
-            System.out.println(he.hashCode());
-            session.getTransaction().rollback();
-            return false;
-        }
-        finally
-        {
-            if(session.isOpen())
-            session.close();
-        }
-    }
-    
     private void buscaDato()
     {
         String consulta="from Agente";
-        List <Object[]> resultList=executeHQLQuery(consulta);
-        if(resultList.size()>0)
-        {
-            t_datos.setModel(ModeloTablaReporte(resultList.size(), columnas));
-            int i=0;
-            for (Object o : resultList)
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try {
+            session.beginTransaction();
+            Query q = session.createQuery(consulta);
+            List resultList = q.list();
+            session.getTransaction().commit();
+            session.disconnect();
+            if(resultList.size()>0)
             {
-                actor1 = (Agente) o;
-                model.setValueAt(actor1.getIdAgente(), i, 0);
-                model.setValueAt(actor1.getNombre(), i, 1);
-                i++;
+                t_datos.setModel(ModeloTablaReporte(resultList.size(), columnas));
+                int i=0;
+                for (Object o : resultList)
+                {
+                    actor1 = (Agente) o;
+                    model.setValueAt(actor1.getIdAgente(), i, 0);
+                    model.setValueAt(actor1.getNombre(), i, 1);
+                    i++;
+                }
             }
-        }
-        else
+            else
+                t_datos.setModel(ModeloTablaReporte(0, columnas));
+        } catch (HibernateException he) {
+            he.printStackTrace();
             t_datos.setModel(ModeloTablaReporte(0, columnas));
+        }
         formatoTabla();
     }
     
@@ -793,7 +486,7 @@ int x=0;
                       column.setPreferredWidth(10);
                       break;
                   case 1:
-                      column.setPreferredWidth(150);
+                      column.setPreferredWidth(500);
                       break;
                   default:
                       column.setPreferredWidth(40);

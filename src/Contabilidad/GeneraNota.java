@@ -7,6 +7,7 @@
 package Contabilidad;
 
 import Compras.Formatos;
+import static Contabilidad.General.acentos;
 import Hibernate.Util.HibernateUtil;
 import Hibernate.entidades.Concepto;
 import Hibernate.entidades.Configuracion;
@@ -14,6 +15,10 @@ import Hibernate.entidades.Factura;
 import Hibernate.entidades.Nota;
 import Hibernate.entidades.Orden;
 import Hibernate.entidades.OrdenExterna;
+import Hibernate.entidades.ProductoServicio;
+import Hibernate.entidades.Relacion;
+import Hibernate.entidades.UsoCfdi;
+import Hibernate.entidades.ClaveUnidad;
 import Hibernate.entidades.Usuario;
 import Servicios.EnviarCorreo;
 import java.awt.Color;
@@ -60,18 +65,36 @@ import Integral.FormatoTabla;
 import Integral.Herramientas;
 import Integral.Render1;
 import Integral.numeroLetra;
+import api.ApiTurbo;
 import finkok.Comprobante;
+import finkok.Comprobante.Emisor;
+import finkok.Comprobante.Emisor.RegimenFiscal;
+import finkok.Comprobante.Impuestos;
+import finkok.Comprobante.Impuestos.Traslados;
+import finkok.Comprobante.Impuestos.Traslados.Traslado;
+import finkok.Comprobante.Receptor;
 import finkok.TUbicacion;
 import finkok.TUbicacionFiscal;
+import finkok33.CMetodoPago;
+import finkok33.CMoneda;
+import finkok33.CTipoDeComprobante;
+import finkok33.CTipoFactor;
+import finkok33.CUsoCFDI;
+import finkok33.Comprobante.CfdiRelacionados;
+import finkok33.Comprobante.CfdiRelacionados.CfdiRelacionado;
+import java.awt.event.ItemEvent;
 import java.io.BufferedReader;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.Normalizer;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.regex.Pattern;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JComboBox;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.datatype.DatatypeFactory;
 import org.apache.poi.hssf.record.crypto.Biff8EncryptionKey;
@@ -81,9 +104,12 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
+import sat.buscaUsoCfdi;
+import sat.buscarProServicio;
 import timbrar.ApiFinkok;
 import timbrar.ApiMysuite;
 import timbrar.Constantes;
+import timbrar.Constantes33;
 import timbrar.GeneradorSelloDigital;
 
 /**
@@ -100,12 +126,13 @@ public class GeneraNota extends javax.swing.JDialog {
     String abrir="";
     Date fecha_factura=new Date();
     finkok.Comprobante comprobante;
+    finkok33.Comprobante comprobante33;
     String idBuscar="";
     DefaultTableModel model;
     DefaultTableModel modeloFactura;
     int iva=0;
     String[] columnas = new String [] {
-        "Id","Can","Med","Descripción","Costo c/u","Descuento","Total"
+        "Id","Can","Med","Descripción","Cve-Prod","Costo c/u","Descuento","Total"
     };
     String[] columnas1 = new String [] {
         "RFC","UUID","SUCURSAL","SERIE","FOLIO","FECHA","MONTO","MONEDA"
@@ -118,12 +145,15 @@ public class GeneraNota extends javax.swing.JDialog {
     String ruta="";
     boolean bandera=true;
     String PAC="";
+    String anterior="";
+    int configuracion=1;
     /**
      * Creates new form QUALITAS
      */
-    public GeneraNota(java.awt.Frame parent, boolean modal, Usuario u, String ses, Nota fac) {
+    public GeneraNota(java.awt.Frame parent, boolean modal, Usuario u, String ses, Nota fac, int configuracion) {
         super(parent, modal);
         initComponents();
+        this.configuracion=configuracion;
         try{
             FileReader fil = new FileReader("config.txt");
             BufferedReader b = new BufferedReader(fil);
@@ -162,6 +192,9 @@ public class GeneraNota extends javax.swing.JDialog {
         b_cancelar = new javax.swing.JButton();
         b_descargar = new javax.swing.JButton();
         aviso = new javax.swing.JFileChooser();
+        cfdi = new javax.swing.JComboBox();
+        medida = new javax.swing.JComboBox();
+        t_iva1 = new javax.swing.JFormattedTextField();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         l_emisor = new javax.swing.JLabel();
@@ -202,6 +235,10 @@ public class GeneraNota extends javax.swing.JDialog {
         jLabel18 = new javax.swing.JLabel();
         c_pais = new javax.swing.JComboBox();
         jLabel19 = new javax.swing.JLabel();
+        jButton7 = new javax.swing.JButton();
+        t_id_cfdi = new javax.swing.JTextField();
+        t_descripcion_cfdi = new javax.swing.JTextField();
+        jLabel31 = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         jPanel8 = new javax.swing.JPanel();
         jPanel9 = new javax.swing.JPanel();
@@ -211,18 +248,11 @@ public class GeneraNota extends javax.swing.JDialog {
         l_iva = new javax.swing.JLabel();
         l_total = new javax.swing.JLabel();
         t_total = new javax.swing.JFormattedTextField();
-        t_iva1 = new javax.swing.JFormattedTextField();
-        jLabel20 = new javax.swing.JLabel();
-        t_metodo_pago = new javax.swing.JTextField();
         jLabel21 = new javax.swing.JLabel();
         t_cuenta_pago = new javax.swing.JTextField();
-        jLabel22 = new javax.swing.JLabel();
-        t_forma_pago = new javax.swing.JTextField();
         jLabel23 = new javax.swing.JLabel();
         c_moneda = new javax.swing.JComboBox();
         jLabel24 = new javax.swing.JLabel();
-        jLabel25 = new javax.swing.JLabel();
-        jLabel26 = new javax.swing.JLabel();
         jLabel28 = new javax.swing.JLabel();
         t_tipo_cambio = new javax.swing.JFormattedTextField();
         t_descuento = new javax.swing.JFormattedTextField();
@@ -230,8 +260,23 @@ public class GeneraNota extends javax.swing.JDialog {
         b_menos = new javax.swing.JButton();
         b_mas = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
+        jLabel20 = new javax.swing.JLabel();
+        c_metodo_pago = new javax.swing.JComboBox();
+        jLabel25 = new javax.swing.JLabel();
+        jLabel22 = new javax.swing.JLabel();
+        c_forma_pago = new javax.swing.JComboBox();
+        jLabel26 = new javax.swing.JLabel();
+        jButton6 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         t_datos = new javax.swing.JTable();
+        jPanel16 = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        t_relacionados = new javax.swing.JTable();
+        jLabel30 = new javax.swing.JLabel();
+        cb_tipo_relacion = new javax.swing.JComboBox();
+        l_tipo_relacion = new javax.swing.JLabel();
+        b_menos1 = new javax.swing.JButton();
+        b_mas1 = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         jPanel10 = new javax.swing.JPanel();
         t_inciso = new javax.swing.JTextField();
@@ -376,6 +421,34 @@ public class GeneraNota extends javax.swing.JDialog {
         aviso.setDialogType(javax.swing.JFileChooser.SAVE_DIALOG);
         aviso.setDialogTitle("Examinar");
 
+        cfdi.setFont(new java.awt.Font("Dialog", 0, 9)); // NOI18N
+        cfdi.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Buscar", "Cancelar" }));
+
+        medida.setFont(new java.awt.Font("Dialog", 0, 9)); // NOI18N
+        medida.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "PZAS", "LTS", "MTS", "CMS", "MMS", "GRS", "MLS", "KGS", "HRS", "MIN", "KIT", "FT", "LB", "JGO", "NA", "SERV" }));
+
+        t_iva1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        t_iva1.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
+        t_iva1.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        t_iva1.setToolTipText("Total de IVA");
+        t_iva1.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
+        t_iva1.setValue(16);
+        t_iva1.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                t_iva1FocusLost(evt);
+            }
+        });
+        t_iva1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                t_iva1ActionPerformed(evt);
+            }
+        });
+        t_iva1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                t_iva1KeyTyped(evt);
+            }
+        });
+
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -463,7 +536,7 @@ public class GeneraNota extends javax.swing.JDialog {
                 .addComponent(progreso, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel29)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 273, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 263, Short.MAX_VALUE)
                 .addComponent(b_actualizar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(b_generar)
@@ -533,7 +606,7 @@ public class GeneraNota extends javax.swing.JDialog {
                 .addComponent(t_rfc, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(4, 4, 4)
                 .addComponent(jLabel4)
-                .addContainerGap(135, Short.MAX_VALUE))
+                .addContainerGap(165, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -627,6 +700,23 @@ public class GeneraNota extends javax.swing.JDialog {
 
         jLabel19.setText("*");
 
+        jButton7.setBackground(new java.awt.Color(2, 135, 242));
+        jButton7.setForeground(new java.awt.Color(255, 255, 255));
+        jButton7.setText("Uso CFDI");
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
+
+        t_id_cfdi.setBackground(new java.awt.Color(204, 255, 255));
+        t_id_cfdi.setEnabled(false);
+
+        t_descripcion_cfdi.setBackground(new java.awt.Color(204, 255, 255));
+        t_descripcion_cfdi.setEnabled(false);
+
+        jLabel31.setText("*");
+
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
@@ -667,14 +757,21 @@ public class GeneraNota extends javax.swing.JDialog {
                                 .addComponent(c_pais, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(1, 1, 1)
                                 .addComponent(jLabel19)
-                                .addGap(0, 0, Short.MAX_VALUE))
+                                .addGap(287, 287, 287)
+                                .addComponent(jButton7)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(t_id_cfdi, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(t_descripcion_cfdi)
+                                .addGap(1, 1, 1)
+                                .addComponent(jLabel31))
                             .addGroup(jPanel7Layout.createSequentialGroup()
                                 .addComponent(jLabel13)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(t_colonia, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(3, 3, 3)
                                 .addComponent(jLabel12)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 216, Short.MAX_VALUE)
                                 .addComponent(jLabel14)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(t_municipio, javax.swing.GroupLayout.PREFERRED_SIZE, 332, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -705,14 +802,21 @@ public class GeneraNota extends javax.swing.JDialog {
                     .addComponent(t_municipio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel15))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel16)
-                    .addComponent(c_estado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel17)
-                    .addComponent(jLabel18)
-                    .addComponent(c_pais, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel19))
-                .addContainerGap(28, Short.MAX_VALUE))
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel16)
+                        .addComponent(c_estado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel17)
+                        .addComponent(jLabel18)
+                        .addComponent(c_pais, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel19))
+                    .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(t_id_cfdi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(t_descripcion_cfdi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel31))
+                        .addComponent(jButton7)))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -733,7 +837,7 @@ public class GeneraNota extends javax.swing.JDialog {
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(258, Short.MAX_VALUE))
+                .addContainerGap(266, Short.MAX_VALUE))
         );
 
         contenedor.addTab("Receptor", jPanel3);
@@ -772,7 +876,7 @@ public class GeneraNota extends javax.swing.JDialog {
 
         l_iva.setFont(new java.awt.Font("Arial", 0, 9)); // NOI18N
         l_iva.setForeground(new java.awt.Color(255, 255, 255));
-        l_iva.setText("%  IVA:");
+        l_iva.setText("    IVA:");
         jPanel9.add(l_iva, new org.netbeans.lib.awtextra.AbsoluteConstraints(43, 23, -1, -1));
 
         l_total.setFont(new java.awt.Font("Arial", 0, 9)); // NOI18N
@@ -789,42 +893,6 @@ public class GeneraNota extends javax.swing.JDialog {
         t_total.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
         jPanel9.add(t_total, new org.netbeans.lib.awtextra.AbsoluteConstraints(85, 41, 88, -1));
 
-        t_iva1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_iva1.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
-        t_iva1.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        t_iva1.setToolTipText("Total de IVA");
-        t_iva1.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
-        t_iva1.setValue(16);
-        t_iva1.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                t_iva1FocusLost(evt);
-            }
-        });
-        t_iva1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                t_iva1ActionPerformed(evt);
-            }
-        });
-        t_iva1.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                t_iva1KeyTyped(evt);
-            }
-        });
-        jPanel9.add(t_iva1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1, 20, 40, -1));
-
-        jLabel20.setForeground(new java.awt.Color(254, 254, 254));
-        jLabel20.setText("Metodo de Pago:");
-
-        t_metodo_pago.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
-        t_metodo_pago.setText("99");
-        t_metodo_pago.setToolTipText("Metodo de pago del monto de la Nota");
-        t_metodo_pago.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_metodo_pago.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                t_metodo_pagoKeyTyped(evt);
-            }
-        });
-
         jLabel21.setForeground(new java.awt.Color(254, 254, 254));
         jLabel21.setText("Cuenta de Pago:");
 
@@ -837,15 +905,6 @@ public class GeneraNota extends javax.swing.JDialog {
             }
         });
 
-        jLabel22.setForeground(new java.awt.Color(254, 254, 254));
-        jLabel22.setText("Forma de Pago:");
-
-        t_forma_pago.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
-        t_forma_pago.setText("PAGO EN UNA SOLA EXHIBICION");
-        t_forma_pago.setToolTipText("Forama de pago de la nota");
-        t_forma_pago.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_forma_pago.setEnabled(false);
-
         jLabel23.setForeground(new java.awt.Color(254, 254, 254));
         jLabel23.setText("Moneda:");
 
@@ -855,12 +914,6 @@ public class GeneraNota extends javax.swing.JDialog {
 
         jLabel24.setForeground(new java.awt.Color(254, 254, 254));
         jLabel24.setText("Factor de Cambio");
-
-        jLabel25.setForeground(new java.awt.Color(254, 254, 254));
-        jLabel25.setText("*");
-
-        jLabel26.setForeground(new java.awt.Color(254, 254, 254));
-        jLabel26.setText("*");
 
         jLabel28.setForeground(new java.awt.Color(254, 254, 254));
         jLabel28.setText("*");
@@ -913,6 +966,29 @@ public class GeneraNota extends javax.swing.JDialog {
             }
         });
 
+        jLabel20.setForeground(new java.awt.Color(254, 254, 254));
+        jLabel20.setText("Metodo de Pago:");
+
+        c_metodo_pago.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "01", "02", "03", "04", "05", "06", "08", "12", "13", "14", "15", "17", "23", "24", "25", "26", "27", "28", "29", "30", "99" }));
+
+        jLabel25.setForeground(new java.awt.Color(254, 254, 254));
+        jLabel25.setText("*");
+
+        jLabel22.setForeground(new java.awt.Color(254, 254, 254));
+        jLabel22.setText("F. Pago:");
+
+        c_forma_pago.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "PAGO EN UNA SOLA EXHIBICION", "PAGO EN PARCIALIDADES O DIFERIDO" }));
+
+        jLabel26.setForeground(new java.awt.Color(254, 254, 254));
+        jLabel26.setText("*");
+
+        jButton6.setText("Claves");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
@@ -923,17 +999,18 @@ public class GeneraNota extends javax.swing.JDialog {
                         .addComponent(b_mas, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(b_menos, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel20)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(t_metodo_pago)
-                        .addGap(2, 2, 2)
+                        .addComponent(c_metodo_pago, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel25)
                         .addGap(18, 18, 18)
                         .addComponent(jLabel22)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(t_forma_pago, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(10, 10, 10))
+                        .addComponent(c_forma_pago, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel26, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel8Layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jLabel21)
@@ -948,18 +1025,19 @@ public class GeneraNota extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(t_tipo_cambio, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel28)
-                        .addGap(42, 42, 42)))
+                        .addComponent(jLabel28)))
+                .addGap(42, 42, 42)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel8Layout.createSequentialGroup()
-                        .addComponent(jLabel26, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(19, 19, 19)
                         .addComponent(l_iva1, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(t_descuento, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(104, 104, 104))
                     .addGroup(jPanel8Layout.createSequentialGroup()
                         .addComponent(jButton1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -970,18 +1048,20 @@ public class GeneraNota extends javax.swing.JDialog {
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(b_mas, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(b_menos, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel20)
-                        .addComponent(t_metodo_pago, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel25))
-                    .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(t_forma_pago, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel26))
                     .addComponent(t_descuento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel8Layout.createSequentialGroup()
                         .addGap(3, 3, 3)
                         .addComponent(l_iva1))
-                    .addComponent(jLabel22))
+                    .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(c_metodo_pago, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel20))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel25)
+                            .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel26)
+                                .addComponent(jLabel22)
+                                .addComponent(c_forma_pago, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(t_cuenta_pago, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -991,7 +1071,8 @@ public class GeneraNota extends javax.swing.JDialog {
                     .addComponent(jLabel28)
                     .addComponent(jLabel23)
                     .addComponent(t_tipo_cambio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1)))
+                    .addComponent(jButton1)
+                    .addComponent(jButton6)))
         );
 
         jPanel4.add(jPanel8, java.awt.BorderLayout.PAGE_END);
@@ -1001,14 +1082,14 @@ public class GeneraNota extends javax.swing.JDialog {
 
             },
             new String [] {
-                "id", "Cant", "Med", "Descripción", "Costo c/u", "Descuento", "Total"
+                "id", "Cant", "Med", "Descripción", "Cve-Prod", "Costo c/u", "Descuento", "iva", "Total"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, true, true, true, false
+                false, false, false, true, true, true, true, true, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -1026,6 +1107,109 @@ public class GeneraNota extends javax.swing.JDialog {
         jPanel4.add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
         contenedor.addTab("Productos y servicios", jPanel4);
+
+        t_relacionados.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "ID", "UUID", "Tipo", "relacion"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane3.setViewportView(t_relacionados);
+
+        jLabel30.setText("Tipo de Relacion:");
+
+        cb_tipo_relacion.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "BUSCAR", "01", "03", "04", "07" }));
+        cb_tipo_relacion.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cb_tipo_relacionItemStateChanged(evt);
+            }
+        });
+        cb_tipo_relacion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cb_tipo_relacionActionPerformed(evt);
+            }
+        });
+
+        l_tipo_relacion.setText("Texto");
+
+        b_menos1.setBackground(new java.awt.Color(2, 135, 242));
+        b_menos1.setForeground(new java.awt.Color(255, 255, 255));
+        b_menos1.setIcon(new ImageIcon("imagenes/boton_menos.png"));
+        b_menos1.setToolTipText("Eliminar un concepto");
+        b_menos1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_menos1ActionPerformed(evt);
+            }
+        });
+
+        b_mas1.setBackground(new java.awt.Color(2, 135, 242));
+        b_mas1.setForeground(new java.awt.Color(255, 255, 255));
+        b_mas1.setIcon(new ImageIcon("imagenes/boton_mas.png"));
+        b_mas1.setToolTipText("Agrega un concepto");
+        b_mas1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_mas1ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel16Layout = new javax.swing.GroupLayout(jPanel16);
+        jPanel16.setLayout(jPanel16Layout);
+        jPanel16Layout.setHorizontalGroup(
+            jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel16Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 1078, Short.MAX_VALUE)
+                    .addGroup(jPanel16Layout.createSequentialGroup()
+                        .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel16Layout.createSequentialGroup()
+                                .addComponent(jLabel30)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(cb_tipo_relacion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(l_tipo_relacion))
+                            .addGroup(jPanel16Layout.createSequentialGroup()
+                                .addComponent(b_mas1, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(2, 2, 2)
+                                .addComponent(b_menos1, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel16Layout.setVerticalGroup(
+            jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel16Layout.createSequentialGroup()
+                .addGap(11, 11, 11)
+                .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel30)
+                    .addComponent(cb_tipo_relacion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(l_tipo_relacion))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 386, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(b_mas1, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(b_menos1, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(50, Short.MAX_VALUE))
+        );
+
+        contenedor.addTab("CFDI Relacionados", jPanel16);
 
         jPanel5.setBackground(new java.awt.Color(254, 254, 254));
         jPanel5.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
@@ -1105,7 +1289,7 @@ public class GeneraNota extends javax.swing.JDialog {
                 .addComponent(jLabel89)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(t_contratante, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(72, Short.MAX_VALUE))
+                .addContainerGap(156, Short.MAX_VALUE))
         );
         jPanel10Layout.setVerticalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1516,7 +1700,7 @@ public class GeneraNota extends javax.swing.JDialog {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(t_extra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel51))
-                .addContainerGap(81, Short.MAX_VALUE))
+                .addContainerGap(89, Short.MAX_VALUE))
         );
 
         contenedor.addTab("Datos de addenda", jPanel5);
@@ -1641,7 +1825,7 @@ public class GeneraNota extends javax.swing.JDialog {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(b_xml))
                             .addComponent(b_email))))
-                .addContainerGap(514, Short.MAX_VALUE))
+                .addContainerGap(499, Short.MAX_VALUE))
         );
         jPanel14Layout.setVerticalGroup(
             jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1672,7 +1856,7 @@ public class GeneraNota extends javax.swing.JDialog {
                     .addComponent(b_pdf))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(b_email)
-                .addContainerGap(197, Short.MAX_VALUE))
+                .addContainerGap(205, Short.MAX_VALUE))
         );
 
         contenedor.addTab("Factura Electrónica", jPanel14);
@@ -1704,7 +1888,7 @@ public class GeneraNota extends javax.swing.JDialog {
                                     {
                                         if(t_municipio.getText().trim().compareTo("")!=0)
                                         {
-                                            if(t_metodo_pago.getText().trim().compareTo("")!=0)
+                                            if(c_metodo_pago.getSelectedItem().toString().compareTo("")!=0)
                                             {
                                                 if(c_moneda.getSelectedIndex()>=0)
                                                 {
@@ -1722,46 +1906,60 @@ public class GeneraNota extends javax.swing.JDialog {
                                                                         {
                                                                             if(t_condiciones.getText().trim().compareTo("")!=0)
                                                                             {
-                                                                                if(bandera==true)
+                                                                                boolean entra=true;
+                                                                                if(cb_tipo_relacion.getSelectedItem().toString().compareTo("BUSCAR")!=0)
                                                                                 {
-                                                                                    bandera=false;
-                                                                                    habilita(false, false);
-                                                                                    progreso.setIndeterminate(true);
-                                                                                    progreso.setString("Conectando al servidor SAT Espere");
-                                                                                    facturaElectronica();
+                                                                                    if(t_relacionados.getRowCount()<=0)
+                                                                                        entra=false;
+                                                                                }
+                                                                                if(entra==true)
+                                                                                {
+                                                                                    if(bandera==true)
+                                                                                    {
+                                                                                        bandera=false;
+                                                                                        habilita(false, false);
+                                                                                        progreso.setIndeterminate(true);
+                                                                                        progreso.setString("Conectando al servidor SAT Espere");
+                                                                                        facturaElectronica();
+                                                                                    }
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    JOptionPane.showMessageDialog(null, "Debe ingresar los CFDI Relacionados\n"
+                                                                                            + "o quitar el campo relacion");
                                                                                 }
                                                                             }
                                                                             else
                                                                             {
-                                                                                contenedor.setSelectedIndex(2);
+                                                                                contenedor.setSelectedIndex(3);
                                                                                 JOptionPane.showMessageDialog(null, "Debe ingresar las condiciones de pago");
                                                                                 t_condiciones.requestFocus();
                                                                             }
                                                                         }
                                                                         else
                                                                         {
-                                                                            contenedor.setSelectedIndex(2);
+                                                                            contenedor.setSelectedIndex(3);
                                                                             JOptionPane.showMessageDialog(null, "Debes ingresar el correo del receptor");
                                                                             t_correo_receptor.requestFocus();
                                                                         }
                                                                     }
                                                                     else
                                                                     {
-                                                                        contenedor.setSelectedIndex(2);
+                                                                        contenedor.setSelectedIndex(3);
                                                                         JOptionPane.showMessageDialog(null, "Debes ingresar el nombre del receptor");
                                                                         t_nombre_receptor.requestFocus();
                                                                     }
                                                                 }
                                                                 else
                                                                 {
-                                                                    contenedor.setSelectedIndex(2);
+                                                                    contenedor.setSelectedIndex(3);
                                                                     JOptionPane.showMessageDialog(null, "Debes ingresar el correo del emisor");
                                                                     t_correo_emisor.requestFocus();
                                                                 }
                                                             }
                                                             else
                                                             {
-                                                                contenedor.setSelectedIndex(2);
+                                                                contenedor.setSelectedIndex(3);
                                                                 JOptionPane.showMessageDialog(null, "Debes ingresar el nombre del contacto emisor");
                                                                 t_nombre_emisor.requestFocus();
                                                             }
@@ -1790,7 +1988,7 @@ public class GeneraNota extends javax.swing.JDialog {
                                             {
                                                 contenedor.setSelectedIndex(1);
                                                 JOptionPane.showMessageDialog(null, "Debes ingresar el metodo de pago");
-                                                t_metodo_pago.requestFocus();
+                                                c_metodo_pago.requestFocus();
                                             }
                                         }
                                         else
@@ -2070,13 +2268,6 @@ public class GeneraNota extends javax.swing.JDialog {
         doClose(factura);
     }//GEN-LAST:event_formWindowClosed
 
-    private void t_metodo_pagoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_metodo_pagoKeyTyped
-        // TODO add your handling code here:
-        evt.setKeyChar(Character.toUpperCase(evt.getKeyChar()));
-        if(t_metodo_pago.getText().length()>=35)
-            evt.consume();
-    }//GEN-LAST:event_t_metodo_pagoKeyTyped
-
     private void t_cuenta_pagoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_cuenta_pagoKeyTyped
         // TODO add your handling code here:
         evt.setKeyChar(Character.toUpperCase(evt.getKeyChar()));
@@ -2144,6 +2335,7 @@ public class GeneraNota extends javax.swing.JDialog {
                     e.printStackTrace();
                 }
                 Configuracion config=(Configuracion)session.createCriteria(Configuracion.class).add(Restrictions.eq("nombre", factura.getNombreEmisor())).uniqueResult();
+                
                 if(t_xml.getText().compareTo("")==0)
                     t_xml.setText(config.getRfc()+"_"+t_serie_factura.getText()+"_"+t_folio_factura.getText()+"_"+t_rfc.getText()+".xml");
                 File xml=new File(ruta+"xml-timbrados/"+t_xml.getText());
@@ -2271,7 +2463,7 @@ public class GeneraNota extends javax.swing.JDialog {
                     else
                     {
                         factura=(Nota)session.get(Nota.class, factura.getIdNota());
-                        Formatos formato = new Formatos(this.user, this.sessionPrograma, factura);
+                        Formatos formato = new Formatos(this.user, this.sessionPrograma, factura,configuracion);
                         formato.nota();
                     }
                 }
@@ -2552,7 +2744,7 @@ public class GeneraNota extends javax.swing.JDialog {
         session.beginTransaction().commit();
 
         DefaultTableModel temp = (DefaultTableModel) t_datos.getModel();
-        Object nuevo[]= {dato,0.0d,"PZAS","",0.0d, 0.0d, 0.0d};
+        Object nuevo[]= {dato,0.0d,"PZAS","","",0.0d, 0.0d, 0.0d};
         temp.addRow(nuevo);
         formatoTabla();
         t_datos.setRowSelectionInterval(t_datos.getRowCount()-1, t_datos.getRowCount()-1);
@@ -2584,16 +2776,18 @@ public class GeneraNota extends javax.swing.JDialog {
                 h1r0.createCell(0).setCellValue("Cant");
                 h1r0.createCell(1).setCellValue("Med");
                 h1r0.createCell(2).setCellValue("Descripcion");
-                h1r0.createCell(3).setCellValue("c/u");
-                h1r0.createCell(4).setCellValue("Descuento");
+                h1r0.createCell(3).setCellValue("Clave");
+                h1r0.createCell(4).setCellValue("c/u");
+                h1r0.createCell(5).setCellValue("Descuento");
                 for(int x=0; x<t_datos.getRowCount(); x++)
                 {
                     Row h1=hoja.createRow(x+1);
                     h1.createCell(0).setCellValue((double)t_datos.getValueAt(x, 1));
                     h1.createCell(1).setCellValue((String)t_datos.getValueAt(x, 2));
                     h1.createCell(2).setCellValue((String)t_datos.getValueAt(x, 3));
-                    h1.createCell(3).setCellValue((double)t_datos.getValueAt(x, 4));
+                    h1.createCell(3).setCellValue((String)t_datos.getValueAt(x, 4));
                     h1.createCell(4).setCellValue((double)t_datos.getValueAt(x, 5));
+                    h1.createCell(5).setCellValue((double)t_datos.getValueAt(x, 6));
                 }
                 libro.write(archivo);
                 Biff8EncryptionKey.setCurrentUserPassword(null);
@@ -2602,6 +2796,324 @@ public class GeneraNota extends javax.swing.JDialog {
             }catch(Exception e){e.printStackTrace();};
         }
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        // TODO add your handling code here:
+        buscaUsoCfdi obj = new buscaUsoCfdi(new javax.swing.JFrame(), true, this.sessionPrograma, this.user);
+        obj.t_busca.requestFocus();
+        obj.formatoTabla();
+        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+        obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
+        obj.setVisible(true);
+
+        UsoCfdi actor=obj.getReturnStatus();
+        if(actor!=null)
+        {
+            t_id_cfdi.setText(actor.getIdUsoCfdi());
+            t_descripcion_cfdi.setText(actor.getDescripcion());
+        }
+        else
+        {
+            t_id_cfdi.setText("");
+            t_descripcion_cfdi.setText("");
+        }
+    }//GEN-LAST:event_jButton7ActionPerformed
+
+    private void cb_tipo_relacionItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cb_tipo_relacionItemStateChanged
+        // TODO add your handling code here:
+        if(evt.getStateChange() == ItemEvent.DESELECTED){
+            anterior=evt.getItem().toString();
+        }
+    }//GEN-LAST:event_cb_tipo_relacionItemStateChanged
+
+    private void cb_tipo_relacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_tipo_relacionActionPerformed
+        // TODO add your handling code here:
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        String error="";
+        boolean valido=true;
+        try
+        {
+            session.beginTransaction().begin();
+            factura = (Nota)session.get(Nota.class, factura.getIdNota());
+            switch(cb_tipo_relacion.getSelectedItem().toString())
+            {
+                case "01":
+                    for(int x=0; x<t_relacionados.getRowCount(); x++)
+                    {
+                        if(t_relacionados.getValueAt(x, 2).toString().compareToIgnoreCase("Ingreso")!=0 && t_relacionados.getValueAt(x, 2).toString().compareToIgnoreCase("Egreso")!=0)
+                        {
+                            t_relacionados.setRowSelectionInterval(x, x);
+                            valido=false;
+                        }
+                    }
+                    if(valido==true)
+                    {
+                        l_tipo_relacion.setText("Nota de credito de los documentos relacionados");
+                        factura.setTipoRelacion("01");
+                    }
+                    else
+                    {
+                        JComboBox cn =(JComboBox)evt.getSource();
+                        String aux_anterior=anterior;
+                        cn.setSelectedItem(anterior);
+                        anterior=aux_anterior;
+                        error="Hay documentos en la lista que no son de Tipo Ingreso o Egreso.";
+                    }
+                    break;
+                case "03":
+                for(int x=0; x<t_relacionados.getRowCount(); x++)
+                {
+                    if(t_relacionados.getValueAt(x, 2).toString().compareToIgnoreCase("Ingreso")!=0)
+                    {
+                        t_relacionados.setRowSelectionInterval(x, x);
+                        valido=false;
+                    }
+                }
+                if(valido==true)
+                {
+                    l_tipo_relacion.setText("Devolución de mercancía sobre facturas o traslados previos");
+                    factura.setTipoRelacion("03");
+                }
+                else
+                {
+                    JComboBox cn =(JComboBox)evt.getSource();
+                    String aux_anterior=anterior;
+                    cn.setSelectedItem(anterior);
+                    anterior=aux_anterior;
+                    error="Hay documentos en la lista que no son de Tipo Ingreso";
+                }
+                break;
+
+                case "04":
+                for(int x=0; x<t_relacionados.getRowCount(); x++)
+                {
+                    if(t_relacionados.getValueAt(x, 2).toString().compareToIgnoreCase("Ingreso")!=0 && t_relacionados.getValueAt(x, 2).toString().compareToIgnoreCase("Egreso")!=0)
+                    {
+                        t_relacionados.setRowSelectionInterval(x, x);
+                        valido=false;
+                    }
+                }
+                if(valido==true)
+                {
+                    l_tipo_relacion.setText("Sustitución de los CFDI previos");
+                    factura.setTipoRelacion("04");
+                }
+                else
+                {
+                    JComboBox cn =(JComboBox)evt.getSource();
+                    String aux_anterior=anterior;
+                    cn.setSelectedItem(anterior);
+                    anterior=aux_anterior;
+                    error="Hay documentos en la lista que no son de Tipo Ingreso o Egreso.";
+                }
+                break;
+
+                case "07":
+                for(int x=0; x<t_relacionados.getRowCount(); x++)
+                {
+                    if(t_relacionados.getValueAt(x, 2).toString().compareToIgnoreCase("Ingreso")!=0 && t_relacionados.getValueAt(x, 2).toString().compareToIgnoreCase("Egreso")!=0)
+                    {
+                        t_relacionados.setRowSelectionInterval(x, x);
+                        valido=false;
+                    }
+                }
+                if(valido==true)
+                {
+                    l_tipo_relacion.setText("CFDI por aplicación de anticipo");
+                    factura.setTipoRelacion("07");
+                }
+                else
+                {
+                    JComboBox cn =(JComboBox)evt.getSource();
+                    String aux_anterior=anterior;
+                    cn.setSelectedItem(anterior);
+                    anterior=aux_anterior;
+                    error="Hay documentos en la lista que no son de Tipo Ingreso o Egreso..";
+                }
+                break;
+
+                default:
+                if(t_relacionados.getRowCount()==0)
+                {
+                    l_tipo_relacion.setText("");
+                    factura.setTipoRelacion(null);
+                }
+                else
+                {
+                    JComboBox cn =(JComboBox)evt.getSource();
+                    String aux_anterior=anterior;
+                    cn.setSelectedItem(anterior);
+                    anterior=aux_anterior;
+                    error="Debes eleminar primero los documentos de la lista";
+                }
+                break;
+            }
+            session.beginTransaction().commit();
+        }catch(Exception e)
+        {
+            session.beginTransaction().rollback();
+            e.printStackTrace();
+        }
+        finally
+        {
+            if(session!=null)
+            if(session.isOpen())
+            session.close();
+            if(error.compareTo("")!=0)
+            JOptionPane.showMessageDialog(null, error);
+        }
+    }//GEN-LAST:event_cb_tipo_relacionActionPerformed
+
+    private void b_menos1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_menos1ActionPerformed
+        h=new Herramientas(user, 0);
+        h.session(sessionPrograma);
+        if(t_relacionados.getRowCount()>0 && t_relacionados.getSelectedRowCount()>=0)
+        {
+            Session session = HibernateUtil.getSessionFactory().openSession();
+            try
+            {
+                session.beginTransaction().begin();
+                factura = (Nota)session.get(Nota.class, factura.getIdNota());
+                DefaultTableModel temp = (DefaultTableModel) t_relacionados.getModel();
+                int [] renglones=t_relacionados.getSelectedRows();
+                for(int x=0; x<renglones.length; x++)
+                {
+                    Relacion r_elimina=(Relacion)session.get(Relacion.class, Integer.parseInt(t_relacionados.getValueAt(renglones[x]-x, 3).toString()));
+                    session.delete(r_elimina);
+                    temp.removeRow(renglones[x]-x);
+                }
+                session.beginTransaction().commit();
+            }catch(Exception e)
+            {
+                session.beginTransaction().rollback();
+                e.printStackTrace();
+            }
+            finally
+            {
+                if(session!=null)
+                if(session.isOpen())
+                session.close();
+            }
+        }
+    }//GEN-LAST:event_b_menos1ActionPerformed
+
+    private void b_mas1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_mas1ActionPerformed
+        if(cb_tipo_relacion.getSelectedItem().toString().compareToIgnoreCase("BUSCAR")!=0)
+        {
+            Session session = HibernateUtil.getSessionFactory().openSession();
+            try
+            {
+                int opcion=-1;
+                if(cb_tipo_relacion.getSelectedItem().toString().compareToIgnoreCase("03")!=0)
+                    opcion =JOptionPane.showOptionDialog(null, "Selecciona el tipo de documento a ingresar", "Agregar Documento", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[] {"Ingreso", "Egreso", "Cancelar"}, "Cancelar");
+                else
+                {
+                    opcion=0;
+                }
+                switch(opcion)
+                {
+                    case 0:
+                        buscaFactura obj = new buscaFactura(new javax.swing.JFrame(), true, this.sessionPrograma, this.user, 0, configuracion);
+                        obj.t_busca.requestFocus();
+                        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+                        obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
+                        obj.setVisible(true);
+                        Factura aux=obj.getReturnStatus();
+                        if(aux!=null && busca_relacion(aux.getFFiscal())==false)
+                        {
+                            if(aux.getFFiscal()!=null || aux.getFFiscal().compareTo("")!=0)
+                            {
+                                aux=(Factura)session.get(Factura.class, aux.getIdFactura());
+                                Relacion r_nuevo=new Relacion();
+                                r_nuevo.setNotaByIdNota(factura);
+                                r_nuevo.setFacturaByRelacionFactura(aux);
+                                session.save(r_nuevo);
+                                DefaultTableModel temp = (DefaultTableModel) t_relacionados.getModel();
+                                Object nuevo[]= {aux.getIdFactura(),aux.getFFiscal(),"Ingreso", r_nuevo.getIdRelacion()};
+                                temp.addRow(nuevo);
+                            }
+                            else
+                            {
+                                JOptionPane.showMessageDialog(null, "El documento no esta timbrado aun!");
+                            }
+                        }
+                        break;
+                    case 1:
+                        buscaNota obj1 = new buscaNota(new javax.swing.JFrame(), true, this.sessionPrograma, this.user,0, configuracion);
+                        obj1.t_busca.requestFocus();
+                        Dimension d1 = Toolkit.getDefaultToolkit().getScreenSize();
+                        obj1.setLocation((d1.width/2)-(obj1.getWidth()/2), (d1.height/2)-(obj1.getHeight()/2));
+                        obj1.setVisible(true);
+                        Nota aux1=obj1.getReturnStatus();
+                        if(aux1!=null && busca_relacion(aux1.getFFiscal())==false)
+                        {
+                            if(aux1.getFFiscal()!=null || aux1.getFFiscal().compareTo("")!=0)
+                            {
+                                aux1=(Nota)session.get(Nota.class, aux1.getIdNota());
+                                Relacion r_nuevo1=new Relacion();
+                                r_nuevo1.setNotaByIdNota(factura);
+                                r_nuevo1.setNotaByRelacionNota(aux1);
+                                session.save(r_nuevo1);
+                                DefaultTableModel temp1 = (DefaultTableModel) t_relacionados.getModel();
+                                Object nuevo1[]= {aux1.getIdNota(),aux1.getFFiscal(),"Egreso", r_nuevo1.getIdRelacion()};
+                                temp1.addRow(nuevo1);
+                            }
+                            else
+                            {
+                                JOptionPane.showMessageDialog(null, "El documento no esta timbrado aun!");
+                            }
+                        }
+                        break;
+                }
+                session.beginTransaction().begin();
+                factura = (Nota)session.get(Nota.class, factura.getIdNota());
+
+                session.beginTransaction().commit();
+            }catch(Exception e)
+            {
+                session.beginTransaction().rollback();
+                e.printStackTrace();
+                evt=null;
+            }
+            finally
+            {
+                if(session!=null)
+                if(session.isOpen())
+                session.close();
+            }
+        }
+        else
+        {
+            JOptionPane.showMessageDialog(null, "Debe seleccionar primero un tipo de relación");
+        }
+    }//GEN-LAST:event_b_mas1ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        // TODO add your handling code here:
+        if(t_datos.getSelectedRow()>=0)
+        {
+            buscarProServicio buscaServicio;
+            buscaServicio = new buscarProServicio(null, true, user, sessionPrograma);
+            Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+            buscaServicio.setLocation((d.width / 2) - (buscaServicio.getWidth() / 2), (d.height / 2) - (buscaServicio.getHeight() / 2));
+            buscaServicio.setVisible(true);
+            if(buscaServicio.getReturnStatus()!=null){
+                int [] renglones=t_datos.getSelectedRows();
+                if(renglones!=null)
+                {
+                    String valor=buscaServicio.getReturnStatus().getIdProductoServicio();
+                    for(int x=0; x<renglones.length; x++)
+                    {
+                        t_datos.setValueAt(valor, renglones[x], 4);
+                    }
+                }
+            }
+        }
+        else
+        {
+            JOptionPane.showMessageDialog(null, "Debes seleccionar almenos un concepto de la tabla.");
+        }
+    }//GEN-LAST:event_jButton6ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -2612,16 +3124,24 @@ public class GeneraNota extends javax.swing.JDialog {
     private javax.swing.JButton b_email;
     private javax.swing.JButton b_generar;
     private javax.swing.JButton b_mas;
+    private javax.swing.JButton b_mas1;
     private javax.swing.JButton b_menos;
+    private javax.swing.JButton b_menos1;
     private javax.swing.JButton b_pdf;
     private javax.swing.JButton b_salir;
     private javax.swing.JButton b_xml;
     private javax.swing.JComboBox c_estado;
+    private javax.swing.JComboBox c_forma_pago;
+    private javax.swing.JComboBox c_metodo_pago;
     private javax.swing.JComboBox c_moneda;
     private javax.swing.JComboBox c_pais;
+    private javax.swing.JComboBox cb_tipo_relacion;
+    private javax.swing.JComboBox cfdi;
     private javax.swing.JDialog consulta;
     private javax.swing.JTabbedPane contenedor;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -2645,6 +3165,8 @@ public class GeneraNota extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel28;
     private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel30;
+    private javax.swing.JLabel jLabel31;
     private javax.swing.JLabel jLabel32;
     private javax.swing.JLabel jLabel33;
     private javax.swing.JLabel jLabel34;
@@ -2692,6 +3214,7 @@ public class GeneraNota extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel13;
     private javax.swing.JPanel jPanel14;
     private javax.swing.JPanel jPanel15;
+    private javax.swing.JPanel jPanel16;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -2702,11 +3225,14 @@ public class GeneraNota extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JLabel l_emisor;
     private javax.swing.JLabel l_iva;
     private javax.swing.JLabel l_iva1;
     private javax.swing.JLabel l_subtotal;
+    private javax.swing.JLabel l_tipo_relacion;
     private javax.swing.JLabel l_total;
+    private javax.swing.JComboBox medida;
     private javax.swing.JProgressBar progreso;
     private javax.swing.JTextField t_anio_vehiculo;
     private javax.swing.JTextField t_calle;
@@ -2720,16 +3246,16 @@ public class GeneraNota extends javax.swing.JDialog {
     private javax.swing.JTextField t_cuenta_pago;
     private javax.swing.JTable t_datos;
     private javax.swing.JFormattedTextField t_deducible;
+    private javax.swing.JTextField t_descripcion_cfdi;
     private javax.swing.JFormattedTextField t_descuento;
     private javax.swing.JTextField t_extra;
     private javax.swing.JTable t_facturas;
     private javax.swing.JTextField t_folio_factura;
-    private javax.swing.JTextField t_forma_pago;
+    private javax.swing.JTextField t_id_cfdi;
     private javax.swing.JTextField t_inciso;
     private javax.swing.JFormattedTextField t_iva;
     private javax.swing.JFormattedTextField t_iva1;
     private javax.swing.JTextField t_marca_vehiculo;
-    private javax.swing.JTextField t_metodo_pago;
     private javax.swing.JTextField t_modelo_vehiculo;
     private javax.swing.JTextField t_motor_vehiculo;
     private javax.swing.JTextField t_municipio;
@@ -2740,6 +3266,7 @@ public class GeneraNota extends javax.swing.JDialog {
     private javax.swing.JTextField t_orden;
     private javax.swing.JTextField t_pdf;
     private javax.swing.JTextField t_placas_vehiculo;
+    private javax.swing.JTable t_relacionados;
     private javax.swing.JTextField t_rfc;
     private javax.swing.JTextField t_serie_factura;
     private javax.swing.JTextField t_serie_vehiculo;
@@ -2780,14 +3307,52 @@ public void consulta()
                 t_municipio.setText(acentos(factura.getMunicipioReceptor().trim()));
                 c_estado.setSelectedItem(acentos(factura.getEstadoReceptor()));
                 c_pais.setSelectedItem(acentos(factura.getPaisReceptor()));
+                if(factura.getUsoCfdi()!=null)
+                {
+                    t_id_cfdi.setText(factura.getUsoCfdi().getIdUsoCfdi());
+                    t_descripcion_cfdi.setText(factura.getUsoCfdi().getDescripcion());
+                }
+                else
+                {
+                    t_id_cfdi.setText("");
+                    t_descripcion_cfdi.setText("");
+                }
+                
+                
                 //Productos y servicios
-                t_metodo_pago.setText(factura.getMetodoPago().trim());
+                c_metodo_pago.setSelectedItem(factura.getMetodoPago().trim());
                 t_cuenta_pago.setText(factura.getCuentaPago().trim());
                 t_tipo_cambio.setText(""+factura.getFactorCambio());
                 t_tipo_cambio.setValue(factura.getFactorCambio());
                 c_moneda.setSelectedItem(factura.getMoneda().trim());
+                if(factura.getCondicionesPago().compareTo("UNA SOLA EXHIBICION")==0)
+                    c_forma_pago.setSelectedIndex(0);
+                else
+                    c_forma_pago.setSelectedItem(factura.getCondicionesPago());
                 //PAC
                 PAC=factura.getPac();
+                //Fecha
+                if(factura.getFFiscal()==null)
+                {
+                    long mFactura, mActual, diff;
+                    Date actual=new Date();
+                    Calendar cFactura = Calendar.getInstance();
+                    Calendar cActual = Calendar.getInstance();
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
+                    cFactura.setTime(factura.getFecha());
+                    cActual.setTime(actual);
+                    mFactura = cFactura.getTimeInMillis();
+                    mActual = cActual.getTimeInMillis();
+                    diff = mActual-mFactura;
+                    long diffMinutos =  Math.abs (diff / (60 * 1000));
+                    if(diffMinutos > 4320)
+                        fecha_factura=new Date();
+                    else
+                        fecha_factura=factura.getFecha();
+                }
+                else
+                    fecha_factura=factura.getFecha();
                 //Addenda
                 t_codigo.setText(""+factura.getIdNota());
                 if(factura.getOrden()!=null)
@@ -2906,13 +3471,21 @@ public void consulta()
                     double total_lista=partidas[a].getPrecio()*partidas[a].getCantidad();
                     double descuento=partidas[a].getDescuento()/100;
                     double total=total_lista-(total_lista*descuento);
+                    String descripcion=partidas[a].getDescripcion();
+                    descripcion=descripcion.replaceAll(" +", " ");
+                    descripcion=descripcion.trim();
+                    
+                    String cve_producto="";
+                    if(partidas[a].getProductoServicio()!=null)
+                        cve_producto=partidas[a].getProductoServicio().getIdProductoServicio();
                     model.addRow(
                             new Object[]
                             {
                                 partidas[a].getIdConcepto(),
                                 partidas[a].getCantidad(), 
                                 partidas[a].getMedida(), 
-                                acentos(partidas[a].getDescripcion()), 
+                                acentos(descripcion), 
+                                cve_producto,
                                 partidas[a].getPrecio(),
                                 partidas[a].getDescuento(),
                                total
@@ -2922,6 +3495,33 @@ public void consulta()
                 t_datos.setModel(model);
                 formatoTabla();
                 sumaTotales();
+                
+                DefaultTableModel temp = (DefaultTableModel) t_relacionados.getModel();
+                if(factura.getTipoRelacion()!=null)
+                {
+                    cb_tipo_relacion.setSelectedItem(factura.getTipoRelacion());
+                    Relacion[] r_factura=(Relacion[])session.createCriteria(Relacion.class).
+                                        add(Restrictions.eq("notaByIdNota.idNota", factura.getIdNota())).
+                                        addOrder(Order.asc("idRelacion")).list().toArray(new Relacion[0]);
+                    temp.setRowCount(0);
+                    for(int ren=0; ren<r_factura.length; ren++)
+                    {
+                        Factura f_relacion= r_factura[ren].getFacturaByRelacionFactura();
+                        Nota n_relacion= r_factura[ren].getNotaByRelacionNota();
+                        if(f_relacion!=null)
+                        {
+                            Object nuevo[]= {f_relacion.getIdFactura(),f_relacion.getFFiscal(),"Ingreso", r_factura[ren].getIdRelacion()};
+                            temp.addRow(nuevo);
+                        }
+                        if(n_relacion!=null)
+                        {
+                            Object nuevo1[]= {n_relacion.getIdNota(),n_relacion.getFFiscal(),"Egreso",r_factura[ren].getIdRelacion()};
+                            temp.addRow(nuevo1);
+                        }
+                    }
+                }
+                else
+                    cb_tipo_relacion.setSelectedItem("BUSCAR");
                 
                 if(factura.getEstadoFactura().compareTo("Facturado")==0)
                 {
@@ -2940,7 +3540,7 @@ public void consulta()
                     }
                     if(factura.getFFiscal()!=null)
                         this.t_uuid_factura.setText(factura.getFFiscal());
-                    contenedor.setSelectedIndex(3);
+                    contenedor.setSelectedIndex(4);
                     if(this.user.getAutorizarFactura()==true)
                         permiso=true;
                     else
@@ -3010,7 +3610,7 @@ public void consulta()
         t_colonia.setText("");
         t_municipio.setText("");
         //Productos y servicios
-        t_metodo_pago.setText("99");
+        c_metodo_pago.setSelectedIndex(20);
         t_cuenta_pago.setText("");
         t_tipo_cambio.setText("1.0000");
         t_tipo_cambio.setValue(1.0d);
@@ -3060,7 +3660,7 @@ public void consulta()
         c_estado.setEnabled(edo);
         c_pais.setEnabled(edo);
         //Productos y servicios
-        t_metodo_pago.setEnabled(edo);
+        c_metodo_pago.setEnabled(edo);
         t_cuenta_pago.setEnabled(edo);
         t_tipo_cambio.setEnabled(edo);
         c_moneda.setEnabled(edo);
@@ -3107,7 +3707,7 @@ public void consulta()
             iva=Integer.parseInt(t_iva1.getValue().toString());
             BigDecimal total=new BigDecimal("0.0");
             for(int ren=0; ren<t_datos.getRowCount(); ren++)
-                total = total.add(new BigDecimal(t_datos.getValueAt(ren, 6).toString()));
+                total = total.add(new BigDecimal(t_datos.getValueAt(ren, 7).toString()));
             t_subtotal.setValue(new Double(total.toString()));
             BigDecimal valor_iva=new BigDecimal(""+iva);
             valor_iva=valor_iva.divide(new BigDecimal("100"));
@@ -3132,12 +3732,13 @@ public void consulta()
                     java.lang.Double.class, 
                     java.lang.String.class, 
                     java.lang.String.class, 
+                    java.lang.String.class, 
                     java.lang.Double.class,
                     java.lang.Double.class,
                     java.lang.Double.class
                 };
                 boolean[] canEdit = new boolean [] {
-                    false, true, true, true, true, true, false
+                    false, true, true, true, true, true, true, false
                 };
 
                 public void setValueAt(Object value, int row, int col)
@@ -3174,10 +3775,10 @@ public void consulta()
                                                 vector.setElementAt(value, col);
                                                 this.dataVector.setElementAt(vector, row);
                                                 fireTableCellUpdated(row, col);
-                                                double suma=(((double)t_datos.getValueAt(row, 4))*((double)value));
-                                                double desc=((double)t_datos.getValueAt(row, 5))/100;
+                                                double suma=(((double)t_datos.getValueAt(row, 5))*((double)value));
+                                                double desc=((double)t_datos.getValueAt(row, 6))/100;
                                                 double total=suma-(suma*desc);
-                                                t_datos.setValueAt(total, row, 6);
+                                                t_datos.setValueAt(total, row, 7);
                                             }catch(Exception e)
                                             {
                                                 session.beginTransaction().rollback();
@@ -3240,7 +3841,7 @@ public void consulta()
                                     {
                                         if(value.toString().compareTo("")!=0)
                                         {
-                                            Session session = HibernateUtil.getSessionFactory().openSession();
+                                             Session session = HibernateUtil.getSessionFactory().openSession();
                                             try 
                                             {
                                                 session.beginTransaction().begin();
@@ -3268,8 +3869,55 @@ public void consulta()
                                     }
                                     sumaTotales();
                                     break;
-
                             case 4:
+                                    if(vector.get(col)==null)
+                                    {
+                                        vector.setElementAt(value, col);
+                                        this.dataVector.setElementAt(vector, row);
+                                        fireTableCellUpdated(row, col);
+                                    }
+                                    else
+                                    {
+                                        Session session = null;
+                                        try
+                                        {
+                                            if(value.toString().compareToIgnoreCase("")!=0)
+                                            {
+                                                session = HibernateUtil.getSessionFactory().openSession();
+                                                session.beginTransaction().begin();
+                                                ProductoServicio p_servicio = (ProductoServicio) session.createCriteria(ProductoServicio.class).add(Restrictions.eq("idProductoServicio", value.toString())).setMaxResults(1).uniqueResult();
+                                                if(p_servicio!=null)
+                                                {
+                                                    Concepto con = (Concepto)session.get(Concepto.class, Integer.parseInt(t_datos.getValueAt(row, 0).toString()));
+                                                    con.setProductoServicio(p_servicio);
+                                                    session.update(con);
+                                                    session.beginTransaction().commit();
+                                                    
+                                                    vector.setElementAt(value.toString(), col);
+                                                    this.dataVector.setElementAt(vector, row);
+                                                    fireTableCellUpdated(row, col);
+                                                }
+                                                else{
+                                                    JOptionPane.showMessageDialog(null, "La clave no esta en el catalogo");
+                                                }
+                                            }
+                                        }
+                                        catch(Exception e)
+                                        {
+                                            e.printStackTrace();
+                                            if(session.isOpen()==true)
+                                                session.getTransaction().rollback();
+                                        }
+                                        if(session!=null)
+                                            if(session.isOpen()==true)
+                                            {
+                                                session.flush();
+                                                session.clear();
+                                                session.close();
+                                            }
+                                    }
+                                    break;
+                            case 5:
                                     if(vector.get(col)==null)
                                     {
                                         vector.setElementAt(value, col);
@@ -3291,9 +3939,9 @@ public void consulta()
                                                 this.dataVector.setElementAt(vector, row);
                                                 fireTableCellUpdated(row, col);
                                                 double suma=(((double)value)*((double)t_datos.getValueAt(row, 1)));
-                                                double desc=((double)t_datos.getValueAt(row, 5))/100;
+                                                double desc=((double)t_datos.getValueAt(row, 6))/100;
                                                 double total=suma-(suma*desc);
-                                                t_datos.setValueAt(total, row, 6);
+                                                t_datos.setValueAt(total, row, 7);
                                             }catch(Exception e)
                                             {
                                                 session.beginTransaction().rollback();
@@ -3309,7 +3957,7 @@ public void consulta()
                                     }
                                     sumaTotales();
                                     break;
-                            case 5:
+                            case 6:
                                     if(vector.get(col)==null)
                                     {
                                         vector.setElementAt(value, col);
@@ -3332,10 +3980,10 @@ public void consulta()
                                                 vector.setElementAt(value, col);
                                                 this.dataVector.setElementAt(vector, row);
                                                 fireTableCellUpdated(row, col);
-                                                double suma=(((double)t_datos.getValueAt(row, 4))*((double)t_datos.getValueAt(row, 1)));
+                                                double suma=(((double)t_datos.getValueAt(row, 5))*((double)t_datos.getValueAt(row, 1)));
                                                 double desc=((double)value)/100;
                                                 double total=suma-(suma*desc);
-                                                t_datos.setValueAt(total, row, 6);
+                                                t_datos.setValueAt(total, row, 7);
                                             }catch(Exception e)
                                             {
                                                 session.beginTransaction().rollback();
@@ -3430,6 +4078,9 @@ public void consulta()
                       break;
                   case 2:
                       column.setPreferredWidth(20);
+                      DefaultCellEditor editor2 = new DefaultCellEditor(medida);
+                      column.setCellEditor(editor2); 
+                      editor2.setClickCountToStart(2);
                       break;
                   case 3:
                       column.setPreferredWidth(350);
@@ -3464,6 +4115,11 @@ public void consulta()
         t_datos.setDefaultRenderer(Integer.class, formato);
         t_datos.setDefaultRenderer(String.class, formato);
         t_datos.setDefaultRenderer(Boolean.class, formato);
+        
+        for(int x=0; x<t_relacionados.getColumnModel().getColumnCount(); x++)
+            t_relacionados.getColumnModel().getColumn(x).setHeaderRenderer(new Render1(c1));
+        t_relacionados.setShowVerticalLines(true);
+        t_relacionados.setShowHorizontalLines(true);
     }
     
     public void tabla_tamanios_factura()
@@ -3833,7 +4489,7 @@ public void consulta()
                         datos_del_negocio.setSucursal(config.getSucursal());
                 comprobante_ex.setDatosDeNegocio(datos_del_negocio);
                 TComprobanteEx.TerminosDePago terminos_de_pago= new TComprobanteEx.TerminosDePago();
-                    terminos_de_pago.setMetodoDePago(t_metodo_pago.getText().trim());
+                    terminos_de_pago.setMetodoDePago(c_metodo_pago.getSelectedItem().toString());
                     terminos_de_pago.setCondicionesDePago(t_condiciones.getText().trim());
                 comprobante_ex.setTerminosDePago(terminos_de_pago);
                 
@@ -4810,6 +5466,8 @@ public void consulta()
             session.beginTransaction().begin();
             factura=(Nota)session.get(Nota.class, factura.getIdNota());
             Configuracion config=(Configuracion)session.createCriteria(Configuracion.class).add(Restrictions.eq("empresa", factura.getNombreEmisor())).setMaxResults(1).uniqueResult();
+            String serie=config.getSerie1();
+            double version=config.getVersion();
             int numeroID=0;
             if(factura.getOrden()!=null)
                 numeroID=factura.getOrden().getIdOrden();
@@ -4976,110 +5634,163 @@ public void consulta()
                     break;
                     
                 case "FINKOK":
-                    String folio="1";
-                    String serie=config.getSerie1();
-                    if(t_codigo.getText().compareTo("")!=0)
+                    boolean todos=true;
+                    if(factura.getVersion()>3.2)
                     {
-                        Query maximo = session.createSQLQuery("select if(max(folio_externo) is null, 1, max(folio_externo)+1) as folio from nota where PAC='F' and rfc_emisor='"+factura.getRfcEmisor()+"' and serie_externo='"+serie+"';");
-                        maximo.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
-                        ArrayList list_maximo=(ArrayList)maximo.list();
-                        if(list_maximo.size()>0)
+                        for(int m=0; m<t_datos.getRowCount(); m++)
                         {
-                            java.util.HashMap map=(java.util.HashMap)list_maximo.get(0);
-                            folio = map.get("folio").toString();
+                            if(t_datos.getValueAt(m, 4)!=null)
+                            {
+                                if(t_datos.getValueAt(m, 4).toString().compareTo("")==0)
+                                    todos=false;
+                            }
+                            else
+                                todos=false;
                         }
                     }
-                    else{
-                        folio=t_codigo.getText();
-                    }
-                    if(XML_FINKOK(factura.getOrden(), folio, serie)==true)
+                    if(todos==true)
                     {
-                        GeneradorSelloDigital generadorsello = new GeneradorSelloDigital();
-                        if(config.getCer()!=null && config.getCer().compareTo("")!=0)
+                        String folio="1";
+                        if(t_codigo.getText().compareTo("")!=0)
                         {
-                            if(config.getClave()!=null && config.getClave().compareTo("")!=0)
+                            Query maximo = session.createSQLQuery("select if(max(folio_externo) is null, 1, max(folio_externo)+1) as folio from nota where PAC='F' and rfc_emisor='"+factura.getRfcEmisor()+"' and serie_externo='"+serie+"';");
+                            maximo.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+                            ArrayList list_maximo=(ArrayList)maximo.list();
+                            if(list_maximo.size()>0)
                             {
-                                String cadena = comprobante.getCadenaOriginal();
-                                String[] certificado=generadorsello.getCertificado(ruta+"config/"+config.getCer());
-                                if(certificado[0].compareTo("1")==0)
+                                java.util.HashMap map=(java.util.HashMap)list_maximo.get(0);
+                                folio = map.get("folio").toString();
+                            }
+                        }
+                        else{
+                            folio=t_codigo.getText();
+                        }
+                        if(XML_FINKOK(factura.getOrden(), folio, serie, version)==true)
+                        {
+                            GeneradorSelloDigital generadorsello = new GeneradorSelloDigital();
+                            if(config.getCer()!=null && config.getCer().compareTo("")!=0)
+                            {
+                                if(config.getClave()!=null && config.getClave().compareTo("")!=0)
                                 {
-                                    String[] getSello = generadorsello.getSelloDigital(cadena, config.getClave(), ruta+"config/"+config.getLlave());
-                                    if(getSello[0].compareTo("1")==0)
+                                    String cadena="";
+                                    String[] certificado=generadorsello.getCertificado(ruta+"config/"+config.getCer());
+                                    if(certificado[0].compareTo("1")==0)
                                     {
-                                        String sello=getSello[1];
-                                        comprobante.setSello(sello);
-                                        comprobante.setNoCertificado(certificado[2]);
-                                        comprobante.setCertificado(certificado[3]);
-                                        FinkokJavaToXML xml= new FinkokJavaToXML();
-                                        if(xml.creaAndValidaXML(comprobante, ruta+"nativos/"+numeroID+"nativo.xml")==true)
+                                        if(version==3.2d)
                                         {
-                                            ApiFinkok api1=new ApiFinkok(ruta);
-                                            ArrayList datos=new ArrayList();
-                                            datos.add(config.getEmailFinkok());
-                                            datos.add(config.getClaveFinkok());
-                                            datos.add(numeroID+"nativo.xml");//nombre del archivo nativo
-                                            datos.add(factura.getRfcEmisor()+"_"+serie+"_"+folio+"_"+t_rfc.getText()+".xml");//nombre del archivo timbrado
-                                            
-                                            ArrayList guarda=api1.llamarSoapFimbra(datos);
-                                            switch(guarda.get(0).toString())
+                                            comprobante.setNoCertificado(certificado[2]);
+                                            comprobante.setCertificado(certificado[3]);
+                                        }
+                                        else
+                                        {
+                                            comprobante33.setNoCertificado(certificado[2]);
+                                            comprobante33.setCertificado(certificado[3]);
+                                        }
+                                        String[] getSello;
+                                        if(version==3.2d)
+                                        {
+                                            cadena = comprobante.getCadenaOriginal();
+                                            getSello = generadorsello.getSelloDigital(cadena, config.getClave(), ruta+"config/"+config.getLlave());
+                                        }
+                                        else
+                                        {
+                                            timbrar.CadenaOriginal33 cOriginal= new timbrar.CadenaOriginal33(comprobante33); 
+                                            cadena = cOriginal.getCadena();
+                                            getSello = generadorsello.getSelloDigital33(cadena, config.getClave(), ruta+"config/"+config.getLlave());
+                                        }
+                                        if(getSello[0].compareTo("1")==0)
+                                        {
+                                            String sello=getSello[1];
+                                            FinkokJavaToXML xml= new FinkokJavaToXML();
+                                            boolean genero=false;
+                                            if(version==3.2d)
                                             {
-                                                case "1"://Se timbro correcto
-                                                    Nota factura1=(Nota)session.get(Nota.class, factura.getIdNota());
-                                                    factura1.setFecha(fecha_factura);
-                                                    factura1.setEstadoFactura(guarda.get(1).toString());
-                                                    factura1.setEstatus(guarda.get(2).toString());
-                                                    factura1.setFFiscal(guarda.get(3).toString());
-                                                    factura1.setFechaFiscal(guarda.get(4).toString());
-                                                    factura1.setSerieExterno(serie);
-                                                    factura1.setFolioExterno(Integer.parseInt(folio));
-                                                    factura1.setNombreDocumento(factura.getRfcEmisor()+"_"+serie+"_"+folio+"_"+t_rfc.getText());
-                                                    factura1.setPac("F");
-                                                    factura1.setCertificadoEmisor(certificado[2]);
-                                                    factura1.setCertificadoSat(guarda.get(9).toString());
-                                                    factura1.setSelloSat(guarda.get(8).toString());
-                                                    factura1.setSelloCfdi(sello);
-                                                    factura1.setAddenda("general");
-                                                    
-                                                    session.update(factura1);
-                                                    session.beginTransaction().commit();
-                                                    session.beginTransaction().commit();
+                                                comprobante.setSello(sello);
+                                                genero = xml.creaAndValidaXML(comprobante, ruta+"nativos/"+numeroID+"nativo.xml");
+                                            }
+                                            else
+                                            {
+                                                comprobante33.setSello(sello);
+                                                genero = xml.convierteXML(comprobante33, ruta+"nativos/"+numeroID+"nativo.xml");
+                                            }
 
-                                                    if(session.isOpen())
-                                                        session.close();
-                                                    Formatos formato_pdf = new Formatos(this.user, this.sessionPrograma, factura1);
-                                                    formato_pdf.nota();
-                                                    habilita(true, false);
-                                                    progreso.setString("Listo");
-                                                    progreso.setIndeterminate(false);
-                                                    guarda();
-                                                    consulta();
-                                                    break;
-                                                    
-                                                case "0"://Hay error local
-                                                    ArrayList lista=(ArrayList)guarda.get(1);
-                                                    String error="Error";
-                                                    for(int x=0; x<lista.size(); x++)
-                                                    {
-                                                        ArrayList inc=(ArrayList)lista.get(x);
-                                                        error+="Error: ";
-                                                        for(int y=0; y<inc.size(); y++)
+                                            if(genero==true)
+                                            {
+                                                ApiFinkok api1=new ApiFinkok(ruta);
+                                                ArrayList datos=new ArrayList();
+                                                datos.add(config.getEmailFinkok());
+                                                datos.add(config.getClaveFinkok());
+                                                datos.add(numeroID+"nativo.xml");//nombre del archivo nativo
+                                                datos.add(factura.getRfcEmisor()+"_"+serie+"_"+folio+"_"+t_rfc.getText()+".xml");//nombre del archivo timbrado
+
+                                                ArrayList guarda=api1.llamarSoapFimbra(datos);
+                                                switch(guarda.get(0).toString())
+                                                {
+                                                    case "1"://Se timbro correcto
+                                                        Nota factura1=(Nota)session.get(Nota.class, factura.getIdNota());
+                                                        factura1.setFecha(fecha_factura);
+                                                        factura1.setEstadoFactura(guarda.get(1).toString());
+                                                        factura1.setEstatus(guarda.get(2).toString());
+                                                        factura1.setFFiscal(guarda.get(3).toString());
+                                                        factura1.setFechaFiscal(guarda.get(4).toString());
+                                                        factura1.setSerieExterno(serie);
+                                                        factura1.setFolioExterno(Integer.parseInt(folio));
+                                                        factura1.setNombreDocumento(factura.getRfcEmisor()+"_"+serie+"_"+folio+"_"+t_rfc.getText());
+                                                        factura1.setPac("F");
+                                                        factura1.setCertificadoEmisor(certificado[2]);
+                                                        factura1.setCertificadoSat(guarda.get(9).toString());
+                                                        factura1.setSelloSat(guarda.get(8).toString());
+                                                        factura1.setSelloCfdi(sello);
+                                                        factura1.setAddenda("general");
+
+                                                        session.update(factura1);
+                                                        session.beginTransaction().commit();
+                                                        session.beginTransaction().commit();
+
+                                                        if(session.isOpen())
+                                                            session.close();
+                                                        Formatos formato_pdf = new Formatos(this.user, this.sessionPrograma, factura1,configuracion);
+                                                        formato_pdf.nota();
+                                                        habilita(true, false);
+                                                        progreso.setString("Listo");
+                                                        progreso.setIndeterminate(false);
+                                                        guarda();
+                                                        consulta();
+                                                        break;
+
+                                                    case "0"://Hay error local
+                                                        ArrayList lista=(ArrayList)guarda.get(1);
+                                                        String error="Error";
+                                                        for(int x=0; x<lista.size(); x++)
                                                         {
-                                                            error+=lista.get(0)+" ";
+                                                            ArrayList inc=(ArrayList)lista.get(x);
+                                                            error+="Error: ";
+                                                            for(int y=0; y<inc.size(); y++)
+                                                            {
+                                                                error+=lista.get(0)+" ";
+                                                            }
+                                                            error+="\n";
                                                         }
-                                                        error+="\n";
-                                                    }
-                                                    habilita(true, false);
-                                                    progreso.setString("Listo");
-                                                    progreso.setIndeterminate(false);
-                                                    JOptionPane.showMessageDialog(null, error);
-                                                    break;
-                                                    
-                                                case "-1"://Hay error en el SAP
-                                                    habilita(true, false);
-                                                    progreso.setString("Listo");
-                                                    progreso.setIndeterminate(false);
-                                                    JOptionPane.showMessageDialog(null, guarda.get(1).toString());
-                                                    break;
+                                                        habilita(true, false);
+                                                        progreso.setString("Listo");
+                                                        progreso.setIndeterminate(false);
+                                                        JOptionPane.showMessageDialog(null, error);
+                                                        break;
+
+                                                    case "-1"://Hay error en el SAP
+                                                        habilita(true, false);
+                                                        progreso.setString("Listo");
+                                                        progreso.setIndeterminate(false);
+                                                        JOptionPane.showMessageDialog(null, guarda.get(1).toString());
+                                                        break;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                habilita(true, false);
+                                                progreso.setString("Listo");
+                                                progreso.setIndeterminate(false);
+                                                JOptionPane.showMessageDialog(null, "Error al generar el XML.-"+error);
                                             }
                                         }
                                         else
@@ -5087,7 +5798,7 @@ public void consulta()
                                             habilita(true, false);
                                             progreso.setString("Listo");
                                             progreso.setIndeterminate(false);
-                                            JOptionPane.showMessageDialog(null, "Error al generar el XML.-"+error);
+                                            JOptionPane.showMessageDialog(null, getSello[1]);
                                         }
                                     }
                                     else
@@ -5095,7 +5806,7 @@ public void consulta()
                                         habilita(true, false);
                                         progreso.setString("Listo");
                                         progreso.setIndeterminate(false);
-                                        JOptionPane.showMessageDialog(null, getSello[1]);
+                                        JOptionPane.showMessageDialog(null, certificado[1]);
                                     }
                                 }
                                 else
@@ -5103,7 +5814,7 @@ public void consulta()
                                     habilita(true, false);
                                     progreso.setString("Listo");
                                     progreso.setIndeterminate(false);
-                                    JOptionPane.showMessageDialog(null, certificado[1]);
+                                    JOptionPane.showMessageDialog(null, "Falta la clave del Archivo CER");
                                 }
                             }
                             else
@@ -5111,7 +5822,7 @@ public void consulta()
                                 habilita(true, false);
                                 progreso.setString("Listo");
                                 progreso.setIndeterminate(false);
-                                JOptionPane.showMessageDialog(null, "Falta la clave del Archivo CER");
+                                JOptionPane.showMessageDialog(null, "Falta agrerar el archivo CER");
                             }
                         }
                         else
@@ -5119,7 +5830,7 @@ public void consulta()
                             habilita(true, false);
                             progreso.setString("Listo");
                             progreso.setIndeterminate(false);
-                            JOptionPane.showMessageDialog(null, "Falta agrerar el archivo CER");
+                            JOptionPane.showMessageDialog(null, "Error al generar el XML.-"+error);
                         }
                     }
                     else
@@ -5127,7 +5838,212 @@ public void consulta()
                         habilita(true, false);
                         progreso.setString("Listo");
                         progreso.setIndeterminate(false);
-                        JOptionPane.showMessageDialog(null, "Error al generar el XML.-"+error);
+                        JOptionPane.showMessageDialog(null, "Falta la clave de Producto a lagunos conceptos");
+                    }
+                    bandera=true;
+                    break;
+                    
+                case "TURBO":
+                    boolean todos1=true;
+                    if(factura.getVersion()>3.2)
+                    {
+                        for(int m=0; m<t_datos.getRowCount(); m++)
+                        {
+                            if(t_datos.getValueAt(m, 4)!=null)
+                            {
+                                if(t_datos.getValueAt(m, 4).toString().compareTo("")==0)
+                                    todos1=false;
+                            }
+                            else
+                                todos1=false;
+                        }
+                    }
+                    if(todos1==true)
+                    {
+                        String folio="1";
+                        if(t_codigo.getText().compareTo("")!=0)
+                        {
+                            Query maximo = session.createSQLQuery("select if(max(folio_externo) is null, 1, max(folio_externo)+1) as folio from nota where PAC='T' and rfc_emisor='"+factura.getRfcEmisor()+"' and serie_externo='"+serie+"';");
+                            maximo.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+                            ArrayList list_maximo=(ArrayList)maximo.list();
+                            if(list_maximo.size()>0)
+                            {
+                                java.util.HashMap map=(java.util.HashMap)list_maximo.get(0);
+                                folio = map.get("folio").toString();
+                            }
+                        }
+                        else{
+                            folio=t_codigo.getText();
+                        }
+                        if(XML_FINKOK(factura.getOrden(), folio, serie, version)==true)
+                        {
+                            GeneradorSelloDigital generadorsello = new GeneradorSelloDigital();
+                            if(config.getCer()!=null && config.getCer().compareTo("")!=0)
+                            {
+                                if(config.getClave()!=null && config.getClave().compareTo("")!=0)
+                                {
+                                    String cadena="";
+                                    String[] certificado=generadorsello.getCertificado(ruta+"config/"+config.getCer());
+                                    if(certificado[0].compareTo("1")==0)
+                                    {
+                                        if(version==3.2d)
+                                        {
+                                            comprobante.setNoCertificado(certificado[2]);
+                                            comprobante.setCertificado(certificado[3]);
+                                        }
+                                        else
+                                        {
+                                            comprobante33.setNoCertificado(certificado[2]);
+                                            comprobante33.setCertificado(certificado[3]);
+                                        }
+                                        String[] getSello;
+                                        if(version==3.2d)
+                                        {
+                                            cadena = comprobante.getCadenaOriginal();
+                                            getSello = generadorsello.getSelloDigital(cadena, config.getClave(), ruta+"config/"+config.getLlave());
+                                        }
+                                        else
+                                        {
+                                            timbrar.CadenaOriginal33 cOriginal= new timbrar.CadenaOriginal33(comprobante33); 
+                                            cadena = cOriginal.getCadena();
+                                            getSello = generadorsello.getSelloDigital33(cadena, config.getClave(), ruta+"config/"+config.getLlave());
+                                        }
+                                        if(getSello[0].compareTo("1")==0)
+                                        {
+                                            String sello=getSello[1];
+                                            FinkokJavaToXML xml= new FinkokJavaToXML();
+                                            boolean genero=false;
+                                            if(version==3.2d)
+                                            {
+                                                comprobante.setSello(sello);
+                                                genero = xml.creaAndValidaXML(comprobante, ruta+"nativos/"+numeroID+"nativo.xml");
+                                            }
+                                            else
+                                            {
+                                                comprobante33.setSello(sello);
+                                                genero = xml.convierteXML(comprobante33, ruta+"nativos/"+numeroID+"nativo.xml");
+                                            }
+
+                                            if(genero==true)
+                                            {
+                                                ApiTurbo api1=new ApiTurbo(ruta);
+                                                ArrayList datos=new ArrayList();
+                                                datos.add(config.getEmailFinkok());
+                                                datos.add(config.getClaveFinkok());
+                                                datos.add(numeroID+"nativo.xml");//nombre del archivo nativo
+                                                datos.add(factura.getRfcEmisor()+"_"+serie+"_"+folio+"_"+t_rfc.getText()+".xml");//nombre del archivo timbrado
+
+                                                ArrayList guarda=api1.llamarSoapTimbre(datos);
+                                                switch(guarda.get(0).toString())
+                                                {
+                                                    case "1"://Se timbro correcto
+                                                        Nota factura1=(Nota)session.get(Nota.class, factura.getIdNota());
+                                                        factura1.setFecha(fecha_factura);
+                                                        factura1.setEstadoFactura(guarda.get(1).toString());
+                                                        factura1.setEstatus(guarda.get(2).toString());
+                                                        factura1.setFFiscal(guarda.get(3).toString());
+                                                        factura1.setFechaFiscal(guarda.get(4).toString());
+                                                        factura1.setSerieExterno(serie);
+                                                        factura1.setFolioExterno(Integer.parseInt(folio));
+                                                        factura1.setNombreDocumento(factura.getRfcEmisor()+"_"+serie+"_"+folio+"_"+t_rfc.getText());
+                                                        factura1.setPac("T");
+                                                        factura1.setCertificadoEmisor(certificado[2]);
+                                                        factura1.setCertificadoSat(guarda.get(9).toString());
+                                                        factura1.setSelloSat(guarda.get(8).toString());
+                                                        factura1.setSelloCfdi(sello);
+                                                        factura1.setAddenda("general");
+
+                                                        session.update(factura1);
+                                                        session.beginTransaction().commit();
+                                                        session.beginTransaction().commit();
+
+                                                        if(session.isOpen())
+                                                            session.close();
+                                                        Formatos formato_pdf = new Formatos(this.user, this.sessionPrograma, factura1,configuracion);
+                                                        formato_pdf.nota();
+                                                        habilita(true, false);
+                                                        progreso.setString("Listo");
+                                                        progreso.setIndeterminate(false);
+                                                        guarda();
+                                                        consulta();
+                                                        break;
+
+                                                    case "0"://Hay error local
+                                                         ArrayList lista=(ArrayList)guarda.get(1);
+                                                        String error="Error:";
+                                                        for(int x=0; x<lista.size(); x++)
+                                                        {
+                                                            error+=lista.get(x).toString()+" ";
+                                                            error+="\n";
+                                                        }
+                                                        habilita(true, false);
+                                                        progreso.setString("Listo");
+                                                        progreso.setIndeterminate(false);
+                                                        JOptionPane.showMessageDialog(null, error);
+                                                        break;
+
+                                                    case "-1"://Hay error en el SAP
+                                                        habilita(true, false);
+                                                        progreso.setString("Listo");
+                                                        progreso.setIndeterminate(false);
+                                                        JOptionPane.showMessageDialog(null, guarda.get(1).toString());
+                                                        break;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                habilita(true, false);
+                                                progreso.setString("Listo");
+                                                progreso.setIndeterminate(false);
+                                                JOptionPane.showMessageDialog(null, "Error al generar el XML.-"+error);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            habilita(true, false);
+                                            progreso.setString("Listo");
+                                            progreso.setIndeterminate(false);
+                                            JOptionPane.showMessageDialog(null, getSello[1]);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        habilita(true, false);
+                                        progreso.setString("Listo");
+                                        progreso.setIndeterminate(false);
+                                        JOptionPane.showMessageDialog(null, certificado[1]);
+                                    }
+                                }
+                                else
+                                {
+                                    habilita(true, false);
+                                    progreso.setString("Listo");
+                                    progreso.setIndeterminate(false);
+                                    JOptionPane.showMessageDialog(null, "Falta la clave del Archivo CER");
+                                }
+                            }
+                            else
+                            {
+                                habilita(true, false);
+                                progreso.setString("Listo");
+                                progreso.setIndeterminate(false);
+                                JOptionPane.showMessageDialog(null, "Falta agrerar el archivo CER");
+                            }
+                        }
+                        else
+                        {
+                            habilita(true, false);
+                            progreso.setString("Listo");
+                            progreso.setIndeterminate(false);
+                            JOptionPane.showMessageDialog(null, "Error al generar el XML.-"+error);
+                        }
+                    }
+                    else
+                    {
+                        habilita(true, false);
+                        progreso.setString("Listo");
+                        progreso.setIndeterminate(false);
+                        JOptionPane.showMessageDialog(null, "Falta la clave de Producto a lagunos conceptos");
                     }
                     bandera=true;
                     break;
@@ -5191,7 +6107,7 @@ public void consulta()
             if(c_pais.getSelectedIndex()!=-1)
                 factura.setPaisReceptor(c_pais.getSelectedItem().toString());
             //Productos y servicios
-            factura.setMetodoPago(t_metodo_pago.getText().trim());
+            factura.setMetodoPago(c_metodo_pago.getSelectedItem().toString());
             factura.setCuentaPago(t_cuenta_pago.getText().trim());
             factura.setFactorCambio(((Number)t_tipo_cambio.getValue()).doubleValue());
             if(c_moneda.getSelectedIndex()!=-1)
@@ -5204,10 +6120,15 @@ public void consulta()
             factura.setContactoReceptor(t_nombre_receptor.getText().trim());
             factura.setCorreoReceptor(t_correo_receptor.getText().trim());
             factura.setTelefonoReceptor(t_tel_receptor.getText().trim());
-            factura.setCondicionesPago(t_condiciones.getText().trim());
+            factura.setCondicionesPago(c_forma_pago.getSelectedItem().toString());
             factura.setAddenda("general");
             factura.setIva(Integer.parseInt(t_iva1.getValue().toString()));
             factura.setExtra(t_extra.getText());
+            UsoCfdi uso=(UsoCfdi)session.get(UsoCfdi.class, t_id_cfdi.getText());
+            if(uso!=null)
+            {
+                factura.setUsoCfdi(uso);
+            }
             session.update(factura);
             if(factura.getOrden()!=null)
             {
@@ -5252,7 +6173,7 @@ public void consulta()
         return respuesta;
     }
     
-    public boolean XML_FINKOK(Orden ord, String folio, String serie)
+    public boolean XML_FINKOK(Orden ord, String folio, String serie, double version)
     {
         Session session = HibernateUtil.getSessionFactory().openSession();
         try
@@ -5266,108 +6187,255 @@ public void consulta()
             //Configuracion config=(Configuracion)session.get(Configuracion.class, 2);
             BigDecimal valorIva=new BigDecimal(""+t_iva1.getValue().toString());
             
-            //************************
-            finkok.ObjectFactory objeto = new finkok.ObjectFactory();
-            comprobante = objeto.createComprobante();
-
-            comprobante.setVersion(Constantes.VERSION_COMPROBANTE_TRES);
-            comprobante.setFecha(DatatypeFactory.newInstance().newXMLGregorianCalendar(GC));
-            comprobante.setSello(null);//Falta
-            comprobante.setFormaDePago(t_forma_pago.getText());
-            comprobante.setNoCertificado(null);//Falta
-            comprobante.setCertificado(null);//Falta
-            comprobante.setCondicionesDePago(t_condiciones.getText().trim());
-            comprobante.setTipoCambio(BigDecimal.valueOf(((Number)t_tipo_cambio.getValue()).doubleValue() ).setScale(3, BigDecimal.ROUND_HALF_UP).toString());
-            comprobante.setMoneda(c_moneda.getSelectedItem().toString());
-            comprobante.setTipoDeComprobante("egreso");
-            comprobante.setMetodoDePago(t_metodo_pago.getText());
-            comprobante.setLugarExpedicion("TOLUCA, ESTADO DE MEXICO");
-            comprobante.setSerie(serie);
-            comprobante.setFolio(folio);//Falta
-                Comprobante.Emisor emisor= objeto.createComprobanteEmisor();
-                emisor.setRfc(factura.getRfcEmisor());//Cambiar por config.getRfc()
-                emisor.setNombre(acentos(factura.getNombreEmisor()));
-                    TUbicacionFiscal miUbicacion =objeto.createTUbicacionFiscal();
-                    miUbicacion.setCalle(acentos(factura.getCalleEmisor()));
-                    miUbicacion.setNoExterior(factura.getNumeroExteriorEmisor());
-                    miUbicacion.setColonia(acentos(factura.getColoniaEmisor()));
-                    miUbicacion.setMunicipio(acentos(factura.getMunicipioEmisor()));
-                    miUbicacion.setEstado(acentos(factura.getEstadoEmisor()));
-                    miUbicacion.setPais(acentos(factura.getPaisEmisor()));
-                    miUbicacion.setCodigoPostal(factura.getCpEmisor());
-                    Comprobante.Emisor.RegimenFiscal miRegimen= objeto.createComprobanteEmisorRegimenFiscal();
-                    miRegimen.setRegimen("REGIMEN GENERAL DE LEY DE PERSONAS MORALES");
-                emisor.getRegimenFiscal().add(miRegimen);
-                emisor.setDomicilioFiscal(miUbicacion);
-            comprobante.setEmisor(emisor);
-                Comprobante.Receptor receptor=objeto.createComprobanteReceptor();
-                receptor.setRfc(t_rfc.getText());
-                receptor.setNombre(acentos(t_social.getText()));
-                    TUbicacion sUbicacion = objeto.createTUbicacion();
-                    sUbicacion.setCalle(acentos(t_calle.getText()));
-                    sUbicacion.setColonia(acentos(t_colonia.getText()));
-                    sUbicacion.setMunicipio(acentos(t_municipio.getText()));
-                    sUbicacion.setEstado(acentos(c_estado.getSelectedItem().toString()));
-                    sUbicacion.setPais(acentos(c_pais.getSelectedItem().toString()));
-                    sUbicacion.setCodigoPostal(t_cp.getText());
-                receptor.setDomicilio(sUbicacion);
-            comprobante.setReceptor(receptor);
-                finkok.Comprobante.Conceptos misConceptos = objeto.createComprobanteConceptos();
-                    BigDecimal big_total_bruto= new BigDecimal("0.0");
-                    BigDecimal big_sub_total=new BigDecimal("0.0");
-                    
-                    for(int ren=0; ren<t_datos.getRowCount(); ren++)
-                    {
-                        //descuento
-                        BigDecimal big_descuento=new BigDecimal(t_datos.getValueAt(ren, 5).toString());
-                        BigDecimal big_porciento_dectuento=big_descuento.divide(new BigDecimal("100"));
-                        //cantidades de lista
-                        BigDecimal big_cantidad=new BigDecimal(t_datos.getValueAt(ren, 1).toString());
-                        BigDecimal big_precio_lista=new BigDecimal(t_datos.getValueAt(ren, 4).toString());
-                        BigDecimal big_total_lista=big_precio_lista.multiply(big_cantidad);
-                        big_total_bruto = big_total_bruto.add(big_total_lista);
-                        //cantidades netas
-                        BigDecimal big_precio_neto=big_precio_lista.subtract(big_precio_lista.multiply(big_porciento_dectuento));
-                        BigDecimal big_total_neto=big_precio_neto.multiply(big_cantidad);
-                        big_sub_total = big_sub_total.add(big_total_neto);
-
-                        finkok.Comprobante.Conceptos.Concepto renglon= objeto.createComprobanteConceptosConcepto();
-                        renglon.setCantidad(big_cantidad.setScale(2, BigDecimal.ROUND_HALF_UP));
-                        renglon.setUnidad(t_datos.getValueAt(ren, 2).toString().trim());
-                        renglon.setDescripcion(t_datos.getValueAt(ren, 3).toString().trim());
-                        
-                        renglon.setValorUnitario(big_precio_lista.setScale(2, BigDecimal.ROUND_HALF_UP));
-                        renglon.setImporte(big_total_neto.setScale(2, BigDecimal.ROUND_HALF_UP));
-                        misConceptos.getConcepto().add(renglon);
-                    }
-                                       
-            comprobante.setConceptos(misConceptos);
-                Comprobante.Impuestos impuestos =objeto.createComprobanteImpuestos();
-                BigDecimal porc=valorIva.divide(new BigDecimal("100.0")).setScale(2, BigDecimal.ROUND_HALF_UP);
-                BigDecimal monto=big_sub_total.multiply(porc).setScale(2, BigDecimal.ROUND_HALF_UP);
-                impuestos.setTotalImpuestosTrasladados(monto.setScale(2, BigDecimal.ROUND_HALF_UP));
-                    Comprobante.Impuestos.Traslados misTrasladados=objeto.createComprobanteImpuestosTraslados();
-                        Comprobante.Impuestos.Traslados.Traslado traslado= objeto.createComprobanteImpuestosTrasladosTraslado();
-                        traslado.setImpuesto("IVA");
-                        traslado.setTasa(valorIva.setScale(0, BigDecimal.ROUND_HALF_UP));
-                        traslado.setImporte(monto.setScale(6, BigDecimal.ROUND_HALF_UP));
-                    misTrasladados.getTraslado().add(traslado);
-                impuestos.setTraslados(misTrasladados);
-            comprobante.setImpuestos(impuestos);
-            
-            comprobante.setSubTotal(big_total_bruto.setScale(2, BigDecimal.ROUND_HALF_UP));
-            BigDecimal big_descuento=big_total_bruto.subtract(big_sub_total);
-            if(big_descuento.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue()>0)
+            //************************ V3.2
+            if(version==3.2d)
             {
-                comprobante.setDescuento(big_descuento.setScale(2, BigDecimal.ROUND_HALF_UP));//Falta
-                comprobante.setMotivoDescuento("PRONTO PAGO");
+                finkok.ObjectFactory objeto = new finkok.ObjectFactory();
+                comprobante = objeto.createComprobante();
+
+                comprobante.setVersion(Constantes.VERSION_COMPROBANTE_TRES);
+                comprobante.setFecha(DatatypeFactory.newInstance().newXMLGregorianCalendar(GC));
+                comprobante.setSello(null);//Falta
+                comprobante.setFormaDePago(c_forma_pago.getSelectedItem().toString());
+                comprobante.setNoCertificado(null);//Falta
+                comprobante.setCertificado(null);//Falta
+                comprobante.setCondicionesDePago(c_forma_pago.getSelectedItem().toString());
+                comprobante.setTipoCambio(BigDecimal.valueOf(((Number)t_tipo_cambio.getValue()).doubleValue() ).setScale(3, BigDecimal.ROUND_HALF_UP).toString());
+                comprobante.setMoneda(c_moneda.getSelectedItem().toString());
+                comprobante.setTipoDeComprobante("egreso");
+                comprobante.setMetodoDePago(c_metodo_pago.getSelectedItem().toString());
+                comprobante.setLugarExpedicion("TOLUCA, ESTADO DE MEXICO");
+                comprobante.setSerie(serie);
+                comprobante.setFolio(folio);//Falta
+                    Emisor emisor= objeto.createComprobanteEmisor();
+                    emisor.setRfc(factura.getRfcEmisor());//Cambiar por config.getRfc()
+                    emisor.setNombre(acentos(factura.getNombreEmisor()));
+                        TUbicacionFiscal miUbicacion =objeto.createTUbicacionFiscal();
+                        miUbicacion.setCalle(acentos(factura.getCalleEmisor()));
+                        miUbicacion.setNoExterior(factura.getNumeroExteriorEmisor());
+                        miUbicacion.setColonia(acentos(factura.getColoniaEmisor()));
+                        miUbicacion.setMunicipio(acentos(factura.getMunicipioEmisor()));
+                        miUbicacion.setEstado(acentos(factura.getEstadoEmisor()));
+                        miUbicacion.setPais(acentos(factura.getPaisEmisor()));
+                        miUbicacion.setCodigoPostal(factura.getCpEmisor());
+                        RegimenFiscal miRegimen= objeto.createComprobanteEmisorRegimenFiscal();
+                        miRegimen.setRegimen("REGIMEN GENERAL DE LEY DE PERSONAS MORALES");
+                    emisor.getRegimenFiscal().add(miRegimen);
+                    emisor.setDomicilioFiscal(miUbicacion);
+                comprobante.setEmisor(emisor);
+                    Receptor receptor=objeto.createComprobanteReceptor();
+                    receptor.setRfc(t_rfc.getText());
+                    receptor.setNombre(acentos(t_social.getText()));
+                        TUbicacion sUbicacion = objeto.createTUbicacion();
+                        sUbicacion.setCalle(acentos(t_calle.getText()));
+                        sUbicacion.setColonia(acentos(t_colonia.getText()));
+                        sUbicacion.setMunicipio(acentos(t_municipio.getText()));
+                        sUbicacion.setEstado(acentos(c_estado.getSelectedItem().toString()));
+                        sUbicacion.setPais(c_pais.getSelectedItem().toString());
+                        sUbicacion.setCodigoPostal(t_cp.getText());
+                    receptor.setDomicilio(sUbicacion);
+                comprobante.setReceptor(receptor);
+                    finkok.Comprobante.Conceptos misConceptos = objeto.createComprobanteConceptos();
+                        BigDecimal big_total_bruto= new BigDecimal("0.0");
+                        BigDecimal big_sub_total=new BigDecimal("0.0");
+
+                        for(int ren=0; ren<t_datos.getRowCount(); ren++)
+                        {
+                            //descuento
+                            BigDecimal big_descuento=new BigDecimal(t_datos.getValueAt(ren, 6).toString());
+                            BigDecimal big_porciento_dectuento=big_descuento.divide(new BigDecimal("100"));
+                            //cantidades de lista
+                            BigDecimal big_cantidad=new BigDecimal(t_datos.getValueAt(ren, 1).toString());
+                            BigDecimal big_precio_lista=new BigDecimal(t_datos.getValueAt(ren, 5).toString());
+                            BigDecimal big_total_lista=big_precio_lista.multiply(big_cantidad);
+                            big_total_bruto = big_total_bruto.add(big_total_lista);
+                            //cantidades netas
+                            BigDecimal big_precio_neto=big_precio_lista.subtract(big_precio_lista.multiply(big_porciento_dectuento));
+                            BigDecimal big_total_neto=big_precio_neto.multiply(big_cantidad);
+                            big_sub_total = big_sub_total.add(big_total_neto);
+
+                            finkok.Comprobante.Conceptos.Concepto renglon= objeto.createComprobanteConceptosConcepto();
+                            renglon.setCantidad(big_cantidad.setScale(2, BigDecimal.ROUND_HALF_UP));
+                            renglon.setUnidad(t_datos.getValueAt(ren, 2).toString().trim());
+                            renglon.setDescripcion(t_datos.getValueAt(ren, 3).toString().trim());
+
+                            renglon.setValorUnitario(big_precio_lista.setScale(2, BigDecimal.ROUND_HALF_UP));
+                            renglon.setImporte(big_total_neto.setScale(2, BigDecimal.ROUND_HALF_UP));
+                            misConceptos.getConcepto().add(renglon);
+                        }
+
+                comprobante.setConceptos(misConceptos);
+                    Impuestos impuestos =objeto.createComprobanteImpuestos();
+                    BigDecimal porc=valorIva.divide(new BigDecimal("100.0")).setScale(2, BigDecimal.ROUND_HALF_UP);
+                    BigDecimal monto=big_sub_total.multiply(porc).setScale(2, BigDecimal.ROUND_HALF_UP);
+                    impuestos.setTotalImpuestosTrasladados(monto.setScale(2, BigDecimal.ROUND_HALF_UP));
+                        Traslados misTrasladados=objeto.createComprobanteImpuestosTraslados();
+                            Traslado traslado= objeto.createComprobanteImpuestosTrasladosTraslado();
+                            traslado.setImpuesto("IVA");
+                            traslado.setTasa(valorIva.setScale(0, BigDecimal.ROUND_HALF_UP));
+                            traslado.setImporte(monto.setScale(6, BigDecimal.ROUND_HALF_UP));
+                        misTrasladados.getTraslado().add(traslado);
+                    impuestos.setTraslados(misTrasladados);
+                comprobante.setImpuestos(impuestos);
+
+                comprobante.setSubTotal(big_total_bruto.setScale(2, BigDecimal.ROUND_HALF_UP));
+                BigDecimal big_descuento=big_total_bruto.subtract(big_sub_total);
+                if(big_descuento.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue()>0)
+                {
+                    comprobante.setDescuento(big_descuento.setScale(2, BigDecimal.ROUND_HALF_UP));//Falta
+                    comprobante.setMotivoDescuento("PRONTO PAGO");
+                }
+                comprobante.setTotal(big_sub_total.add(monto.setScale(2, BigDecimal.ROUND_HALF_UP)));
+
+                    //Addenda adenda = objeto.createComprobanteAddenda();
+                    //adenda.getAny().add("<H><H>");//agregar cada adenda
+                //comprobante.setAddenda(adenda);
+                //************************
             }
-            comprobante.setTotal(big_sub_total.add(monto.setScale(2, BigDecimal.ROUND_HALF_UP)));
-            
-                //Addenda adenda = objeto.createComprobanteAddenda();
-                //adenda.getAny().add(c);//agregar cada adenda
-            //comprobante.setAddenda(adenda);
-            //************************
+            else{
+                finkok33.ObjectFactory objeto = new finkok33.ObjectFactory();
+                comprobante33 = objeto.createComprobante();
+
+                comprobante33.setVersion(Constantes33.VERSION_COMPROBANTE_TRES);
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
+                comprobante33.setFecha(sdf.format(fecha_factura));
+                comprobante33.setSello(null);//Falta
+                comprobante33.setFormaPago(c_metodo_pago.getSelectedItem().toString());
+                comprobante33.setNoCertificado(null);//Falta
+                comprobante33.setCertificado(null);//Falta
+                comprobante33.setCondicionesDePago(c_forma_pago.getSelectedItem().toString());
+                comprobante33.setTipoCambio(BigDecimal.valueOf(((Number)t_tipo_cambio.getValue()).doubleValue() ).setScale(0, BigDecimal.ROUND_HALF_UP));
+                if(c_moneda.getSelectedItem().toString().compareTo("MXN")==0)
+                    comprobante33.setMoneda(CMoneda.MXN);
+                else
+                    comprobante33.setMoneda(CMoneda.USD);
+                comprobante33.setTipoDeComprobante(CTipoDeComprobante.E);
+                switch(c_forma_pago.getSelectedItem().toString())
+                {
+                    case "PAGO EN UNA SOLA EXHIBICION":
+                        comprobante33.setMetodoPago(CMetodoPago.PUE);
+                        break;
+                    case "PAGO EN PARCIALIDADES O DIFERIDO":
+                        comprobante33.setMetodoPago(CMetodoPago.PPD);
+                        break;    
+                }
+                
+                comprobante33.setLugarExpedicion(factura.getCpEmisor());
+                comprobante33.setSerie(serie);
+                comprobante33.setFolio(folio);//Falta
+                
+                //agregamos CFDI Enlazados
+                if(cb_tipo_relacion.getSelectedItem().toString().compareToIgnoreCase("BUSCAR")!=0 && t_relacionados.getRowCount()>0 )
+                {
+                    CfdiRelacionados relacion=new CfdiRelacionados();
+                    relacion.setTipoRelacion(cb_tipo_relacion.getSelectedItem().toString());
+                    List <CfdiRelacionado> lista_relacion=relacion.getCfdiRelacionado();
+                    for(int w=0; w<t_relacionados.getRowCount(); w++)
+                    {
+                        CfdiRelacionado elemento=new CfdiRelacionado();
+                        elemento.setUUID(t_relacionados.getValueAt(w, 1).toString());
+                        lista_relacion.add(elemento);
+                    }
+                    comprobante33.setCfdiRelacionados(relacion);
+                }
+                
+                    finkok33.Comprobante.Emisor emisor= objeto.createComprobanteEmisor();
+                    emisor.setRfc(factura.getRfcEmisor());//Cambiar por config.getRfc()
+                    if(factura.getNombreEmisor().compareTo("VICENTE PEREZ VILLAR.")==0)
+                    {
+                        emisor.setNombre(acentos("VICENTE PEREZ VILLAR"));
+                        emisor.setRegimenFiscal("612");
+                    }
+                    else
+                    {
+                        emisor.setNombre(acentos(factura.getNombreEmisor()));
+                        emisor.setRegimenFiscal("601");
+                    }
+                comprobante33.setEmisor(emisor);
+                    finkok33.Comprobante.Receptor receptor=objeto.createComprobanteReceptor();
+                    receptor.setRfc(t_rfc.getText());
+                    receptor.setNombre(acentos(t_social.getText()));
+                    receptor.setUsoCFDI(CUsoCFDI.fromValue(t_id_cfdi.getText()));
+                comprobante33.setReceptor(receptor);
+                    finkok33.Comprobante.Conceptos misConceptos = objeto.createComprobanteConceptos();
+                        BigDecimal big_total_bruto= new BigDecimal("0.0");
+                        BigDecimal big_sub_total=new BigDecimal("0.0");
+                        BigDecimal big_iva_total=new BigDecimal("0.0");
+
+                        for(int ren=0; ren<t_datos.getRowCount(); ren++)
+                        {
+                            //descuento
+                            BigDecimal big_descuento=new BigDecimal(t_datos.getValueAt(ren, 6).toString()).setScale(2, BigDecimal.ROUND_HALF_UP);
+                            BigDecimal big_porciento_dectuento=big_descuento.divide(new BigDecimal("100")).setScale(2, BigDecimal.ROUND_HALF_UP);
+                            //cantidades de lista
+                            BigDecimal big_cantidad=new BigDecimal(t_datos.getValueAt(ren, 1).toString()).setScale(2, BigDecimal.ROUND_HALF_UP);
+                            BigDecimal big_precio_lista=new BigDecimal(t_datos.getValueAt(ren, 5).toString()).setScale(2, BigDecimal.ROUND_HALF_UP);
+                            BigDecimal big_total_lista=big_precio_lista.multiply(big_cantidad);
+                            big_total_bruto = big_total_bruto.add(big_total_lista.setScale(2, BigDecimal.ROUND_HALF_UP));
+                            BigDecimal big_total_descuento=big_precio_lista.multiply(big_porciento_dectuento.setScale(2, BigDecimal.ROUND_HALF_UP)).setScale(2, BigDecimal.ROUND_HALF_UP);
+                            //cantidades netas
+                            BigDecimal big_general_descuento=big_cantidad.multiply(big_total_descuento);
+                            BigDecimal big_precio_neto=big_precio_lista.subtract(big_total_descuento);
+                            BigDecimal big_total_neto=big_precio_neto.multiply(big_cantidad);
+                            big_sub_total = big_sub_total.add(big_total_neto.setScale(2, BigDecimal.ROUND_HALF_UP));
+
+                            finkok33.Comprobante.Conceptos.Concepto renglon= objeto.createComprobanteConceptosConcepto();
+                            renglon.setCantidad(big_cantidad.setScale(2, BigDecimal.ROUND_HALF_UP));
+                            renglon.setClaveProdServ(t_datos.getValueAt(ren, 4).toString().trim());
+                            ClaveUnidad cve_unidad=(ClaveUnidad)session.createCriteria(ClaveUnidad.class).add(Restrictions.eq("simbolo", t_datos.getValueAt(ren, 2).toString().trim())).uniqueResult();
+                            renglon.setClaveUnidad(cve_unidad.getIdClaveUnidad());
+                            renglon.setUnidad(t_datos.getValueAt(ren, 2).toString().trim());
+                            renglon.setDescripcion(t_datos.getValueAt(ren, 3).toString().trim());
+                            renglon.setImporte(big_total_lista.setScale(2, BigDecimal.ROUND_HALF_UP));
+                            renglon.setValorUnitario(big_precio_lista.setScale(2, BigDecimal.ROUND_HALF_UP));
+                            if(big_general_descuento.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue()>0)
+                                renglon.setDescuento(big_general_descuento.setScale(2, BigDecimal.ROUND_HALF_UP));
+                            
+                            finkok33.Comprobante.Conceptos.Concepto.Impuestos impuestos =objeto.createComprobanteConceptosConceptoImpuestos();
+                            BigDecimal porc=valorIva.divide(new BigDecimal("100.0")).setScale(2, BigDecimal.ROUND_HALF_UP);
+                            BigDecimal monto=big_total_neto.multiply(porc).setScale(2, BigDecimal.ROUND_HALF_UP);
+                                finkok33.Comprobante.Conceptos.Concepto.Impuestos.Traslados misTrasladados=objeto.createComprobanteConceptosConceptoImpuestosTraslados();
+                                    finkok33.Comprobante.Conceptos.Concepto.Impuestos.Traslados.Traslado traslado= objeto.createComprobanteConceptosConceptoImpuestosTrasladosTraslado();
+                                    traslado.setBase(big_total_neto);
+                                    traslado.setImpuesto("002");
+                                    traslado.setTipoFactor(CTipoFactor.TASA);
+                                    traslado.setTasaOCuota(porc.setScale(6, BigDecimal.ROUND_HALF_UP));
+                                    traslado.setImporte(monto.setScale(2, BigDecimal.ROUND_HALF_UP));
+                                    big_iva_total=big_iva_total.add(monto);
+                                misTrasladados.getTraslado().add(traslado);
+                            impuestos.setTraslados(misTrasladados);
+                            renglon.setImpuestos(impuestos);
+                            misConceptos.getConcepto().add(renglon);
+                        }
+
+                comprobante33.setConceptos(misConceptos);
+                    finkok33.Comprobante.Impuestos impuestos =objeto.createComprobanteImpuestos();
+                    BigDecimal porc=(valorIva.divide(new BigDecimal("100.0"))).setScale(2, BigDecimal.ROUND_HALF_UP);
+                    //BigDecimal monto=(big_sub_total.multiply(porc)).setScale(2, BigDecimal.ROUND_HALF_UP);
+                    impuestos.setTotalImpuestosTrasladados(big_iva_total.setScale(2, BigDecimal.ROUND_HALF_UP));
+                        finkok33.Comprobante.Impuestos.Traslados misTrasladados=objeto.createComprobanteImpuestosTraslados();
+                            finkok33.Comprobante.Impuestos.Traslados.Traslado traslado= objeto.createComprobanteImpuestosTrasladosTraslado();
+                            traslado.setImpuesto("002");
+                            traslado.setTipoFactor(CTipoFactor.TASA);
+                            traslado.setTasaOCuota(porc.setScale(6, BigDecimal.ROUND_HALF_UP));
+                            traslado.setImporte(big_iva_total.setScale(2, BigDecimal.ROUND_HALF_UP));
+                        misTrasladados.getTraslado().add(traslado);
+                    impuestos.setTraslados(misTrasladados);
+                comprobante33.setImpuestos(impuestos);
+
+                comprobante33.setSubTotal(big_total_bruto.setScale(2, BigDecimal.ROUND_HALF_UP));
+                BigDecimal big_descuento=big_total_bruto.subtract(big_sub_total);
+                if(big_descuento.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue()>0)
+                {
+                    comprobante33.setDescuento(big_descuento.setScale(2, BigDecimal.ROUND_HALF_UP));//Falta
+                }
+                comprobante33.setTotal(big_sub_total.add(big_iva_total.setScale(2, BigDecimal.ROUND_HALF_UP)));
+
+                    //Addenda adenda = objeto.createComprobanteAddenda();
+                    //adenda.getAny().add("<H><H>");//agregar cada adenda
+                //comprobante.setAddenda(adenda);
+                //************************
+            }
             return true;
         }
         catch(Exception e)
@@ -5394,42 +6462,85 @@ public void consulta()
             if(factura.getOrdenExterna()!=null)
                 numeroID=factura.getOrdenExterna().getIdOrden();
             Configuracion config=(Configuracion)session.createCriteria(Configuracion.class).add(Restrictions.eq("empresa", factura.getNombreEmisor())).setMaxResults(1).uniqueResult();
-            String serie=config.getSerie1();
             
-            String folio=t_codigo.getText();
-            if(XML_FINKOK(factura.getOrden(), folio, serie)==true)
+            String folio=""+factura.getFolioExterno();
+            String serie=factura.getSerieExterno();
+            double version=config.getVersion();
+            if(XML_FINKOK(factura.getOrden(), folio, serie, config.getVersion())==true)
             {
                 GeneradorSelloDigital generadorsello = new GeneradorSelloDigital();
                 if(config.getCer()!=null && config.getCer().compareTo("")!=0)
                 {
                     if(config.getClave()!=null && config.getClave().compareTo("")!=0)
                     {
-                        String cadena = comprobante.getCadenaOriginal();
-                        System.out.println(cadena);
+                        String cadena="";
                         String[] certificado=generadorsello.getCertificado(ruta+"config/"+config.getCer());
                         if(certificado[0].compareTo("1")==0)
                         {
-                            String[] getSello = generadorsello.getSelloDigital(cadena, config.getClave(), ruta+"config/"+config.getLlave());
+                            if(version==3.2d)
+                            {
+                                comprobante.setNoCertificado(certificado[2]);
+                                comprobante.setCertificado(certificado[3]);
+                            }
+                            else
+                            {
+                                comprobante33.setNoCertificado(certificado[2]);
+                                comprobante33.setCertificado(certificado[3]);
+                            }
+                            String[] getSello;
+                            if(version==3.2d)
+                            {
+                                cadena = comprobante.getCadenaOriginal();
+                                getSello = generadorsello.getSelloDigital(cadena, config.getClave(), ruta+"config/"+config.getLlave());
+                            }
+                            else
+                            {
+                                timbrar.CadenaOriginal33 cOriginal= new timbrar.CadenaOriginal33(comprobante33); 
+                                cadena = cOriginal.getCadena();
+                                getSello = generadorsello.getSelloDigital33(cadena, config.getClave(), ruta+"config/"+config.getLlave());
+                            }
                             if(getSello[0].compareTo("1")==0)
                             {
                                 String sello=getSello[1];
-                                comprobante.setSello(sello);
-                                comprobante.setNoCertificado(certificado[2]);
-                                comprobante.setCertificado(certificado[3]);
                                 FinkokJavaToXML xml= new FinkokJavaToXML();
-                                if(xml.creaAndValidaXML(comprobante, ruta+"nativos/"+numeroID+"nativo.xml")==true)
+                                boolean genero=false;
+                                if(version==3.2d)
                                 {
-                                    ApiFinkok api1=new ApiFinkok(ruta);
+                                    comprobante.setSello(sello);
+                                    genero = xml.creaAndValidaXML(comprobante, ruta+"nativos/"+numeroID+"nativo.xml");
+                                }
+                                else
+                                {
+                                    comprobante33.setSello(sello);
+                                    genero = xml.convierteXML(comprobante33, ruta+"nativos/"+numeroID+"nativo.xml");
+                                }
+                                if(genero==true)
+                                {
                                     ArrayList datos=new ArrayList();
-                                    datos.add(config.getEmailFinkok());
-                                    datos.add(config.getClaveFinkok());
-                                    datos.add(numeroID+"nativo.xml");//nombre del archivo nativo
-                                    datos.add(config.getRfc()+"_"+serie+"_"+folio+"_"+t_rfc.getText()+".xml");//nombre del archivo timbrado
-                                    ArrayList guarda=api1.llamarSoapConsulta(datos);
+                                    ArrayList guarda;
+                                    if(factura.getPac().compareTo("F")==0)
+                                    {
+                                        ApiFinkok api1=new ApiFinkok(ruta);
+                                        datos.add(config.getEmailFinkok());
+                                        datos.add(config.getClaveFinkok());
+                                        datos.add(numeroID+"nativo.xml");//nombre del archivo nativo
+                                        datos.add(factura.getRfcEmisor()+"_"+serie+"_"+folio+"_"+t_rfc.getText()+".xml");//nombre del archivo timbrado
+                                        guarda=api1.llamarSoapConsulta(datos);
+                                    }
+                                    else
+                                    {
+                                        ApiTurbo api1=new ApiTurbo(ruta);
+                                        
+                                        datos.add(config.getEmailFinkok());
+                                        datos.add(config.getClaveFinkok());
+                                        datos.add(factura.getFFiscal());//nombre del archivo nativo
+                                        datos.add(factura.getRfcEmisor()+"_"+serie+"_"+folio+"_"+t_rfc.getText()+".xml");//nombre del archivo timbrado
+                                        guarda=api1.llamarSoapConsulta(datos);
+                                    }
                                     switch(guarda.get(0).toString())
                                     {
                                         case "1"://Se timbro correcto
-                                            factura=(Nota)session.get(Factura.class, factura.getIdNota());
+                                            factura=(Nota)session.get(Nota.class, factura.getIdNota());
                                             factura.setFecha(fecha_factura);
                                             factura.setEstadoFactura(guarda.get(1).toString());
                                             factura.setEstatus(guarda.get(2).toString());
@@ -5438,7 +6549,7 @@ public void consulta()
                                             factura.setSerieExterno(serie);
                                             factura.setFolioExterno(Integer.parseInt(folio));
                                             factura.setNombreDocumento(config.getRfc()+"_"+serie+"_"+folio+"_"+t_rfc.getText());
-                                            factura.setPac("F");
+                                            factura.setPac("T");
                                             session.update(factura);
                                             session.beginTransaction().commit();
 
@@ -5539,5 +6650,20 @@ public void consulta()
         // Nos quedamos únicamente con los caracteres ASCII
         Pattern pattern = Pattern.compile("\\P{ASCII}");
         return pattern.matcher(normalized).replaceAll("");
+    }
+    boolean busca_relacion(String aux)
+    {
+        if(aux!=null)
+        {
+            for(int x=0; x<t_relacionados.getRowCount(); x++)
+            {
+                if(t_relacionados.getValueAt(x, 1).toString().compareTo(aux)==0)
+                    return true;
+            }
+            return false;
+        }
+        else
+            return false;
+        
     }
 }

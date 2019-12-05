@@ -1,0 +1,1538 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<cfdi:Comprobante xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cfdi="http://www.sat.gob.mx/cfd/3" Version="3.3" Serie="T" Folio="92" Fecha="2019-09-23T09:08:26" Sello="fqj/gPY9DRUa/hc9xwIE2TJbOjRDazmgb29k4pzHThOE7zzZ61A4DejQr5pSRyCxpSW7CL1kCtt5MFqph73iuUXCQOjVoQy5JxCCeXL4IVZKDW/tzBpmzpSbTxxAE1vcZNVOMZfsXYsucegAKOK2K03q4432ZFB6PR9ihNXpuZfma2n55z05NHRZVm5b/k0xq8Pd8glSYocVNGQvqMmYv0kSoIJaLAY1+4ofPrCfoU2e8HF1Izws/uUpSYiFnT01t/M1BxdzVs3yb5p4rHKlqlvCjpfAkvl6UVU2oEbYyB3hx4tkmT0b9vfS2xnOZoDBylihOtdCPCLRJn+7U84f5w==" FormaPago="99" NoCertificado="00001000000403028284" Certificado="MIIGIjCCBAqgAwIBAgIUMDAwMDEwMDAwMDA0MDMwMjgyODQwDQYJKoZIhvcNAQELBQAwggGyMTgwNgYDVQQDDC9BLkMuIGRlbCBTZXJ2aWNpbyBkZSBBZG1pbmlzdHJhY2nDs24gVHJpYnV0YXJpYTEvMC0GA1UECgwmU2VydmljaW8gZGUgQWRtaW5pc3RyYWNpw7NuIFRyaWJ1dGFyaWExODA2BgNVBAsML0FkbWluaXN0cmFjacOzbiBkZSBTZWd1cmlkYWQgZGUgbGEgSW5mb3JtYWNpw7NuMR8wHQYJKoZIhvcNAQkBFhBhY29kc0BzYXQuZ29iLm14MSYwJAYDVQQJDB1Bdi4gSGlkYWxnbyA3NywgQ29sLiBHdWVycmVybzEOMAwGA1UEEQwFMDYzMDAxCzAJBgNVBAYTAk1YMRkwFwYDVQQIDBBEaXN0cml0byBGZWRlcmFsMRQwEgYDVQQHDAtDdWF1aHTDqW1vYzEVMBMGA1UELRMMU0FUOTcwNzAxTk4zMV0wWwYJKoZIhvcNAQkCDE5SZXNwb25zYWJsZTogQWRtaW5pc3RyYWNpw7NuIENlbnRyYWwgZGUgU2VydmljaW9zIFRyaWJ1dGFyaW9zIGFsIENvbnRyaWJ1eWVudGUwHhcNMTYwNzA1MjI1MDU0WhcNMjAwNzA1MjI1MDU0WjCBwjEhMB8GA1UEAxMYVFJVQ0sgQk9EWSBTSE9QIFNBIERFIENWMSEwHwYDVQQpExhUUlVDSyBCT0RZIFNIT1AgU0EgREUgQ1YxITAfBgNVBAoTGFRSVUNLIEJPRFkgU0hPUCBTQSBERSBDVjElMCMGA1UELRMcVEJTMTYwNjIyTDM5IC8gUEVDTTQ4MTIxMzM4NDEeMBwGA1UEBRMVIC8gUEVDTTQ4MTIxM0hNQ1JNUjA3MRAwDgYDVQQLEwdDU0RCT0RZMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmXUpzWdXMs31apyDsBiiUYdcA3dvwDwY57Ovj8N7wSj5z3kcaBuvQcbizmQZ4UlYW5wsdyfLCCP72Ts9LHCwi07aFKz7bTv1xqvqULGpV30OHfLgIkRRFklBE2UAAmnlywbQFvZ4Wj5E8tuPaFnP9fruPsXPfmHeWw37L6UVZeuVHp3GcqOzjeGZFJWoNdb7PlPHZs3BULWu4aPtRjv36V/O3WhkmTvzcyirTINLt9uWOeMcaqHoJl3R7WtQUx/VGt/s2JEtfVc7Iv1jnoAnI3fVBIwYD04iMaQ8Yd+/rtVwzeriTKxK1P6feVA0tM/oiRFPhza68jOxevbIWXx4LwIDAQABox0wGzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIGwDANBgkqhkiG9w0BAQsFAAOCAgEAYe1Q7UhT9cpOie07SgacbhUD1NYncHpRvYOiDd0IKa4m7QNMmAuEpBxOCncHmpH9Gr7GZKjbK/SuY9Pn7aZOAzEvluV1ICDK7ncWhzJZwj1Tz6Uu5h9oxTUWXzEfeuMz1ErtLiEb7wx3pGhOZIgkDegXJtlANnH04OQox1zqKXpgDFxYpdSD1TzsBi0SrAK4ZkGBOBFBZpocRqLNdeJKhacE717FBXu7KAZi6AyQA91+AT53qBs4I0IiDfPFwMKTkG8l0UjttnF1ArO2tPJZm8DETIGRO1i2iQknKxf06dwlS0bbBW1ILBVt4/73lfcznoUruEGNvJFOXSkBhgD6OUe3S7Zlku9Z/oFo5Bi94SIqeT7uRcvFnh6dodje3E8QSBdsNzB+0BR81z+yuB79S2HPQqadmPItm55ewcnYiMiOIudikAw6Mn1WK1YGUYBfeFWEvIDZQOtTbACl5AFHgncskPArOsNTFBmcLfAmsLercVg6ubJGGMSTakArBc2a1hCV/mdq8krfLwV+R/Pf28Z16la31ecrv0Rp+QZzrK/NZKM1wXLC7mroXhLK/+ThgiO5BAiGs3sIJ7V6LcexfQr7cFQH9ZywV9bNPJ17GVu36rV7J5w1qHTKpzckoNVb3o+v1gcji3sNdp4SxWK1NkgGhW1lYRRbdgAdGF+Ax5w=" CondicionesDePago="PAGO EN PARCIALIDADES O DIFERIDO" SubTotal="676992.09" Moneda="MXN" TipoCambio="1" Total="785310.83" TipoDeComprobante="I" MetodoPago="PPD" LugarExpedicion="52120" xsi:schemaLocation="http://www.sat.gob.mx/cfd/3 http://www.sat.gob.mx/sitio_internet/cfd/3/cfdv33.xsd">
+    <cfdi:Emisor Rfc="TBS160622L39" Nombre="TRUCK BODY SHOP S.A. DE C.V." RegimenFiscal="601"/>
+    <cfdi:Receptor Rfc="GNP9211244P0" Nombre="GRUPO NACIONAL PROVINCIAL, S.A.B." UsoCFDI="G03"/>
+    <cfdi:Conceptos>
+        <cfdi:Concepto ClaveProdServ="25172606" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="EXTENSION DEFENSA IZQUIERDA" ValorUnitario="3000.00" Importe="3000.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="3000.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="480.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172606" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="EXTENSION DEFENSA DERECHA" ValorUnitario="3000.00" Importe="3000.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="3000.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="480.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172606" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="MALLA ANTIRROCAS DEFENSA" ValorUnitario="374.00" Importe="374.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="374.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="59.84"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172900" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="FARO NEBLINERO IZQUIERDO DEFENSA" ValorUnitario="928.00" Importe="928.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="928.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="148.48"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172900" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="FARO NEBLINERO DERECHO DEFENSA" ValorUnitario="928.00" Importe="928.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="928.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="148.48"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172900" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="BISEL FARO NEBLINERO IZQUIERDO" ValorUnitario="494.00" Importe="494.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="494.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="79.04"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172900" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="BISEL FARO NEBLINERO DERECHO" ValorUnitario="494.00" Importe="494.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="494.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="79.04"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172606" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="COFRE BOTE" ValorUnitario="15700.00" Importe="15700.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="15700.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="2512.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172900" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="FARO IZQUIERDO" ValorUnitario="2800.00" Importe="2800.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="2800.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="448.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172900" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="FARO DERECHO" ValorUnitario="2800.00" Importe="2800.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="2800.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="448.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172900" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="CUARTO DIRECCIONAL SALPICADERA IZQUIERDA COFRE" ValorUnitario="395.00" Importe="395.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="395.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="63.20"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172900" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="CUARTO DIRECCIONAL SALPICADERA DERECHA COFRE" ValorUnitario="395.00" Importe="395.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="395.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="63.20"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172606" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="LAMINA INTERIOR REFUERZO PARRILLA COFRE" ValorUnitario="1694.00" Importe="1694.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1694.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="271.04"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174413" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="EMBLEMA JALON COFRE" ValorUnitario="890.00" Importe="890.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="890.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="142.40"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172606" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="CONTRAGANCHO IZQUIERDO COFRE" ValorUnitario="645.00" Importe="645.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="645.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="103.20"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172606" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="CONTRAGANCHO DERECHO COFRE" ValorUnitario="645.00" Importe="645.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="645.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="103.20"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="BISAGRA IZQUIERDA COFRE" ValorUnitario="1693.00" Importe="1693.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1693.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="270.88"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="BISAGRA DERECHA COFRE" ValorUnitario="1693.00" Importe="1693.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1693.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="270.88"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="BASE BISAGRA IZQUIERDA COFRE" ValorUnitario="950.00" Importe="950.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="950.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="152.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="BASE BISAGRA DERECHA COFRE" ValorUnitario="950.00" Importe="950.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="950.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="152.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172606" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="SOPORTE BASE BISAGRA IZQUIERDA COFRE" ValorUnitario="1076.00" Importe="1076.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1076.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="172.16"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172606" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="SOPORTE BASE BISAGRA DERECHA COFRE" ValorUnitario="1076.00" Importe="1076.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1076.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="172.16"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172606" Cantidad="8.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="BUJE BISAGRA COFRE" ValorUnitario="225.00" Importe="1800.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1800.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="288.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172606" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="GUIA HEMBRA IZQUIERDA COFRE" ValorUnitario="1557.00" Importe="1557.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1557.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="249.12"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172606" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="GUIA HEMBRA DERECHA COFRE" ValorUnitario="1557.00" Importe="1557.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1557.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="249.12"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172609" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="GUARDAFANGO SALPICADERA IZQUIERDA COFRE" ValorUnitario="3400.00" Importe="6800.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="6800.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="1088.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172606" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="BALANCE COFRE" ValorUnitario="1300.00" Importe="1300.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1300.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="208.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172003" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="AMORTIGUADOR IZQUIERDO COFRE" ValorUnitario="1400.00" Importe="1400.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1400.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="224.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172003" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="AMORTIGUADOR DERECHO COFRE" ValorUnitario="1400.00" Importe="1400.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1400.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="224.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="REJILLA ADMISION AIRE SALPICADERA IZQUIERDA COFRE" ValorUnitario="701.00" Importe="701.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="701.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="112.16"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="REJILLA ADMISION AIRE SALPICADERA DERECHA COFRE" ValorUnitario="701.00" Importe="701.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="701.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="112.16"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172606" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="EMBLEMA SALPICADERA IZQUIERDA COFRE" ValorUnitario="800.00" Importe="1600.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1600.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="256.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172606" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="GANCHO IZQUIERDO COFRE" ValorUnitario="280.00" Importe="280.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="280.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="44.80"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172606" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="GANCHO DERECHO COFRE" ValorUnitario="280.00" Importe="280.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="280.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="44.80"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172606" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="EXTENSION IZQUIERDA COFRE" ValorUnitario="2890.00" Importe="2890.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="2890.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="462.40"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172606" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="EXTENSION DERECHA COFRE" ValorUnitario="2890.00" Importe="2890.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="2890.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="462.40"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="HULE ACORDEON COFRE" ValorUnitario="1514.00" Importe="1514.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1514.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="242.24"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172606" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="GUIA MACHO DERECHO COFRE" ValorUnitario="280.00" Importe="280.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="280.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="44.80"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172606" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="GUIA MACHO IZQUIERDO COFRE" ValorUnitario="280.00" Importe="280.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="280.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="44.80"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172003" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="BASE DE SUPERIOR DE AMORTIGUADOR COFRE" ValorUnitario="399.00" Importe="399.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="399.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="63.84"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172606" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="TOLVA DE LLUVIA" ValorUnitario="2200.00" Importe="2200.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="2200.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="352.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172300" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="PARABRISAS" ValorUnitario="3283.00" Importe="3283.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="3283.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="525.28"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="31201610" Cantidad="3.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="SELLADOR SIKAFLEX" ValorUnitario="286.00" Importe="858.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="858.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="137.28"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172606" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="RESBALON PLASTICO IZQUIERDO COFRE" ValorUnitario="394.00" Importe="394.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="394.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="63.04"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172606" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="FALDON DELANTERO IZQUIERDO" ValorUnitario="5800.00" Importe="5800.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="5800.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="928.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172609" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="SOPORTE GUARDAFANGO FRONTAL FALDON DELANTERO IZQUIERDO" ValorUnitario="3289.00" Importe="3289.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="3289.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="526.24"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172609" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="RIEL INFERIOR SUJECION FALDON DELANTERO IZQUIERDO" ValorUnitario="2770.00" Importe="2770.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="2770.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="443.20"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172606" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="PLACA BASE CAJA BATERIAS IZQUIERDA" ValorUnitario="3800.00" Importe="3800.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="3800.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="608.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172300" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="CRISTAL PUERTA DERECHA CABINA" ValorUnitario="1800.00" Importe="1800.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1800.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="288.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172604" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="CONVEXO ESPEJO" ValorUnitario="1100.00" Importe="2200.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="2200.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="352.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="LLAVINES PUERTAS CABINA" ValorUnitario="1934.00" Importe="1934.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1934.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="309.44"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172002" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="BOLSA AIRE IZQUIERDA SUSPENSION CABINA" ValorUnitario="874.00" Importe="874.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="874.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="139.84"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172002" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="BOLSA AIRE DERECHA SUSPENSION CABINA" ValorUnitario="874.00" Importe="874.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="874.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="139.84"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172609" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="FALDON DELANTERO DERECHO" ValorUnitario="5800.00" Importe="5800.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="5800.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="928.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172606" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="ESTRIBO TRASERO SUPERIOR DERECHO" ValorUnitario="1400.00" Importe="1400.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1400.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="224.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172606" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="ESTRIBO TRASERO INFERIOR DERECHO" ValorUnitario="1400.00" Importe="1400.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1400.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="224.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172606" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="ARNES COFRE" ValorUnitario="1800.00" Importe="1800.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1800.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="288.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172900" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="FARO REVERSERO DERECHO" ValorUnitario="480.00" Importe="480.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="480.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="76.80"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172900" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="ARNES FARO DERECHO COFRE" ValorUnitario="1480.00" Importe="1480.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1480.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="236.80"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="CARCASA EXTERIOR FILTRO CALEFACCION" ValorUnitario="3774.00" Importe="3774.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="3774.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="603.84"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="VALVULA NIVELADORA DE CABINA" ValorUnitario="1511.00" Importe="1511.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1511.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="241.76"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174700" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="AUMEMTOS PARA BASE DE BISAGRA" ValorUnitario="124.00" Importe="248.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="248.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="39.68"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174700" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="GOMA SUJECION CONDENSADOR" ValorUnitario="268.00" Importe="536.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="536.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="85.76"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174002" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="RADIADOR" ValorUnitario="12800.00" Importe="12800.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="12800.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="2048.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174002" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="TACON INFERIOR RADIADOR" ValorUnitario="426.00" Importe="852.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="852.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="136.32"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174002" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="CONTRATACON INFERIOR RADIADOR" ValorUnitario="412.00" Importe="824.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="824.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="131.84"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174002" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="MANGUERA INFERIOR RADIADOR" ValorUnitario="1305.00" Importe="1305.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1305.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="208.80"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174002" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="TUBO INFERIOR RADIADOR" ValorUnitario="1305.00" Importe="1305.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1305.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="208.80"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="41111930" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="SENSOR NIVEL ANTICONGELANTE" ValorUnitario="980.00" Importe="980.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="980.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="156.80"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="15121807" Cantidad="45.00" ClaveUnidad="LTR" Unidad="LTS" Descripcion="ANTICONGELANTE" ValorUnitario="15.56" Importe="700.20">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="700.20" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="112.03"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="27112800" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="CONEXION FAN CLUTCH" ValorUnitario="399.00" Importe="399.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="399.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="63.84"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="CORAZA TRASERA MOTOR" ValorUnitario="13280.00" Importe="13280.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="13280.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="2124.80"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="RETEN TRASERO CIGUENAL" ValorUnitario="1600.00" Importe="1600.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1600.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="256.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="COLADERA TUBO SUCCION ACEITE MOTOR" ValorUnitario="2700.00" Importe="2700.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="2700.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="432.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="15121501" Cantidad="45.00" ClaveUnidad="LTR" Unidad="LTS" Descripcion="ACEITE MOTOR" ValorUnitario="53.33" Importe="2399.85">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="2399.85" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="383.98"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="40161504" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="FILTRO ACEITE MOTOR" ValorUnitario="513.00" Importe="513.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="513.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="82.08"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="TAPA PUNTERIAS MOTOR" ValorUnitario="7200.00" Importe="7200.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="7200.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="1152.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="JUNTA TAPA PUNTERIAS MOTOR" ValorUnitario="1800.00" Importe="1800.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1800.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="288.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="PUENTE DELANTERO DE MOTOR" ValorUnitario="8109.00" Importe="8109.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="8109.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="1297.44"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174700" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="SOPORTE PUENTE DE MOTOR" ValorUnitario="3751.00" Importe="7502.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="7502.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="1200.32"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="TUBO LLENADO DE ACEITE MOTOR" ValorUnitario="3188.00" Importe="3188.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="3188.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="510.08"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="40142000" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="MANGUERA UNION ENFRIADOR EGR A VALVULA EGR" ValorUnitario="898.00" Importe="898.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="898.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="143.68"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="40142000" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="MANGUERA DE TUBO VENTURY A MULTIPLE DE ADMISION" ValorUnitario="1938.00" Importe="3876.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="3876.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="620.16"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="PURGADOR IFSM" ValorUnitario="2800.00" Importe="2800.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="2800.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="448.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="41111927" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="SENSOR PRESION DIFERENCIAL" ValorUnitario="2400.00" Importe="2400.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="2400.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="384.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174204" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="CAJA DIRECCION" ValorUnitario="11200.00" Importe="11200.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="11200.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="1792.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172400" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="DEPOSITO ACEITE DE DIRECCION" ValorUnitario="2699.00" Importe="2699.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="2699.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="431.84"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="40161504" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="FILTRO ACEITE DIRECCION" ValorUnitario="498.00" Importe="498.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="498.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="79.68"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172606" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="BRAZO PITMAN" ValorUnitario="3567.00" Importe="3567.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="3567.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="570.72"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="15121508" Cantidad="5.00" ClaveUnidad="LTR" Unidad="LTS" Descripcion="ACEITE DIRECCION" ValorUnitario="56.00" Importe="280.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="280.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="44.80"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172606" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="SOPORTE TANQUE COMBUSTIBLE DERECHO" ValorUnitario="3200.00" Importe="3200.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="3200.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="512.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="40161513" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="FILTRO DE COMBUSIBLE" ValorUnitario="1172.00" Importe="1172.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1172.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="187.52"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172606" Cantidad="4.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="BASE TENSOR INFERIOR TANQUE DE COMBUSTIBLE" ValorUnitario="942.00" Importe="3768.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="3768.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="602.88"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25173700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="SILENCIADOR ESCAPE" ValorUnitario="2705.00" Importe="2705.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="2705.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="432.80"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25173700" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="SOPORTE SILENCIADOR ESCAPE" ValorUnitario="2350.00" Importe="4700.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="4700.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="752.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25173700" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="BASE SOPORTE SILENCIADOR ESCAPE" ValorUnitario="1937.00" Importe="3874.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="3874.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="619.84"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25173700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="TUBO CODO SALIDA SILENCIADOR" ValorUnitario="1209.00" Importe="1209.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1209.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="193.44"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25173700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="EXTENSION SALIDA PUNTA DE ESCAPE" ValorUnitario="2278.00" Importe="2278.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="2278.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="364.48"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="TUBO CODO ESCAPE BAJO CABINA" ValorUnitario="3308.00" Importe="3308.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="3308.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="529.28"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="30266700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="CAMPANA TRANSMISION" ValorUnitario="7200.00" Importe="7200.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="7200.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="1152.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="30266700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="MUELLE TRANSMISION" ValorUnitario="3491.00" Importe="3491.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="3491.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="558.56"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="FRENO DE TRANSMISION" ValorUnitario="733.00" Importe="733.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="733.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="117.28"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="BALERO PILOTO" ValorUnitario="828.00" Importe="828.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="828.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="132.48"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="15121508" Cantidad="19.00" ClaveUnidad="LTR" Unidad="LTS" Descripcion="ACEITE TRANSMISION" ValorUnitario="56.00" Importe="1064.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1064.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="170.24"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174700" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="SOPORTE PUENTE INFERIOR TRANSMISION" ValorUnitario="2531.00" Importe="5062.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="5062.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="809.92"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25171723" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="clutch" ValorUnitario="7800.00" Importe="7800.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="7800.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="1248.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="40142000" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="MANGUERA ROTOCHAMBER DELANTERO IZQUIERDO" ValorUnitario="401.00" Importe="401.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="401.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="64.16"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="40142000" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="MANGUERA ROTOCHAMBER DELANTERO DERECHO" ValorUnitario="401.00" Importe="401.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="401.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="64.16"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="40142000" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="MANGUERA ROTOCHAMBER IZQUIERDO 2DO EJE" ValorUnitario="401.00" Importe="401.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="401.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="64.16"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="27112800" Cantidad="4.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="CONEXION SECADOR DE AIRE" ValorUnitario="389.00" Importe="1556.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1556.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="248.96"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="27112800" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="CONEXION VALVULA MODULADORA ABS" ValorUnitario="834.00" Importe="834.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="834.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="133.44"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="REGULADOR AIRE" ValorUnitario="1869.00" Importe="1869.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1869.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="299.04"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172606" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="VIGA EJE DELANTERO" ValorUnitario="14800.00" Importe="14800.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="14800.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="2368.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174204" Cantidad="1.00" ClaveUnidad="XKI" Unidad="KIT" Descripcion="PERNOS DIRECCION EJE DELANTERO" ValorUnitario="3957.00" Importe="3957.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="3957.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="633.12"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174204" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="TOPE DIRECCION" ValorUnitario="796.00" Importe="796.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="796.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="127.36"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172404" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="RETEN MAZA IZQUIERDA EJE DELANTERO" ValorUnitario="540.00" Importe="540.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="540.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="86.40"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172404" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="TAPA MAZA IZQUIERDA EJE DELANTERO" ValorUnitario="430.00" Importe="860.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="860.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="137.60"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="15121509" Cantidad="2.00" ClaveUnidad="LTR" Unidad="LTS" Descripcion="ACEITE MAZA DELANTERA" ValorUnitario="56.00" Importe="112.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="112.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="17.92"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172606" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="CENTROS DE MUELLE 1 EJE" ValorUnitario="44.00" Importe="88.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="88.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="14.08"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="27112800" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="ABRAZADERA MUELLE DELANTERA IZQUIERDA" ValorUnitario="395.00" Importe="790.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="790.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="126.40"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="27112800" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="ABRAZADERA MUELLE DELANTERA DERECHA" ValorUnitario="395.00" Importe="790.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="790.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="126.40"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="27112800" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="BRAZO VIAJERO" ValorUnitario="3909.00" Importe="3909.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="3909.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="625.44"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174204" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="BARRA DIRECCION EJE DELANTERO" ValorUnitario="2600.00" Importe="2600.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="2600.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="416.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174204" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="TERMINAL IZQUIERDA BARRA DIRECCION EJE DELANTERO" ValorUnitario="923.00" Importe="1846.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1846.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="295.36"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174204" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="TACON SEPARADOR DE MUELLE EJE DELANTERO" ValorUnitario="1400.00" Importe="2800.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="2800.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="448.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="PERCHA FRONTAL TRASERA IZQUIERDA" ValorUnitario="5142.00" Importe="5142.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="5142.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="822.72"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174700" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="ALBARDON MUELLE DELANTERA TRASERA DERECHA" ValorUnitario="386.00" Importe="772.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="772.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="123.52"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174700" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="ALBARDON MUELLE DELANTERA TRASERA IZQUIERDA" ValorUnitario="386.00" Importe="772.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="772.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="123.52"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174700" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="BASE SUPERIOR BOLSA IZQUIERDA SUSPENSION DELANTERA" ValorUnitario="1819.00" Importe="3638.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="3638.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="582.08"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174700" Cantidad="4.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="BOLSA DERECHA SUSPENSION DELANTERA" ValorUnitario="2100.00" Importe="8400.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="8400.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="1344.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172003" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="AMORTIGUADOR IZQUIERDO SUSPENSION EJE DELANTERO" ValorUnitario="1100.00" Importe="1100.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1100.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="176.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172003" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="AMORTIGUADOR DERECHO SUSPENSION EJE DELANTERO" ValorUnitario="1100.00" Importe="1100.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1100.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="176.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172503" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="LLANTA DELANTERA IZQUIERDA" ValorUnitario="8300.00" Importe="8300.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="8300.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="1328.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172503" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="LLANTA DELANTERA DERECHA" ValorUnitario="8300.00" Importe="8300.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="8300.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="1328.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25171901" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="RIN DELANTERO IZQUIERDO ALUMINIO" ValorUnitario="4900.00" Importe="4900.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="4900.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="784.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25171901" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="RIN DELANTERO DERECHO ALUMINIO" ValorUnitario="4900.00" Importe="4900.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="4900.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="784.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25171905" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="VALVULA RIN ALUMINIO DELANTERO IZQUIERDO" ValorUnitario="103.00" Importe="103.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="103.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="16.48"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25171905" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="VALVULA RIN ALUMINIO DELANTERO DERECHO" ValorUnitario="103.00" Importe="103.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="103.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="16.48"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25171905" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="TACON REBOTE 3 EJE" ValorUnitario="3600.00" Importe="3600.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="3600.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="576.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174204" Cantidad="1.00" ClaveUnidad="XKI" Unidad="KIT" Descripcion="MUELAS QUINTA RUEDA" ValorUnitario="5300.00" Importe="5300.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="5300.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="848.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="15121508" Cantidad="5.00" ClaveUnidad="LTR" Unidad="LTS" Descripcion="ACEITE DIFERENCIAL" ValorUnitario="56.00" Importe="280.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="280.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="44.80"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25173300" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="SILICON FORMA JUNTAS" ValorUnitario="648.00" Importe="1296.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1296.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="207.36"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25173300" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="SOPORTE PUENTE DE MOTOR" ValorUnitario="2600.00" Importe="5200.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="5200.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="832.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="41111921" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="SENSOR ABS DELANTERO IZQUIERDO" ValorUnitario="1155.00" Importe="1155.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1155.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="184.80"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="41111921" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="SENSOR ABS DELANTERO DERECHO" ValorUnitario="1155.00" Importe="1155.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1155.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="184.80"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25173300" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="TAMBOR IZQUIERDO 3ER EJE" ValorUnitario="2400.00" Importe="2400.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="2400.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="384.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25173300" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="KIT MANG NEUMATICA" ValorUnitario="1875.00" Importe="1875.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1875.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="300.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172606" Cantidad="2.00" ClaveUnidad="SET" Unidad="JGO" Descripcion="SOP DL CABINA" ValorUnitario="2064.00" Importe="4128.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="4128.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="660.48"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174700" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="BASE CAJA BATERIAS" ValorUnitario="2891.00" Importe="5782.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="5782.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="925.12"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172609" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="RIEL FALDON DL I" ValorUnitario="2447.00" Importe="4894.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="4894.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="783.04"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174002" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="RADIADOR ACEITE" ValorUnitario="3800.00" Importe="3800.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="3800.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="608.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172606" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="CHASIS DEL." ValorUnitario="5200.00" Importe="5200.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="5200.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="832.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25173300" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="KIT JUNTAS TURBO EGR" ValorUnitario="1634.00" Importe="1634.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1634.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="261.44"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25173300" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="TOLVA GUARDASONIDO" ValorUnitario="1800.00" Importe="3600.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="3600.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="576.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25173300" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="TOLVA INF D CABINA" ValorUnitario="3800.00" Importe="7600.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="7600.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="1216.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25173300" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="PERCHA DL MUELLE DL D" ValorUnitario="9800.00" Importe="9800.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="9800.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="1568.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174700" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="TENS INF SOP COMBU" ValorUnitario="2150.00" Importe="4300.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="4300.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="688.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172606" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="SOP RIEL FALD DL D" ValorUnitario="1888.00" Importe="3776.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="3776.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="604.16"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172606" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="BASE SUP AMORT COFRE" ValorUnitario="1100.00" Importe="1100.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1100.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="176.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172606" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="PERCHA DL MUELLE DL I" ValorUnitario="9800.00" Importe="9800.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="9800.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="1568.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25173300" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="INTERCOOLER" ValorUnitario="10800.00" Importe="10800.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="10800.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="1728.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25173300" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="JTA MAZA EJE DL" ValorUnitario="45.00" Importe="90.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="90.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="14.40"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="40142000" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="MANG SISTE DIRECCI" ValorUnitario="2245.00" Importe="2245.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="2245.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="359.20"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172606" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="SOPORTE ESTRIB TR INF" ValorUnitario="1859.00" Importe="3718.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="3718.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="594.88"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25173300" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="BOLSA DE AIRE CABINA" ValorUnitario="986.00" Importe="1972.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1972.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="315.52"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25173300" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="MUELLE PARABOL. DL. I." ValorUnitario="4698.00" Importe="4698.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="4698.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="751.68"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25173300" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="SOP DL MOTOR" ValorUnitario="1270.00" Importe="2540.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="2540.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="406.40"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25173300" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="JUNTA CARTER" ValorUnitario="2300.00" Importe="2300.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="2300.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="368.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="XKI" Unidad="KIT" Descripcion="NIPLES NEUMAT" ValorUnitario="1800.00" Importe="1800.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1800.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="288.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25173300" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="FLECHA MOTRIZ" ValorUnitario="4318.00" Importe="4318.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="4318.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="690.88"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25173300" Cantidad="1.00" ClaveUnidad="XKI" Unidad="KIT" Descripcion="TUREC Y TORN" ValorUnitario="1100.00" Importe="1100.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1100.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="176.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172300" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="JTA PARABRISAS" ValorUnitario="1600.00" Importe="1600.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1600.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="256.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="JTA DEP COMB DEL I" ValorUnitario="450.00" Importe="450.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="450.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="72.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174700" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="DEP. AIRE COMPRIMIDO" ValorUnitario="3500.00" Importe="7000.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="7000.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="1120.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="MUELLE PRABOL DL. D" ValorUnitario="4698.00" Importe="4698.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="4698.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="751.68"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="SET" Unidad="JGO" Descripcion="GOMA POST ENFRIADOR" ValorUnitario="4188.00" Importe="4188.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="4188.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="670.08"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="REC BATERIA" ValorUnitario="2918.00" Importe="2918.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="2918.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="466.88"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25173300" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="CARTER" ValorUnitario="8900.00" Importe="8900.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="8900.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="1424.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25173300" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="MAGU DPTO REFRIGER" ValorUnitario="1676.00" Importe="1676.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1676.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="268.16"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25173300" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="ESTRUC FALDON DL D" ValorUnitario="8600.00" Importe="8600.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="8600.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="1376.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25173300" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="DPTO AIRE IZQUIERDO" ValorUnitario="3500.00" Importe="3500.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="3500.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="560.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25173300" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="MALLA ANTI ROCAS DEF" ValorUnitario="1025.00" Importe="1025.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1025.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="164.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25173300" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="SOP BASE CAJA BAT" ValorUnitario="1799.00" Importe="3598.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="3598.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="575.68"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174001" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="VENTILADOR RADIADOR" ValorUnitario="1800.00" Importe="1800.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1800.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="288.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172709" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="CONDENS. AIRE ACOND." ValorUnitario="2400.00" Importe="2400.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="2400.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="384.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="BASE CROM RESBAL COF" ValorUnitario="640.00" Importe="640.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="640.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="102.40"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172605" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="MCO CROM PARRILLA" ValorUnitario="2600.00" Importe="2600.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="2600.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="416.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172709" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="COMPRESOR AIRE ACONDICIONADO" ValorUnitario="5800.00" Importe="5800.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="5800.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="928.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172709" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="BASE BOLSA AIRE IN" ValorUnitario="1900.00" Importe="3800.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="3800.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="608.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25173300" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="TUBO MOTOR I" ValorUnitario="1800.00" Importe="1800.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1800.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="288.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174002" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="TUBO RADIADOR" ValorUnitario="1648.00" Importe="1648.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1648.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="263.68"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172609" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="RIEL FALDON DL D" ValorUnitario="1917.00" Importe="3834.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="3834.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="613.44"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174204" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="COLUMNA DIRECCION" ValorUnitario="4800.00" Importe="4800.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="4800.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="768.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172609" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="MANGU. RADIA. INF. TRA." ValorUnitario="2331.00" Importe="2331.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="2331.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="372.96"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172609" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="EJE DEL." ValorUnitario="4980.00" Importe="4980.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="4980.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="796.80"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174002" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="CARCASA RADIADOR" ValorUnitario="3200.00" Importe="3200.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="3200.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="512.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172604" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="ESPEJO LATERAL IZQ Y DER" ValorUnitario="4102.00" Importe="8204.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="8204.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="1312.64"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25173300" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="TUBO SALIDA" ValorUnitario="841.00" Importe="841.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="841.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="134.56"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25173300" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="KIT ABRAZAD SIN FIN" ValorUnitario="976.00" Importe="976.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="976.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="156.16"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25173300" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="RESBALON PLAST D COF" ValorUnitario="394.00" Importe="394.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="394.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="63.04"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172605" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="PARRILLA" ValorUnitario="3700.00" Importe="3700.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="3700.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="592.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="SOP DEP COMBUS. DEL" ValorUnitario="3696.00" Importe="3696.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="3696.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="591.36"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172609" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="SOP GUARDA FRON D" ValorUnitario="2204.00" Importe="2204.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="2204.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="352.64"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25173300" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="SOP. BATERIA" ValorUnitario="2200.00" Importe="2200.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="2200.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="352.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25173300" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="JTA CARCASA TRANSMISION" ValorUnitario="1405.00" Importe="1405.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1405.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="224.80"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="31161500" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="TORNILLERIA SUSPENSION" ValorUnitario="1400.00" Importe="1400.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="1400.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="224.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172606" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="SOPORTE PUNTA FACIA DL" ValorUnitario="1431.00" Importe="2862.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="2862.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="457.92"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="TRAVESANO I" ValorUnitario="2900.00" Importe="2900.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="2900.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="464.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25173300" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="BARRA ORQUIL EMBRA2" ValorUnitario="1678.00" Importe="3356.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="3356.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="536.96"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25173300" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="SOP SUSPENS. TRA" ValorUnitario="2800.00" Importe="2800.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="2800.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="448.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172400" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="DEPOSITO COMBUSTIBLE" ValorUnitario="7900.00" Importe="15800.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="15800.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="2528.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25173300" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="TAPA BATERIA" ValorUnitario="4900.00" Importe="4900.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="4900.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="784.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="PRUEB MAG FL EJE INT" ValorUnitario="2800.00" Importe="2800.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="2800.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="448.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172606" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="JTA DEP COMB DEL D" ValorUnitario="450.00" Importe="900.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="900.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="144.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172606" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="SOPORTE PUNTA FACIA DL" ValorUnitario="1374.00" Importe="2748.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="2748.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="439.68"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25172606" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="ESTRIBO FALDON DL D" ValorUnitario="2400.00" Importe="2400.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="2400.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="384.00"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="25173300" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="SOP PUENTE MOTOR" ValorUnitario="2286.00" Importe="4572.00">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="4572.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="731.52"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+        <cfdi:Concepto ClaveProdServ="78181508" Cantidad="1.00" ClaveUnidad="E48" Unidad="SERV" Descripcion="MANO DE OBRA" ValorUnitario="41191.04" Importe="41191.04">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado Base="41191.04" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="6590.57"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+    </cfdi:Conceptos>
+    <cfdi:Impuestos TotalImpuestosTrasladados="108318.74">
+        <cfdi:Traslados>
+            <cfdi:Traslado Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="108318.74"/>
+        </cfdi:Traslados>
+    </cfdi:Impuestos>
+</cfdi:Comprobante>

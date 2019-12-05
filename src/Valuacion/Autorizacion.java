@@ -7,6 +7,7 @@
 package Valuacion;
 
 import Hibernate.Util.HibernateUtil;
+import Hibernate.entidades.Catalogo;
 import Hibernate.entidades.Configuracion;
 import Hibernate.entidades.Foto;
 import Hibernate.entidades.Orden;
@@ -57,12 +58,14 @@ import Integral.DefaultTableHeaderCellRenderer;
 import Integral.ExtensionFileFilter;
 import Integral.FormatoEditor;
 import Integral.FormatoTabla;
+import Integral.Ftp;
 import Integral.Herramientas;
 import Integral.HorizontalBarUI;
 import Integral.PDF;
 import Integral.VerticalBarUI;
 import Integral.VerticalTableHeaderCellRenderer;
 import java.awt.event.KeyEvent;
+import java.util.Calendar;
 
 /**
  *
@@ -90,9 +93,11 @@ public class Autorizacion extends javax.swing.JPanel {
         "I. DM","Camb","Rep Min","Rep Med","Rep Max","Pin Min","Pin Med","Pin Max","Instrucción", 
         "I. DM","Camb","Rep Min","Rep Med","Rep Max","Pin Min","Pin Med","Pin Max",
         "Tipo", "Orden", "R. Cot", "Aut"};
+    String rutaFtp;
     
-    public Autorizacion(String ord, Usuario us, String edo, String ses) {
+    public Autorizacion(String ord, Usuario us, String edo, String ses, String ruta) {
         initComponents();
+        this.rutaFtp=ruta;
         scroll.getVerticalScrollBar().setUI(new VerticalBarUI());
         scroll.getHorizontalScrollBar().setUI(new HorizontalBarUI());
         sessionPrograma=ses;
@@ -249,6 +254,7 @@ public class Autorizacion extends javax.swing.JPanel {
         b_pdfh = new javax.swing.JButton();
         c_filtro = new javax.swing.JComboBox();
         b_pdfx = new javax.swing.JButton();
+        r_cerrar = new javax.swing.JRadioButton();
         scroll = new javax.swing.JScrollPane();
         t_datos = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
@@ -355,6 +361,17 @@ public class Autorizacion extends javax.swing.JPanel {
             }
         });
         jPanel1.add(b_pdfx, new org.netbeans.lib.awtextra.AbsoluteConstraints(402, 1, 23, 23));
+
+        r_cerrar.setFont(new java.awt.Font("Tahoma", 0, 9)); // NOI18N
+        r_cerrar.setForeground(new java.awt.Color(255, 255, 255));
+        r_cerrar.setText("Cerrar y enviar a valuación");
+        r_cerrar.setToolTipText("Al marcar esta casilla el levantamiento se cerrara.");
+        r_cerrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                r_cerrarActionPerformed(evt);
+            }
+        });
+        jPanel1.add(r_cerrar, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 2, -1, -1));
 
         add(jPanel1, java.awt.BorderLayout.PAGE_END);
 
@@ -537,7 +554,7 @@ public class Autorizacion extends javax.swing.JPanel {
             String valor=dateFormat.format(fecha);
             File folder = new File("reportes/"+ord.getIdOrden());
             folder.mkdirs();
-            reporte.Abrir(PageSize.LETTER.rotate(), "Valuación", "reportes/"+ord.getIdOrden()+"/"+valor+"-autorizacion.pdf");
+            reporte.Abrir2(PageSize.LETTER.rotate(), "Valuación", "reportes/"+ord.getIdOrden()+"/"+valor+"-autorizacion.pdf");
             Font font = new Font(Font.FontFamily.HELVETICA, 6, Font.BOLD);
             BaseColor contenido=BaseColor.WHITE;
             int centro=Element.ALIGN_CENTER;
@@ -674,7 +691,7 @@ public class Autorizacion extends javax.swing.JPanel {
             tabla.setHeaderRows(3);
             reporte.agregaObjeto(tabla);
             reporte.cerrar();
-            reporte.visualizar("reportes/"+ord.getIdOrden()+"/"+valor+"-autorizacion.pdf");
+            reporte.visualizar2("reportes/"+ord.getIdOrden()+"/"+valor+"-autorizacion.pdf");
             
         }catch(Exception e)
         {
@@ -799,7 +816,7 @@ public class Autorizacion extends javax.swing.JPanel {
             String valor=dateFormat.format(fecha);
             File folder = new File("reportes/"+ord.getIdOrden());
             folder.mkdirs();
-            reporte.Abrir(PageSize.LETTER.rotate(), "Valuación", "reportes/"+ord.getIdOrden()+"/"+valor+"-autorizacion.pdf");
+            reporte.Abrir2(PageSize.LETTER.rotate(), "Valuación", "reportes/"+ord.getIdOrden()+"/"+valor+"-autorizacion.pdf");
             Font font = new Font(Font.FontFamily.HELVETICA, 6, Font.BOLD);
             BaseColor contenido=BaseColor.WHITE;
             int centro=Element.ALIGN_CENTER;
@@ -935,7 +952,7 @@ public class Autorizacion extends javax.swing.JPanel {
             tabla.setHeaderRows(3);
             reporte.agregaObjeto(tabla);
             reporte.cerrar();
-            reporte.visualizar("reportes/"+ord.getIdOrden()+"/"+valor+"-autorizacion.pdf");
+            reporte.visualizar2("reportes/"+ord.getIdOrden()+"/"+valor+"-autorizacion.pdf");
             
         }catch(Exception e)
         {
@@ -972,6 +989,127 @@ public class Autorizacion extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_t_datosKeyPressed
 
+    private void r_cerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_r_cerrarActionPerformed
+        // TODO add your handling code here:
+        if(r_cerrar.isSelected()==true)
+        {
+            Session session = HibernateUtil.getSessionFactory().openSession();
+            try
+            {
+                user = (Usuario)session.get(Usuario.class, user.getIdUsuario());
+                if(user.getCarrarLevantamiento()==true)
+                {
+                    h=new Herramientas(user, 0);
+                    h.session(sessionPrograma);
+                    int opt=JOptionPane.showConfirmDialog(this, "¡Confirma que deseas pasar a valuación, esta operación cerrará el levantamiento!");
+                    if(opt==0)
+                    {
+                        session.beginTransaction().begin();
+                        Orden ord=(Orden)session.get(Orden.class, Integer.parseInt(orden));
+                        //Partida extiste = (Partida) session.createCriteria(Partida.class).add(Restrictions.and(Restrictions.eq("ordenByIdOrden.idOrden", ord.getIdOrden()), Restrictions.or(Restrictions.gt("intDesm", 0), Restrictions.or(Restrictions.gt("intCamb", 0), Restrictions.or(Restrictions.gt("intRepMin", 0), Restrictions.or(Restrictions.gt("intRepMed", 0), Restrictions.or(Restrictions.gt("intRepMax", 0), Restrictions.or(Restrictions.gt("intPinMin", 0), Restrictions.or(Restrictions.gt("intPinMed", 0), Restrictions.gt("intPinMax", 0)))))))))).setMaxResults(1).uniqueResult();
+
+                        //if(extiste!=null)
+                        //{
+                            Partida[] par = (Partida[]) ord.getPartidasForIdOrden().toArray(new Partida[0]);
+                            int op=0;
+                            for(int x=0; x<par.length; x++)
+                            {
+                                par[x].setAutorizadoValuacion(true);
+                                session.update(par[x]);
+                            }
+                            //***guardar la fecha de cierre del levantamiento*****
+                            Date fecha = new Date();
+                            DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");//YYYY-MM-DD HH:MM:SS
+                            String valor=dateFormat.format(fecha);
+                            String [] fech = valor.split("-");
+                            String [] hora=fech[2].split(":");
+                            String [] aux=hora[0].split(" ");
+                            fech[2]=aux[0];
+                            hora[0]=aux[1];
+                            Calendar calendario3 = Calendar.getInstance();
+                            calendario3.set(
+                                Integer.parseInt(fech[2]),
+                                Integer.parseInt(fech[1])-1,
+                                Integer.parseInt(fech[0]),
+                                Integer.parseInt(hora[0]),
+                                Integer.parseInt(hora[1]),
+                                Integer.parseInt(hora[2]));
+                            ord.setRLevantamientoCierre(calendario3.getTime());
+                            session.update(ord);
+                            //************
+                            session.getTransaction().commit();
+                            JOptionPane.showMessageDialog(null, "Las partidas fueron autorizadas para valuación, el levantamiento fue cerrado");
+                            buscaCuentas(-1,-1);
+                        /*}
+                        else
+                        {
+                            session.getTransaction().commit();
+                            JOptionPane.showMessageDialog(null, "Las partida "+extiste.getIdEvaluacion()+"-"+extiste.getSubPartida()+" No tien Tiempo asignado");
+                        }*/
+                    }
+                }
+                else
+                {
+                    r_cerrar.setSelected(false);
+                    JOptionPane.showMessageDialog(null, "¡No tienes permiso para cerrar el levantamiento!");
+                    session.beginTransaction().rollback();
+                }
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+                session.getTransaction().rollback();
+            }
+            if(session!=null)
+            if(session.isOpen())
+            {
+                session.flush();
+                session.clear();
+                session.close();
+            }
+        }
+        else
+        {
+            Session session = HibernateUtil.getSessionFactory().openSession();
+            try
+            {
+                session.beginTransaction().begin();
+                user = (Usuario)session.get(Usuario.class, user.getIdUsuario());
+                if(user.getAbrirLevantamiento()==true)
+                {
+                    session.beginTransaction().begin();
+                    h=new Herramientas(user, 0);
+                    h.session(sessionPrograma);
+                    ord = (Orden)session.get(Orden.class, Integer.parseInt(orden));
+                    ord.setRLevantamientoCierre(null);
+                    session.save(ord);
+                    session.getTransaction().commit();
+                    buscaCuentas(-1,-1);
+                    JOptionPane.showMessageDialog(null, "¡El levantamiento fue abierto!");
+                }
+                else
+                {
+                    r_cerrar.setSelected(true);
+                    JOptionPane.showMessageDialog(null, "¡No tienes permiso para abrir el levantamiento!");
+                    session.beginTransaction().rollback();
+                }
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+                session.getTransaction().rollback();
+            }
+            if(session!=null)
+            if(session.isOpen())
+            {
+                session.flush();
+                session.clear();
+                session.close();
+            }
+        }
+        validaCerrado();
+    }//GEN-LAST:event_r_cerrarActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton b_busca;
@@ -988,6 +1126,7 @@ public class Autorizacion extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JComboBox medida;
     private javax.swing.JComboBox numeros;
+    private javax.swing.JRadioButton r_cerrar;
     private javax.swing.JScrollPane scroll;
     private javax.swing.JTextField t_busca;
     private javax.swing.JTable t_datos;
@@ -1015,7 +1154,7 @@ public class Autorizacion extends javax.swing.JPanel {
             {
                 session.beginTransaction().begin();
                 ord = (Orden)session.get(Orden.class, Integer.parseInt(orden));
-                Partida[] cuentas = (Partida[])session.createCriteria(Partida.class).add(Restrictions.eq("ordenByIdOrden.idOrden", ord.getIdOrden())).add(Restrictions.eq("autorizadoValuacion", true)).addOrder(Order.asc("idEvaluacion")).addOrder(Order.asc("subPartida")).list().toArray(new Partida[0]);
+                Partida[] cuentas = (Partida[])session.createCriteria(Partida.class).add(Restrictions.eq("ordenByIdOrden.idOrden", ord.getIdOrden())).addOrder(Order.asc("idEvaluacion")).addOrder(Order.asc("subPartida")).list().toArray(new Partida[0]);
                 if(cuentas.length>0)
                 {
                     model=new MyModel(cuentas.length, columnas);
@@ -1298,8 +1437,18 @@ public class Autorizacion extends javax.swing.JPanel {
                 }
             }
             if(fotos.length>0)
-                reporte.agregaObjeto(reporte.crearImagen("ordenes/"+ord.getIdOrden()+"/"+fotos[0].getDescripcion(), 0, -60, 120, 80, 0));
-            else{}
+            {
+                Ftp miFtp=new Ftp();
+                boolean respuesta=true;
+                respuesta=miFtp.conectar(rutaFtp, "compras", "04650077", 3310);
+                if(respuesta==true)
+                {
+                    miFtp.cambiarDirectorio("ordenes/"+ord.getIdOrden()+"/miniatura");
+                    String temporal=miFtp.descargaTemporal(fotos[0].getDescripcion());
+                    miFtp.desconectar();
+                    reporte.agregaObjeto(reporte.crearImagen(temporal, 15, -50, 25, true));
+                }
+            }
             //************************datos de la orden****************************
             reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Orden:"+ord.getIdOrden(), 164, 550, 0);
 
@@ -1589,6 +1738,9 @@ public class Autorizacion extends javax.swing.JPanel {
                                                          if(part!=null)
                                                          {
                                                              part.setIntDesm(Double.parseDouble(value.toString()));
+                                                             Catalogo catalogo=part.getCatalogo();
+                                                             catalogo.setCDesm(Double.parseDouble(value.toString()));
+                                                             session.update(catalogo);
                                                              session.update(part);
                                                              session.getTransaction().commit();
                                                              vector.setElementAt(value, col);
@@ -1658,6 +1810,9 @@ public class Autorizacion extends javax.swing.JPanel {
                                                          if(part!=null)
                                                          {
                                                              part.setIntCamb(Double.parseDouble(value.toString()));
+                                                             Catalogo catalogo=part.getCatalogo();
+                                                             catalogo.setCCamb(Double.parseDouble(value.toString()));
+                                                             session.update(catalogo);
                                                              session.update(part);
                                                              session.getTransaction().commit();
                                                              vector.setElementAt(value, col);
@@ -1727,6 +1882,9 @@ public class Autorizacion extends javax.swing.JPanel {
                                                          if(part!=null)
                                                          {
                                                              part.setIntRepMin(Double.parseDouble(value.toString()));
+                                                             Catalogo catalogo=part.getCatalogo();
+                                                             catalogo.setCRepMin(Double.parseDouble(value.toString()));
+                                                             session.update(catalogo);
                                                              session.update(part);
                                                              session.getTransaction().commit();
                                                              vector.setElementAt(value, col);
@@ -1796,6 +1954,9 @@ public class Autorizacion extends javax.swing.JPanel {
                                                          if(part!=null)
                                                          {
                                                              part.setIntRepMed(Double.parseDouble(value.toString()));
+                                                             Catalogo catalogo=part.getCatalogo();
+                                                             catalogo.setCRepMed(Double.parseDouble(value.toString()));
+                                                             session.update(catalogo);
                                                              session.update(part);
                                                              session.getTransaction().commit();
                                                              vector.setElementAt(value, col);
@@ -1865,6 +2026,9 @@ public class Autorizacion extends javax.swing.JPanel {
                                                          if(part!=null)
                                                          {
                                                              part.setIntRepMax(Double.parseDouble(value.toString()));
+                                                             Catalogo catalogo=part.getCatalogo();
+                                                             catalogo.setCRepMax(Double.parseDouble(value.toString()));
+                                                             session.update(catalogo);
                                                              session.update(part);
                                                              session.getTransaction().commit();
                                                              vector.setElementAt(value, col);
@@ -1934,6 +2098,9 @@ public class Autorizacion extends javax.swing.JPanel {
                                                          if(part!=null)
                                                          {
                                                              part.setIntPinMin(Double.parseDouble(value.toString()));
+                                                             Catalogo catalogo=part.getCatalogo();
+                                                             catalogo.setCPinMin(Double.parseDouble(value.toString()));
+                                                             session.update(catalogo);
                                                              session.update(part);
                                                              session.getTransaction().commit();
                                                              vector.setElementAt(value, col);
@@ -2003,6 +2170,9 @@ public class Autorizacion extends javax.swing.JPanel {
                                                          if(part!=null)
                                                          {
                                                              part.setIntPinMed(Double.parseDouble(value.toString()));
+                                                             Catalogo catalogo=part.getCatalogo();
+                                                             catalogo.setCPinMed(Double.parseDouble(value.toString()));
+                                                             session.update(catalogo);
                                                              session.update(part);
                                                              session.getTransaction().commit();
                                                              vector.setElementAt(value, col);
@@ -2072,6 +2242,9 @@ public class Autorizacion extends javax.swing.JPanel {
                                                          if(part!=null)
                                                          {
                                                              part.setIntPinMax(Double.parseDouble(value.toString()));
+                                                             Catalogo catalogo=part.getCatalogo();
+                                                             catalogo.setCPinMax(Double.parseDouble(value.toString()));
+                                                             session.update(catalogo);
                                                              session.update(part);
                                                              session.getTransaction().commit();
                                                              vector.setElementAt(value, col);
@@ -2219,5 +2392,28 @@ public class Autorizacion extends javax.swing.JPanel {
             for(i=0; i<celdaEditable[columna].length; i++)
                 this.celdaEditable[ columna ][ i ] = editable;
         }
+    }
+    
+    public void validaCerrado()
+    {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try
+        {
+              ord = (Orden)session.get(Orden.class, Integer.parseInt(orden));
+             if(ord.getRLevantamientoCierre()==null)
+                  r_cerrar.setSelected(false);
+             else
+                  r_cerrar.setSelected(true);
+        }catch(Exception e)
+        {
+             e.printStackTrace();
+        }
+        if(session!=null)
+             if(session.isOpen()==true)
+             {
+                 session.flush();
+                 session.clear();
+                 session.close();
+             }
     }
 }

@@ -215,43 +215,49 @@ public class altaCatalogo extends javax.swing.JDialog {
         {
             if(c_gm.getItemCount()>0)
             {
-                Session session = HibernateUtil.getSessionFactory().openSession();
-                try 
+                if(c_gm.getSelectedItem().toString().compareTo("BUSCAR")!=0)
                 {
-                    session.beginTransaction();
-                    if(consultaNombre()==false)
+                    Session session = HibernateUtil.getSessionFactory().openSession();
+                    try 
                     {
-                        Catalogo cat= new Catalogo();
-                        cat.setNombre(t_nombre.getText());
-                        c_gm.getSelectedIndex();
-                        Especialidad registro = (Especialidad)session.get(Especialidad.class,especialidad[c_gm.getSelectedIndex()]);
-                        cat.setEspecialidad(registro);
-                        Integer ID=(Integer) session.save(cat);
-                        session.getTransaction().commit();
-                        returnStatus=cat;
-                        if(ID!=null)
+                        session.beginTransaction();
+                        if(consultaNombre()==false)
                         {
-                            JOptionPane.showMessageDialog(null, "Registro almacenado");
-                            borra_cajas();
-                            t_nombre.requestFocus();
+                            Catalogo cat= new Catalogo();
+                            cat.setNombre(t_nombre.getText());
+                            c_gm.getSelectedIndex();
+                            Especialidad registro = (Especialidad)session.get(Especialidad.class,especialidad[c_gm.getSelectedIndex()]);
+                            cat.setEspecialidad(registro);
+                            cat.setActual(true);
+                            Integer ID=(Integer) session.save(cat);
+                            session.getTransaction().commit();
+                            returnStatus=cat;
+                            if(ID!=null)
+                            {
+                                JOptionPane.showMessageDialog(null, "Registro almacenado");
+                                borra_cajas();
+                                t_nombre.requestFocus();
+                            }
+                        }
+                        else
+                        {
+                            session.getTransaction().rollback();
+                            JOptionPane.showMessageDialog(null, "¡La descripción ya existe!");
                         }
                     }
-                    else
+                    catch (HibernateException he) 
                     {
+                        he.printStackTrace();
                         session.getTransaction().rollback();
-                        JOptionPane.showMessageDialog(null, "¡La descripción ya existe!");
+                        JOptionPane.showMessageDialog(null, "Error al guardar");
                     }
+                    finally 
+                     {
+                        session.close(); 
+                     }
                 }
-                catch (HibernateException he) 
-                {
-                    he.printStackTrace();
-                    session.getTransaction().rollback();
-                    JOptionPane.showMessageDialog(null, "Error al guardar");
-                }
-                finally 
-                 {
-                    session.close(); 
-                 }
+                else
+                    JOptionPane.showMessageDialog(null, "¡Debe seleccionar un grupo mecánico!");
             }
             else
                 JOptionPane.showMessageDialog(null, "¡Debe dar de alta primero grupo mecánico!");
@@ -308,12 +314,14 @@ public class altaCatalogo extends javax.swing.JDialog {
     
     public void cargaEspecialidad()
     {
-        List <Object[]> resultList=executeHQLQuery("from Especialidad");
+        List <Object[]> resultList=executeHQLQuery("from Especialidad where plantilla=1");
         if(resultList.size()>0)
         {
             c_gm.removeAllItems();
-            especialidad= new int [resultList.size()];
-            int x=0;
+            especialidad= new int [resultList.size()+1];
+            especialidad[0]=0;
+            int x=1;
+            c_gm.addItem("BUSCAR");
             for (Object o : resultList)
             {
                 Especialidad actor = (Especialidad) o;
@@ -326,7 +334,7 @@ public class altaCatalogo extends javax.swing.JDialog {
     
     private boolean consultaNombre()
     {
-        List <Object[]> resultList=executeHQLQuery("from Catalogo obj where obj.nombre='"+t_nombre.getText()+"'");
+        List <Object[]> resultList=executeHQLQuery("from Catalogo obj where obj.nombre='"+t_nombre.getText()+"' and actual=1");
         if(resultList.size()>0)
             return true;
         else

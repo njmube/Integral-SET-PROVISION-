@@ -19,9 +19,12 @@ import javax.swing.JOptionPane;
 import Hibernate.entidades.Catalogo;
 import Hibernate.entidades.Usuario;
 import java.awt.Color;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 import java.awt.event.KeyEvent;
 import java.util.Vector;
 import javax.swing.ImageIcon;
+import javax.swing.JScrollBar;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
@@ -46,6 +49,9 @@ public class buscaCatalogo extends javax.swing.JDialog {
     String sessionPrograma="";
     Herramientas h;
     Usuario usr;
+    int inicio=0;
+    boolean parar=false;
+    final JScrollBar scrollBar;
     
     /** Creates new form acceso */
     public buscaCatalogo(java.awt.Frame parent, boolean modal, String ses, Usuario usuario) {
@@ -53,12 +59,26 @@ public class buscaCatalogo extends javax.swing.JDialog {
         sessionPrograma=ses;
         usr=usuario;
         initComponents();
+        formatoTabla();
+        scrollBar = scroll.getVerticalScrollBar();
+        scrollBar.addAdjustmentListener(new AdjustmentListener() {
+            public void adjustmentValueChanged(AdjustmentEvent ae) {
+                if(parar==false)
+                {
+                    int extent = scrollBar.getModel().getExtent();
+                    extent+=scrollBar.getValue();
+                    if(extent==scrollBar.getMaximum())
+                    {
+                        String consulta="from Catalogo cat where cat.nombre like '%" + t_busca.getText() +"%' and actual=1 ORDER BY cat.especialidad.descripcion ";            
+                        List <Object[]> resultList=executeHQLQuery(consulta);
+                    }
+                }
+            }
+          });
         getRootPane().setDefaultButton(jButton1);
         //formatoTabla();
-        //t_datos.setModel(ModeloTablaReporte(0, columnas));
-        //t_busca.requestFocus();
         t_datos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        String consulta="from Catalogo cat where cat.nombre like '%" + t_busca.getText() +"%' ORDER BY cat.especialidad.descripcion, cat.nombre ";            
+        String consulta="from Catalogo cat where cat.nombre like '%" + t_busca.getText() +"%' and actual=1 ORDER BY cat.especialidad.descripcion ";            
         List <Object[]> resultList=executeHQLQuery(consulta);
     }
     
@@ -124,7 +144,7 @@ public class buscaCatalogo extends javax.swing.JDialog {
         t_busca = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        scroll = new javax.swing.JScrollPane();
         t_datos = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
 
@@ -202,7 +222,7 @@ public class buscaCatalogo extends javax.swing.JDialog {
                 t_datosKeyPressed(evt);
             }
         });
-        jScrollPane1.setViewportView(t_datos);
+        scroll.setViewportView(t_datos);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -210,13 +230,13 @@ public class buscaCatalogo extends javax.swing.JDialog {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 563, Short.MAX_VALUE)
+                .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 563, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(scroll, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -273,7 +293,9 @@ public class buscaCatalogo extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void t_buscaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_buscaKeyReleased
-        String consulta="from Catalogo cat where cat.nombre like '%" + t_busca.getText() +"%' ORDER BY cat.especialidad.descripcion, cat.nombre ";            
+        inicio=0;
+        parar=false;
+        String consulta="from Catalogo cat where cat.nombre like '%" + t_busca.getText() +"%' and actual = 1 ORDER BY cat.especialidad.descripcion ";            
         List <Object[]> resultList=executeHQLQuery(consulta);
     }//GEN-LAST:event_t_buscaKeyReleased
 
@@ -286,9 +308,13 @@ public class buscaCatalogo extends javax.swing.JDialog {
         {
             if(t_datos.getSelectedRow()>=0)
             {
+                session.getTransaction().begin();
                 Catalogo op= new Catalogo();
                 op.setIdCatalogo(Integer.parseInt(t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString()));
                 op.setNombre(t_datos.getValueAt(t_datos.getSelectedRow(), 1).toString());
+                session.getTransaction().rollback();
+                if(session.isOpen())
+                    session.close();
                 doClose(op);
             }
             else
@@ -322,33 +348,42 @@ public class buscaCatalogo extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane scroll;
     public javax.swing.JTextField t_busca;
     private javax.swing.JTable t_datos;
     // End of variables declaration//GEN-END:variables
 
     private List<Object[]> executeHQLQuery(String hql) {
         try {
+            int siguente=inicio+20;
             Session session = HibernateUtil.getSessionFactory().openSession();
             session.beginTransaction();
             Query q = session.createQuery(hql);
+            q.setFirstResult(inicio);
+            q.setMaxResults(20);
             List resultList = q.list();
             if(resultList.size()>0)
             {
-                t_datos.setModel(ModeloTablaReporte(resultList.size(), columnas));
-                int i=0;
+                DefaultTableModel modelo= (DefaultTableModel)t_datos.getModel();
+                if(inicio==0)
+                    modelo.setNumRows(0);
                 for (Object o : resultList) 
                 {
                     Catalogo actor = (Catalogo) o;
-                    model.setValueAt(actor.getIdCatalogo(), i, 0);
-                    model.setValueAt(actor.getNombre(), i, 1);
-                    model.setValueAt(actor.getEspecialidad().getDescripcion(), i, 2);
-                    i++;
+                    modelo.addRow(new Object[]{actor.getIdCatalogo(), actor.getNombre(), actor.getEspecialidad().getDescripcion()});
                 }
+                inicio=siguente;
             }
             else
-                t_datos.setModel(ModeloTablaReporte(0, columnas));
-            formatoTabla();
+            {
+                parar=true;
+                if(inicio==0)
+                {
+                    DefaultTableModel modelo= (DefaultTableModel)t_datos.getModel();
+                    modelo.setNumRows(0);
+                }
+            }
+            //formatoTabla();
             session.getTransaction().commit();
             session.disconnect();
             return resultList;

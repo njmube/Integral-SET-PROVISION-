@@ -55,7 +55,7 @@ public class buscaExcel extends javax.swing.JDialog {
     public Orden orden_act = null;
     private static javax.swing.JCheckBox ok;
     public static final String[] DATA = {"R", "C"};
-    public static final String[] MEDIDA = {"PZAS", "GAL", "LTS", "MTS", "KGS", "KIT"};
+    public static final String[] MEDIDA = {"PZAS", "GAL", "LTS", "MTS", "KGS", "KIT","HRA","NA"};
     JComboBox comboBox = new JComboBox(DATA);
     JComboBox medida = new JComboBox(MEDIDA);
     boolean respuesta = false;
@@ -409,6 +409,7 @@ public class buscaExcel extends javax.swing.JDialog {
                     Sheet hoja = libro1.getSheetAt(0);
                     Iterator<Row> rowIter = hoja.rowIterator();
                     model.setRowCount(valor);
+                    r=0;
                     while (rowIter.hasNext()) {
                         int i = 0;
                         HSSFRow myRow = (HSSFRow) rowIter.next();

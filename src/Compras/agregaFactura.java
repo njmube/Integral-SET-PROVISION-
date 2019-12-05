@@ -52,11 +52,15 @@ public class agregaFactura extends javax.swing.JDialog {
     Usuario user;
     editaPedido edita_pedidos;
     Herramientas h;
+    String rutaFTP;
+    int configuracion=1;
     
     /** Creates new form acceso */
-    public agregaFactura(java.awt.Frame parent, boolean modal, int tipo, String sessionP, Usuario usr) {
+    public agregaFactura(java.awt.Frame parent, boolean modal, int tipo, String sessionP, Usuario usr, int configuracion, String carpeta) {
         super(parent, modal);
         initComponents();
+        rutaFTP=carpeta;
+        this.configuracion=configuracion;
         scroll.getVerticalScrollBar().setUI(new VerticalBarUI());
         scroll.getHorizontalScrollBar().setUI(new HorizontalBarUI());
         getRootPane().setDefaultButton(jButton5);
@@ -379,7 +383,7 @@ public class agregaFactura extends javax.swing.JDialog {
             {
                 h=new Herramientas(user, 20);
                 h.session(sessionPrograma);
-                edita_pedidos = new editaPedido(user, sessionPrograma, ped, 20);
+                edita_pedidos = new editaPedido(user, sessionPrograma, ped, 20, configuracion, rutaFTP);
                 ventana.setSize(1108, 530);
                 ventana.add(edita_pedidos);
                 ventana.repaint();
@@ -470,17 +474,21 @@ public class agregaFactura extends javax.swing.JDialog {
                 {
                     if(t_busca.getText().compareTo("")==0)
                     {
-                        consulta+=" where obj.usuarioByAutorizo!=null and obj.usuarioByAutorizo2!=null";
+                        //consulta+=" where obj.usuarioByAutorizo!=null and obj.usuarioByAutorizo2!=null";
+                        consulta+=" where obj.usuarioByAutorizo2!=null";
                     }
                     else
                     {
                         if(c_filtro.getSelectedItem().toString().compareTo("O. Taller")==0)
-                            aux+=" and obj.usuarioByAutorizo!=null and obj.usuarioByAutorizo2!=null";
-                        consulta+=" and obj.usuarioByAutorizo!=null and obj.usuarioByAutorizo2!=null";
+                            aux+=" and obj.usuarioByAutorizo2!=null";
+                            //aux+=" and obj.usuarioByAutorizo!=null and obj.usuarioByAutorizo2!=null";
+                        consulta+=" and obj.usuarioByAutorizo2!=null";
+                        //consulta+=" and obj.usuarioByAutorizo!=null and obj.usuarioByAutorizo2!=null";
                     }
                 }
                 else
-                    consulta+=" where obj.usuarioByAutorizo!=null and obj.usuarioByAutorizo2!=null";
+                    consulta+=" where obj.usuarioByAutorizo2!=null";
+                    //consulta+=" where obj.usuarioByAutorizo!=null and obj.usuarioByAutorizo2!=null";
             }
             Session session = HibernateUtil.getSessionFactory().openSession();
             try

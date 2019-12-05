@@ -13,6 +13,7 @@ public class Marca  implements java.io.Serializable {
 
      private String idMarca;
      private String marcaNombre;
+     private int ejemplar;
      private Set ordens = new HashSet(0);
      private Set ejemplars = new HashSet(0);
      private Set ordenExternas = new HashSet(0);
@@ -25,9 +26,10 @@ public class Marca  implements java.io.Serializable {
         this.idMarca = idMarca;
         this.marcaNombre = marcaNombre;
     }
-    public Marca(String idMarca, String marcaNombre, Set ordens, Set ejemplars, Set ordenExternas) {
+    public Marca(String idMarca, String marcaNombre, int ejemplar, Set ordens, Set ejemplars, Set ordenExternas) {
        this.idMarca = idMarca;
        this.marcaNombre = marcaNombre;
+       this.ejemplar = ejemplar;
        this.ordens = ordens;
        this.ejemplars = ejemplars;
        this.ordenExternas = ordenExternas;
@@ -46,6 +48,13 @@ public class Marca  implements java.io.Serializable {
     
     public void setMarcaNombre(String marcaNombre) {
         this.marcaNombre = marcaNombre;
+    }
+    public int getEjemplar() {
+        return this.ejemplar;
+    }
+    
+    public void setEjemplar(int ejemplar) {
+        this.ejemplar=ejemplar;
     }
     public Set getOrdens() {
         return this.ordens;

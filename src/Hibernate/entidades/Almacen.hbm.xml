@@ -55,6 +55,9 @@
         <property name="especialidad" type="string">
             <column name="especialidad" length="1" />
         </property>
+        <property name="almacen" type="string">
+            <column name="almacen" length="1" />
+        </property>
         <set name="movimientos" table="movimiento" inverse="true" lazy="true" fetch="select" cascade="all">
             <key>
                 <column name="id_almacen" />

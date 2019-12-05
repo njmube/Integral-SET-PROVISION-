@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 25/09/2017 04:58:24 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.UsoCfdi" table="uso_cfdi" >
+        <id name="idUsoCfdi" type="string">
+            <column name="id_uso_cfdi" length="6" />
+            <generator class="assigned" />
+        </id>
+        <property name="descripcion" type="string">
+            <column name="descripcion" length="200" />
+        </property>
+        <property name="fisica" type="string">
+            <column name="fisica" length="2" />
+        </property>
+        <property name="moral" type="string">
+            <column name="moral" length="2" />
+        </property>
+        <property name="fechaInicioVigencia" type="date">
+            <column name="fecha_inicio_vigencia" length="10" />
+        </property>
+        <property name="fechaFinVigencia" type="date">
+            <column name="fecha_fin_vigencia" length="10" />
+        </property>
+        <set name="clienteses" table="clientes" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_uso_cfdi" length="6" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Clientes" />
+        </set>
+        <set name="companias" table="compania" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_uso_cfdi" length="6" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Compania" />
+        </set>
+        <set name="proveedors" table="proveedor" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_uso_cfdi" length="6" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Proveedor" />
+        </set>
+        <set name="pagos" table="pago" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_uso_cfdi" length="6" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Pago" />
+        </set>
+    </class>
+</hibernate-mapping>

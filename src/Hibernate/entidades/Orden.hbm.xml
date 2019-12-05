@@ -28,9 +28,9 @@
                 <comment>Marca de la Unidad</comment>
             </column>
         </many-to-one>
-        <many-to-one name="usuarioByRAutorizacionInternaAsigno" class="Hibernate.entidades.Usuario" fetch="select">
-            <column name="r_autorizacion_interna_asigno" length="10">
-                <comment>Usuario que dio la autorizaci&#243;n</comment>
+        <many-to-one name="usuarioByRPrefacturaAsigno" class="Hibernate.entidades.Usuario" fetch="select">
+            <column name="r_prefactura_asigno" length="10">
+                <comment>Usuario que genero la prefactura</comment>
             </column>
         </many-to-one>
         <many-to-one name="compania" class="Hibernate.entidades.Compania" fetch="select">
@@ -188,6 +188,11 @@
                 <comment>ciclo al cual pertenece la orden</comment>
             </column>
         </many-to-one>
+        <many-to-one name="servicio" class="Hibernate.entidades.Servicio" fetch="select">
+            <column name="id_plantilla">
+                <comment>plantilla para valuacion de la orden</comment>
+            </column>
+        </many-to-one>
         <many-to-one name="empleadoByRPintura" class="Hibernate.entidades.Empleado" fetch="select">
             <column name="r_pintura">
                 <comment>12.1.- Responsable de reparaci&#243;n de pintura</comment>
@@ -284,13 +289,13 @@
                 <comment>Fecha en la que se asigno el estatus</comment>
             </column>
         </property>
-        <property name="fechaTaller" type="date">
-            <column name="fecha_taller" length="10">
+        <property name="fechaTaller" type="timestamp">
+            <column name="fecha_taller" length="19">
                 <comment>Fecha para entregar la unidad Taller (Interna)</comment>
             </column>
         </property>
-        <property name="fechaCliente" type="date">
-            <column name="fecha_cliente" length="10">
+        <property name="fechaCliente" type="timestamp">
+            <column name="fecha_cliente" length="19">
                 <comment>Fecha para entregar la unidad al cliente (externa)</comment>
             </column>
         </property>
@@ -324,9 +329,9 @@
                 <comment>5.- indica si ya se tiene la autorizaci&#243;n del cliente para la reparacion</comment>
             </column>
         </property>
-        <property name="RAutorizacionInterna" type="timestamp">
-            <column name="r_autorizacion_interna" length="19">
-                <comment>5.- Fecha en que se autorizo la reparaci&#243;n interna</comment>
+        <property name="RPrefactura" type="timestamp">
+            <column name="r_prefactura" length="19">
+                <comment>5.- Fecha en que se genero prefactura</comment>
             </column>
         </property>
         <property name="RValuacionInicio" type="timestamp">
@@ -349,8 +354,8 @@
                 <comment>10.- fecha de cierre de valuaci&#243;n</comment>
             </column>
         </property>
-        <property name="metaValuacion" type="date">
-            <column name="meta_valuacion" length="10">
+        <property name="metaValuacion" type="timestamp">
+            <column name="meta_valuacion" length="19">
                 <comment>fecha optima para terminar la valuaci&#243;n</comment>
             </column>
         </property>
@@ -364,8 +369,8 @@
                 <comment>Fecha de cierre de Refacciones</comment>
             </column>
         </property>
-        <property name="metaRefacciones" type="date">
-            <column name="meta_refacciones" length="10">
+        <property name="metaRefacciones" type="timestamp">
+            <column name="meta_refacciones" length="19">
                 <comment>Meta para cierre de refacciones</comment>
             </column>
         </property>
@@ -391,8 +396,8 @@
                 <comment>Fecha de cierre de la reparaci&#243;n</comment>
             </column>
         </property>
-        <property name="metaReparacion" type="date">
-            <column name="meta_reparacion" length="10">
+        <property name="metaReparacion" type="timestamp">
+            <column name="meta_reparacion" length="19">
                 <comment>Meta para terminar la reparaci&#243;n.</comment>
             </column>
         </property>
@@ -464,6 +469,9 @@
         </property>
         <property name="vales" type="java.lang.Double">
             <column name="vales" precision="22" scale="0" />
+        </property>
+        <property name="valesConsumibles" type="java.lang.Double">
+            <column name="vales_consumibles" precision="22" scale="0" />
         </property>
         <property name="RPinturaFecha" type="timestamp">
             <column name="r_pintura_fecha" length="19" />
@@ -554,6 +562,9 @@
         <property name="DPintura" type="java.lang.Boolean">
             <column name="d_pintura" />
         </property>
+        <property name="garantia" type="string">
+            <column name="garantia" length="6" />
+        </property>
         <set name="consumibles" table="consumible" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="id_orden" />
@@ -610,12 +621,7 @@
             </key>
             <one-to-many class="Hibernate.entidades.PagoAdicional" />
         </set>
-        <set name="inventarios" table="inventario" inverse="true" lazy="true" fetch="select">
-            <key>
-                <column name="id_orden" />
-            </key>
-            <one-to-many class="Hibernate.entidades.Inventario" />
-        </set>
+        
         <set name="facturas" table="factura" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="id_orden">
@@ -629,6 +635,12 @@
                 <column name="id_orden" not-null="true" />
             </key>
             <one-to-many class="Hibernate.entidades.Foto" />
+        </set>
+        <set name="historialFechas" table="historial_fecha" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_orden" />
+            </key>
+            <one-to-many class="Hibernate.entidades.HistorialFecha" />
         </set>
         <set name="mensajes" table="mensaje" inverse="true" lazy="true" fetch="select">
             <key>
@@ -644,6 +656,12 @@
             </key>
             <one-to-many class="Hibernate.entidades.Partida" />
         </set>
+        <set name="inventarioses" table="inventarios" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_orden" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Inventarios" />
+        </set>
         <set name="pedidos" table="pedido" inverse="true" lazy="true" fetch="select" cascade="save-update">
             <key>
                 <column name="id_orden">
@@ -651,6 +669,14 @@
                 </column>
             </key>
             <one-to-many class="Hibernate.entidades.Pedido" />
+        </set>
+        <set name="trabajoExtras" table="trabajo_extra" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_orden">
+                    <comment>orden</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.TrabajoExtra" />
         </set>
     </class>
 </hibernate-mapping>

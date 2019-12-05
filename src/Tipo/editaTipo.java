@@ -114,7 +114,6 @@ public class editaTipo extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         t_datos = new javax.swing.JTable();
         bt_actualiza1 = new javax.swing.JButton();
-        Selecciona2 = new javax.swing.JButton();
         Eliminar1 = new javax.swing.JButton();
         Selecciona3 = new javax.swing.JButton();
         bt_actualiza2 = new javax.swing.JButton();
@@ -173,18 +172,6 @@ public class editaTipo extends javax.swing.JPanel {
         bt_actualiza1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 bt_actualiza1ActionPerformed(evt);
-            }
-        });
-
-        Selecciona2.setBackground(new java.awt.Color(2, 135, 242));
-        Selecciona2.setForeground(new java.awt.Color(254, 254, 254));
-        Selecciona2.setIcon(new ImageIcon("imagenes/update-user.png"));
-        Selecciona2.setText("Seleccionar");
-        Selecciona2.setToolTipText("Seleccionar un registro de la tabla para editar");
-        Selecciona2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        Selecciona2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Selecciona2ActionPerformed(evt);
             }
         });
 
@@ -256,9 +243,7 @@ public class editaTipo extends javax.swing.JPanel {
                         .addComponent(bt_actualiza2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(bt_actualiza1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(Selecciona2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(99, 99, 99)
                         .addComponent(Eliminar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(Selecciona3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -273,7 +258,7 @@ public class editaTipo extends javax.swing.JPanel {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(t_busca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -282,7 +267,6 @@ public class editaTipo extends javax.swing.JPanel {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(Selecciona3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(Eliminar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Selecciona2)
                     .addComponent(bt_actualiza1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(bt_actualiza2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
@@ -468,24 +452,6 @@ public class editaTipo extends javax.swing.JPanel {
         buscaDato();
     }//GEN-LAST:event_bt_actualiza1ActionPerformed
 
-    private void Selecciona2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Selecciona2ActionPerformed
-        h=new Herramientas(usr, 0);
-        h.session(sessionPrograma);
-        if(t_datos.getSelectedRow()>=0)
-        {
-            borra_cajas();
-            String nom = (String) t_datos.getValueAt(t_datos.getSelectedRow(), 0);
-            Nombre.setText(nom);
-            ic=nom;
-            Boolean ep = (Boolean) t_datos.getValueAt(t_datos.getSelectedRow(), 1);
-            cb_ep.setSelected(ep);
-            im=ep;
-            cajas(true, true, true, true);
-        }
-        else
-            JOptionPane.showMessageDialog(null, "¡No hay un tipo seleccionado!");
-    }//GEN-LAST:event_Selecciona2ActionPerformed
-
     private void Eliminar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Eliminar1ActionPerformed
         h=new Herramientas(usr, 0);
         h.session(sessionPrograma);
@@ -640,7 +606,6 @@ public class editaTipo extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Eliminar1;
     public javax.swing.JTextField Nombre;
-    private javax.swing.JButton Selecciona2;
     private javax.swing.JButton Selecciona3;
     private javax.swing.JButton b_busca;
     private javax.swing.JButton b_cancelar1;

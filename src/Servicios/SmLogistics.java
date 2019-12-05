@@ -16,6 +16,7 @@ import Hibernate.entidades.Notificacion;
 import Hibernate.entidades.Orden;
 import Hibernate.entidades.Usuario;
 import Integral.ExtensionFileFilter;
+import Integral.Ftp;
 import Integral.Herramientas;
 import Integral.PDF;
 import Integral.PeticionPost;
@@ -807,32 +808,37 @@ public class SmLogistics extends javax.swing.JPanel {
                         if(ext.length>0)
                             nom+="."+ext[ext.length-1];
                         
-                        File folder = new File(ruta+"ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/");
-                        folder.mkdirs();
-                        destino = new File(ruta+"ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/"+nom);
-                            
-                        int opt=1;
-                        if(destino.exists())
-                            opt=JOptionPane.showConfirmDialog(this, "Ya existe un archivo ¿Desea remplazarlo?");
-                        else
-                            opt=0;
-                        if(opt==0)
+                        Ftp miFtp=new Ftp();
+                        boolean respuesta=true;
+                        respuesta=miFtp.conectar(ruta, "compras", "04650077", 3310);
+                        if(respuesta==true){
+                            if(!miFtp.cambiarDirectorio("/ordenes"))
+                                if(miFtp.crearDirectorio("/ordenes"))
+                                    miFtp.cambiarDirectorio("/ordenes");
+                            miFtp.cambiarDirectorio(miFtp.raiz);
+                            if(!miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()))
+                                if(miFtp.crearDirectorio("/ordenes/"+orden_act.getIdOrden()))
+                                    miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden());
+                            miFtp.cambiarDirectorio(miFtp.raiz);
+                            if(!miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos"))
+                                if(miFtp.crearDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos"))
+                                    miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos");
+                            miFtp.cambiarDirectorio(miFtp.raiz);
+                            if(!miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/"))
+                                if(miFtp.crearDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/"))
+                                    miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/");
+                        }
+
+                        try
                         {
-                            try
+                            respuesta=miFtp.subirArchivo(archivo.getPath(), nom);
+                            if(respuesta==true)
                             {
-                                InputStream in = new FileInputStream(archivo);
-                                OutputStream out = new FileOutputStream(destino);
-                                byte[] buf = new byte[1024];
-                                int len;
-                                while ((len = in.read(buf)) > 0) 
-                                    out.write(buf, 0, len);
-                                in.close();
-                                out.close();
                                 session.beginTransaction().begin();
                                 orden_act = (Orden)session.get(Orden.class, orden_act.getIdOrden()); 
                                 orden_act.setInventario(nom);
                                 session.saveOrUpdate(orden_act);
-                                
+
                                 //creamos las notificaciones**************
                                 ArrayList<Acceso> accesos=new ArrayList();
                                 Acceso [] aux1 = (Acceso[])orden_act.getClientes().getAccesos().toArray(new Acceso[0]);
@@ -883,15 +889,18 @@ public class SmLogistics extends javax.swing.JPanel {
                                     session.beginTransaction().commit();
                                     JOptionPane.showMessageDialog(this, "Se archivo fue cargado con exito");
                                 }
-                                
-                                //****************************************
-                                agregaArchivo(nom, b_inventario);
-                            }    
-                            catch(Exception e)
+                            }else
                             {
-                                e.printStackTrace();
-                                javax.swing.JOptionPane.showMessageDialog(null, "Error no se pudo eliminar el archivo NO° Error:3");
+                                JOptionPane.showMessageDialog(this, "No fue posible subir el archivo");
                             }
+
+                            //****************************************
+                            agregaArchivo(nom, b_inventario);
+                        }    
+                        catch(Exception e)
+                        {
+                            e.printStackTrace();
+                            javax.swing.JOptionPane.showMessageDialog(null, "Error no se pudo eliminar el archivo NO° Error:3");
                         }
                     }
                 }
@@ -1012,32 +1021,36 @@ public class SmLogistics extends javax.swing.JPanel {
                         if(ext.length>0)
                             nom+="."+ext[ext.length-1];
                         
-                        File folder = new File(ruta+"ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/");
-                        folder.mkdirs();
-                        destino = new File(ruta+"ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/"+nom);
-                            
-                        int opt=1;
-                        if(destino.exists())
-                            opt=JOptionPane.showConfirmDialog(this, "Ya existe un archivo ¿Desea remplazarlo?");
-                        else
-                            opt=0;
-                        if(opt==0)
+                        Ftp miFtp=new Ftp();
+                        boolean respuesta=true;
+                        respuesta=miFtp.conectar(ruta, "compras", "04650077", 3310);
+                        if(respuesta==true){
+                            if(!miFtp.cambiarDirectorio("/ordenes"))
+                                if(miFtp.crearDirectorio("/ordenes"))
+                                    miFtp.cambiarDirectorio("/ordenes");
+                            miFtp.cambiarDirectorio(miFtp.raiz);
+                            if(!miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()))
+                                if(miFtp.crearDirectorio("/ordenes/"+orden_act.getIdOrden()))
+                                    miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden());
+                            miFtp.cambiarDirectorio(miFtp.raiz);
+                            if(!miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos"))
+                                if(miFtp.crearDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos"))
+                                    miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos");
+                            miFtp.cambiarDirectorio(miFtp.raiz);
+                            if(!miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/"))
+                                if(miFtp.crearDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/"))
+                                    miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/");
+                        }
+                        try
                         {
-                            try
+                            respuesta=miFtp.subirArchivo(archivo.getPath(), nom);
+                            if(respuesta==true)
                             {
-                                InputStream in = new FileInputStream(archivo);
-                                OutputStream out = new FileOutputStream(destino);
-                                byte[] buf = new byte[1024];
-                                int len;
-                                while ((len = in.read(buf)) > 0) 
-                                    out.write(buf, 0, len);
-                                in.close();
-                                out.close();
                                 session.beginTransaction().begin();
                                 orden_act = (Orden)session.get(Orden.class, orden_act.getIdOrden()); 
                                 orden_act.setDesgaste(nom);
                                 session.saveOrUpdate(orden_act);
-                                
+
                                 //creamos las notificaciones**************
                                 ArrayList<Acceso> accesos=new ArrayList();
                                 Acceso [] aux1 = (Acceso[])orden_act.getClientes().getAccesos().toArray(new Acceso[0]);
@@ -1052,7 +1065,7 @@ public class SmLogistics extends javax.swing.JPanel {
                                     aux1 = (Acceso[])orden_act.getAgente().getAccesos().toArray(new Acceso[0]);
                                     accesos.addAll(Arrays.asList(aux1));
                                 }
-                                
+
                                     String notificaciones="{\"NOTIFICACIONES\":[";
                                     for(int a=0; a<accesos.size(); a++)
                                     {
@@ -1082,15 +1095,19 @@ public class SmLogistics extends javax.swing.JPanel {
                                         System.out.println("error");
                                         JOptionPane.showMessageDialog(this, "El archivo fue cargado con exito pero no se pudo notificar al cliente.");
                                     }
-                                
+
                                 //****************************************
                                 agregaArchivo(nom, b_desgaste);
-                            }    
-                            catch(Exception e)
-                            {
-                                e.printStackTrace();
-                                javax.swing.JOptionPane.showMessageDialog(null, "Error no se pudo eliminar el archivo NO° Error:3");
                             }
+                            else
+                            {
+                                JOptionPane.showMessageDialog(this, "No fue posible subir el archivo");
+                            }
+                        }    
+                        catch(Exception e)
+                        {
+                            e.printStackTrace();
+                            javax.swing.JOptionPane.showMessageDialog(null, "Error no se pudo eliminar el archivo NO° Error:3");
                         }
                     }
                 }
@@ -1294,7 +1311,7 @@ public class SmLogistics extends javax.swing.JPanel {
     }//GEN-LAST:event_b_pago_formatoActionPerformed
 
     private void b_pago_cargaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_pago_cargaActionPerformed
-        // TODO add your handling code here:
+        // TODO add your handling code here:        
         Session session = HibernateUtil.getSessionFactory().openSession();
             try
             {
@@ -1326,27 +1343,32 @@ public class SmLogistics extends javax.swing.JPanel {
                         if(ext.length>0)
                             nom+="."+ext[ext.length-1];
                         
-                        File folder = new File(ruta+"ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/");
-                        folder.mkdirs();
-                        destino = new File(ruta+"ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/"+nom);
-                            
-                        int opt=1;
-                        if(destino.exists())
-                            opt=JOptionPane.showConfirmDialog(this, "Ya existe un archivo ¿Desea remplazarlo?");
-                        else
-                            opt=0;
-                        if(opt==0)
+                        Ftp miFtp=new Ftp();
+                        boolean respuesta=true;
+                        respuesta=miFtp.conectar(ruta, "compras", "04650077", 3310);
+                        if(respuesta==true){
+                            if(!miFtp.cambiarDirectorio("/ordenes"))
+                                if(miFtp.crearDirectorio("/ordenes"))
+                                    miFtp.cambiarDirectorio("/ordenes");
+                            miFtp.cambiarDirectorio(miFtp.raiz);
+                            if(!miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()))
+                                if(miFtp.crearDirectorio("/ordenes/"+orden_act.getIdOrden()))
+                                    miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden());
+                            miFtp.cambiarDirectorio(miFtp.raiz);
+                            if(!miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos"))
+                                if(miFtp.crearDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos"))
+                                    miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos");
+                            miFtp.cambiarDirectorio(miFtp.raiz);
+                            if(!miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/"))
+                                if(miFtp.crearDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/"))
+                                    miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/");
+                        }
+
+                        try
                         {
-                            try
+                            respuesta=miFtp.subirArchivo(archivo.getPath(), nom);
+                            if(respuesta==true)
                             {
-                                InputStream in = new FileInputStream(archivo);
-                                OutputStream out = new FileOutputStream(destino);
-                                byte[] buf = new byte[1024];
-                                int len;
-                                while ((len = in.read(buf)) > 0) 
-                                    out.write(buf, 0, len);
-                                in.close();
-                                out.close();
                                 session.beginTransaction().begin();
                                 orden_act = (Orden)session.get(Orden.class, orden_act.getIdOrden()); 
                                 orden_act.setPago(nom);
@@ -1388,7 +1410,7 @@ public class SmLogistics extends javax.swing.JPanel {
                                     notificaciones+="]}";
                                     session.beginTransaction().commit();
                                     try{
-                                    PeticionPost service=new PeticionPost("http://tracto.ddns.net:8085/integral/service/api.php");
+                                    PeticionPost service=new PeticionPost("http://tbstoluca.ddns.net:8085/integral/service/api.php");
                                     service.add("METODO", "NOTIFICACION.MENSAJE");
                                     service.add("NOTIFICACIONES", notificaciones);
                                     System.out.println(service.getRespueta());
@@ -1402,15 +1424,18 @@ public class SmLogistics extends javax.swing.JPanel {
                                     session.beginTransaction().commit();
                                     JOptionPane.showMessageDialog(this, "Se archivo fue cargado con exito");
                                 }
-                                
-                                //****************************************
-                                agregaArchivo(nom, b_pago);
-                            }    
-                            catch(Exception e)
+                            }else
                             {
-                                e.printStackTrace();
-                                javax.swing.JOptionPane.showMessageDialog(null, "Error no se pudo eliminar el archivo NO° Error:3");
+                                JOptionPane.showMessageDialog(this, "No fue posible subir el archivo");
                             }
+
+                            //****************************************
+                            agregaArchivo(nom, b_pago);
+                        }    
+                        catch(Exception e)
+                        {
+                            e.printStackTrace();
+                            javax.swing.JOptionPane.showMessageDialog(null, "Error no se pudo eliminar el archivo NO° Error:3");
                         }
                     }
                 }
@@ -1526,32 +1551,36 @@ public class SmLogistics extends javax.swing.JPanel {
                         if(ext.length>0)
                             nom+="."+ext[ext.length-1];
                         
-                        File folder = new File(ruta+"ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/");
-                        folder.mkdirs();
-                        destino = new File(ruta+"ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/"+nom);
-                            
-                        int opt=1;
-                        if(destino.exists())
-                            opt=JOptionPane.showConfirmDialog(this, "Ya existe un archivo ¿Desea remplazarlo?");
-                        else
-                            opt=0;
-                        if(opt==0)
+                        Ftp miFtp=new Ftp();
+                        boolean respuesta=true;
+                        respuesta=miFtp.conectar(ruta, "compras", "04650077", 3310);
+                        if(respuesta==true){
+                            if(!miFtp.cambiarDirectorio("/ordenes"))
+                                if(miFtp.crearDirectorio("/ordenes"))
+                                    miFtp.cambiarDirectorio("/ordenes");
+                            miFtp.cambiarDirectorio(miFtp.raiz);
+                            if(!miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()))
+                                if(miFtp.crearDirectorio("/ordenes/"+orden_act.getIdOrden()))
+                                    miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden());
+                            miFtp.cambiarDirectorio(miFtp.raiz);
+                            if(!miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos"))
+                                if(miFtp.crearDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos"))
+                                    miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos");
+                            miFtp.cambiarDirectorio(miFtp.raiz);
+                            if(!miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/"))
+                                if(miFtp.crearDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/"))
+                                    miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/");
+                        }
+                        try
                         {
-                            try
+                            respuesta=miFtp.subirArchivo(archivo.getPath(), nom);
+                            if(respuesta==true)
                             {
-                                InputStream in = new FileInputStream(archivo);
-                                OutputStream out = new FileOutputStream(destino);
-                                byte[] buf = new byte[1024];
-                                int len;
-                                while ((len = in.read(buf)) > 0) 
-                                    out.write(buf, 0, len);
-                                in.close();
-                                out.close();
                                 session.beginTransaction().begin();
                                 orden_act = (Orden)session.get(Orden.class, orden_act.getIdOrden()); 
                                 orden_act.setEntrega(nom);
                                 session.saveOrUpdate(orden_act);
-                                
+
                                 //creamos las notificaciones**************
                                 ArrayList<Acceso> accesos=new ArrayList();
                                 Acceso [] aux1 = (Acceso[])orden_act.getClientes().getAccesos().toArray(new Acceso[0]);
@@ -1602,15 +1631,18 @@ public class SmLogistics extends javax.swing.JPanel {
                                     session.beginTransaction().commit();
                                     JOptionPane.showMessageDialog(this, "Se archivo fue cargado con exito");
                                 }
-                                
-                                //****************************************
-                                agregaArchivo(nom, b_entrega);
-                            }    
-                            catch(Exception e)
-                            {
-                                e.printStackTrace();
-                                javax.swing.JOptionPane.showMessageDialog(null, "Error no se pudo eliminar el archivo NO° Error:3");
                             }
+                            else
+                            {
+                                JOptionPane.showMessageDialog(this, "No fue posible subir el archivo");
+                            }
+                            //****************************************
+                            agregaArchivo(nom, b_entrega);
+                        }    
+                        catch(Exception e)
+                        {
+                            e.printStackTrace();
+                            javax.swing.JOptionPane.showMessageDialog(null, "Error no se pudo eliminar el archivo NO° Error:3");
                         }
                     }
                 }
@@ -1626,90 +1658,62 @@ public class SmLogistics extends javax.swing.JPanel {
 
     private void b_inventarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_inventarioActionPerformed
         // TODO add your handling code here:
-        try
+        Ftp miFtp=new Ftp();
+        boolean respuesta=true;
+        respuesta=miFtp.conectar(ruta, "compras", "04650077", 3310);
+        if(respuesta==true)
         {
-            File archivo = new File(ruta+"ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/"+b_inventario.getText());
-            if(ruta.contains("http:")==true || ruta.contains("\\\\")==true || ruta.contains("//")==true || ruta.contains("////")==true)
-                Desktop.getDesktop().browse(getFileURI(ruta+"ordenes\\"+orden_act.getIdOrden()+"\\archivos\\sm-logistics\\"+b_inventario.getText()));
-            else
-            {
-                if(archivo.exists()==true)
-                    Desktop.getDesktop().open(archivo);
-                else
-                    javax.swing.JOptionPane.showMessageDialog(null, "El archivo no existe");
-            }
-            archivo=null;
-        }catch(Exception e)
-        {
-            e.printStackTrace();
-            javax.swing.JOptionPane.showMessageDialog(null, "Error no se pudo abrir el archivo");
+            miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/");
+            miFtp.AbrirArchivo(b_inventario.getText());
+            miFtp.desconectar();
         }
+        else
+            JOptionPane.showMessageDialog(null, "No fue posible conectar al servidor FTP");
     }//GEN-LAST:event_b_inventarioActionPerformed
 
     private void b_desgasteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_desgasteActionPerformed
         // TODO add your handling code here:
-        try
+        Ftp miFtp=new Ftp();
+        boolean respuesta=true;
+        respuesta=miFtp.conectar(ruta, "compras", "04650077", 3310);
+        if(respuesta==true)
         {
-            File archivo = new File(ruta+"ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/"+b_desgaste.getText());
-            if(ruta.contains("http:")==true || ruta.contains("\\\\")==true || ruta.contains("//")==true || ruta.contains("////")==true)
-                Desktop.getDesktop().browse(getFileURI(ruta+"ordenes\\"+orden_act.getIdOrden()+"\\archivos\\sm-logistics\\"+b_desgaste.getText()));
-            else
-            {
-                if(archivo.exists()==true)
-                    Desktop.getDesktop().open(archivo);
-                else
-                    javax.swing.JOptionPane.showMessageDialog(null, "El archivo no existe");
-            }
-            archivo=null;
-        }catch(Exception e)
-        {
-            e.printStackTrace();
-            javax.swing.JOptionPane.showMessageDialog(null, "Error no se pudo abrir el archivo");
+            miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/");
+            miFtp.AbrirArchivo(b_desgaste.getText());
+            miFtp.desconectar();
         }
+        else
+            JOptionPane.showMessageDialog(null, "No fue posible conectar al servidor FTP");
     }//GEN-LAST:event_b_desgasteActionPerformed
 
     private void b_pagoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_pagoActionPerformed
         // TODO add your handling code here:
-        try
+        Ftp miFtp=new Ftp();
+        boolean respuesta=true;
+        respuesta=miFtp.conectar(ruta, "compras", "04650077", 3310);
+        if(respuesta==true)
         {
-            File archivo = new File(ruta+"ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/"+b_pago.getText());
-            if(ruta.contains("http:")==true || ruta.contains("\\\\")==true || ruta.contains("//")==true || ruta.contains("////")==true)
-                Desktop.getDesktop().browse(getFileURI(ruta+"ordenes\\"+orden_act.getIdOrden()+"\\archivos\\sm-logistics\\"+b_pago.getText()));
-            else
-            {
-                if(archivo.exists()==true)
-                    Desktop.getDesktop().open(archivo);
-                else
-                    javax.swing.JOptionPane.showMessageDialog(null, "El archivo no existe");
-            }
-            archivo=null;
-        }catch(Exception e)
-        {
-            e.printStackTrace();
-            javax.swing.JOptionPane.showMessageDialog(null, "Error no se pudo abrir el archivo");
+            miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/");
+            miFtp.AbrirArchivo(b_pago.getText());
+            miFtp.desconectar();
         }
+        else
+            JOptionPane.showMessageDialog(null, "No fue posible conectar al servidor FTP");
     }//GEN-LAST:event_b_pagoActionPerformed
 
     private void b_entregaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_entregaActionPerformed
         // TODO add your handling code here:
-        try
+        Ftp miFtp=new Ftp();
+        boolean respuesta=true;
+        respuesta=miFtp.conectar(ruta, "compras", "04650077", 3310);
+        if(respuesta==true)
         {
-            File archivo = new File(ruta+"ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/"+b_entrega.getText());
-            if(ruta.contains("http:")==true || ruta.contains("\\\\")==true || ruta.contains("//")==true || ruta.contains("////")==true)
-                Desktop.getDesktop().browse(getFileURI(ruta+"ordenes\\"+orden_act.getIdOrden()+"\\archivos\\sm-logistics\\"+b_entrega.getText()));
-            else
-            {
-                if(archivo.exists()==true)
-                    Desktop.getDesktop().open(archivo);
-                else
-                    javax.swing.JOptionPane.showMessageDialog(null, "El archivo no existe");
-            }
-            archivo=null;
-        }catch(Exception e)
-        {
-            e.printStackTrace();
-            javax.swing.JOptionPane.showMessageDialog(null, "Error no se pudo abrir el archivo");
+            miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/");
+            miFtp.AbrirArchivo(b_entrega.getText());
+            miFtp.desconectar();
         }
+        else
+            JOptionPane.showMessageDialog(null, "No fue posible conectar al servidor FTP");
     }//GEN-LAST:event_b_entregaActionPerformed
 
     private void b_guardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_guardarActionPerformed
@@ -1717,7 +1721,7 @@ public class SmLogistics extends javax.swing.JPanel {
         if(t_solicitud.getText().trim().compareTo("")!=0)
         {
             try{
-                PeticionPost service=new PeticionPost("http://tracto.ddns.net:8085/integral/service/api.php");
+                PeticionPost service=new PeticionPost("http://tbstoluca.ddns.net:8085/integral/service/api.php");
                 service.add("METODO", "SOLICITUD.GET_SOLICITUD_SM");
                 service.add("ID_SOLICITUD", t_solicitud.getText().trim());
                 String respuesta=service.getRespueta();
@@ -1827,9 +1831,6 @@ public class SmLogistics extends javax.swing.JPanel {
                    t_fecha_cliente.setText("Pendiente"); 
                 }
               
-              File folder = new File(ruta+"ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/");
-              folder.mkdirs();
-
               if(orden_act.getInventario()!=null)
               {
                   try{
@@ -1907,11 +1908,12 @@ public class SmLogistics extends javax.swing.JPanel {
   void agregaArchivo(String nombre, JButton bt){
         if(nombre.contains(".pdf") || nombre.contains(".PDF"))
             bt.setIcon(new ImageIcon("imagenes/pdf.png"));
-        else{
-                    if(nombre.contains(".docx") || nombre.contains(".DOCX"))
-                        bt.setIcon(new ImageIcon("imagenes/word.png"));
-                    else
-                        bt.setIcon(new ImageIcon("imagenes/desconocido.png"));
+        else
+        {
+            if(nombre.contains(".docx") || nombre.contains(".DOCX"))
+                bt.setIcon(new ImageIcon("imagenes/word.png"));
+            else
+                bt.setIcon(new ImageIcon("imagenes/desconocido.png"));
         }
         bt.setText(nombre);
   }

@@ -6,18 +6,22 @@
 
 package Valuacion;
 
+import Almacen.buscaEjemplarAlmacen;
 import Ejemplar.buscaEjemplar;
 import Hibernate.Util.HibernateUtil;
 import Hibernate.entidades.Configuracion;
 import Hibernate.entidades.Consumible;
 import Hibernate.entidades.Ejemplar;
 import Hibernate.entidades.Orden;
+import Hibernate.entidades.TrabajoExtra;
 import Hibernate.entidades.Usuario;
 import Integral.DefaultTableHeaderCellRenderer;
 import Integral.FormatoEditor;
 import Integral.FormatoTabla;
+import Integral.Herramientas;
 import Integral.PDF;
 import Integral.VerticalTableHeaderCellRenderer;
+import Operaciones.buscaExtra;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
@@ -39,8 +43,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.Locale;
 import java.util.Vector;
+import javax.swing.DefaultCellEditor;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
@@ -53,6 +60,7 @@ import javax.swing.table.TableColumnModel;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
 
 /**
  *
@@ -66,17 +74,36 @@ public class RegistraConsumibles extends javax.swing.JDialog {
     String orden;
     String sessionPrograma="";
     String[] columnas = new String [] {
-        "#","DESCRIPCIÓN","NO PARTE","CANT","MED","PRECIO","HOJ","MEC","SUS",
-        "ELE","PIN", "TIPO"};
+        "#","DESCRIPCIÓN","NO PARTE","CANT","MED","PRECIO","ESP", "TRABAJO"};
     MyModel model;
     Class[] types;
+    int x=0;
+    Usuario usrAut;
     
     /**
      * Creates new form RegistraConsumibles
+     * parent = Ventana padre.
+     * modal = indica si una ventana se muestra encima de los demas
+     * ird orden de taller de la cual se va a agregar consumible
+     * us = usuario que esta en en sistema
+     * ses = numero que identifica la session del usuario para no permitir 2 usuariis iguales
+     * edo_valuacion = false si el levantamiento esta abierto  y true si esta cerrado
      */
-    public RegistraConsumibles(java.awt.Frame parent, boolean modal, String ord, Usuario us, String ses) {
+    public RegistraConsumibles(java.awt.Frame parent, boolean modal, String ord, Usuario us, String ses, String edo_valuacion) {
         super(parent, modal);
         initComponents();
+        if(edo_valuacion.compareTo("")!=0)
+        {
+            rb_estado.setSelected(true);
+            rb_estado.setText("Cerrado");
+            rb_estado.setVisible(true);
+        }
+        else
+        {
+            rb_estado.setText("Abierto");
+            rb_estado.setVisible(false);
+        }
+        
         sessionPrograma=ses;
         orden=ord;
         user=us;
@@ -98,29 +125,148 @@ public class RegistraConsumibles extends javax.swing.JDialog {
     private void initComponents() {
 
         medida = new javax.swing.JComboBox();
+        autorizarCosto = new javax.swing.JDialog();
+        jPanel5 = new javax.swing.JPanel();
+        t_contra = new javax.swing.JPasswordField();
+        jLabel2 = new javax.swing.JLabel();
+        t_user = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        b_autorizar = new javax.swing.JButton();
+        jLabel18 = new javax.swing.JLabel();
+        especialidad = new javax.swing.JComboBox();
+        b_buscar = new javax.swing.JButton();
+        rb_estado = new javax.swing.JRadioButton();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         t_datos = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        b_mas = new javax.swing.JButton();
+        b_menos = new javax.swing.JButton();
         cb_tipo_partida = new javax.swing.JComboBox();
-        jPanel1 = new javax.swing.JPanel();
+        jButton3 = new javax.swing.JButton();
+        t_busca = new javax.swing.JTextField();
+        b_busca = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
-        t_hojalateria = new javax.swing.JFormattedTextField();
         jLabel10 = new javax.swing.JLabel();
         t_mecanica = new javax.swing.JFormattedTextField();
+        t_hojalateria = new javax.swing.JFormattedTextField();
         jLabel12 = new javax.swing.JLabel();
-        t_suspension = new javax.swing.JFormattedTextField();
         jLabel14 = new javax.swing.JLabel();
+        t_suspension = new javax.swing.JFormattedTextField();
         t_electrico = new javax.swing.JFormattedTextField();
         jLabel15 = new javax.swing.JLabel();
+        jLabel17 = new javax.swing.JLabel();
         t_pintura = new javax.swing.JFormattedTextField();
-        t_total = new javax.swing.JFormattedTextField();
+        t_na = new javax.swing.JFormattedTextField();
         jLabel16 = new javax.swing.JLabel();
-        jButton3 = new javax.swing.JButton();
+        t_total = new javax.swing.JFormattedTextField();
+        jLabel19 = new javax.swing.JLabel();
+        t_adicional = new javax.swing.JFormattedTextField();
+        jLabel11 = new javax.swing.JLabel();
+        t_presupuesto = new javax.swing.JFormattedTextField();
 
         medida.setFont(new java.awt.Font("Dialog", 0, 9)); // NOI18N
         medida.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "PZAS", "LTS", "MTS", "CMS", "MMS", "GRS", "MLS", "KGS", "HRS", "MIN", "KIT", "FT", "LB", "JGO", "NA" }));
+
+        autorizarCosto.setModalExclusionType(null);
+        autorizarCosto.setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
+
+        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "Autorización de consumibles"));
+
+        t_contra.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                t_contraActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setFont(new java.awt.Font("Arial", 0, 10)); // NOI18N
+        jLabel2.setText("Contraseña:");
+
+        t_user.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                t_userActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setFont(new java.awt.Font("Arial", 0, 10)); // NOI18N
+        jLabel3.setText("Usuario:");
+
+        b_autorizar.setFont(new java.awt.Font("Arial", 0, 10)); // NOI18N
+        b_autorizar.setText("Autorizar");
+        b_autorizar.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                b_autorizarFocusLost(evt);
+            }
+        });
+        b_autorizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_autorizarActionPerformed(evt);
+            }
+        });
+
+        jLabel18.setText("Autorizar consumibes adicionales");
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(b_autorizar)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(t_user)
+                            .addComponent(t_contra, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel18)))
+                .addContainerGap(18, Short.MAX_VALUE))
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(t_user, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(t_contra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(b_autorizar)
+                .addGap(23, 23, 23))
+        );
+
+        javax.swing.GroupLayout autorizarCostoLayout = new javax.swing.GroupLayout(autorizarCosto.getContentPane());
+        autorizarCosto.getContentPane().setLayout(autorizarCostoLayout);
+        autorizarCostoLayout.setHorizontalGroup(
+            autorizarCostoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        autorizarCostoLayout.setVerticalGroup(
+            autorizarCostoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        especialidad.setFont(new java.awt.Font("Dialog", 0, 9)); // NOI18N
+        especialidad.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "H", "M", "S", "E", "P", "A" }));
+
+        b_buscar.setText("jButton1");
+
+        rb_estado.setText("Cerrado");
+        rb_estado.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rb_estadoActionPerformed(evt);
+            }
+        });
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setBackground(new java.awt.Color(2, 135, 242));
@@ -133,55 +279,79 @@ public class RegistraConsumibles extends javax.swing.JDialog {
 
             },
             new String [] {
-                "#", "DESCRIPCION", "NO PARTE", "CANT", "MED", "PRECIO", "HOJ", "MEC", "SUS", "ELE", "PIN", "TIPO"
+                "#", "DESCRIPCION", "NO PARTE", "CANT", "MED", "PRECIO", "ESP", "TRAB"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Double.class, java.lang.String.class, java.lang.Double.class, java.lang.Boolean.class, java.lang.Boolean.class, java.lang.Boolean.class, java.lang.Boolean.class, java.lang.Boolean.class, java.lang.Boolean.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Double.class, java.lang.String.class, java.lang.Double.class, java.lang.Boolean.class, java.lang.Object.class
             };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
             }
         });
+        t_datos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                t_datosMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(t_datos);
 
-        jButton1.setIcon(new ImageIcon("imagenes/boton_mas_n.png"));
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        b_mas.setIcon(new ImageIcon("imagenes/boton_mas_n.png"));
+        b_mas.setMnemonic('1');
+        b_mas.setToolTipText("Agrega una partida (ALT+1)");
+        b_mas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                b_masActionPerformed(evt);
             }
         });
 
-        jButton2.setIcon(new ImageIcon("imagenes/boton_menos.png"));
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        b_menos.setIcon(new ImageIcon("imagenes/boton_menos.png"));
+        b_menos.setMnemonic('2');
+        b_menos.setToolTipText("Eliminar una partida (ALT+2)");
+        b_menos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                b_menosActionPerformed(evt);
             }
         });
 
         cb_tipo_partida.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
-        cb_tipo_partida.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Ordinaria", "Complementaria", "Adicional" }));
+        cb_tipo_partida.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Hojalatería", "Mecánica", "Suspención", "Eléctrico", "Pintura", "Acondicionamiento" }));
         cb_tipo_partida.setBorder(null);
 
-        jPanel1.setBackground(new java.awt.Color(2, 135, 242));
-        jPanel1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
+        jButton3.setText("PDF");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
+        t_busca.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
+        t_busca.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                t_buscaActionPerformed(evt);
+            }
+        });
+        t_busca.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                t_buscaKeyTyped(evt);
+            }
+        });
+
+        b_busca.setIcon(new ImageIcon("imagenes/buscar1.png"));
+        b_busca.setToolTipText("Busca una partida");
+        b_busca.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_buscaActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setFont(new java.awt.Font("Arial", 0, 9)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel1.setText("Buscar:");
 
         jLabel9.setForeground(new java.awt.Color(255, 255, 255));
         jLabel9.setText("HOJALATERÍA:");
-
-        t_hojalateria.setEditable(false);
-        t_hojalateria.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_hojalateria.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.00"))));
-        t_hojalateria.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        t_hojalateria.setText("0.00");
-        t_hojalateria.setDisabledTextColor(new java.awt.Color(2, 38, 253));
-        t_hojalateria.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
-        t_hojalateria.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                t_hojalateriaFocusLost(evt);
-            }
-        });
 
         jLabel10.setForeground(new java.awt.Color(255, 255, 255));
         jLabel10.setText("MECÁNICA:");
@@ -193,14 +363,20 @@ public class RegistraConsumibles extends javax.swing.JDialog {
         t_mecanica.setText("0.00");
         t_mecanica.setDisabledTextColor(new java.awt.Color(2, 38, 253));
         t_mecanica.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
-        t_mecanica.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                t_mecanicaFocusLost(evt);
-            }
-        });
+
+        t_hojalateria.setEditable(false);
+        t_hojalateria.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        t_hojalateria.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.00"))));
+        t_hojalateria.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        t_hojalateria.setText("0.00");
+        t_hojalateria.setDisabledTextColor(new java.awt.Color(2, 38, 253));
+        t_hojalateria.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
 
         jLabel12.setForeground(new java.awt.Color(255, 255, 255));
         jLabel12.setText("SUSPENSIÓN:");
+
+        jLabel14.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel14.setText("ELÉCTRICO:");
 
         t_suspension.setEditable(false);
         t_suspension.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -209,14 +385,6 @@ public class RegistraConsumibles extends javax.swing.JDialog {
         t_suspension.setText("0.00");
         t_suspension.setDisabledTextColor(new java.awt.Color(2, 38, 253));
         t_suspension.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
-        t_suspension.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                t_suspensionFocusLost(evt);
-            }
-        });
-
-        jLabel14.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel14.setText("ELÉCTRICO:");
 
         t_electrico.setEditable(false);
         t_electrico.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -225,14 +393,12 @@ public class RegistraConsumibles extends javax.swing.JDialog {
         t_electrico.setText("0.00");
         t_electrico.setDisabledTextColor(new java.awt.Color(2, 38, 253));
         t_electrico.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
-        t_electrico.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                t_electricoFocusLost(evt);
-            }
-        });
 
         jLabel15.setForeground(new java.awt.Color(255, 255, 255));
         jLabel15.setText("PINTURA:");
+
+        jLabel17.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel17.setText("NA:");
 
         t_pintura.setEditable(false);
         t_pintura.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -241,11 +407,17 @@ public class RegistraConsumibles extends javax.swing.JDialog {
         t_pintura.setText("0.00");
         t_pintura.setDisabledTextColor(new java.awt.Color(2, 38, 253));
         t_pintura.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
-        t_pintura.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                t_pinturaFocusLost(evt);
-            }
-        });
+
+        t_na.setEditable(false);
+        t_na.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        t_na.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.00"))));
+        t_na.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        t_na.setText("0.00");
+        t_na.setDisabledTextColor(new java.awt.Color(2, 38, 253));
+        t_na.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
+
+        jLabel16.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel16.setText("TOTAL:");
 
         t_total.setEditable(false);
         t_total.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -254,76 +426,31 @@ public class RegistraConsumibles extends javax.swing.JDialog {
         t_total.setText("0.00");
         t_total.setDisabledTextColor(new java.awt.Color(2, 38, 253));
         t_total.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
-        t_total.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                t_totalFocusLost(evt);
-            }
-        });
 
-        jLabel16.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel16.setText("TOTAL:");
+        jLabel19.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel19.setText("ADICIONAL:");
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel9)
-                    .addComponent(jLabel10))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(t_hojalateria)
-                    .addComponent(t_mecanica, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel12)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(t_suspension, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel15)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(t_pintura, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel14)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(t_electrico, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel16)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(t_total, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(20, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(t_hojalateria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel9)
-                    .addComponent(jLabel12)
-                    .addComponent(t_suspension, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel15)
-                    .addComponent(t_pintura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel16)
-                        .addComponent(t_total, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(t_mecanica, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel10)
-                        .addComponent(jLabel14)
-                        .addComponent(t_electrico, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        t_adicional.setEditable(false);
+        t_adicional.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        t_adicional.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.00"))));
+        t_adicional.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        t_adicional.setText("0.00");
+        t_adicional.setDisabledTextColor(new java.awt.Color(2, 38, 253));
+        t_adicional.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
 
-        jButton3.setText("PDF");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        jLabel11.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel11.setText("Presupuesto $");
+
+        t_presupuesto.setEditable(false);
+        t_presupuesto.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        t_presupuesto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.00"))));
+        t_presupuesto.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        t_presupuesto.setText("0.00");
+        t_presupuesto.setDisabledTextColor(new java.awt.Color(2, 38, 253));
+        t_presupuesto.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
+        t_presupuesto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                t_presupuestoActionPerformed(evt);
             }
         });
 
@@ -331,38 +458,112 @@ public class RegistraConsumibles extends javax.swing.JDialog {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cb_tipo_partida, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 57, Short.MAX_VALUE)
-                .addComponent(jButton3)
-                .addContainerGap())
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel9)
+                                    .addComponent(jLabel10))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addComponent(t_mecanica, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jLabel14)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(t_electrico, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabel19)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(t_adicional, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addComponent(t_hojalateria, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabel12)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(t_suspension, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabel15)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(t_pintura, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel17)
+                                    .addComponent(jLabel16))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(t_na)
+                                    .addComponent(t_total, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
+                                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING))
+                        .addGap(10, 10, 10))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(b_mas, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(b_menos, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cb_tipo_partida, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(t_busca, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(b_busca, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel11)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(t_presupuesto, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 273, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(b_mas, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(b_menos, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(cb_tipo_partida, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel1)
+                            .addComponent(t_busca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(b_busca, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel11)
+                        .addComponent(t_presupuesto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(15, 15, 15)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(cb_tipo_partida, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel9)
+                            .addComponent(t_hojalateria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel12)
+                            .addComponent(t_suspension, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel15)
+                            .addComponent(t_pintura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel10)
+                            .addComponent(t_mecanica, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel14)
+                            .addComponent(t_electrico, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel19)))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel17)
+                            .addComponent(t_na, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel16)
+                            .addComponent(t_total, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(t_adicional, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -379,9 +580,9 @@ public class RegistraConsumibles extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void b_masActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_masActionPerformed
         // TODO add your handling code here:
-        buscaEjemplar obj = new buscaEjemplar(new javax.swing.JFrame(), true, sessionPrograma, user, 1);
+        buscaEjemplar obj = new buscaEjemplar(new javax.swing.JFrame(), true, sessionPrograma, user, 3);
         obj.t_busca.requestFocus();
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
@@ -395,27 +596,69 @@ public class RegistraConsumibles extends javax.swing.JDialog {
                 Orden or=(Orden)session.get(Orden.class, Integer.parseInt(orden));      
                 session.beginTransaction().begin();
                 eje=(Ejemplar)session.get(Ejemplar.class, eje.getIdParte());
-                Consumible nuevo=new Consumible();
-                nuevo.setEjemplar(eje);
-                nuevo.setMedida(eje.getMedida());
-                nuevo.setCantidad(1);
-                nuevo.setPrecio(eje.getPrecio());
-                nuevo.setOrden(or);
-                nuevo.setEspHoj(false);
-                nuevo.setEspMec(false);
-                nuevo.setEspSus(false);
-                nuevo.setEspEle(false);
-                nuevo.setEspPin(false);
-                if(cb_tipo_partida.getSelectedIndex()==0)
-                    nuevo.setTipo("O");
-                else if(cb_tipo_partida.getSelectedIndex()==1)
-                    nuevo.setTipo("C");
+                if(existe(eje.getIdParte(), cb_tipo_partida.getSelectedItem().toString(),false)==false)
+                {
+                    double total = ((Number)t_total.getValue()).doubleValue()/*+eje.getPrecio()*/;
+                    double presupuesto = ((Number)t_presupuesto.getValue()).doubleValue();
+                    if(total<=presupuesto)
+                    {
+                        Consumible nuevo=new Consumible();
+                        nuevo.setEjemplar(eje);
+                        nuevo.setMedida(eje.getMedida());
+                        nuevo.setCantidad(0);
+                        nuevo.setPrecio(eje.getPrecio());
+                        nuevo.setOrden(or);
+                        switch(cb_tipo_partida.getSelectedItem().toString())
+                        {
+                            case "Hojalatería":
+                                nuevo.setEspecialidad("H");
+                                nuevo.setTipo("O");
+                                session.saveOrUpdate(nuevo);
+                                session.beginTransaction().commit();
+                                break;
+                            case "Mecánica":
+                                nuevo.setEspecialidad("M");
+                                nuevo.setTipo("O");
+                                session.saveOrUpdate(nuevo);
+                                session.beginTransaction().commit();
+                                break;
+                            case "Suspención":
+                                nuevo.setEspecialidad("S");
+                                nuevo.setTipo("O");
+                                session.saveOrUpdate(nuevo);
+                                session.beginTransaction().commit();
+                                break;
+                            case "Eléctrico":
+                                nuevo.setEspecialidad("E");
+                                nuevo.setTipo("O");
+                                session.saveOrUpdate(nuevo);
+                                session.beginTransaction().commit();
+                                break;
+                            case "Pintura":
+                                nuevo.setEspecialidad("P");
+                                nuevo.setTipo("O");
+                                session.saveOrUpdate(nuevo);
+                                session.beginTransaction().commit();
+                                break;
+                            case "Acondicionamiento":
+                                nuevo.setEspecialidad("A");
+                                nuevo.setTipo("A");
+                                session.saveOrUpdate(nuevo);
+                                session.beginTransaction().commit();
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        double valor=total-presupuesto;
+                        JOptionPane.showMessageDialog(null, "No se puede agregar por que sobrepasaría el presupuesto asignado por $"+valor);
+                    }
+                }
                 else
-                    nuevo.setTipo("A");
-
-                session.saveOrUpdate(nuevo);
-                session.beginTransaction().commit();
-                
+                {
+                    session.beginTransaction().rollback();
+                    JOptionPane.showMessageDialog(null, "Este consumible ya esta asignado en la especialidad, incrementelo");
+                }
             }catch(Exception e){e.printStackTrace();}
             if(session!=null)
                 if(session.isOpen())
@@ -426,54 +669,9 @@ public class RegistraConsumibles extends javax.swing.JDialog {
                 }
             buscaCuentas(-1, -1);
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_b_masActionPerformed
 
-    private void t_hojalateriaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_hojalateriaFocusLost
-        // TODO add your handling code here:
-        if(t_hojalateria.getText().compareTo("")==0)
-        {
-            t_hojalateria.setText("0");
-            t_hojalateria.setValue(0.00);
-        }
-    }//GEN-LAST:event_t_hojalateriaFocusLost
-
-    private void t_mecanicaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_mecanicaFocusLost
-        // TODO add your handling code here:
-        if(t_mecanica.getText().compareTo("")==0)
-        {
-            t_mecanica.setText("0");
-            t_mecanica.setValue(0.00);
-        }
-    }//GEN-LAST:event_t_mecanicaFocusLost
-
-    private void t_suspensionFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_suspensionFocusLost
-        // TODO add your handling code here:
-        if(t_suspension.getText().compareTo("")==0)
-        {
-            t_suspension.setText("0");
-            t_suspension.setValue(0.00);
-        }
-    }//GEN-LAST:event_t_suspensionFocusLost
-
-    private void t_electricoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_electricoFocusLost
-        // TODO add your handling code here:
-        if(t_electrico.getText().compareTo("")==0)
-        {
-            t_electrico.setText("0");
-            t_electrico.setValue(0.00);
-        }
-    }//GEN-LAST:event_t_electricoFocusLost
-
-    private void t_pinturaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_pinturaFocusLost
-        // TODO add your handling code here:
-        if(t_pintura.getText().compareTo("")==0)
-        {
-            t_pintura.setText("0");
-            t_pintura.setValue(0.00);
-        }
-    }//GEN-LAST:event_t_pinturaFocusLost
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void b_menosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_menosActionPerformed
         // TODO add your handling code here:
         Session session = HibernateUtil.getSessionFactory().openSession();
         try
@@ -488,21 +686,51 @@ public class RegistraConsumibles extends javax.swing.JDialog {
                     for(int x=0; x<renglones.length;x++)
                     {
                         session.beginTransaction().begin();
-                            Consumible part=(Consumible) session.get(Consumible.class, Integer.parseInt(t_datos.getValueAt(renglones[x], 0).toString()));
-                            Orden ord=(Orden)session.get(Orden.class, Integer.parseInt(orden));
-                            
-                            String esp="";
-                            if(t_datos.getValueAt(renglones[x], 6).toString().compareTo("true")==0)
+                        Consumible part=(Consumible) session.get(Consumible.class, Integer.parseInt(t_datos.getValueAt(renglones[x], 0).toString()));
+                        Orden ord=(Orden)session.get(Orden.class, Integer.parseInt(orden));
+
+                        String esp="";
+                        switch(t_datos.getValueAt(renglones[x], 6).toString())
+                        {
+                            case "H":
                                 esp=" and almacen.especialidad='H'";
-                            if(t_datos.getValueAt(renglones[x], 7).toString().compareTo("true")==0)
+                                break;
+                            case "M":
                                 esp=" and almacen.especialidad='M'";
-                            if(t_datos.getValueAt(renglones[x], 8).toString().compareTo("true")==0)
+                                break;
+                            case "S":
                                 esp=" and almacen.especialidad='S'";
-                            if(t_datos.getValueAt(renglones[x], 9).toString().compareTo("true")==0)
+                                break;
+                            case "E":
                                 esp=" and almacen.especialidad='E'";
-                            if(t_datos.getValueAt(renglones[x], 10).toString().compareTo("true")==0)
+                                break;
+                            case "P":
                                 esp=" and almacen.especialidad='P'";
-                            if(esp.compareTo("")==0)
+                                break;
+                            case "A":
+                                esp=" and almacen.especialidad='A'";
+                                if(t_datos.getValueAt(renglones[x],7).toString().compareTo(" ")!=0)
+                                    esp+=" and almacen.id_trabajo="+t_datos.getValueAt(renglones[x], 7);
+                                break; 
+                        }
+                        if(t_datos.getValueAt(renglones[x],6).toString().compareTo(" ")==0 || (t_datos.getValueAt(renglones[x],6).toString().compareTo("A")==0 &&  t_datos.getValueAt(renglones[x],7).toString().compareTo("")==0))
+                        {
+                            ord.eliminaConsumible(part);
+                            session.update(ord);
+                            session.delete(part);
+                            session.getTransaction().commit();
+                        }
+                        else
+                        {
+                            Query query = session.createSQLQuery("select " +
+"( (select if(sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) from ejemplar left join movimiento on ejemplar.id_Parte=movimiento.id_Parte " +
+"left join almacen on movimiento.id_almacen=almacen.id_almacen where ejemplar.id_Parte='"+t_datos.getValueAt(renglones[x], 2).toString()+"' and almacen.id_orden="+orden+" and almacen.tipo_movimiento=2 and almacen.operacion=8 "+esp+" ) - " +
+"(select if(sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) from ejemplar left join movimiento on ejemplar.id_Parte=movimiento.id_Parte " +
+"left join almacen on movimiento.id_almacen=almacen.id_almacen where ejemplar.id_Parte='"+t_datos.getValueAt(renglones[x], 2).toString()+"' and almacen.id_orden="+orden+" and almacen.tipo_movimiento=1 and almacen.operacion=8 "+esp+" ) )as operario ");  
+                            query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+                            ArrayList partidas=(ArrayList)query.list();
+                            java.util.HashMap map=(java.util.HashMap)partidas.get(0);
+                            if(Double.parseDouble(map.get("operario").toString()) == 0.0d)
                             {
                                 ord.eliminaConsumible(part);
                                 session.update(ord);
@@ -511,27 +739,10 @@ public class RegistraConsumibles extends javax.swing.JDialog {
                             }
                             else
                             {
-                                Query query = session.createSQLQuery("select " +
-    "( (select if(sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) from ejemplar left join movimiento on ejemplar.id_Parte=movimiento.id_Parte " +
-    "left join almacen on movimiento.id_almacen=almacen.id_almacen where ejemplar.id_Parte='"+t_datos.getValueAt(renglones[x], 2).toString()+"' and almacen.id_orden="+orden+" and almacen.tipo_movimiento=2 and almacen.operacion=8 "+esp+" ) - " +
-    "(select if(sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) from ejemplar left join movimiento on ejemplar.id_Parte=movimiento.id_Parte " +
-    "left join almacen on movimiento.id_almacen=almacen.id_almacen where ejemplar.id_Parte='"+t_datos.getValueAt(renglones[x], 2).toString()+"' and almacen.id_orden="+orden+" and almacen.tipo_movimiento=1 and almacen.operacion=8 "+esp+" ) )as operario ");  
-                                query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
-                                ArrayList partidas=(ArrayList)query.list();
-                                java.util.HashMap map=(java.util.HashMap)partidas.get(0);
-                                if(Double.parseDouble(map.get("operario").toString()) == 0.0d)
-                                {
-                                    ord.eliminaConsumible(part);
-                                    session.update(ord);
-                                    session.delete(part);
-                                    session.getTransaction().commit();
-                                }
-                                else
-                                {
-                                    session.getTransaction().rollback();
-                                    JOptionPane.showMessageDialog(null, "La partida ya fue Entregada al operario");    
-                                }
+                                session.getTransaction().rollback();
+                                JOptionPane.showMessageDialog(null, "La partida ya fue Entregada al operario");    
                             }
+                        }
                     }
                     buscaCuentas(-1,-1);
                 }
@@ -554,7 +765,7 @@ public class RegistraConsumibles extends javax.swing.JDialog {
                 session.clear();
                 session.close();
             }
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_b_menosActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
@@ -580,12 +791,10 @@ public class RegistraConsumibles extends javax.swing.JDialog {
             int centro=Element.ALIGN_CENTER;
             int izquierda=Element.ALIGN_LEFT;
             int derecha=Element.ALIGN_RIGHT;
-            float tam[]=new float[]{40,140,25,25,40, 15,15,15,15,15,25};
-            PdfPTable tabla=reporte.crearTabla(11, tam, 100, Element.ALIGN_LEFT);
+            float tam[]=new float[]{40,140,25,25,40,15,40};
+            PdfPTable tabla=reporte.crearTabla(7, tam, 100, Element.ALIGN_LEFT);
             
             cabecera(reporte, bf, tabla);
-            int ren=0;
-            double dm=0d, cam=0d, min=0d, med=0d, max=0d, pin=0d, tot=0d;
             for(int i=0; i<t_datos.getRowCount(); i++)
             {
                 tabla.addCell(reporte.celda(""+t_datos.getValueAt(i, 2).toString(), font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
@@ -593,33 +802,8 @@ public class RegistraConsumibles extends javax.swing.JDialog {
                 tabla.addCell(reporte.celda(""+t_datos.getValueAt(i, 3).toString(), font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
                 tabla.addCell(reporte.celda(""+t_datos.getValueAt(i, 4).toString(), font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
                 tabla.addCell(reporte.celda(""+t_datos.getValueAt(i, 5).toString(), font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
-                if(t_datos.getValueAt(i, 6).toString().compareTo("true")==0){
-                    tabla.addCell(reporte.celda("X", font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));  
-                }else{
-                    tabla.addCell(reporte.celda("", font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));  
-                }
-                if(t_datos.getValueAt(i, 7).toString().compareTo("true")==0){
-                    tabla.addCell(reporte.celda("X", font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));  
-                }else{
-                    tabla.addCell(reporte.celda("", font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));  
-                }
-                if(t_datos.getValueAt(i, 8).toString().compareTo("true")==0){
-                    tabla.addCell(reporte.celda("X", font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));  
-                }else{
-                    tabla.addCell(reporte.celda("", font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));  
-                }
-                if(t_datos.getValueAt(i, 9).toString().compareTo("true")==0){
-                    tabla.addCell(reporte.celda("X", font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));  
-                }else{
-                    tabla.addCell(reporte.celda("", font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));  
-                }
-                if(t_datos.getValueAt(i, 10).toString().compareTo("true")==0){
-                    tabla.addCell(reporte.celda("X", font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));  
-                }else{
-                    tabla.addCell(reporte.celda("", font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));  
-                }
-                tabla.addCell(reporte.celda(t_datos.getValueAt(i, 11).toString(), font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
-                
+                tabla.addCell(reporte.celda(t_datos.getValueAt(i, 6).toString(), font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));  
+                tabla.addCell(reporte.celda(t_datos.getValueAt(i, 7).toString(), font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));  
             }
             
             reporte.agregaObjeto(tabla);
@@ -639,9 +823,200 @@ public class RegistraConsumibles extends javax.swing.JDialog {
             }
     }//GEN-LAST:event_jButton3ActionPerformed
 
-    private void t_totalFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_totalFocusLost
+    private void t_buscaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_buscaKeyTyped
         // TODO add your handling code here:
-    }//GEN-LAST:event_t_totalFocusLost
+        char car = evt.getKeyChar();
+        evt.setKeyChar(Character.toUpperCase(evt.getKeyChar()));
+    }//GEN-LAST:event_t_buscaKeyTyped
+
+    private void t_buscaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_buscaActionPerformed
+        // TODO add your handling code here:
+        if(this.t_busca.getText().compareToIgnoreCase("")!=0)
+        {
+            //buscaCuentas(-1,-1);
+            if(x>=t_datos.getRowCount())
+            {
+                x=0;
+                java.awt.Rectangle r = t_datos.getCellRect( x, 3, true);
+                t_datos.scrollRectToVisible(r);
+            }
+            for(; x<t_datos.getRowCount(); x++)
+            {
+                if(t_datos.getValueAt(x, 1).toString().indexOf(t_busca.getText()) != -1)
+                {
+                    t_datos.setRowSelectionInterval(x, x);
+                    t_datos.setColumnSelectionInterval(1, 1);
+                    java.awt.Rectangle r = t_datos.getCellRect( x, 3, true);
+                    t_datos.scrollRectToVisible(r);
+                    break;
+                }
+            }
+            x++;
+        }
+    }//GEN-LAST:event_t_buscaActionPerformed
+
+    private void b_buscaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_buscaActionPerformed
+        // TODO add your handling code here:
+        if(this.t_busca.getText().compareToIgnoreCase("")!=0)
+        {
+            buscaCuentas(-1,-1);
+            if(x>=t_datos.getRowCount())
+            {
+                x=0;
+                java.awt.Rectangle r = t_datos.getCellRect( x, 3, true);
+                t_datos.scrollRectToVisible(r);
+            }
+            for(; x<t_datos.getRowCount(); x++)
+            {
+                if(t_datos.getValueAt(x, 1).toString().indexOf(t_busca.getText()) != -1)
+                {
+                    t_datos.setRowSelectionInterval(x, x);
+                    t_datos.setColumnSelectionInterval(1, 1);
+                    java.awt.Rectangle r = t_datos.getCellRect( x, 3, true);
+                    t_datos.scrollRectToVisible(r);
+                    break;
+                }
+            }
+            x++;
+        }
+    }//GEN-LAST:event_b_buscaActionPerformed
+
+    private void rb_estadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rb_estadoActionPerformed
+        // TODO add your handling code here:
+        if(rb_estado.isSelected()==false)
+        {
+            usrAut=null;
+            boolean permiso=true;
+            autorizarCosto.setSize(284, 177);
+            Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+            autorizarCosto.setLocation((d.width/2)-(autorizarCosto.getWidth()/2), (d.height/2)-(autorizarCosto.getHeight()/2));
+            t_user.setText("");
+            t_contra.setText("");
+            autorizarCosto.setVisible(true);
+            if(usrAut==null)
+                permiso=false;//no se autoriza
+            if(permiso==true)
+            {
+                if(user.getEditaConsumible()==true)
+                {
+                    rb_estado.setSelected(false);
+                    b_mas.setEnabled(true);
+                    b_menos.setEnabled(true);
+                    rb_estado.setText("Abierto");
+
+                    model.setColumnaEditable(3, true);
+                    model.setColumnaEditable(6, true);
+                }
+                else
+                    JOptionPane.showMessageDialog(this, "¡El usuario en linea no tiene permiso para editar!");
+            }
+            else
+            {
+                rb_estado.setSelected(true);
+                b_mas.setEnabled(false);
+                b_menos.setEnabled(false);
+                rb_estado.setText("Cerrado");
+            }
+        }
+        else
+        {
+            /*rb_estado.setSelected(true);
+            b_mas.setEnabled(false);
+            b_menos.setEnabled(false);
+            rb_estado.setText("Cerrado");*/
+        }
+    }//GEN-LAST:event_rb_estadoActionPerformed
+
+    private void t_contraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_contraActionPerformed
+        b_autorizar.requestFocus();
+    }//GEN-LAST:event_t_contraActionPerformed
+
+    private void t_userActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_userActionPerformed
+        t_contra.requestFocus();
+    }//GEN-LAST:event_t_userActionPerformed
+
+    private void b_autorizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_autorizarActionPerformed
+        if(t_user.getText().compareTo("")!=0)
+        {
+            if(t_contra.getPassword().toString().compareTo("")!=0)
+            {
+                Session session = HibernateUtil.getSessionFactory().openSession();
+                try
+                {
+                    usrAut=null;
+                    session.beginTransaction().begin();
+                    Usuario autoriza = (Usuario)session.createCriteria(Usuario.class).add(Restrictions.eq("idUsuario", t_user.getText())).add(Restrictions.eq("clave", t_contra.getText())).setMaxResults(1).uniqueResult();
+                    if(autoriza!=null)
+                    {
+                        if(autoriza.getAutorizaConsumibles()==true)
+                        {
+                            usrAut=autoriza;
+                            autorizarCosto.dispose();
+                        }
+                        else
+                            JOptionPane.showMessageDialog(this, "¡El usuario no tiene permiso de autorizar!");
+                    }
+                    else
+                    {
+                        session.beginTransaction().rollback();
+                        JOptionPane.showMessageDialog(this, "¡Datos Incorrectos!");
+                        t_user.requestFocus();
+                    }
+                }catch(Exception e)
+                {
+                    session.beginTransaction().rollback();
+                    JOptionPane.showMessageDialog(this, "¡Error al consultar los datos!");
+                    e.printStackTrace();
+                }
+                finally
+                {
+                    if(session.isOpen()==true)
+                    session.close();
+                }
+            }
+            else
+            JOptionPane.showMessageDialog(this, "¡Ingrese la contraseña!");
+            t_contra.requestFocus();
+        }
+        else
+        JOptionPane.showMessageDialog(this, "¡Ingrese el usuario!");
+        t_user.requestFocus();
+    }//GEN-LAST:event_b_autorizarActionPerformed
+
+    private void b_autorizarFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_b_autorizarFocusLost
+        sumaTotales();
+    }//GEN-LAST:event_b_autorizarFocusLost
+
+    private void t_datosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_t_datosMouseClicked
+        // TODO add your handling code here:
+        if(t_datos.getSelectedRow()>=0)
+        {
+            if(t_datos.getSelectedColumn()==7 && /*rb_estado.isSelected()==false &&*/ t_datos.getValueAt(t_datos.getSelectedRow(), 6).toString().compareTo("A")==0)
+            {
+                Orden actual=new Orden();
+                actual.setIdOrden(Integer.parseInt(this.orden));
+                buscaExtra resp = new buscaExtra(new javax.swing.JFrame(), true, this.user, this.sessionPrograma, actual);
+                Dimension d1 = Toolkit.getDefaultToolkit().getScreenSize();
+                resp.setLocation((d1.width/2)-(resp.getWidth()/2), (d1.height/2)-(resp.getHeight()/2));
+                resp.setVisible(true);
+                ArrayList aux = resp.getReturnStatus();
+                if (aux!=null)
+                {
+                    try
+                    {
+                        t_datos.setValueAt(Integer.parseInt(aux.get(0).toString()), t_datos.getSelectedRow(),7);
+                    }catch(Exception e)
+                    {
+                         e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }//GEN-LAST:event_t_datosMouseClicked
+
+    private void t_presupuestoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_presupuestoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_t_presupuestoActionPerformed
 
     public void cabecera(PDF reporte, BaseFont bf, PdfPTable tabla)
    {
@@ -730,12 +1105,10 @@ public class RegistraConsumibles extends javax.swing.JDialog {
                 }catch(Exception e){}
                 
             reporte.finTexto();
-            //agregamos renglones vacios para dejar un espacio
             reporte.agregaObjeto(new Paragraph(" "));
             reporte.agregaObjeto(new Paragraph(" "));
             reporte.agregaObjeto(new Paragraph(" "));
             reporte.agregaObjeto(new Paragraph(" "));
-            //reporte.agregaObjeto(new Paragraph(" "));
             
             Font font = new Font(Font.FontFamily.HELVETICA, 6, Font.BOLD);
             
@@ -745,19 +1118,13 @@ public class RegistraConsumibles extends javax.swing.JDialog {
             int izquierda=Element.ALIGN_LEFT;
             int derecha=Element.ALIGN_RIGHT;
         
-            tabla.addCell(reporte.celda("#Parte", font, cabecera, centro, 0, 2, Rectangle.RECTANGLE));
-            tabla.addCell(reporte.celda("Descripción", font, cabecera, centro, 0, 2,Rectangle.RECTANGLE));
-            tabla.addCell(reporte.celda("Cantidad", font, cabecera, centro, 0,2, Rectangle.RECTANGLE));
-            tabla.addCell(reporte.celda("Medida", font, cabecera, centro, 0, 2,Rectangle.RECTANGLE));
-            tabla.addCell(reporte.celda("Precio", font, cabecera, centro, 0, 2, Rectangle.RECTANGLE));
-            tabla.addCell(reporte.celda("Especialidad", font, cabecera, centro, 5,1,Rectangle.RECTANGLE));
-            tabla.addCell(reporte.celda("Tipo", font, cabecera, centro, 0,2, Rectangle.RECTANGLE));
-            tabla.addCell(reporte.celda("Hoj", font, cabecera, centro, 0,1, Rectangle.RECTANGLE));
-            tabla.addCell(reporte.celda("Mec", font, cabecera, centro, 0,1, Rectangle.RECTANGLE));
-            tabla.addCell(reporte.celda("Sus", font, cabecera, centro, 0,1,Rectangle.RECTANGLE));
-            tabla.addCell(reporte.celda("Ele", font, cabecera, centro, 0,1,Rectangle.RECTANGLE));            
-            tabla.addCell(reporte.celda("Pin", font, cabecera, centro, 0,1, Rectangle.RECTANGLE));
-            
+            tabla.addCell(reporte.celda("#Parte", font, cabecera, centro, 0, 1, Rectangle.RECTANGLE));
+            tabla.addCell(reporte.celda("Descripción", font, cabecera, centro, 0, 1,Rectangle.RECTANGLE));
+            tabla.addCell(reporte.celda("Cantidad", font, cabecera, centro, 0,1, Rectangle.RECTANGLE));
+            tabla.addCell(reporte.celda("Medida", font, cabecera, centro, 0, 1,Rectangle.RECTANGLE));
+            tabla.addCell(reporte.celda("Precio", font, cabecera, centro, 0, 1, Rectangle.RECTANGLE));
+            tabla.addCell(reporte.celda("Especialidad", font, cabecera, centro, 0,1,Rectangle.RECTANGLE));
+            tabla.addCell(reporte.celda("trabajo", font, cabecera, centro, 0,1,Rectangle.RECTANGLE));
         }catch(Exception e)
         {
             e.printStackTrace();
@@ -771,27 +1138,46 @@ public class RegistraConsumibles extends javax.swing.JDialog {
             }
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JDialog autorizarCosto;
+    private javax.swing.JButton b_autorizar;
+    private javax.swing.JButton b_busca;
+    private javax.swing.JButton b_buscar;
+    private javax.swing.JButton b_mas;
+    private javax.swing.JButton b_menos;
     private javax.swing.JComboBox cb_tipo_partida;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JComboBox especialidad;
     private javax.swing.JButton jButton3;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JComboBox medida;
+    private javax.swing.JRadioButton rb_estado;
+    private javax.swing.JFormattedTextField t_adicional;
+    private javax.swing.JTextField t_busca;
+    private javax.swing.JPasswordField t_contra;
     private javax.swing.JTable t_datos;
     private javax.swing.JFormattedTextField t_electrico;
     private javax.swing.JFormattedTextField t_hojalateria;
     private javax.swing.JFormattedTextField t_mecanica;
+    private javax.swing.JFormattedTextField t_na;
     private javax.swing.JFormattedTextField t_pintura;
+    private javax.swing.JFormattedTextField t_presupuesto;
     private javax.swing.JFormattedTextField t_suspension;
     private javax.swing.JFormattedTextField t_total;
+    private javax.swing.JTextField t_user;
     // End of variables declaration//GEN-END:variables
 
     
@@ -808,25 +1194,31 @@ public class RegistraConsumibles extends javax.swing.JDialog {
               switch(i)
               {
                   case 0:
-                      column.setPreferredWidth(30);
+                      column.setPreferredWidth(60);
                       break;
                   case 1:
-                      column.setPreferredWidth(400);
+                      column.setPreferredWidth(500);
                       break;
                   case 2:
-                      column.setPreferredWidth(90);
+                      column.setPreferredWidth(120);
                       break;
                   case 3:
-                      column.setPreferredWidth(40);
+                      column.setPreferredWidth(60);
                       break;
                   case 4:
-                      column.setPreferredWidth(40);
+                      column.setPreferredWidth(60);
                       break;
                   case 5:
-                      column.setPreferredWidth(70);
+                      column.setPreferredWidth(90);
                       break;
-                  default:
-                      column.setPreferredWidth(10);
+                  case 6:
+                      column.setPreferredWidth(20);
+                      DefaultCellEditor editor = new DefaultCellEditor(especialidad);
+                      column.setCellEditor(editor); 
+                      editor.setClickCountToStart(2);
+                      break;
+                  case 7:
+                      column.setPreferredWidth(60);
                       break;
               }
         }
@@ -843,13 +1235,13 @@ public class RegistraConsumibles extends javax.swing.JDialog {
         
         for(int x=0; x<t_datos.getColumnModel().getColumnCount(); x++)
         {
-            if(x>5 && x<12)
+            if(x==6)
                 t_datos.getColumnModel().getColumn(x).setHeaderRenderer(textVertical);
             else
                 t_datos.getColumnModel().getColumn(x).setHeaderRenderer(textNormal);
         } 
         tabla_tamaños();
-        //t_datos.setShowVerticalLines(true);
+        t_datos.setShowVerticalLines(true);
         t_datos.setShowHorizontalLines(true);
         t_datos.setDefaultRenderer(String.class, formato); 
         t_datos.setDefaultRenderer(Boolean.class, formato); 
@@ -865,12 +1257,8 @@ public class RegistraConsumibles extends javax.swing.JDialog {
                     java.lang.Double.class,
                     java.lang.String.class, 
                     java.lang.Double.class,
-                    java.lang.Boolean.class,
-                    java.lang.Boolean.class,
-                    java.lang.Boolean.class,
-                    java.lang.Boolean.class,
-                    java.lang.Boolean.class,
                     java.lang.String.class,
+                    java.lang.Integer.class,
                 };
         int ren=0;
         int col=0;
@@ -919,80 +1307,103 @@ public class RegistraConsumibles extends javax.swing.JDialog {
                             Session session = HibernateUtil.getSessionFactory().openSession();
                             try
                             {
-                                session.beginTransaction().begin();
-                                user = (Usuario)session.get(Usuario.class, user.getIdUsuario());
-                                if(user.getEditaConsumible()==true)
+                                double total = ((Number)t_total.getValue()).doubleValue();
+                                double presupuesto = ((Number)t_presupuesto.getValue()).doubleValue();
+                                if(Double.parseDouble(value.toString())<=(double)t_datos.getValueAt(t_datos.getSelectedRow(), col))
+                                    total=presupuesto;
+                                else
                                 {
-                                    String esp="";
-                                    if(t_datos.getValueAt(t_datos.getSelectedRow(), 6).toString().compareTo("true")==0)
-                                        esp=" and almacen.especialidad='H'";
-                                    if(t_datos.getValueAt(t_datos.getSelectedRow(), 7).toString().compareTo("true")==0)
-                                        esp=" and almacen.especialidad='M'";
-                                    if(t_datos.getValueAt(t_datos.getSelectedRow(), 8).toString().compareTo("true")==0)
-                                        esp=" and almacen.especialidad='S'";
-                                    if(t_datos.getValueAt(t_datos.getSelectedRow(), 9).toString().compareTo("true")==0)
-                                        esp=" and almacen.especialidad='E'";
-                                    if(t_datos.getValueAt(t_datos.getSelectedRow(), 10).toString().compareTo("true")==0)
-                                        esp=" and almacen.especialidad='P'";
+                                    double cant_ant=(double)t_datos.getValueAt(t_datos.getSelectedRow(), col);
+                                    double costo=(double)t_datos.getValueAt(t_datos.getSelectedRow(), 5);
+                                    double cant_nueva=Double.parseDouble(value.toString());
+                                    double suma=(cant_nueva*costo)-(cant_ant*costo);
+                                    total+=suma;
+                                }
+                                
+                                if(total<=presupuesto)
+                                {
+                                    session.beginTransaction().begin();
+                                    user = (Usuario)session.get(Usuario.class, user.getIdUsuario());
+                                    if(user.getEditaConsumible()==true)
+                                    {
+                                        String esp="";
+                                        switch(t_datos.getValueAt(t_datos.getSelectedRow(), 6).toString())
+                                        {
+                                            case "H":
+                                                esp=" and almacen.especialidad='H'";
+                                                break;
+                                            case "M":
+                                                esp=" and almacen.especialidad='M'";
+                                                break;
+                                            case "S":
+                                                esp=" and almacen.especialidad='S'";
+                                                break;
+                                            case "E":
+                                                esp=" and almacen.especialidad='E'";
+                                                break;
+                                            case "P":
+                                                esp=" and almacen.especialidad='P'";
+                                                break;
+                                            case "A":
+                                                esp=" and almacen.especialidad='A'";
+                                                if(t_datos.getValueAt(t_datos.getSelectedRow(), col).toString().compareTo(" ")!=0)
+                                                    esp+=" and almacen.id_trabajo="+t_datos.getValueAt(t_datos.getSelectedRow(), 7);
+                                                break;
+                                        }
 
-                                    Consumible consumo = (Consumible)session.get(Consumible.class, Integer.parseInt(t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString()));
-                                    if(esp.compareTo("")==0)
-                                    {
-                                        if(Double.parseDouble(value.toString())>0.0){
-                                                consumo.setCantidad(Double.parseDouble(value.toString()));
-                                                session.saveOrUpdate(consumo);
-                                                session.beginTransaction().commit();
-                                                vector.setElementAt(value, col);
-                                                this.dataVector.setElementAt(vector, row);
-                                                fireTableCellUpdated(row, col);
-                                            }else{
-                                                JOptionPane.showMessageDialog(null, "La cantidad debe ser mayor a 0.0"); 
-                                            }
-                                    }
-                                    else
-                                    {
-                                        Query query = session.createSQLQuery("select " +
-             "( (select if(sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) from ejemplar left join movimiento on ejemplar.id_Parte=movimiento.id_Parte " +
-             "left join almacen on movimiento.id_almacen=almacen.id_almacen where ejemplar.id_Parte='"+t_datos.getValueAt(t_datos.getSelectedRow(), 2).toString()+"' and almacen.id_orden="+orden+" and almacen.tipo_movimiento=2 and almacen.operacion=8 "+esp+") - " +
-             "(select if(sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) from ejemplar left join movimiento on ejemplar.id_Parte=movimiento.id_Parte " +
-             "left join almacen on movimiento.id_almacen=almacen.id_almacen where ejemplar.id_Parte='"+t_datos.getValueAt(t_datos.getSelectedRow(), 2).toString()+"' and almacen.id_orden="+orden+" and almacen.tipo_movimiento=1 and almacen.operacion=8 "+esp+") )as operario ");  
-                                        System.out.println("select " +
-             "( (select if(sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) from ejemplar left join movimiento on ejemplar.id_Parte=movimiento.id_Parte " +
-             "left join almacen on movimiento.id_almacen=almacen.id_almacen where ejemplar.id_Parte='"+t_datos.getValueAt(t_datos.getSelectedRow(), 2).toString()+"' and almacen.id_orden="+orden+" and almacen.tipo_movimiento=2 and almacen.operacion=8 "+esp+") - " +
-             "(select if(sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) from ejemplar left join movimiento on ejemplar.id_Parte=movimiento.id_Parte " +
-             "left join almacen on movimiento.id_almacen=almacen.id_almacen where ejemplar.id_Parte='"+t_datos.getValueAt(t_datos.getSelectedRow(), 2).toString()+"' and almacen.id_orden="+orden+" and almacen.tipo_movimiento=1 and almacen.operacion=8 "+esp+") )as operario "); 
-                                        query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
-                                         ArrayList partidas=(ArrayList)query.list();
-                                         java.util.HashMap map=(java.util.HashMap)partidas.get(0);
-                                         //if(Double.parseDouble(map.get("operario").toString()) == 0.0d )
-                                         //{
-                                             if(Double.parseDouble(map.get("operario").toString())<=Double.parseDouble(value.toString()))
-                                             {
-                                                 if(Double.parseDouble(value.toString())>0.0)
-                                                 {
+                                        Consumible consumo = (Consumible)session.get(Consumible.class, Integer.parseInt(t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString()));
+                                        if(t_datos.getValueAt(t_datos.getSelectedRow(), 6).toString().compareTo("")==0 || (t_datos.getValueAt(t_datos.getSelectedRow(), 6).toString().compareTo("A")==0 && t_datos.getValueAt(t_datos.getSelectedRow(), 7).toString().compareTo("")==0))
+                                        {
+                                            if(Double.parseDouble(value.toString())>0.0){
                                                     consumo.setCantidad(Double.parseDouble(value.toString()));
                                                     session.saveOrUpdate(consumo);
                                                     session.beginTransaction().commit();
                                                     vector.setElementAt(value, col);
                                                     this.dataVector.setElementAt(vector, row);
                                                     fireTableCellUpdated(row, col);
+                                                }else{
+                                                    JOptionPane.showMessageDialog(null, "La cantidad debe ser mayor a 0.0"); 
+                                                }
+                                        }
+                                        else
+                                        {
+                                            String consulta1="(select if(sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) from ejemplar left join movimiento on ejemplar.id_Parte=movimiento.id_Parte " +
+                 "left join almacen on movimiento.id_almacen=almacen.id_almacen where ejemplar.id_Parte='"+t_datos.getValueAt(t_datos.getSelectedRow(), 2).toString()+"' and almacen.id_orden="+orden+" and almacen.tipo_movimiento=2 and almacen.operacion=8 "+esp+")";
+                                            String consulta2="(select if(sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) from ejemplar left join movimiento on ejemplar.id_Parte=movimiento.id_Parte " +
+                 "left join almacen on movimiento.id_almacen=almacen.id_almacen where ejemplar.id_Parte='"+t_datos.getValueAt(t_datos.getSelectedRow(), 2).toString()+"' and almacen.id_orden="+orden+" and almacen.tipo_movimiento=1 and almacen.operacion=8 "+esp+")";
+                                            String consulta="select ("+consulta1+" - "+consulta2+" )as operario";
+                                            Query query = session.createSQLQuery(consulta);  
+
+                                            query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+                                             ArrayList partidas=(ArrayList)query.list();
+                                             java.util.HashMap map=(java.util.HashMap)partidas.get(0);
+                                             if(Double.parseDouble(map.get("operario").toString())<=Double.parseDouble(value.toString()))
+                                             {
+                                                 if(Double.parseDouble(value.toString())>0.0)
+                                                 {
+                                                     double cantidad=Double.parseDouble(value.toString());
+                                                     consumo.setCantidad(cantidad);
+                                                     session.saveOrUpdate(consumo);
+                                                     session.beginTransaction().commit();
+                                                     vector.setElementAt(value, col);
+                                                     this.dataVector.setElementAt(vector, row);
+                                                     fireTableCellUpdated(row, col);
                                                  }
                                                  else
                                                      JOptionPane.showMessageDialog(null, "La cantidad debe ser mayor a 0.0"); 
-                                            }else//{
+                                            }else
                                                 JOptionPane.showMessageDialog(null, "La cantidad no puede ser menor a lo entregado previamente al operario"); 
-                                            //}
-                                         /*}
-                                         else
-                                         {
-                                             session.getTransaction().rollback();
-                                             JOptionPane.showMessageDialog(null, "La partida ya fue Entregada al operario");    
-                                         }*/
+                                        }
+                                    }
+                                    else
+                                    {
+                                        JOptionPane.showMessageDialog(null, "Acceso denegado"); 
                                     }
                                 }
                                 else
                                 {
-                                    JOptionPane.showMessageDialog(null, "Acceso denegado"); 
+                                    double valor=total-presupuesto;
+                                    JOptionPane.showMessageDialog(null, "No se puede agregar por que sobrepasaría el presupuesto asignado por $"+valor);
                                 }
                             }
                             catch(Exception e)
@@ -1025,23 +1436,26 @@ public class RegistraConsumibles extends javax.swing.JDialog {
                                 user = (Usuario)session.get(Usuario.class, user.getIdUsuario());
                                 if(user.getEditaConsumible()==true)
                                 {
-                                    if(existe(t_datos.getValueAt(t_datos.getSelectedRow(), 2).toString(),6)==false)
+                                    boolean resp = false;
+                                    if(value.toString().compareToIgnoreCase("A")==0)
+                                        resp=existeExtra(t_datos.getValueAt(t_datos.getSelectedRow(), 2).toString(), t_datos.getValueAt(t_datos.getSelectedRow(), 7).toString(),true);
+                                    else
+                                        resp=existe(t_datos.getValueAt(t_datos.getSelectedRow(), 2).toString(), value.toString(),true);
+                                    if(resp==false)
                                     {
                                         int renglon=t_datos.getSelectedRow();
-                                        String op="";
-                                        if(t_datos.getValueAt(renglon, 6).toString().compareTo("true")==0)
-                                            op="H";
-                                        if(t_datos.getValueAt(renglon, 7).toString().compareTo("true")==0)
-                                            op="M";
-                                        if(t_datos.getValueAt(renglon, 8).toString().compareTo("true")==0)
-                                            op="S";
-                                        if(t_datos.getValueAt(renglon, 9).toString().compareTo("true")==0)
-                                            op="E";
-                                        if(t_datos.getValueAt(renglon, 10).toString().compareTo("true")==0)
-                                            op="P";
-                                        if(op.compareTo("")!=0)
+                                        String op=t_datos.getValueAt(renglon, 6).toString();
+                                        
+                                        if(op.compareTo(" ")!=0)
                                         {
+                                            if(op.compareToIgnoreCase("A")==0)
+                                                op+=" and almacen.id_trabajo="+t_datos.getValueAt(t_datos.getSelectedRow(), 7);
                                             Consumible consumo = (Consumible)session.get(Consumible.class, Integer.parseInt(t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString()));
+                                            System.out.println("select " +
+                "( (select if(sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) from ejemplar left join movimiento on ejemplar.id_Parte=movimiento.id_Parte " +
+                "left join almacen on movimiento.id_almacen=almacen.id_almacen where ejemplar.id_Parte='"+t_datos.getValueAt(t_datos.getSelectedRow(), 2).toString()+"' and almacen.id_orden="+orden+" and almacen.tipo_movimiento=2 and almacen.operacion=8 and almacen.especialidad='"+op+"') - " +
+                "(select if(sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) from ejemplar left join movimiento on ejemplar.id_Parte=movimiento.id_Parte " +
+                "left join almacen on movimiento.id_almacen=almacen.id_almacen where ejemplar.id_Parte='"+t_datos.getValueAt(t_datos.getSelectedRow(), 2).toString()+"' and almacen.id_orden="+orden+" and almacen.tipo_movimiento=1 and almacen.operacion=8 and almacen.especialidad='"+op+"') )as operario ");
                                             Query query = session.createSQLQuery("select " +
                 "( (select if(sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) from ejemplar left join movimiento on ejemplar.id_Parte=movimiento.id_Parte " +
                 "left join almacen on movimiento.id_almacen=almacen.id_almacen where ejemplar.id_Parte='"+t_datos.getValueAt(t_datos.getSelectedRow(), 2).toString()+"' and almacen.id_orden="+orden+" and almacen.tipo_movimiento=2 and almacen.operacion=8 and almacen.especialidad='"+op+"') - " +
@@ -1052,22 +1466,17 @@ public class RegistraConsumibles extends javax.swing.JDialog {
                                             java.util.HashMap map=(java.util.HashMap)partidas.get(0);
                                             if(Double.parseDouble(map.get("operario").toString()) == 0.0d)
                                             {
-                                                if(value.toString().compareTo("true")==0){
-                                                    consumo.setEspHoj(true);
-                                                    consumo.setEspMec(false);
-                                                    consumo.setEspPin(false);
-                                                    consumo.setEspSus(false);
-                                                    consumo.setEspEle(false);
-                                                }else{
-                                                    consumo.setEspHoj(false);
-                                                }
-
+                                                consumo.setEspecialidad(value.toString());
+                                                if(value.toString().compareTo("A")==0)
+                                                    consumo.setTipo("A");
+                                                else
+                                                    consumo.setTipo("O");
                                                 session.update(consumo);
                                                 session.getTransaction().commit();
                                                 vector.setElementAt(value, col);
                                                 this.dataVector.setElementAt(vector, row);
                                                 fireTableCellUpdated(row, col);
-                                                buscaCuentas(-1, -1);
+                                                buscaCuentas(row, col);
                                             }
                                             else
                                             {
@@ -1078,27 +1487,22 @@ public class RegistraConsumibles extends javax.swing.JDialog {
                                         else
                                         {
                                             Consumible consumo = (Consumible)session.get(Consumible.class, Integer.parseInt(t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString()));
-                                            if(value.toString().compareTo("true")==0){
-                                                consumo.setEspHoj(true);
-                                                consumo.setEspMec(false);
-                                                consumo.setEspPin(false);
-                                                consumo.setEspSus(false);
-                                                consumo.setEspEle(false);
-                                            }else{
-                                                consumo.setEspHoj(false);
-                                            }
-
+                                            consumo.setEspecialidad(value.toString());
+                                            if(value.toString().compareTo("A")==0)
+                                                consumo.setTipo("A");
+                                            else
+                                                consumo.setTipo("O");
                                             session.update(consumo);
                                             session.getTransaction().commit();
                                             vector.setElementAt(value, col);
                                             this.dataVector.setElementAt(vector, row);
                                             fireTableCellUpdated(row, col);
-                                            buscaCuentas(-1, -1);
+                                            buscaCuentas(row, col);
                                         }
                                     }else
                                     {
                                         session.getTransaction().rollback();
-                                        JOptionPane.showMessageDialog(null, "Este consumible ya esta asignado a Hojalateria en otra partida, incrementelo");    
+                                        JOptionPane.showMessageDialog(null, "Este consumible ya esta asignado en la especialidad, incrementelo");    
                                     }
                                 }else{
                                     JOptionPane.showMessageDialog(null, "Acceso denegado");
@@ -1134,412 +1538,66 @@ public class RegistraConsumibles extends javax.swing.JDialog {
                                 user = (Usuario)session.get(Usuario.class, user.getIdUsuario());
                                 if(user.getEditaConsumible()==true)
                                 {
-                                    if(existe(t_datos.getValueAt(t_datos.getSelectedRow(), 2).toString(),7)==false)
+                                    if(t_datos.getValueAt(t_datos.getSelectedRow(), 6).toString().compareTo("A")==0)
                                     {
-                                        int renglon=t_datos.getSelectedRow();
-                                        String op="";
-                                        if(t_datos.getValueAt(renglon, 6).toString().compareTo("true")==0)
-                                            op="H";
-                                        if(t_datos.getValueAt(renglon, 7).toString().compareTo("true")==0)
-                                            op="M";
-                                        if(t_datos.getValueAt(renglon, 8).toString().compareTo("true")==0)
-                                            op="S";
-                                        if(t_datos.getValueAt(renglon, 9).toString().compareTo("true")==0)
-                                            op="E";
-                                        if(t_datos.getValueAt(renglon, 10).toString().compareTo("true")==0)
-                                            op="P";
-                                        if(op.compareTo("")!=0)
+                                        if(existeExtra(t_datos.getValueAt(t_datos.getSelectedRow(), 2).toString(), value.toString(), true)==false)
                                         {
-                                            Consumible consumo = (Consumible)session.get(Consumible.class, Integer.parseInt(t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString()));
-                                            Query query = session.createSQLQuery("select " +
-                "( (select if(sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) from ejemplar left join movimiento on ejemplar.id_Parte=movimiento.id_Parte " +
-                "left join almacen on movimiento.id_almacen=almacen.id_almacen where ejemplar.id_Parte='"+t_datos.getValueAt(t_datos.getSelectedRow(), 2).toString()+"' and almacen.id_orden="+orden+" and almacen.tipo_movimiento=2 and almacen.operacion=8 and almacen.especialidad='"+op+"') - " +
-                "(select if(sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) from ejemplar left join movimiento on ejemplar.id_Parte=movimiento.id_Parte " +
-                "left join almacen on movimiento.id_almacen=almacen.id_almacen where ejemplar.id_Parte='"+t_datos.getValueAt(t_datos.getSelectedRow(), 2).toString()+"' and almacen.id_orden="+orden+" and almacen.tipo_movimiento=1 and almacen.operacion=8 and almacen.especialidad='"+op+"') )as operario ");  
-                                            query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
-                                            ArrayList partidas=(ArrayList)query.list();
-                                            java.util.HashMap map=(java.util.HashMap)partidas.get(0);
-                                            if(Double.parseDouble(map.get("operario").toString()) == 0.0d)
+                                            int renglon=t_datos.getSelectedRow();
+                                            String op=t_datos.getValueAt(renglon, 6).toString();
+                                            
+                                            if(op.compareTo(" ")!=0)
                                             {
-                                                if(value.toString().compareTo("true")==0){
-                                                    consumo.setEspHoj(false);
-                                                    consumo.setEspMec(true);
-                                                    consumo.setEspPin(false);
-                                                    consumo.setEspSus(false);
-                                                    consumo.setEspEle(false);
-                                                }else{
-                                                    consumo.setEspMec(false);
+                                                Consumible consumo = (Consumible)session.get(Consumible.class, Integer.parseInt(t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString()));
+                                                Query query = session.createSQLQuery("select " +
+                    "( (select if(sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) from ejemplar left join movimiento on ejemplar.id_Parte=movimiento.id_Parte " +
+                    "left join almacen on movimiento.id_almacen=almacen.id_almacen where ejemplar.id_Parte='"+t_datos.getValueAt(t_datos.getSelectedRow(), 2).toString()+"' and almacen.id_orden="+orden+" and almacen.tipo_movimiento=2 and almacen.operacion=8 and almacen.especialidad='"+op+"') - " +
+                    "(select if(sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) from ejemplar left join movimiento on ejemplar.id_Parte=movimiento.id_Parte " +
+                    "left join almacen on movimiento.id_almacen=almacen.id_almacen where ejemplar.id_Parte='"+t_datos.getValueAt(t_datos.getSelectedRow(), 2).toString()+"' and almacen.id_orden="+orden+" and almacen.tipo_movimiento=1 and almacen.operacion=8 and almacen.especialidad='"+op+"') )as operario ");  
+                                                query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+                                                ArrayList partidas=(ArrayList)query.list();
+                                                java.util.HashMap map=(java.util.HashMap)partidas.get(0);
+                                                if(Double.parseDouble(map.get("operario").toString()) == 0.0d)
+                                                {
+                                                    //consumo.setEspecialidad("A");
+                                                    TrabajoExtra tr=(TrabajoExtra)session.get(TrabajoExtra.class, Integer.parseInt(value.toString()));
+                                                    consumo.setTrabajoExtra(tr);
+                                                    session.update(consumo);
+                                                    session.getTransaction().commit();
+                                                    vector.setElementAt(value, col);
+                                                    this.dataVector.setElementAt(vector, row);
+                                                    fireTableCellUpdated(row, col);
+                                                    buscaCuentas(row, col);
                                                 }
-
-                                                session.update(consumo);
-                                                session.getTransaction().commit();
-                                                vector.setElementAt(value, col);
-                                                this.dataVector.setElementAt(vector, row);
-                                                fireTableCellUpdated(row, col);
-                                                buscaCuentas(-1, -1);
+                                                else
+                                                {
+                                                    session.getTransaction().rollback();
+                                                    JOptionPane.showMessageDialog(null, "La partida ya fue Entregada al operario");    
+                                                }
                                             }
                                             else
                                             {
-                                                session.getTransaction().rollback();
-                                                JOptionPane.showMessageDialog(null, "La partida ya fue Entregada al operario");    
-                                            }
-                                        }
-                                        else
-                                        {
-                                            Consumible consumo = (Consumible)session.get(Consumible.class, Integer.parseInt(t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString()));
-                                            if(value.toString().compareTo("true")==0){
-                                                    consumo.setEspHoj(false);
-                                                    consumo.setEspMec(true);
-                                                    consumo.setEspPin(false);
-                                                    consumo.setEspSus(false);
-                                                    consumo.setEspEle(false);
-                                                }else{
-                                                    consumo.setEspMec(false);
-                                                }
-
+                                                Consumible consumo = (Consumible)session.get(Consumible.class, Integer.parseInt(t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString()));
+                                                consumo.setEspecialidad("A");
+                                                TrabajoExtra tr=(TrabajoExtra)session.get(TrabajoExtra.class, Integer.parseInt(value.toString()));
+                                                consumo.setTrabajoExtra(tr);
                                                 session.update(consumo);
                                                 session.getTransaction().commit();
                                                 vector.setElementAt(value, col);
                                                 this.dataVector.setElementAt(vector, row);
                                                 fireTableCellUpdated(row, col);
-                                                buscaCuentas(-1, -1);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        session.getTransaction().rollback();
-                                        JOptionPane.showMessageDialog(null, "Este consumible ya esta asignado a Mecanica en otra partida, incrementelo");    
-                                    }
-                                }else{
-                                    JOptionPane.showMessageDialog(null, "Acceso denegado");
-                                }
-                            }
-                            catch(Exception e)
-                            {
-                                session.getTransaction().rollback();
-                                e.printStackTrace();
-                                JOptionPane.showMessageDialog(null, "Error al actualizar los datos"); 
-                            }
-                            if(session!=null)
-                                if(session.isOpen()==true)
-                                {
-                                    session.flush();
-                                    session.clear();
-                                    session.close();
-                                }
-                            sumaTotales();
-                        }
-                        break;
-                      case 8:
-                        if(vector.get(col)==null)
-                        {
-                            vector.setElementAt(value, col);
-                            this.dataVector.setElementAt(vector, row);
-                            fireTableCellUpdated(row, col);
-                        }else{
-                            Session session = HibernateUtil.getSessionFactory().openSession();
-                            try
-                            {
-                                session.beginTransaction().begin();
-                                user = (Usuario)session.get(Usuario.class, user.getIdUsuario());
-                                if(user.getEditaConsumible()==true)
-                                {
-                                    if(existe(t_datos.getValueAt(t_datos.getSelectedRow(), 2).toString(),8)==false)
-                                    {
-                                        int renglon=t_datos.getSelectedRow();
-                                        String op="";
-                                        if(t_datos.getValueAt(renglon, 6).toString().compareTo("true")==0)
-                                            op="H";
-                                        if(t_datos.getValueAt(renglon, 7).toString().compareTo("true")==0)
-                                            op="M";
-                                        if(t_datos.getValueAt(renglon, 8).toString().compareTo("true")==0)
-                                            op="S";
-                                        if(t_datos.getValueAt(renglon, 9).toString().compareTo("true")==0)
-                                            op="E";
-                                        if(t_datos.getValueAt(renglon, 10).toString().compareTo("true")==0)
-                                            op="P";
-                                        if(op.compareTo("")!=0)
-                                        {
-                                            Consumible consumo = (Consumible)session.get(Consumible.class, Integer.parseInt(t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString()));
-                                            Query query = session.createSQLQuery("select " +
-                "( (select if(sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) from ejemplar left join movimiento on ejemplar.id_Parte=movimiento.id_Parte " +
-                "left join almacen on movimiento.id_almacen=almacen.id_almacen where ejemplar.id_Parte='"+t_datos.getValueAt(t_datos.getSelectedRow(), 2).toString()+"' and almacen.id_orden="+orden+" and almacen.tipo_movimiento=2 and almacen.operacion=8  and almacen.especialidad='"+op+"') - " +
-                "(select if(sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) from ejemplar left join movimiento on ejemplar.id_Parte=movimiento.id_Parte " +
-                "left join almacen on movimiento.id_almacen=almacen.id_almacen where ejemplar.id_Parte='"+t_datos.getValueAt(t_datos.getSelectedRow(), 2).toString()+"' and almacen.id_orden="+orden+" and almacen.tipo_movimiento=1 and almacen.operacion=8  and almacen.especialidad='"+op+"') )as operario ");  
-                                            query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
-                                            ArrayList partidas=(ArrayList)query.list();
-                                            java.util.HashMap map=(java.util.HashMap)partidas.get(0);
-                                            if(Double.parseDouble(map.get("operario").toString()) == 0.0d)
-                                            {
-                                                if(value.toString().compareTo("true")==0){
-                                                    consumo.setEspHoj(false);
-                                                    consumo.setEspMec(false);
-                                                    consumo.setEspPin(false);
-                                                    consumo.setEspSus(true);
-                                                    consumo.setEspEle(false);
-                                                }else{
-                                                    consumo.setEspSus(false);
-                                                }
-
-                                                session.update(consumo);
-                                                session.getTransaction().commit();
-                                                vector.setElementAt(value, col);
-                                                this.dataVector.setElementAt(vector, row);
-                                                fireTableCellUpdated(row, col);
-                                                buscaCuentas(-1, -1);
-                                            }
-                                            else
-                                            {
-                                                session.getTransaction().rollback();
-                                                JOptionPane.showMessageDialog(null, "La partida ya fue Entregada al operario");    
-                                            }
-                                        }
-                                        else
-                                        {
-                                            Consumible consumo = (Consumible)session.get(Consumible.class, Integer.parseInt(t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString()));
-                                            if(value.toString().compareTo("true")==0){
-                                                    consumo.setEspHoj(false);
-                                                    consumo.setEspMec(false);
-                                                    consumo.setEspPin(false);
-                                                    consumo.setEspSus(true);
-                                                    consumo.setEspEle(false);
-                                                }else{
-                                                    consumo.setEspSus(false);
-                                                }
-
-                                                session.update(consumo);
-                                                session.getTransaction().commit();
-                                                vector.setElementAt(value, col);
-                                                this.dataVector.setElementAt(vector, row);
-                                                fireTableCellUpdated(row, col);
-                                                buscaCuentas(-1, -1);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        session.getTransaction().rollback();
-                                        JOptionPane.showMessageDialog(null, "Este consumible ya esta asignado a Suspensión en otra partida, incrementelo");    
-                                    }
-                                }else{
-                                    JOptionPane.showMessageDialog(null, "Acceso denegado");
-                                }
-                            }
-                            catch(Exception e)
-                            {
-                                session.getTransaction().rollback();
-                                e.printStackTrace();
-                                JOptionPane.showMessageDialog(null, "Error al actualizar los datos"); 
-                            }
-                            if(session!=null)
-                                if(session.isOpen()==true)
-                                {
-                                    session.flush();
-                                    session.clear();
-                                    session.close();
-                                }
-                            sumaTotales();
-                        }
-                        break;
-                      case 9:
-                        if(vector.get(col)==null)
-                        {
-                            vector.setElementAt(value, col);
-                            this.dataVector.setElementAt(vector, row);
-                            fireTableCellUpdated(row, col);
-                        }else{
-                            Session session = HibernateUtil.getSessionFactory().openSession();
-                            try
-                            {
-                                session.beginTransaction().begin();
-                                user = (Usuario)session.get(Usuario.class, user.getIdUsuario());
-                                if(user.getEditaConsumible()==true)
-                                {
-                                    if(existe(t_datos.getValueAt(t_datos.getSelectedRow(), 2).toString(),9)==false)
-                                    {
-                                        int renglon=t_datos.getSelectedRow();
-                                        String op="";
-                                        if(t_datos.getValueAt(renglon, 6).toString().compareTo("true")==0)
-                                            op="H";
-                                        if(t_datos.getValueAt(renglon, 7).toString().compareTo("true")==0)
-                                            op="M";
-                                        if(t_datos.getValueAt(renglon, 8).toString().compareTo("true")==0)
-                                            op="S";
-                                        if(t_datos.getValueAt(renglon, 9).toString().compareTo("true")==0)
-                                            op="E";
-                                        if(t_datos.getValueAt(renglon, 10).toString().compareTo("true")==0)
-                                            op="P";
-                                        if(op.compareTo("")!=0)
-                                        {
-
-                                            Consumible consumo = (Consumible)session.get(Consumible.class, Integer.parseInt(t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString()));
-                                            Query query = session.createSQLQuery("select " +
-                "( (select if(sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) from ejemplar left join movimiento on ejemplar.id_Parte=movimiento.id_Parte " +
-                "left join almacen on movimiento.id_almacen=almacen.id_almacen where ejemplar.id_Parte='"+t_datos.getValueAt(t_datos.getSelectedRow(), 2).toString()+"' and almacen.id_orden="+orden+" and almacen.tipo_movimiento=2 and almacen.operacion=8 and almacen.especialidad='"+op+"') - " +
-                "(select if(sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) from ejemplar left join movimiento on ejemplar.id_Parte=movimiento.id_Parte " +
-                "left join almacen on movimiento.id_almacen=almacen.id_almacen where ejemplar.id_Parte='"+t_datos.getValueAt(t_datos.getSelectedRow(), 2).toString()+"' and almacen.id_orden="+orden+" and almacen.tipo_movimiento=1 and almacen.operacion=8 and almacen.especialidad='"+op+"') )as operario ");  
-                                            query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
-                                            ArrayList partidas=(ArrayList)query.list();
-                                            java.util.HashMap map=(java.util.HashMap)partidas.get(0);
-                                            if(Double.parseDouble(map.get("operario").toString()) == 0.0d)
-                                            {
-                                                if(value.toString().compareTo("true")==0){
-                                                    consumo.setEspHoj(false);
-                                                    consumo.setEspMec(false);
-                                                    consumo.setEspPin(false);
-                                                    consumo.setEspSus(false);
-                                                    consumo.setEspEle(true);
-                                                }else{
-                                                    consumo.setEspEle(false);
-                                                }
-
-                                                session.update(consumo);
-                                                session.getTransaction().commit();
-                                                vector.setElementAt(value, col);
-                                                this.dataVector.setElementAt(vector, row);
-                                                fireTableCellUpdated(row, col);
-                                                buscaCuentas(-1, -1);
-                                            }
-                                            else
-                                            {
-                                                session.getTransaction().rollback();
-                                                JOptionPane.showMessageDialog(null, "La partida ya fue Entregada al operario");    
-                                            }
-                                        }
-                                        else
-                                        {
-                                            Consumible consumo = (Consumible)session.get(Consumible.class, Integer.parseInt(t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString()));
-                                            if(value.toString().compareTo("true")==0){
-                                                consumo.setEspHoj(false);
-                                                consumo.setEspMec(false);
-                                                consumo.setEspPin(false);
-                                                consumo.setEspSus(false);
-                                                consumo.setEspEle(true);
-                                            }else{
-                                                consumo.setEspEle(false);
-                                            }
-
-                                            session.update(consumo);
-                                            session.getTransaction().commit();
-                                            vector.setElementAt(value, col);
-                                            this.dataVector.setElementAt(vector, row);
-                                            fireTableCellUpdated(row, col);
-                                            buscaCuentas(-1, -1);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        session.getTransaction().rollback();
-                                        JOptionPane.showMessageDialog(null, "Este consumible ya esta asignado a Suspensión en otra partida, incrementelo");    
-                                    }
-                                }else{
-                                            JOptionPane.showMessageDialog(null, "Acceso denegado");
-                                        }
-                            }
-                            catch(Exception e)
-                            {
-                                session.getTransaction().rollback();
-                                e.printStackTrace();
-                                JOptionPane.showMessageDialog(null, "Error al actualizar los datos"); 
-                            }
-                            if(session!=null)
-                                if(session.isOpen()==true)
-                                {
-                                    session.flush();
-                                    session.clear();
-                                    session.close();
-                                }
-                            sumaTotales();
-                        }
-                        break;
-                     case 10:
-                        if(vector.get(col)==null)
-                        {
-                            vector.setElementAt(value, col);
-                            this.dataVector.setElementAt(vector, row);
-                            fireTableCellUpdated(row, col);
-                        }else{
-                            Session session = HibernateUtil.getSessionFactory().openSession();
-                            try
-                            {
-                                session.beginTransaction().begin();
-                                user = (Usuario)session.get(Usuario.class, user.getIdUsuario());
-                                if(user.getEditaConsumible()==true)
-                                {
-                                    int renglon=t_datos.getSelectedRow();
-                                    String op="";
-                                    if(t_datos.getValueAt(renglon, 6).toString().compareTo("true")==0)
-                                        op="H";
-                                    if(t_datos.getValueAt(renglon, 7).toString().compareTo("true")==0)
-                                        op="M";
-                                    if(t_datos.getValueAt(renglon, 8).toString().compareTo("true")==0)
-                                        op="S";
-                                    if(t_datos.getValueAt(renglon, 9).toString().compareTo("true")==0)
-                                        op="E";
-                                    if(t_datos.getValueAt(renglon, 10).toString().compareTo("true")==0)
-                                        op="P";
-                                    if(op.compareTo("")!=0)
-                                    {
-                                        if(existe(t_datos.getValueAt(t_datos.getSelectedRow(), 2).toString(),10)==false)
-                                        {
-                                            Consumible consumo = (Consumible)session.get(Consumible.class, Integer.parseInt(t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString()));
-                                            Query query = session.createSQLQuery("select " +
-                "( (select if(sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) from ejemplar left join movimiento on ejemplar.id_Parte=movimiento.id_Parte " +
-                "left join almacen on movimiento.id_almacen=almacen.id_almacen where ejemplar.id_Parte='"+t_datos.getValueAt(t_datos.getSelectedRow(), 2).toString()+"' and almacen.id_orden="+orden+" and almacen.tipo_movimiento=2 and almacen.operacion=8 and almacen.especialidad='"+op+"') - " +
-                "(select if(sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) from ejemplar left join movimiento on ejemplar.id_Parte=movimiento.id_Parte " +
-                "left join almacen on movimiento.id_almacen=almacen.id_almacen where ejemplar.id_Parte='"+t_datos.getValueAt(t_datos.getSelectedRow(), 2).toString()+"' and almacen.id_orden="+orden+" and almacen.tipo_movimiento=1 and almacen.operacion=8 and almacen.especialidad='"+op+"') )as operario ");  
-                                            query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
-                                            ArrayList partidas=(ArrayList)query.list();
-                                            java.util.HashMap map=(java.util.HashMap)partidas.get(0);
-                                            if(Double.parseDouble(map.get("operario").toString()) == 0.0d)
-                                            {
-                                                if(value.toString().compareTo("true")==0){
-                                                    consumo.setEspHoj(false);
-                                                    consumo.setEspMec(false);
-                                                    consumo.setEspPin(true);
-                                                    consumo.setEspSus(false);
-                                                    consumo.setEspEle(false);
-                                                }else{
-                                                    consumo.setEspPin(false);
-                                                }
-
-                                                session.update(consumo);
-                                                session.getTransaction().commit();
-                                                vector.setElementAt(value, col);
-                                                this.dataVector.setElementAt(vector, row);
-                                                fireTableCellUpdated(row, col);
-                                                buscaCuentas(-1, -1);
-                                            }
-                                            else
-                                            {
-                                                session.getTransaction().rollback();
-                                                JOptionPane.showMessageDialog(null, "La partida ya fue Entregada al operario");    
+                                                buscaCuentas(row, col);
                                             }
                                         }
                                         else
                                         {
                                             session.getTransaction().rollback();
-                                            JOptionPane.showMessageDialog(null, "Este consumible ya esta asignado a pintura en otra partida, incrementelo");    
+                                            JOptionPane.showMessageDialog(null, "Este consumible ya esta asignado en la especialidad, incrementelo");    
                                         }
                                     }
                                     else
                                     {
-                                        Consumible consumo = (Consumible)session.get(Consumible.class, Integer.parseInt(t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString()));
-                                        if(value.toString().compareTo("true")==0){
-                                            consumo.setEspHoj(false);
-                                            consumo.setEspMec(false);
-                                            consumo.setEspPin(true);
-                                            consumo.setEspSus(false);
-                                            consumo.setEspEle(false);
-                                        }else{
-                                            consumo.setEspPin(false);
-                                        }
-
-                                        session.update(consumo);
-                                        session.getTransaction().commit();
-                                        vector.setElementAt(value, col);
-                                        this.dataVector.setElementAt(vector, row);
-                                        fireTableCellUpdated(row, col);
-                                        buscaCuentas(-1, -1);
+                                        session.getTransaction().rollback();
+                                        JOptionPane.showMessageDialog(null, "Solo se puede asignar trabajos a consumibles adicionales");    
                                     }
                                 }else{
                                     JOptionPane.showMessageDialog(null, "Acceso denegado");
@@ -1601,7 +1659,17 @@ public class RegistraConsumibles extends javax.swing.JDialog {
             try
             {
                 Orden ord = (Orden)session.get(Orden.class, Integer.parseInt(orden));
-                Query query = session.createSQLQuery("select id_consumible, id_catalogo, consumible.id_Parte, cantidad, consumible.medida, consumible.precio, esp_hoj, esp_mec, esp_sus, esp_ele, esp_pin, tipo from consumible \n" +
+                if(ord.getValesConsumibles()!=null)
+                {
+                    this.t_presupuesto.setText(""+ord.getValesConsumibles());
+                    this.t_presupuesto.setValue(ord.getValesConsumibles());
+                }
+                else
+                {
+                    this.t_presupuesto.setText("0.00");
+                    this.t_presupuesto.setValue(0);
+                }
+                Query query = session.createSQLQuery("select id_consumible, comentario, consumible.id_Parte, cantidad, consumible.medida, consumible.precio, consumible.especialidad, if(consumible.id_trabajo is null,'', consumible.id_trabajo)as trabajo, consumible.tipo from consumible \n" +
 "left join ejemplar on consumible.id_Parte=ejemplar.id_Parte where id_orden="+orden+" order by id_consumible;");  
                 query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
                 ArrayList partidas=(ArrayList)query.list();
@@ -1609,37 +1677,46 @@ public class RegistraConsumibles extends javax.swing.JDialog {
                 {
                     model=new MyModel(partidas.size(), columnas);
                     t_datos.setModel(model);
-                    t_datos.getModel();
                     
                     for(int i=0; i<partidas.size(); i++)
                     {
-                        //consumible., , , , , 
                         java.util.HashMap map=(java.util.HashMap)partidas.get(i);
                         model.setValueAt(map.get("id_consumible"), i, 0);
-                        model.setCeldaEditable(i, 0, false);
-                        model.setValueAt(map.get("id_catalogo"), i, 1);
-                        model.setCeldaEditable(i, 1, false);
+                        model.setValueAt(map.get("comentario"), i, 1);
                         model.setValueAt(map.get("id_Parte"), i, 2);
-                        model.setCeldaEditable(i, 2, false);
                         model.setValueAt(map.get("cantidad"), i, 3);
                         model.setValueAt(map.get("medida"), i, 4);
-                        model.setCeldaEditable(i, 4, false);
                         model.setValueAt(map.get("precio"), i, 5);
+                        model.setValueAt(map.get("especialidad").toString(), i, 6);
+                        model.setValueAt(map.get("trabajo").toString(), i, 7);
+                        
+                        model.setCeldaEditable(i, 0, false);
+                        model.setCeldaEditable(i, 1, false);
+                        model.setCeldaEditable(i, 2, false);
+                        model.setCeldaEditable(i, 4, false);
                         model.setCeldaEditable(i, 5, false);
-                        model.setValueAt(map.get("esp_hoj").toString().contentEquals("true"), i, 6);
-                        model.setValueAt(map.get("esp_mec").toString().contentEquals("true"), i, 7);
-                        model.setValueAt(map.get("esp_sus").toString().contentEquals("true"), i, 8);
-                        model.setValueAt(map.get("esp_ele").toString().contentEquals("true"), i, 9);
-                        model.setValueAt(map.get("esp_pin").toString().contentEquals("true"), i, 10);
-                        model.setValueAt(map.get("tipo"), i, 11);
-                        model.setCeldaEditable(i, 11, false);
+                        if(rb_estado.isSelected())
+                        {
+                            model.setCeldaEditable(i, 3, false);
+                            model.setCeldaEditable(i, 6, false);
+                        }
+                        model.setCeldaEditable(i, 7, false);
                     }
                 }
                 else
                 {
                     model=new MyModel(0, columnas);
                     t_datos.setModel(model);    
-                    //model.setNumRows(0);
+                }
+                if(rb_estado.isSelected())
+                {
+                    b_mas.setEnabled(false);
+                    b_menos.setEnabled(false);
+                }
+                else
+                {
+                    b_mas.setEnabled(true);
+                    b_menos.setEnabled(true);
                 }
                 session.beginTransaction().rollback();
             }catch(Exception e)
@@ -1669,37 +1746,86 @@ public class RegistraConsumibles extends javax.swing.JDialog {
     }
     public void sumaTotales()
     {
-         double hoj=0.0, mec=0.0, sus=0.0, ele=0.0, pin=0.0, total=0.0;
+         double hoj=0.0, mec=0.0, sus=0.0, ele=0.0, pin=0.0, na=0.0, adi=0.0, total=0.0;
          for(int x=0; x<t_datos.getRowCount(); x++)
          {
-             if(t_datos.getValueAt(x, 6).toString().compareTo("true")==0){
-                 hoj += (Double)t_datos.getValueAt(x, 5) * (Double)t_datos.getValueAt(x, 3);
-             }else if(t_datos.getValueAt(x, 7).toString().compareTo("true")==0){
-                 mec += (Double)t_datos.getValueAt(x, 5) * (Double)t_datos.getValueAt(x, 3);
-             }
-             else if(t_datos.getValueAt(x, 8).toString().compareTo("true")==0){
-                 sus += (Double)t_datos.getValueAt(x, 5) * (Double)t_datos.getValueAt(x, 3);
-             }else if(t_datos.getValueAt(x, 9).toString().compareTo("true")==0){
-                 ele += (Double)t_datos.getValueAt(x, 5) * (Double)t_datos.getValueAt(x, 3);
-             }else if(t_datos.getValueAt(x, 10).toString().compareTo("true")==0){
-                 pin += (Double)t_datos.getValueAt(x, 5) * (Double)t_datos.getValueAt(x, 3);
+             switch(t_datos.getValueAt(x, 6).toString()){
+                 case "H":
+                     hoj += (Double)t_datos.getValueAt(x, 5) * (Double)t_datos.getValueAt(x, 3);
+                     break;
+                 case "M":
+                     mec += (Double)t_datos.getValueAt(x, 5) * (Double)t_datos.getValueAt(x, 3);
+                     break;
+                 case "S":
+                     sus += (Double)t_datos.getValueAt(x, 5) * (Double)t_datos.getValueAt(x, 3);
+                     break;
+                 case "E":
+                     ele += (Double)t_datos.getValueAt(x, 5) * (Double)t_datos.getValueAt(x, 3);
+                     break;
+                 case "P":
+                     pin += (Double)t_datos.getValueAt(x, 5) * (Double)t_datos.getValueAt(x, 3);
+                     break;
+                 case "A":
+                     adi += (Double)t_datos.getValueAt(x, 5) * (Double)t_datos.getValueAt(x, 3);
+                     break;
+                 case "":
+                     na += (Double)t_datos.getValueAt(x, 5) * (Double)t_datos.getValueAt(x, 3);
+                     break;
+                 case " ":
+                     na += (Double)t_datos.getValueAt(x, 5) * (Double)t_datos.getValueAt(x, 3);
+                     break;
              }
         }
-        total = hoj+mec+sus+ele+pin;
+        total = hoj+mec+sus+ele+pin+adi+na;
         t_hojalateria.setValue(hoj);
         t_mecanica.setValue(mec);
         t_suspension.setValue(sus);
         t_electrico.setValue(ele);
         t_pintura.setValue(pin);
+        t_adicional.setValue(adi);
+        t_na.setValue(na);
         t_total.setValue(total);
+        
+        double presupuesto = ((Number)t_presupuesto.getValue()).doubleValue();
+        if(presupuesto<=total)
+        {
+            b_mas.setEnabled(false);
+            rb_estado.setEnabled(false);
+            JOptionPane.showMessageDialog(null, "No hay Presupuesto disponible");
+        }
     }
-    boolean existe(String aux, int pos)
+    boolean existe(String np, String especialidad, boolean omite_actual)
+    {
+        especialidad=especialidad.substring(0, 1);
+        for(int x=0; x<t_datos.getRowCount(); x++)
+        {
+            if(t_datos.getValueAt(x, 2).toString().compareToIgnoreCase(np)==0 && t_datos.getValueAt(x, 6).toString().compareToIgnoreCase(especialidad)==0)
+            {
+                if(omite_actual==true)
+                {
+                    if(t_datos.getSelectedRow()!=x)
+                        return true;
+                }
+                else
+                    return true;
+            }
+        }
+        return false;
+    }
+    boolean existeExtra(String np, String trabajo, boolean omite_actual)
     {
         for(int x=0; x<t_datos.getRowCount(); x++)
         {
-            if(t_datos.getSelectedRow()!=x)
-                if(t_datos.getValueAt(x, 2).toString().compareTo(aux)==0 && t_datos.getValueAt(x, pos).toString().compareTo("true")==0)
+            if(t_datos.getValueAt(x, 2).toString().compareToIgnoreCase(np)==0 && t_datos.getValueAt(x, 6).toString().compareToIgnoreCase("A")==0 && t_datos.getValueAt(x, 7).toString().compareToIgnoreCase(trabajo)==0)
+            {
+                if(omite_actual==true)
+                {
+                    if(t_datos.getSelectedRow()!=x)
+                        return true;
+                }
+                else
                     return true;
+            }
         }
         return false;
     }

@@ -33,6 +33,8 @@ public class Pedido  implements java.io.Serializable {
      private String noRerefencia;
      private String tipoPedido;
      private String ventana;
+     private Double tipoCambio;
+     private boolean soporte;
      private Set partidaExternas = new HashSet(0);
      private Set partidas = new HashSet(0);
      private Set almacens = new HashSet(0);
@@ -48,7 +50,7 @@ public class Pedido  implements java.io.Serializable {
         this.fechaPedido = fechaPedido;
         this.tipoPedido = tipoPedido;
     }
-    public Pedido(Usuario usuarioByBloqueado, Empleado empleado, Partida partida, Proveedor proveedorByIdProveedor, Usuario usuarioByAutorizo2, Proveedor proveedorByIdEmpresa, OrdenExterna ordenExterna, Usuario usuarioByIdUsuario, Usuario usuarioByAutorizo, Date fechaPedido, String notas, String idExterno, Integer noFactura, Integer formaPago, String noRerefencia, String tipoPedido, String ventana, Date fechaAutorizo, Date fechaAutorizo2, Set partidaExternas, Set partidas, Set almacens, Orden ord) {
+    public Pedido(Usuario usuarioByBloqueado, Empleado empleado, Partida partida, Proveedor proveedorByIdProveedor, Usuario usuarioByAutorizo2, Proveedor proveedorByIdEmpresa, OrdenExterna ordenExterna, Usuario usuarioByIdUsuario, Usuario usuarioByAutorizo, Date fechaPedido, String notas, String idExterno, Integer noFactura, Integer formaPago, String noRerefencia, String tipoPedido, String ventana, Date fechaAutorizo, Date fechaAutorizo2, Double tipoCambio, boolean soporte, Set partidaExternas, Set partidas, Set almacens, Orden ord) {
        this.usuarioByBloqueado = usuarioByBloqueado;
        this.empleado = empleado;
        this.partida = partida;
@@ -67,6 +69,8 @@ public class Pedido  implements java.io.Serializable {
        this.noRerefencia = noRerefencia;
        this.tipoPedido = tipoPedido;
        this.ventana = ventana;
+       this.tipoCambio = tipoCambio;
+       this.soporte = soporte;
        this.partidaExternas = partidaExternas;
        this.partidas = partidas;
        this.almacens = almacens;
@@ -224,6 +228,15 @@ public class Pedido  implements java.io.Serializable {
     public void setVentana(String ventana) {
         this.ventana = ventana;
     }
+    
+    public Double getTipoCambio() {
+        return this.tipoCambio;
+    }
+    
+    public void setTipoCambio(Double tipoCambio) {
+        this.tipoCambio = tipoCambio;
+    }
+    
     public Set getPartidaExternas() {
         return this.partidaExternas;
     }
@@ -246,6 +259,14 @@ public class Pedido  implements java.io.Serializable {
         this.almacens = almacens;
     }
 
+    public boolean getSoporte() {
+        return this.soporte;
+    }
+    
+    public void setSoporte(boolean soporte) {
+        this.soporte = soporte;
+    }
+    
     public void agregaPartida(Partida par)
     {
         this.partidas.add(par);

@@ -25,6 +25,7 @@ import java.awt.Color;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -69,12 +70,29 @@ public class Existencias extends javax.swing.JPanel {
             model = (DefaultTableModel)t_datos.getModel();
             model.setNumRows(0);
             ArrayList datos = new ArrayList();
-            Query query = session.createSQLQuery("select ejemplar.id_Parte, id_marca as mar, if(id_marca is not null, (select marca_nombre from marca where id_marca=mar),'')as marca_nombre, ejemplar.tipo_nombre, ejemplar.modelo, ejemplar.id_catalogo, ejemplar.comentario, ejemplar.medida, ejemplar.existencias from ejemplar \n" +
-                            "where ejemplar.inventario=1");
+            String dato_almacen="", dato_almacen1="";
+            switch(cb_almacen.getSelectedIndex())
+            {
+                case 0:
+                    dato_almacen="ejemplar.existencias as cantidad";
+                    dato_almacen1="and ejemplar.existencias is not null";
+                    break;
+                case 1:
+                    dato_almacen="ejemplar.existencias2 as cantidad";
+                    dato_almacen1="and ejemplar.existencias2  is not null";
+                    break;
+                case 2:
+                    dato_almacen="ejemplar.existencias+ejemplar.existencias2 as cantidad";
+                    dato_almacen1="";
+                    break;
+            }
+            Query query = session.createSQLQuery("select ejemplar.id_Parte, id_marca as mar, id_grupo as gru, if(id_marca is not null, (select marca_nombre from marca where id_marca=mar),'')as marca_nombre, if(id_grupo is not null, (select descripcion from grupo where id_grupo=gru),'')as grupo, ejemplar.id_catalogo as cat, (select nombre from catalogo where id_catalogo=cat limit 1) as nombre, ejemplar.comentario, ejemplar.medida, "+dato_almacen+", ejemplar.maximo, ejemplar.minimo, ejemplar.precio  from ejemplar \n" +
+                            "where ejemplar.inventario=1 "+dato_almacen1);
             query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
             datos = (ArrayList)query.list();
              Object[] objeto = new Object[t_datos.getColumnCount()];
              int num_d=datos.size();
+             double total_inventario=0.0d;
             for(int i=0; i<num_d;i++){
                 java.util.HashMap map = (java.util.HashMap)datos.get(i);
                 if(map.get("id_Parte")!=null){
@@ -83,38 +101,42 @@ public class Existencias extends javax.swing.JPanel {
                     objeto[0]=" ";
                 }
                 objeto[1]=(map.get("marca_nombre"));
-                if(map.get("tipo_nombre")!=null){
-                    objeto[2]=(map.get("tipo_nombre"));
-                }else{
-                    objeto[2]=" ";
-                }
-                if(map.get("modelo")!=null){
-                    objeto[3]=(map.get("modelo"));
+                objeto[2]=(map.get("grupo"));
+                if(map.get("comentario")!=null){
+                    objeto[3]=(map.get("comentario"));
                 }else{
                     objeto[3]=" ";
                 }
-                if(map.get("id_catalogo")!=null){
-                    objeto[4]=(map.get("id_catalogo"));
+                if(map.get("medida")!=null){
+                    objeto[4]=(map.get("medida"));
                 }else{
                     objeto[4]=" ";
                 }
-                if(map.get("medida")!=null){
-                    objeto[5]=(map.get("medida"));
+                if(map.get("maximo")!=null){
+                    objeto[5]=(map.get("maximo"));
                 }else{
-                    objeto[5]=" ";
+                    objeto[5]=0.00d;
                 }
-                if(map.get("existencias")!=null){
-                    objeto[6]=(map.get("existencias"));
+                if(map.get("minimo")!=null){
+                    objeto[6]=(map.get("minimo"));
                 }else{
-                    objeto[6]=" ";
+                    objeto[6]=0.00d;
                 }
-                if(map.get("comentario")!=null){
-                    objeto[7]=(map.get("comentario"));
+                if(map.get("cantidad")!=null){
+                    objeto[7]=(map.get("cantidad"));
                 }else{
-                    objeto[7]=" ";
+                    objeto[7]=0.00d;
                 }
+                if(map.get("precio")!=null){
+                    objeto[8]=(map.get("precio"));
+                }else{
+                    objeto[8]=0.00d;
+                }
+                objeto[9]=((double)objeto[7])*((double)objeto[8]);
+                total_inventario+=(double)objeto[9];
                 model.addRow(objeto);
             }
+            t_total.setValue(total_inventario);
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -143,25 +165,25 @@ public class Existencias extends javax.swing.JPanel {
                     column.setPreferredWidth(30);
                     break;
                 case 1:
-                    column.setPreferredWidth(100);
+                    column.setPreferredWidth(80);
                     break;
                 case 2:
-                    column.setPreferredWidth(100);
+                    column.setPreferredWidth(80);
                     break;
                 case 3:
-                    column.setPreferredWidth(20);
-                    break;
-                case 4:
                     column.setPreferredWidth(300);
                     break;
-                case 5:
+                case 4:
                     column.setPreferredWidth(20);
+                    break;
+                case 5:
+                    column.setPreferredWidth(30);
                     break;
                 case 6:
                     column.setPreferredWidth(30);
                     break;
                 case 7:
-                    column.setPreferredWidth(100);
+                    column.setPreferredWidth(30);
                     break;
                 default:
                     column.setPreferredWidth(30);
@@ -186,6 +208,7 @@ public class Existencias extends javax.swing.JPanel {
         jButton2 = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jButton3 = new javax.swing.JButton();
+        cb_almacen = new javax.swing.JComboBox();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         t_datos = new javax.swing.JTable(){
@@ -195,6 +218,8 @@ public class Existencias extends javax.swing.JPanel {
         };
         jPanel2 = new javax.swing.JPanel();
         jButton4 = new javax.swing.JButton();
+        t_total = new javax.swing.JFormattedTextField();
+        jLabel3 = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setPreferredSize(new java.awt.Dimension(800, 500));
@@ -242,6 +267,13 @@ public class Existencias extends javax.swing.JPanel {
             }
         });
 
+        cb_almacen.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "ALMACEN 1", "ALMACEN 2", "TODOS" }));
+        cb_almacen.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cb_almacenActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -249,7 +281,9 @@ public class Existencias extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 207, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cb_almacen, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 66, Short.MAX_VALUE)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1)
@@ -272,6 +306,10 @@ public class Existencias extends javax.swing.JPanel {
                             .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jButton3))
                         .addContainerGap())))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(cb_almacen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         add(jPanel1, java.awt.BorderLayout.PAGE_START);
@@ -283,9 +321,17 @@ public class Existencias extends javax.swing.JPanel {
 
             },
             new String [] {
-                "ID PARTE", "MARCA", "TIPO", "MODELO", "CATALOGO", "MEDIDA", "EXISTENCIAS", "COMENTARIO"
+                "ID PARTE", "MARCA", "GRUPO", "DESCRIPCION", "MEDIDA", "MAXIMO", "MINIMO", "EXISTENCIAS", "C/U", "TOTAL"
             }
-        ));
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
         t_datos.setGridColor(new java.awt.Color(0, 0, 0));
         t_datos.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(t_datos);
@@ -322,20 +368,35 @@ public class Existencias extends javax.swing.JPanel {
             }
         });
 
+        t_total.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        t_total.setText("0.00");
+
+        jLabel3.setText("Monto Total en Inventario:");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(679, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
                 .addComponent(jButton4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 432, Short.MAX_VALUE)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(t_total, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+            .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(t_total, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -356,27 +417,35 @@ public class Existencias extends javax.swing.JPanel {
                          PDF reporte = new PDF();
                         reporte.Abrir2(PageSize.LEGAL.rotate(), "Existencias", ruta + ".pdf");
                         BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.WINANSI, BaseFont.NOT_EMBEDDED);
-                        float[] tamanio = new float[]{90, 120, 120, 55, 230, 55, 90, 90};
-                        Font font = new Font(Font.FontFamily.HELVETICA, 9, Font.NORMAL);
+                        float[] tamanio = new float[]{90, 120, 200, 55, 80, 80, 80, 80, 80};
+                        Font font = new Font(Font.FontFamily.HELVETICA, 8, Font.NORMAL);
                         BaseColor contenido = BaseColor.WHITE;
                         int centro = com.itextpdf.text.Element.ALIGN_CENTER;
+                        int derecha = com.itextpdf.text.Element.ALIGN_RIGHT;
                         PdfPTable tabla = reporte.crearTabla(tamanio.length, tamanio, 100, Element.ALIGN_CENTER);
-                        cabecera(reporte, bf, tabla, "EXISTENCIAS DE ARTICULOS.", 2);
+                        cabecera(reporte, bf, tabla, "EXISTENCIAS DE ARTICULOS ["+cb_almacen.getSelectedItem().toString()+"]", 2);
+                        DecimalFormat formatoPorcentaje = new DecimalFormat("#,##0.00");
+                        formatoPorcentaje.setMinimumFractionDigits(2);
                         
                         for(int i=0; i<t_datos.getRowCount(); i++){
                             tabla.addCell(reporte.celda(t_datos.getValueAt(i, 0).toString(),font, contenido, centro, 0, 1, Rectangle.RECTANGLE));
-                            tabla.addCell(reporte.celda(t_datos.getValueAt(i, 1).toString(),font, contenido, centro, 0, 1, Rectangle.RECTANGLE));
-                            tabla.addCell(reporte.celda(t_datos.getValueAt(i, 2).toString(),font, contenido, centro, 0, 1, Rectangle.RECTANGLE));
+                            tabla.addCell(reporte.celda(t_datos.getValueAt(i, 1).toString(),font, contenido, derecha, 0, 1, Rectangle.RECTANGLE));
                             tabla.addCell(reporte.celda(t_datos.getValueAt(i, 3).toString(),font, contenido, centro, 0, 1, Rectangle.RECTANGLE));
                             tabla.addCell(reporte.celda(t_datos.getValueAt(i, 4).toString(),font, contenido, centro, 0, 1, Rectangle.RECTANGLE));
-                            tabla.addCell(reporte.celda(t_datos.getValueAt(i, 5).toString(),font, contenido, centro, 0, 1, Rectangle.RECTANGLE));
-                            tabla.addCell(reporte.celda(t_datos.getValueAt(i, 6).toString(),font, contenido, centro, 0, 1, Rectangle.RECTANGLE));
-                            tabla.addCell(reporte.celda(t_datos.getValueAt(i, 7).toString(),font, contenido, centro, 0, 1, Rectangle.RECTANGLE));
+                            tabla.addCell(reporte.celda(formatoPorcentaje.format(t_datos.getValueAt(i, 5)),font, contenido, derecha, 0, 1, Rectangle.RECTANGLE));
+                            tabla.addCell(reporte.celda(formatoPorcentaje.format(t_datos.getValueAt(i, 6)),font, contenido, derecha, 0, 1, Rectangle.RECTANGLE));
+                            tabla.addCell(reporte.celda(formatoPorcentaje.format(t_datos.getValueAt(i, 7)),font, contenido, derecha, 0, 1, Rectangle.RECTANGLE));
+                            tabla.addCell(reporte.celda(formatoPorcentaje.format(t_datos.getValueAt(i, 8)),font, contenido, derecha, 0, 1, Rectangle.RECTANGLE));
+                            tabla.addCell(reporte.celda(formatoPorcentaje.format(t_datos.getValueAt(i, 9)),font, contenido, derecha, 0, 1, Rectangle.RECTANGLE));
                         }
+                        tabla.addCell(reporte.celda("Total en Inventario:",font, contenido, derecha, 8, 1, Rectangle.NO_BORDER));
+                        tabla.addCell(reporte.celda(formatoPorcentaje.format(((Number)t_total.getValue()).doubleValue()),font, contenido, derecha, 0, 1, Rectangle.RECTANGLE));
+                        tabla.addCell(reporte.celda(" ",font, contenido, derecha, 8, 1, Rectangle.NO_BORDER));
                         reporte.agregaObjeto(tabla);
                         reporte.cerrar();
                         reporte.visualizar2(ruta + ".pdf");
                      }catch(Exception e){
+                         e.printStackTrace();
                          JOptionPane.showMessageDialog(this, "No se pudo realizar el reporte");
                      }
                 }
@@ -457,21 +526,27 @@ public class Existencias extends javax.swing.JPanel {
                          PDF reporte = new PDF();
                         reporte.Abrir2(PageSize.LEGAL.rotate(), "Existencias", ruta + ".pdf");
                         BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.WINANSI, BaseFont.NOT_EMBEDDED);
-                        float[] tamanio = new float[]{90, 120, 120, 55, 230, 55, 100, 100};
+                        float[] tamanio = new float[]{90, 120, 120, 200, 55, 80, 80, 80, 80, 80};
                         Font font = new Font(Font.FontFamily.HELVETICA, 9, Font.NORMAL);
                         BaseColor contenido = BaseColor.WHITE;
                         int centro = com.itextpdf.text.Element.ALIGN_CENTER;
+                        int derecha = com.itextpdf.text.Element.ALIGN_RIGHT;
                         PdfPTable tabla = reporte.crearTabla(tamanio.length, tamanio, 100, Element.ALIGN_CENTER);
                         cabecera(reporte, bf, tabla, "EXISTENCIAS DE ARTICULOS.", 2);
+                        DecimalFormat formatoPorcentaje = new DecimalFormat("#,##0.00");
+                        formatoPorcentaje.setMinimumFractionDigits(2);
                         int num_r =t_datos.getRowCount();
                         for(int i=0; i<num_r; i++){
                             tabla.addCell(reporte.celda(t_datos.getValueAt(i, 0).toString(),font, contenido, centro, 0, 1, Rectangle.RECTANGLE));
-                            tabla.addCell(reporte.celda(t_datos.getValueAt(i, 1).toString(),font, contenido, centro, 0, 1, Rectangle.RECTANGLE));
-                            tabla.addCell(reporte.celda(t_datos.getValueAt(i, 2).toString(),font, contenido, centro, 0, 1, Rectangle.RECTANGLE));
+                            tabla.addCell(reporte.celda(t_datos.getValueAt(i, 1).toString(),font, contenido, derecha, 0, 1, Rectangle.RECTANGLE));
+                            tabla.addCell(reporte.celda(t_datos.getValueAt(i, 2).toString(),font, contenido, derecha, 0, 1, Rectangle.RECTANGLE));
                             tabla.addCell(reporte.celda(t_datos.getValueAt(i, 3).toString(),font, contenido, centro, 0, 1, Rectangle.RECTANGLE));
                             tabla.addCell(reporte.celda(t_datos.getValueAt(i, 4).toString(),font, contenido, centro, 0, 1, Rectangle.RECTANGLE));
-                            tabla.addCell(reporte.celda(t_datos.getValueAt(i, 5).toString(),font, contenido, centro, 0, 1, Rectangle.RECTANGLE));
-                            tabla.addCell(reporte.celda(t_datos.getValueAt(i, 6).toString(),font, contenido, centro, 0, 1, Rectangle.RECTANGLE));
+                            tabla.addCell(reporte.celda(formatoPorcentaje.format(t_datos.getValueAt(i, 5)),font, contenido, derecha, 0, 1, Rectangle.RECTANGLE));
+                            tabla.addCell(reporte.celda(formatoPorcentaje.format(t_datos.getValueAt(i, 6)),font, contenido, derecha, 0, 1, Rectangle.RECTANGLE));
+                            tabla.addCell(reporte.celda(formatoPorcentaje.format(t_datos.getValueAt(i, 7)),font, contenido, derecha, 0, 1, Rectangle.RECTANGLE));
+                            tabla.addCell(reporte.celda(formatoPorcentaje.format(t_datos.getValueAt(i, 8)),font, contenido, derecha, 0, 1, Rectangle.RECTANGLE));
+                            //tabla.addCell(reporte.celda(formatoPorcentaje.format(t_datos.getValueAt(i, 9)),font, contenido, derecha, 0, 1, Rectangle.RECTANGLE));
                             tabla.addCell(reporte.celda(" ",font, contenido, centro, 0, 1, Rectangle.RECTANGLE));
                         }
                         reporte.agregaObjeto(tabla);
@@ -491,6 +566,11 @@ public class Existencias extends javax.swing.JPanel {
         // TODO add your handling code here:
         cargaDatos();
     }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void cb_almacenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_almacenActionPerformed
+        // TODO add your handling code here:
+         cargaDatos();
+    }//GEN-LAST:event_cb_almacenActionPerformed
 public void cabecera(PDF reporte, BaseFont bf, PdfPTable tabla, String titulo, int op) {
         reporte.inicioTexto();
         reporte.contenido.setFontAndSize(bf, 9);
@@ -508,28 +588,31 @@ public void cabecera(PDF reporte, BaseFont bf, PdfPTable tabla, String titulo, i
         int centro = com.itextpdf.text.Element.ALIGN_CENTER;
         tabla.addCell(reporte.celda("ID PARTE", font, cabecera, centro, 0, 1, Rectangle.RECTANGLE));
         tabla.addCell(reporte.celda("MARCA", font, cabecera, centro, 0, 1, Rectangle.RECTANGLE));
-        tabla.addCell(reporte.celda("TIPO", font, cabecera, centro, 0, 1, Rectangle.RECTANGLE));
-        tabla.addCell(reporte.celda("MODELO", font, cabecera, centro, 0, 1, Rectangle.RECTANGLE));
-        tabla.addCell(reporte.celda("CATALOGO", font, cabecera, centro, 0, 1, Rectangle.RECTANGLE));
+        tabla.addCell(reporte.celda("DESCRIPCION", font, cabecera, centro, 0, 1, Rectangle.RECTANGLE));
         tabla.addCell(reporte.celda("MEDIDA", font, cabecera, centro, 0, 1, Rectangle.RECTANGLE));
-        tabla.addCell(reporte.celda("EXIST. SISTEMA", font, cabecera, centro, 0, 1, Rectangle.RECTANGLE));
+        tabla.addCell(reporte.celda("MAXIMO", font, cabecera, centro, 0, 1, Rectangle.RECTANGLE));
+        tabla.addCell(reporte.celda("MINIMO", font, cabecera, centro, 0, 1, Rectangle.RECTANGLE));
+        tabla.addCell(reporte.celda("EXIST", font, cabecera, centro, 0, 1, Rectangle.RECTANGLE));
+        tabla.addCell(reporte.celda("C/U", font, cabecera, centro, 0, 1, Rectangle.RECTANGLE));
+        tabla.addCell(reporte.celda("TOTAL", font, cabecera, centro, 0, 1, Rectangle.RECTANGLE));
         if(aux!=0)
             tabla.addCell(reporte.celda("EXIST. FISICO", font, cabecera, centro, 0, 1, Rectangle.RECTANGLE));
-        else
-            tabla.addCell(reporte.celda("COMENTARIO", font, cabecera, centro, 0, 1, Rectangle.RECTANGLE));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox cb_almacen;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable t_datos;
+    private javax.swing.JFormattedTextField t_total;
     // End of variables declaration//GEN-END:variables
 }

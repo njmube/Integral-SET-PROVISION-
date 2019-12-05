@@ -8,20 +8,20 @@
             <column name="id_Parte" length="35" />
             <generator class="assigned" />
         </id>
+        <many-to-one name="grupo" class="Hibernate.entidades.Grupo" fetch="select">
+            <column name="id_grupo" />
+        </many-to-one>
         <many-to-one name="marca" class="Hibernate.entidades.Marca" fetch="select">
             <column name="id_marca" length="4" />
         </many-to-one>
-        <many-to-one name="tipo" class="Hibernate.entidades.Tipo" fetch="select">
-            <column name="tipo_nombre" length="20" />
+        <many-to-one name="catalogo" class="Hibernate.entidades.Catalogo" fetch="select">
+            <column name="id_catalogo" />
         </many-to-one>
-        <property name="catalogo" type="string">
-            <column name="id_catalogo" length="150" />
+        <property name="tipoEjemplar" type="string">
+            <column name="tipo_ejemplar" length="1" />
         </property>
         <property name="medida" type="string">
             <column name="medida" length="10" />
-        </property>
-        <property name="modelo" type="java.lang.Integer">
-            <column name="modelo" />
         </property>
         <property name="inventario" type="java.lang.Integer">
             <column name="inventario" />
@@ -29,8 +29,14 @@
         <property name="existencias" type="java.lang.Double">
             <column name="existencias" />
         </property>
+        <property name="existencias2" type="java.lang.Double">
+            <column name="existencias2" />
+        </property>
         <property name="precio" type="java.lang.Double">
             <column name="precio" />
+        </property>
+        <property name="moneda" type="java.lang.Boolean">
+            <column name="moneda" />
         </property>
         <property name="maximo" type="java.lang.Double">
             <column name="maximo" />
@@ -43,6 +49,9 @@
         </property>
         <property name="imagen" type="string">
             <column name="imagen" length="30" />
+        </property>
+        <property name="ubicacion" type="string">
+            <column name="ubicacion" length="20" />
         </property>
         <set name="partidas" table="partida" inverse="true" lazy="true" fetch="select">
             <key>

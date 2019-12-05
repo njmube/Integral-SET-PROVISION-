@@ -14,6 +14,9 @@
         <many-to-one name="orden" class="Hibernate.entidades.Orden" fetch="select">
             <column name="id_orden" />
         </many-to-one>
+        <many-to-one name="trabajoExtra" class="Hibernate.entidades.TrabajoExtra" fetch="select">
+            <column name="id_trabajo" />
+        </many-to-one>
         <property name="medida" type="string">
             <column name="medida" length="10" />
         </property>
@@ -23,20 +26,8 @@
         <property name="precio" type="double">
             <column name="precio" precision="22" scale="0" not-null="true" />
         </property>
-        <property name="espHoj" type="boolean">
-            <column name="esp_hoj" not-null="true" />
-        </property>
-        <property name="espMec" type="boolean">
-            <column name="esp_mec" not-null="true" />
-        </property>
-        <property name="espSus" type="boolean">
-            <column name="esp_sus" not-null="true" />
-        </property>
-        <property name="espEle" type="boolean">
-            <column name="esp_ele" not-null="true" />
-        </property>
-        <property name="espPin" type="boolean">
-            <column name="esp_pin" not-null="true" />
+        <property name="especialidad" type="string">
+            <column name="especialidad" length="10" />
         </property>
         <property name="tipo" type="string">
             <column name="tipo" length="1" />

@@ -7,6 +7,7 @@
 package Compras;
 
 import Hibernate.Util.HibernateUtil;
+import Hibernate.entidades.Configuracion;
 import Hibernate.entidades.Orden;
 import Hibernate.entidades.Partida;
 import Hibernate.entidades.PartidaExterna;
@@ -114,9 +115,11 @@ public class Conciliacion extends javax.swing.JPanel {
                     java.lang.String.class/*N° Fact.*/
                 };
     List noPartida;
+    int configuracion=1;
     
-    public Conciliacion(String ord, Usuario us, String ses) {
+    public Conciliacion(String ord, Usuario us, String ses, int configuracion) {
         initComponents();
+        this.configuracion=configuracion;
         scroll.getVerticalScrollBar().setUI(new VerticalBarUI());
         scroll.getHorizontalScrollBar().setUI(new HorizontalBarUI());
         sessionPrograma=ses;
@@ -283,6 +286,7 @@ public class Conciliacion extends javax.swing.JPanel {
                         model.setValueAt(map.get("nombre"), i, 2);
                         model.setValueAt(map.get("autorizado"), i, 3);
                         model.setValueAt(map.get("facturado"), i, 4);
+                        //model.setCeldaEditable(i, 4, true);
                         model.setValueAt(map.get("id"), i, 5);
                         model.setValueAt(map.get("id_externo"), i, 6);
                         model.setValueAt(map.get("Cantidad_aut"), i, 7);//cant Aut
@@ -1006,6 +1010,7 @@ public class Conciliacion extends javax.swing.JPanel {
                 ruta = archivo.getSelectedFile().getAbsolutePath();
                 if (ruta != null) {
                     Session session = HibernateUtil.getSessionFactory().openSession();
+                    Configuracion con=(Configuracion)session.get(Configuracion.class, configuracion);
                     ArrayList datos = new ArrayList();
                     Query query = session.createSQLQuery("select compania.nombre, orden.tipo_nombre, orden.modelo, orden.no_serie, clientes.nombre as nombres,orden.id_orden \n"
                             + "from orden inner join compania on compania.id_compania=orden.id_compania inner join clientes on clientes.id_clientes=orden.id_cliente\n"
@@ -1027,7 +1032,7 @@ public class Conciliacion extends javax.swing.JPanel {
                     int derecha = com.itextpdf.text.Element.ALIGN_RIGHT;
 
                     reporte.inicioTexto();
-                    reporte.agregaObjeto(reporte.crearImagen("imagenes/empresa300115.jpg", 730, -90, 45));
+                    reporte.agregaObjeto(reporte.crearImagen("imagenes/"+con.getLogo(), 730, -90, 40));
                     reporte.contenido.setFontAndSize(bf, 20);
                     reporte.contenido.setColorFill(BaseColor.BLACK);
                     reporte.contenido.showTextAligned(PdfContentByte.ALIGN_CENTER, "CONCILIACIÓN PARA FACTURACIÓN", 395, 577, 0);
@@ -1547,7 +1552,7 @@ public class Conciliacion extends javax.swing.JPanel {
                                     try
                                     {
                                         session.beginTransaction().begin();
-                                        if(t_datos.getValueAt(row, 1).toString().compareTo("I")==0)
+                                        if(t_datos.getValueAt(row, 1).toString().compareToIgnoreCase("O")==0 || t_datos.getValueAt(row, 1).toString().compareToIgnoreCase("C")==0 || t_datos.getValueAt(row, 1).toString().compareToIgnoreCase("A")==0)
                                         {
                                             Partida par=(Partida)session.get(Partida.class, (Integer)t_datos.getValueAt(row, 0));
                                             par.setFacturado((boolean)value);
@@ -1570,7 +1575,7 @@ public class Conciliacion extends javax.swing.JPanel {
                                         }
                                     }catch(Exception e)
                                     {
-                                        System.out.println(e);
+                                        e.printStackTrace();
                                     }
                                     finally
                                     {

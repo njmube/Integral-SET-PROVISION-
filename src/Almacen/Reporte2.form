@@ -644,9 +644,10 @@
             <Component class="javax.swing.JComboBox" name="cb_tipo">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="2">
+                  <StringArray count="3">
                     <StringItem index="0" value="OPERARIOS"/>
                     <StringItem index="1" value="PROVEEDORES"/>
+                    <StringItem index="2" value="COMPA&#xd1;IA"/>
                   </StringArray>
                 </Property>
               </Properties>
@@ -1835,7 +1836,7 @@
             </Component>
             <Component class="javax.swing.JButton" name="b_guardar2">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Recargar"/>
+                <Property name="text" type="java.lang.String" value="Nuevo"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="b_guardar2ActionPerformed"/>

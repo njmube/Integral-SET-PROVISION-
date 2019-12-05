@@ -9,6 +9,7 @@ package Servicios;
 import Hibernate.Util.HibernateUtil;
 import Hibernate.entidades.Foto;
 import Hibernate.entidades.Orden;
+import Integral.Ftp;
 import java.awt.Desktop;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -18,6 +19,7 @@ import javax.imageio.ImageIO;
 import org.hibernate.Session;
 import Integral.Herramientas;
 import Integral.Imagen;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -39,7 +41,18 @@ public class miniatura extends javax.swing.JPanel {
         ruta=dir;
         try
         {
-            javax.swing.JPanel p=new Imagen(ruta+"ordenes/"+orden+"/miniatura/"+arch.getDescripcion(), 76, 79, 1, 1, 76, 79);
+            Ftp miFtp=new Ftp();
+            String temporal="";
+            boolean respuesta=true;
+            respuesta=miFtp.conectar(ruta, "compras", "04650077", 3310);
+            if(respuesta==true)
+            {
+                miFtp.cambiarDirectorio("/ordenes/"+orden+"/miniatura");
+                temporal=miFtp.descargaTemporal(arch.getDescripcion());
+                miFtp.desconectar();
+            }
+                
+            javax.swing.JPanel p=new Imagen(temporal, 76, 79, 1, 1, 76, 79);
             p_foto.removeAll();
             p_foto.add(p);
             p_foto.repaint();
@@ -184,36 +197,34 @@ public class miniatura extends javax.swing.JPanel {
             if (evt.getClickCount() == 2 && !evt.isConsumed()) 
             {
                 evt.consume();
-                try
+                Ftp miFtp=new Ftp();
+                boolean respuesta=true;
+                respuesta=miFtp.conectar(ruta, "compras", "04650077", 3310);
+                if(respuesta==true)
                 {
-                    File archivo=archivo= new File(ruta+"ordenes/"+orden+"/"+arch.getDescripcion());
-                    if(archivo.exists()==true)
-                        Desktop.getDesktop().open(archivo);
-                    else
-                        javax.swing.JOptionPane.showMessageDialog(null, "El archivo no existe");
-                }catch(Exception e)
-                {
-                    e.printStackTrace();
-                    javax.swing.JOptionPane.showMessageDialog(null, "Error no se pudo abrir el archivo");
+                    miFtp.cambiarDirectorio("/ordenes/"+orden);
+                    miFtp.AbrirArchivo(l_nombre.getText());
+                    miFtp.desconectar();
                 }
+                else
+                    JOptionPane.showMessageDialog(null, "No fue posible conectar al servidor FTP");
             }
         }
     }//GEN-LAST:event_formMouseClicked
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         // TODO add your handling code here:
-        try
+        Ftp miFtp=new Ftp();
+        boolean respuesta=true;
+        respuesta=miFtp.conectar(ruta, "compras", "04650077", 3310);
+        if(respuesta==true)
         {
-            File archivo = new File(ruta+"ordenes/"+orden+"/"+arch.getDescripcion());
-            if(archivo.exists()==true)
-                Desktop.getDesktop().open(archivo);
-            else
-                javax.swing.JOptionPane.showMessageDialog(null, "El archivo no existe");
-        }catch(Exception e)
-        {
-            e.printStackTrace();
-            javax.swing.JOptionPane.showMessageDialog(null, "Error no se pudo abrir el archivo");
+            miFtp.cambiarDirectorio("/ordenes/"+orden);
+            miFtp.AbrirArchivo(l_nombre.getText());
+            miFtp.desconectar();
         }
+        else
+            JOptionPane.showMessageDialog(null, "No fue posible conectar al servidor FTP");
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
@@ -228,74 +239,24 @@ public class miniatura extends javax.swing.JPanel {
                 session.update(ord);
                 session.delete(arch);
                 
-                File destino = new File(ruta+"ordenes/"+orden+"/miniatura/"+arch.getDescripcion());
-                if(destino.exists())
+                Ftp miFtp=new Ftp();
+                boolean respuesta=true;
+                respuesta=miFtp.conectar(ruta, "compras", "04650077", 3310);
+                if(respuesta==true)
                 {
-                    if(destino.delete())
-                    {
-                        destino = new File(ruta+"ordenes/"+orden+"/"+arch.getDescripcion());
-                        if(destino.exists())
-                        {
-                            if(!destino.delete())
-                            {
-                                session.getTransaction().rollback();
-                                File folder = new File(ruta+"ordenes/"+orden+"/miniatura");
-                                folder.mkdirs();
-                                folder = new File(ruta+"ordenes/"+orden+"/miniatura/"+arch.getDescripcion());
-                                String ruta=folder.getPath();
-                                javax.swing.JPanel p=new Imagen(ruta, 385, 250, 0, 0, 385, 250);
-                                BufferedImage dibujo =new BufferedImage(385, 250, BufferedImage.TYPE_INT_RGB);
-                                Graphics g = dibujo.getGraphics();
-                                p.paint(g);
-                                ImageIO.write((RenderedImage)dibujo, "jpg", folder); // Salvar la imagen en el fichero
-                                javax.swing.JOptionPane.showMessageDialog(null, "Error no se pudo borrar el archivo xp");
-                            }
-                            else
-                            {
-                                session.getTransaction().commit();
-                            }
-                        }
-                        else
-                        {
-                            session.getTransaction().commit();
-                        }
-                            
-                    }
-                    else
-                    {
-                        session.getTransaction().rollback();
-                        javax.swing.JOptionPane.showMessageDialog(null, "Error no se pudo borrar la miniatura");
-                    }
+                    miFtp.cambiarDirectorio("/ordenes/"+orden);
+                    miFtp.borrarArchivo(l_nombre.getText());
+                    miFtp.cambiarDirectorio("/ordenes/"+orden+"/miniatura/");
+                    miFtp.borrarArchivo(l_nombre.getText());
+                    miFtp.desconectar();
+                    session.getTransaction().commit();
+                    this.setVisible(false);
                 }
                 else
                 {
-                    destino = new File(ruta+"ordenes/"+orden+"/"+arch.getDescripcion());
-                    if(destino.exists())
-                    {
-                        if(destino.delete())
-                            session.getTransaction().commit();
-                        else
-                        {
-                            session.getTransaction().rollback();
-                            File folder = new File(ruta+"ordenes/"+orden+"/miniatura");
-                            folder.mkdirs();
-                            folder = new File(ruta+"ordenes/"+orden+"/miniatura/"+arch.getDescripcion());
-                            String ruta=folder.getPath();
-                            javax.swing.JPanel p=new Imagen(ruta, 385, 250, 0, 0, 385, 250);
-                            BufferedImage dibujo =new BufferedImage(385, 250, BufferedImage.TYPE_INT_RGB);
-                            Graphics g = dibujo.getGraphics();
-                            p.paint(g);
-                            ImageIO.write((RenderedImage)dibujo, "jpg", folder); // Salvar la imagen en el fichero
-                            javax.swing.JOptionPane.showMessageDialog(null, "Error no se pudo borrar el archivo");
-                            session.getTransaction().rollback();
-                        }
-                    }
-                    else
-                    {
-                        session.getTransaction().commit();
-                    }
+                    session.getTransaction().rollback();
+                    JOptionPane.showMessageDialog(null, "No fue posible conectar al servidor FTP");
                 }
-                this.setVisible(false);
             }catch (Exception ioe)
             {
                 session.getTransaction().rollback();

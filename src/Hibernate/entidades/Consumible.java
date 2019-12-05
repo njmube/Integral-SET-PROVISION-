@@ -11,43 +11,33 @@ public class Consumible  implements java.io.Serializable {
 
      private int idConsumible;
      private Ejemplar ejemplar;
+     private TrabajoExtra trabajoExtra;
      private Orden orden;
      private String medida;
      private double cantidad;
      private double precio;
-     private boolean espHoj;
-     private boolean espMec;
-     private boolean espSus;
-     private boolean espEle;
-     private boolean espPin;
+     private String especialidad;
      private String tipo;
 
     public Consumible() {
     }
 
 	
-    public Consumible(int idConsumible, double cantidad, double precio, boolean espHoj, boolean espMec, boolean espSus, boolean espEle, boolean espPin) {
+    public Consumible(int idConsumible, double cantidad, double precio, String especialidad) {
         this.idConsumible = idConsumible;
         this.cantidad = cantidad;
         this.precio = precio;
-        this.espHoj = espHoj;
-        this.espMec = espMec;
-        this.espSus = espSus;
-        this.espEle = espEle;
-        this.espPin = espPin;
+        this.especialidad = especialidad;
     }
-    public Consumible(int idConsumible, Ejemplar ejemplar, Orden orden, String medida, double cantidad, double precio, boolean espHoj, boolean espMec, boolean espSus, boolean espEle, boolean espPin, String tipo) {
+    public Consumible(int idConsumible, Ejemplar ejemplar, TrabajoExtra trabajoExtra, Orden orden, String medida, String especialidad, String tipo) {
        this.idConsumible = idConsumible;
        this.ejemplar = ejemplar;
+       this.trabajoExtra = trabajoExtra;
        this.orden = orden;
        this.medida = medida;
        this.cantidad = cantidad;
        this.precio = precio;
-       this.espHoj = espHoj;
-       this.espMec = espMec;
-       this.espSus = espSus;
-       this.espEle = espEle;
-       this.espPin = espPin;
+       this.especialidad = especialidad;
        this.tipo = tipo;
     }
    
@@ -65,6 +55,14 @@ public class Consumible  implements java.io.Serializable {
     public void setEjemplar(Ejemplar ejemplar) {
         this.ejemplar = ejemplar;
     }
+    public TrabajoExtra getTrabajoExtra() {
+        return this.trabajoExtra;
+    }
+    
+    public void setTrabajoExtra(TrabajoExtra trabajoExtra) {
+        this.trabajoExtra = trabajoExtra;
+    }
+    
     public Orden getOrden() {
         return this.orden;
     }
@@ -93,41 +91,14 @@ public class Consumible  implements java.io.Serializable {
     public void setPrecio(double precio) {
         this.precio = precio;
     }
-    public boolean isEspHoj() {
-        return this.espHoj;
+    public String getEspecialidad() {
+        return this.especialidad;
     }
     
-    public void setEspHoj(boolean espHoj) {
-        this.espHoj = espHoj;
-    }
-    public boolean isEspMec() {
-        return this.espMec;
+    public void setEspecialidad(String especialidad) {
+        this.especialidad = especialidad;
     }
     
-    public void setEspMec(boolean espMec) {
-        this.espMec = espMec;
-    }
-    public boolean isEspSus() {
-        return this.espSus;
-    }
-    
-    public void setEspSus(boolean espSus) {
-        this.espSus = espSus;
-    }
-    public boolean isEspEle() {
-        return this.espEle;
-    }
-    
-    public void setEspEle(boolean espEle) {
-        this.espEle = espEle;
-    }
-    public boolean isEspPin() {
-        return this.espPin;
-    }
-    
-    public void setEspPin(boolean espPin) {
-        this.espPin = espPin;
-    }
 
     public String getTipo() {
         return this.tipo;

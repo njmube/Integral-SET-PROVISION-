@@ -11,6 +11,12 @@
         <property name="descripcion" type="string">
             <column name="descripcion" length="100" />
         </property>
+        <property name="plantilla" type="java.lang.Boolean">
+            <column name="plantilla" />
+        </property>
+        <property name="orden" type="java.lang.Integer">
+            <column name="orden" />
+        </property>
         <set name="catalogos" table="catalogo" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="id_grupo_mecanico" not-null="true" />

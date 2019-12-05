@@ -57,6 +57,7 @@ public class Partida  implements java.io.Serializable {
      private boolean autorizado;
      private double horas;
      private boolean refComp;
+     private boolean surteAlmacen;
      private boolean so;
      private Date plazo;
      private String tipo;
@@ -78,6 +79,10 @@ public class Partida  implements java.io.Serializable {
      private double d;
      private double r;
      private double m;
+     private String tipoPieza;
+     private Integer prioridad;
+     private Integer comprador;
+     private Double cuValuacion;
      private Set partidaCotizacions = new HashSet(0);
      private Set movimientos = new HashSet(0);
      private Set perdidases = new HashSet(0);
@@ -87,7 +92,7 @@ public class Partida  implements java.io.Serializable {
     }
 
 	
-    public Partida(Orden ordenByIdOrden, int idEvaluacion, int subPartida, boolean espHoj, boolean espMec, boolean espSus, boolean espEle, double dm, double cam, double repMin, double repMed, double repMax, double pint, double cant, boolean refCoti, boolean ori, boolean nal, boolean desm, boolean pd, double intDesm, double intCamb, double intRepMin, double intRepMed, double intRepMax, double intPinMin, double intPinMed, double intPinMax, double CU, double porcentaje, double precioCiaSegurosCU, double cantidadAut, double precioAutCU, int porcentajeUtilidad, boolean autorizado, double horas, boolean refComp, boolean so, String tipo, boolean incluida, boolean autorizadoValuacion) {
+    public Partida(Orden ordenByIdOrden, int idEvaluacion, int subPartida, boolean espHoj, boolean espMec, boolean espSus, boolean espEle, double dm, double cam, double repMin, double repMed, double repMax, double pint, double cant, boolean refCoti, boolean ori, boolean nal, boolean desm, boolean pd, double intDesm, double intCamb, double intRepMin, double intRepMed, double intRepMax, double intPinMin, double intPinMed, double intPinMax, double CU, double porcentaje, double precioCiaSegurosCU, double cantidadAut, double precioAutCU, int porcentajeUtilidad, boolean autorizado, double horas, boolean refComp, boolean so, String tipo, boolean incluida, boolean autorizadoValuacion, boolean surteAlmacen) {
         this.ordenByIdOrden = ordenByIdOrden;
         this.idEvaluacion = idEvaluacion;
         this.subPartida = subPartida;
@@ -128,8 +133,9 @@ public class Partida  implements java.io.Serializable {
         this.tipo = tipo;
         this.incluida = incluida;
         this.autorizadoValuacion = autorizadoValuacion;
+        this.surteAlmacen=surteAlmacen;
     }
-    public Partida(Usuario usuario, Proveedor proveedor, Pedido pedido, Orden ordenByIdOrden, Orden ordenByEnlazada, Catalogo catalogo, Ejemplar ejemplar, int idEvaluacion, int subPartida, boolean espHoj, boolean espMec, boolean espSus, boolean espEle, double dm, double cam, double repMin, double repMed, double repMax, double pint, double cant, String med, boolean refCoti, boolean ori, boolean nal, boolean desm, boolean pd, double intDesm, double intCamb, double intRepMin, double intRepMed, double intRepMax, double intPinMin, double intPinMed, double intPinMax, String instruccion, double CU, double porcentaje, double precioCiaSegurosCU, double cantidadAut, double precioAutCU, int porcentajeUtilidad, boolean autorizado, double horas, boolean refComp, boolean so, Date plazo, String tipo, boolean incluida, boolean autorizadoValuacion, Double pcp, Double cantPcp, String descripcionFactura, Double precioFactura, Double cantidadFactura, Boolean facturado, Integer facturaPedido, Boolean surtido, Boolean muestra, Boolean op, Usuario mecanico, Date fechaMecanico, String oriCon, double d, double r, double m, Set partidaCotizacions, Set movimientos, Set perdidases, Set pedidos) {
+    public Partida(Usuario usuario, Proveedor proveedor, Pedido pedido, Orden ordenByIdOrden, Orden ordenByEnlazada, Catalogo catalogo, Ejemplar ejemplar, int idEvaluacion, int subPartida, boolean espHoj, boolean espMec, boolean espSus, boolean espEle, double dm, double cam, double repMin, double repMed, double repMax, double pint, double cant, String med, boolean refCoti, boolean ori, boolean nal, boolean desm, boolean pd, double intDesm, double intCamb, double intRepMin, double intRepMed, double intRepMax, double intPinMin, double intPinMed, double intPinMax, String instruccion, double CU, double porcentaje, double precioCiaSegurosCU, double cantidadAut, double precioAutCU, int porcentajeUtilidad, boolean autorizado, double horas, boolean refComp, boolean so, Date plazo, String tipo, boolean incluida, boolean autorizadoValuacion, Double pcp, Double cantPcp, String descripcionFactura, Double precioFactura, Double cantidadFactura, Boolean facturado, Integer facturaPedido, Boolean surtido, Boolean muestra, Boolean op, Usuario mecanico, Date fechaMecanico, String oriCon, double d, double r, double m, String tipoPieza, boolean surteAlmacen, Integer prioridad, Integer comprador, double cuValuacion, Set partidaCotizacions, Set movimientos, Set perdidases, Set pedidos) {
        this.usuario = usuario;
        this.proveedor = proveedor;
        this.pedido = pedido;
@@ -199,6 +205,11 @@ public class Partida  implements java.io.Serializable {
        this.d = d;
        this.r = r;
        this.m = m;
+       this.tipoPieza = tipoPieza;
+       this.surteAlmacen=surteAlmacen;
+       this.prioridad = prioridad;
+       this.comprador = comprador;
+       this.cuValuacion = cuValuacion;
     }
    
     public Integer getIdPartida() {
@@ -702,6 +713,53 @@ public class Partida  implements java.io.Serializable {
     public void setM(double m) {
         this.m = m;
     }
+    
+    
+    
+    
+    
+    public double getCuValuacion() {
+        return this.cuValuacion;
+    }
+    
+    public void setCuValuacion(double cuValuacion) {
+        this.cuValuacion = cuValuacion;
+    }
+    
+    
+    
+    public String getTipoPieza() {
+        return this.tipoPieza;
+    }
+    
+    public void setTipoPieza(String tipoPieza) {
+        this.tipoPieza = tipoPieza;
+    }
+    
+    public boolean isSurteAlmacen() {
+        return this.surteAlmacen;
+    }
+    
+    public void setSurteAlmacen(boolean surteAlmacen) {
+        this.surteAlmacen = surteAlmacen;
+    }
+    
+    public Integer getPrioridad() {
+        return this.prioridad;
+    }
+    
+    public void setPrioridad(Integer prioridad) {
+        this.prioridad=prioridad;
+    }
+    
+    public Integer getComprador() {
+        return this.comprador;
+    }
+    
+    public void setComprador(Integer comprador) {
+        this.comprador=comprador;
+    }
+    
 }
 
 

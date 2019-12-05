@@ -26,7 +26,7 @@
     <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
-    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,2,-102,0,0,3,-126"/>
+    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,2,-102,0,0,3,-76"/>
   </AuxValues>
 
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
@@ -47,7 +47,7 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
-                  <Component id="jTabbedPane1" max="32767" attributes="0"/>
+                  <Component id="jTabbedPane1" pref="881" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
                       <Component id="jButton4" alignment="0" pref="41" max="32767" attributes="0"/>
@@ -155,7 +155,7 @@
                           <Component id="jPanel5" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jPanel7" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="32767" attributes="0"/>
+                          <EmptySpace pref="66" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -545,7 +545,7 @@
                     <Component class="javax.swing.JComboBox" name="c_tipo_fecha">
                       <Properties>
                         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                          <StringArray count="15">
+                          <StringArray count="14">
                             <StringItem index="0" value="Seleccione"/>
                             <StringItem index="1" value="Ingreso"/>
                             <StringItem index="2" value="Siniestro"/>
@@ -560,7 +560,6 @@
                             <StringItem index="11" value="Autoriza Valuacion"/>
                             <StringItem index="12" value="Facturacion"/>
                             <StringItem index="13" value="Cierre"/>
-                            <StringItem index="14" value=" "/>
                           </StringArray>
                         </Property>
                       </Properties>
@@ -907,18 +906,27 @@
                           </Group>
                           <EmptySpace min="-2" pref="55" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="cb_a_compañia" min="-2" max="-2" attributes="0"/>
-                              <Component id="cb_comprador" min="-2" max="-2" attributes="0"/>
-                              <Component id="cb_factura" min="-2" max="-2" attributes="0"/>
-                              <Group type="102" attributes="0">
-                                  <Component id="cb_fecha_entrada" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace min="-2" pref="69" max="-2" attributes="0"/>
-                                  <Component id="cb_ajustador" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <Component id="cb_tipo" min="-2" max="-2" attributes="0"/>
-                              <Component id="cb_fecha_cliente" min="-2" max="-2" attributes="0"/>
+                              <Component id="cb_fecha_entrada" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="cb_factura" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="cb_tipo" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="cb_fecha_cliente" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="cb_comprador" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="cb_a_compañia" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace min="192" pref="114" max="32767" attributes="0"/>
+                          <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="cb_servicio" min="-2" max="-2" attributes="0"/>
+                              <Component id="cb_presupuesto" min="-2" max="-2" attributes="0"/>
+                              <Component id="cb_ai" min="-2" max="-2" attributes="0"/>
+                              <Component id="cb_fecha_salida" min="-2" max="-2" attributes="0"/>
+                              <Component id="cb_consumible" min="-2" max="-2" attributes="0"/>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="cb_ajustador" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="41" max="-2" attributes="0"/>
+                                  <Component id="cb_cotizo" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
+                          <EmptySpace pref="16" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -964,11 +972,18 @@
                                           <Group type="103" groupAlignment="3" attributes="0">
                                               <Component id="cb_fecha_entrada" alignment="3" min="-2" max="-2" attributes="0"/>
                                               <Component id="cb_ajustador" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="cb_cotizo" alignment="3" min="-2" max="-2" attributes="0"/>
                                           </Group>
                                           <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="cb_factura" min="-2" max="-2" attributes="0"/>
+                                          <Group type="103" groupAlignment="3" attributes="0">
+                                              <Component id="cb_factura" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="cb_fecha_salida" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          </Group>
                                           <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="cb_tipo" min="-2" max="-2" attributes="0"/>
+                                          <Group type="103" groupAlignment="3" attributes="0">
+                                              <Component id="cb_tipo" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="cb_consumible" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          </Group>
                                       </Group>
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
@@ -977,6 +992,7 @@
                                       <Component id="cb_estatus" alignment="0" min="-2" max="-2" attributes="0"/>
                                       <Component id="cb_tot1" alignment="0" min="-2" max="-2" attributes="0"/>
                                       <Component id="cb_fecha_cliente" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="cb_ai" alignment="0" min="-2" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                           </Group>
@@ -990,7 +1006,10 @@
                                           <Component id="cb_presupuestado" alignment="3" min="-2" max="-2" attributes="0"/>
                                           <Component id="cb_tot_directa" alignment="3" min="-2" max="-2" attributes="0"/>
                                       </Group>
-                                      <Component id="cb_comprador" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Group type="103" alignment="0" groupAlignment="3" attributes="0">
+                                          <Component id="cb_comprador" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="cb_presupuesto" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      </Group>
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
@@ -1001,6 +1020,7 @@
                                       </Group>
                                       <Component id="cb_compras" alignment="0" min="-2" max="-2" attributes="0"/>
                                       <Component id="cb_a_compañia" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="cb_servicio" alignment="0" min="-2" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                           </Group>
@@ -1262,6 +1282,69 @@
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cb_ajustadorActionPerformed"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JCheckBox" name="cb_fecha_salida">
+                  <Properties>
+                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                      <Font name="Tahoma" size="10" style="0"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="F. Salida"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JCheckBox" name="cb_consumible">
+                  <Properties>
+                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                      <Font name="Tahoma" size="10" style="0"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="Material Almacen"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cb_consumibleActionPerformed"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JCheckBox" name="cb_ai">
+                  <Properties>
+                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                      <Font name="Tahoma" size="10" style="0"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="Prefactura"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cb_aiActionPerformed"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JCheckBox" name="cb_presupuesto">
+                  <Properties>
+                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                      <Font name="Tahoma" size="10" style="0"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="Presupuesto"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cb_presupuestoActionPerformed"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JCheckBox" name="cb_servicio">
+                  <Properties>
+                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                      <Font name="Tahoma" size="10" style="0"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="T. Servicio"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cb_servicioActionPerformed"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JCheckBox" name="cb_cotizo">
+                  <Properties>
+                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                      <Font name="Tahoma" size="10" style="0"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="Comprador Cotiza"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cb_cotizoActionPerformed"/>
                   </Events>
                 </Component>
               </SubComponents>

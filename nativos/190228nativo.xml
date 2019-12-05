@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Comprobante xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="3.3" Serie="MET" Folio="16" Fecha="2019-08-30T10:57:39" Sello="uXDQPSWA9bNuT/mCheDvwWaR2kXJqCPtEPAh7GaFxF6TV85ry/LxkfEnNJeLTmnDC9lVv5WOUjLtPN+yp3k8A0fUNfBm1SaR5ge+4b5gF/n/3Fz3qXBPbzn13L//wC97PUcLYXrVS05zdc3dCKVJtxIOjSOfCwgTdTS7yPFlfQoIDHuAjQgbXX3QADLt6EUCe64QyE70MjDBU+6ynmiNbypJdHtw+gXgex5scyGqsfVweYp8BE6Wk0Lc08jxjt/F085hirIipJwiltXLv04PonTKplBitdtDxRvzRIOGSAAqHv5dC+X5dYrwQdk4OHdDUsmRbJlr7vIW/x4kAjhPtw==" FormaPago="03" NoCertificado="00001000000413764140" Certificado="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" CondicionesDePago="PAGO EN UNA SOLA EXHIBICION" SubTotal="110205.00" Moneda="MXN" TipoCambio="1" Total="127837.80" TipoDeComprobante="I" MetodoPago="PUE" LugarExpedicion="97314" xsi:schemaLocation="http://www.sat.gob.mx/cfd/3 http://www.sat.gob.mx/sitio_internet/cfd/3/cfdv33.xsd">
+    <Emisor Rfc="XTR190129S67" Nombre="XELL TRUCKS S.A. DE C.V." RegimenFiscal="601"/>
+    <Receptor Rfc="QCS931209G49" Nombre="QUALITAS COMPANIA DE SEGUROS S.A. DE C.V." UsoCFDI="G_03"/>
+    <Conceptos>
+        <Concepto ClaveProdServ="76122405" Cantidad="1.00" ClaveUnidad="XNA" Unidad="NA" Descripcion="MANO DE OBRA" ValorUnitario="110205.00" Importe="110205.00">
+            <Impuestos>
+                <Traslados>
+                    <Traslado Base="110205.00" Impuesto="002" TipoFactor="TASA" TasaOCuota="0.160000" Importe="17632.80"/>
+                </Traslados>
+            </Impuestos>
+        </Concepto>
+    </Conceptos>
+    <Impuestos TotalImpuestosTrasladados="17632.80">
+        <Traslados>
+            <Traslado Impuesto="002" TipoFactor="TASA" TasaOCuota="0.160000" Importe="17632.80"/>
+        </Traslados>
+    </Impuestos>
+</Comprobante>

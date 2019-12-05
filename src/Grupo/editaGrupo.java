@@ -12,8 +12,11 @@ import Hibernate.Util.HibernateUtil;
 import Hibernate.entidades.Catalogo;
 import Hibernate.entidades.Estatus;
 import Hibernate.entidades.Item;
+import Hibernate.entidades.Posicion;
 import Hibernate.entidades.Servicio;
 import Hibernate.entidades.Usuario;
+import Integral.FormatoEditor;
+import Integral.FormatoTabla;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -30,6 +33,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import Integral.Herramientas;
 import Integral.Render1;
+import javax.swing.DefaultCellEditor;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 /**
@@ -42,17 +46,20 @@ public class editaGrupo extends javax.swing.JPanel {
     DefaultTableModel model;
     DefaultTableModel mItem;
     String[] columnas = new String [] {"Nombre","Descripción"}; 
-    String[] columnas1 = new String [] {"ID","Descripción", "Grupo Mecánico"}; 
+    String[] columnas1 = new String [] {"ID","Descripción", "Grupo Mecánico", "I.DM", "Cam", "Rep. Min", "Rep. Med", "Rep. Max", "Pin. Min", "Pin. Med", "Pin. Max","ubicacion"}; 
     public String nb = "";
     public String ds = "";
     Usuario usr;
     String sessionPrograma="";
     Herramientas h;
+    FormatoTabla formato;
 
     public editaGrupo(Usuario usuario, String ses) {
         initComponents();
+        formato = new FormatoTabla();
         sessionPrograma=ses;
         usr=usuario;
+        ubicaciones();
         formatoTablas();
         buscaDato();
     }
@@ -98,15 +105,24 @@ public class editaGrupo extends javax.swing.JPanel {
     }
     DefaultTableModel ModeloTablaConcepto(int renglones, String columnas[])
     {
-        mItem = new DefaultTableModel(new Object [renglones][3], columnas1)
+        mItem = new DefaultTableModel(new Object [renglones][12], columnas1)
         {
             Class[] types = new Class [] {
                 java.lang.Integer.class,
                 java.lang.String.class,
-                java.lang.String.class
+                java.lang.String.class,
+                java.lang.Double.class,
+                java.lang.Double.class,
+                java.lang.Double.class,
+                java.lang.Double.class,
+                java.lang.Double.class,
+                java.lang.Double.class,
+                java.lang.Double.class,
+                java.lang.Double.class,
+                java.lang.String.class,
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                false, false, false, true, true, true, true, true, true, true, true, true
             };
             
             public void setValueAt(Object value, int row, int col)
@@ -115,6 +131,605 @@ public class editaGrupo extends javax.swing.JPanel {
                 Object celda = ((Vector)this.dataVector.elementAt(row)).elementAt(col);
                 switch(col)
                 {
+                    case 3:
+                        if(vector.get(col)==null)
+                        {
+                            vector.setElementAt(value, col);
+                            this.dataVector.setElementAt(vector, row);
+                            fireTableCellUpdated(row, col);
+                        }
+                        else
+                        {
+                            Session session = HibernateUtil.getSessionFactory().openSession();
+                            try
+                            {
+                                session.beginTransaction().begin();
+                                usr = (Usuario)session.get(Usuario.class, usr.getIdUsuario());
+                                if(usr.getRespaldar()==true)
+                                {
+                                    try
+                                    {
+                                        Item part=(Item) session.get(Item.class, Integer.parseInt(t_conceptos.getValueAt(row, 0).toString()));
+                                        if(part!=null)
+                                        {
+                                            Item[] partidas=(Item[]) session.createCriteria(Item.class).add(Restrictions.eq("catalogo.idCatalogo", part.getCatalogo().getIdCatalogo())).list().toArray(new Item[0]);
+                                            for(int a=0; a< partidas.length; a++)
+                                            {
+                                                partidas[a].setIntDesm((double)value);
+                                                session.update(partidas[a]);
+                                            }
+                                            session.getTransaction().commit();
+                                            vector.setElementAt(value, col);
+                                            this.dataVector.setElementAt(vector, row);
+                                            fireTableCellUpdated(row, col);
+                                            if(session.isOpen()==true)
+                                                session.close();
+                                        }
+                                        else
+                                        {
+                                            JOptionPane.showMessageDialog(null, "La partida ya no existe");
+                                            buscaItems();
+                                        }
+                                    }
+                                    catch(Exception e)
+                                    {
+                                        session.getTransaction().rollback();
+                                        System.out.println(e);
+                                        JOptionPane.showMessageDialog(null, "Error al actualizar los datos"); 
+                                    }
+                                    finally
+                                    {
+                                        if(session.isOpen()==true)
+                                            session.close();
+                                    }
+                                }
+                                else
+                                {
+                                    JOptionPane.showMessageDialog(null, "Acceso denegado"); 
+                                }
+                            }catch(Exception e)
+                            {
+                                System.out.println(e);
+                            }
+                            if(session!=null)
+                                if(session.isOpen()==true)
+                                    session.close();
+                        }
+                        break;
+                        
+                    case 4:
+                        if(vector.get(col)==null)
+                        {
+                            vector.setElementAt(value, col);
+                            this.dataVector.setElementAt(vector, row);
+                            fireTableCellUpdated(row, col);
+                        }
+                        else
+                        {
+                            Session session = HibernateUtil.getSessionFactory().openSession();
+                            try
+                            {
+                                session.beginTransaction().begin();
+                                usr = (Usuario)session.get(Usuario.class, usr.getIdUsuario());
+                                if(usr.getRespaldar()==true)
+                                {
+                                    try
+                                    {
+                                        Item part=(Item) session.get(Item.class, Integer.parseInt(t_conceptos.getValueAt(row, 0).toString()));
+                                        if(part!=null)
+                                        {
+                                            Item[] partidas=(Item[]) session.createCriteria(Item.class).add(Restrictions.eq("catalogo.idCatalogo", part.getCatalogo().getIdCatalogo())).list().toArray(new Item[0]);
+                                            for(int a=0; a< partidas.length; a++)
+                                            {
+                                                partidas[a].setIntCamb((double)value);
+                                                session.update(partidas[a]);
+                                            }
+                                            session.getTransaction().commit();
+                                            vector.setElementAt(value, col);
+                                            this.dataVector.setElementAt(vector, row);
+                                            fireTableCellUpdated(row, col);
+                                            if(session.isOpen()==true)
+                                                session.close();
+                                        }
+                                        else
+                                        {
+                                            JOptionPane.showMessageDialog(null, "La partida ya no existe");
+                                            buscaItems();
+                                        }
+                                    }
+                                    catch(Exception e)
+                                    {
+                                        session.getTransaction().rollback();
+                                        System.out.println(e);
+                                        JOptionPane.showMessageDialog(null, "Error al actualizar los datos"); 
+                                    }
+                                    finally
+                                    {
+                                        if(session.isOpen()==true)
+                                            session.close();
+                                    }
+                                }
+                                else
+                                {
+                                    JOptionPane.showMessageDialog(null, "Acceso denegado"); 
+                                }
+                            }catch(Exception e)
+                            {
+                                System.out.println(e);
+                            }
+                            if(session!=null)
+                                if(session.isOpen()==true)
+                                    session.close();
+                        }
+                        break;
+                    
+                    case 5:
+                        if(vector.get(col)==null)
+                        {
+                            vector.setElementAt(value, col);
+                            this.dataVector.setElementAt(vector, row);
+                            fireTableCellUpdated(row, col);
+                        }
+                        else
+                        {
+                            Session session = HibernateUtil.getSessionFactory().openSession();
+                            try
+                            {
+                                session.beginTransaction().begin();
+                                usr = (Usuario)session.get(Usuario.class, usr.getIdUsuario());
+                                if(usr.getRespaldar()==true)
+                                {
+                                    try
+                                    {
+                                        Item part=(Item) session.get(Item.class, Integer.parseInt(t_conceptos.getValueAt(row, 0).toString()));
+                                        if(part!=null)
+                                        {
+                                            Item[] partidas=(Item[]) session.createCriteria(Item.class).add(Restrictions.eq("catalogo.idCatalogo", part.getCatalogo().getIdCatalogo())).list().toArray(new Item[0]);
+                                            for(int a=0; a< partidas.length; a++)
+                                            {
+                                                partidas[a].setIntRepMin((double)value);
+                                                session.update(partidas[a]);
+                                            }
+                                            session.getTransaction().commit();
+                                            vector.setElementAt(value, col);
+                                            this.dataVector.setElementAt(vector, row);
+                                            fireTableCellUpdated(row, col);
+                                            if(session.isOpen()==true)
+                                                session.close();
+                                        }
+                                        else
+                                        {
+                                            JOptionPane.showMessageDialog(null, "La partida ya no existe");
+                                            buscaItems();
+                                        }
+                                    }
+                                    catch(Exception e)
+                                    {
+                                        session.getTransaction().rollback();
+                                        System.out.println(e);
+                                        JOptionPane.showMessageDialog(null, "Error al actualizar los datos"); 
+                                    }
+                                    finally
+                                    {
+                                        if(session.isOpen()==true)
+                                            session.close();
+                                    }
+                                }
+                                else
+                                {
+                                    JOptionPane.showMessageDialog(null, "Acceso denegado"); 
+                                }
+                            }catch(Exception e)
+                            {
+                                System.out.println(e);
+                            }
+                            if(session!=null)
+                                if(session.isOpen()==true)
+                                    session.close();
+                        }
+                        break;
+                     
+                    case 6:
+                        if(vector.get(col)==null)
+                        {
+                            vector.setElementAt(value, col);
+                            this.dataVector.setElementAt(vector, row);
+                            fireTableCellUpdated(row, col);
+                        }
+                        else
+                        {
+                            Session session = HibernateUtil.getSessionFactory().openSession();
+                            try
+                            {
+                                session.beginTransaction().begin();
+                                usr = (Usuario)session.get(Usuario.class, usr.getIdUsuario());
+                                if(usr.getRespaldar()==true)
+                                {
+                                    try
+                                    {
+                                        Item part=(Item) session.get(Item.class, Integer.parseInt(t_conceptos.getValueAt(row, 0).toString()));
+                                        if(part!=null)
+                                        {
+                                            Item[] partidas=(Item[]) session.createCriteria(Item.class).add(Restrictions.eq("catalogo.idCatalogo", part.getCatalogo().getIdCatalogo())).list().toArray(new Item[0]);
+                                            for(int a=0; a< partidas.length; a++)
+                                            {
+                                                partidas[a].setIntRepMed((double)value);
+                                                session.update(partidas[a]);
+                                            }
+                                            session.getTransaction().commit();
+                                            vector.setElementAt(value, col);
+                                            this.dataVector.setElementAt(vector, row);
+                                            fireTableCellUpdated(row, col);
+                                            if(session.isOpen()==true)
+                                                session.close();
+                                        }
+                                        else
+                                        {
+                                            JOptionPane.showMessageDialog(null, "La partida ya no existe");
+                                            buscaItems();
+                                        }
+                                    }
+                                    catch(Exception e)
+                                    {
+                                        session.getTransaction().rollback();
+                                        System.out.println(e);
+                                        JOptionPane.showMessageDialog(null, "Error al actualizar los datos"); 
+                                    }
+                                    finally
+                                    {
+                                        if(session.isOpen()==true)
+                                            session.close();
+                                    }
+                                }
+                                else
+                                {
+                                    JOptionPane.showMessageDialog(null, "Acceso denegado"); 
+                                }
+                            }catch(Exception e)
+                            {
+                                System.out.println(e);
+                            }
+                            if(session!=null)
+                                if(session.isOpen()==true)
+                                    session.close();
+                        }
+                        break;
+                     
+                    case 7:
+                        if(vector.get(col)==null)
+                        {
+                            vector.setElementAt(value, col);
+                            this.dataVector.setElementAt(vector, row);
+                            fireTableCellUpdated(row, col);
+                        }
+                        else
+                        {
+                            Session session = HibernateUtil.getSessionFactory().openSession();
+                            try
+                            {
+                                session.beginTransaction().begin();
+                                usr = (Usuario)session.get(Usuario.class, usr.getIdUsuario());
+                                if(usr.getRespaldar()==true)
+                                {
+                                    try
+                                    {
+                                        Item part=(Item) session.get(Item.class, Integer.parseInt(t_conceptos.getValueAt(row, 0).toString()));
+                                        if(part!=null)
+                                        {
+                                            Item[] partidas=(Item[]) session.createCriteria(Item.class).add(Restrictions.eq("catalogo.idCatalogo", part.getCatalogo().getIdCatalogo())).list().toArray(new Item[0]);
+                                            for(int a=0; a< partidas.length; a++)
+                                            {
+                                                partidas[a].setIntRepMax((double)value);
+                                                session.update(partidas[a]);
+                                            }
+                                            session.getTransaction().commit();
+                                            vector.setElementAt(value, col);
+                                            this.dataVector.setElementAt(vector, row);
+                                            fireTableCellUpdated(row, col);
+                                            if(session.isOpen()==true)
+                                                session.close();
+                                        }
+                                        else
+                                        {
+                                            JOptionPane.showMessageDialog(null, "La partida ya no existe");
+                                            buscaItems();
+                                        }
+                                    }
+                                    catch(Exception e)
+                                    {
+                                        session.getTransaction().rollback();
+                                        System.out.println(e);
+                                        JOptionPane.showMessageDialog(null, "Error al actualizar los datos"); 
+                                    }
+                                    finally
+                                    {
+                                        if(session.isOpen()==true)
+                                            session.close();
+                                    }
+                                }
+                                else
+                                {
+                                    JOptionPane.showMessageDialog(null, "Acceso denegado"); 
+                                }
+                            }catch(Exception e)
+                            {
+                                System.out.println(e);
+                            }
+                            if(session!=null)
+                                if(session.isOpen()==true)
+                                    session.close();
+                        }
+                        break;
+                        
+                    case 8:
+                        if(vector.get(col)==null)
+                        {
+                            vector.setElementAt(value, col);
+                            this.dataVector.setElementAt(vector, row);
+                            fireTableCellUpdated(row, col);
+                        }
+                        else
+                        {
+                            Session session = HibernateUtil.getSessionFactory().openSession();
+                            try
+                            {
+                                session.beginTransaction().begin();
+                                usr = (Usuario)session.get(Usuario.class, usr.getIdUsuario());
+                                if(usr.getRespaldar()==true)
+                                {
+                                    try
+                                    {
+                                        Item part=(Item) session.get(Item.class, Integer.parseInt(t_conceptos.getValueAt(row, 0).toString()));
+                                        if(part!=null)
+                                        {
+                                            Item[] partidas=(Item[]) session.createCriteria(Item.class).add(Restrictions.eq("catalogo.idCatalogo", part.getCatalogo().getIdCatalogo())).list().toArray(new Item[0]);
+                                            for(int a=0; a< partidas.length; a++)
+                                            {
+                                                partidas[a].setIntPinMin((double)value);
+                                                session.update(partidas[a]);
+                                            }
+                                            session.getTransaction().commit();
+                                            vector.setElementAt(value, col);
+                                            this.dataVector.setElementAt(vector, row);
+                                            fireTableCellUpdated(row, col);
+                                            if(session.isOpen()==true)
+                                                session.close();
+                                        }
+                                        else
+                                        {
+                                            JOptionPane.showMessageDialog(null, "La partida ya no existe");
+                                            buscaItems();
+                                        }
+                                    }
+                                    catch(Exception e)
+                                    {
+                                        session.getTransaction().rollback();
+                                        System.out.println(e);
+                                        JOptionPane.showMessageDialog(null, "Error al actualizar los datos"); 
+                                    }
+                                    finally
+                                    {
+                                        if(session.isOpen()==true)
+                                            session.close();
+                                    }
+                                }
+                                else
+                                {
+                                    JOptionPane.showMessageDialog(null, "Acceso denegado"); 
+                                }
+                            }catch(Exception e)
+                            {
+                                System.out.println(e);
+                            }
+                            if(session!=null)
+                                if(session.isOpen()==true)
+                                    session.close();
+                        }
+                        break;
+                        
+                    case 9:
+                        if(vector.get(col)==null)
+                        {
+                            vector.setElementAt(value, col);
+                            this.dataVector.setElementAt(vector, row);
+                            fireTableCellUpdated(row, col);
+                        }
+                        else
+                        {
+                            Session session = HibernateUtil.getSessionFactory().openSession();
+                            try
+                            {
+                                session.beginTransaction().begin();
+                                usr = (Usuario)session.get(Usuario.class, usr.getIdUsuario());
+                                if(usr.getRespaldar()==true)
+                                {
+                                    try
+                                    {
+                                        Item part=(Item) session.get(Item.class, Integer.parseInt(t_conceptos.getValueAt(row, 0).toString()));
+                                        if(part!=null)
+                                        {
+                                            Item[] partidas=(Item[]) session.createCriteria(Item.class).add(Restrictions.eq("catalogo.idCatalogo", part.getCatalogo().getIdCatalogo())).list().toArray(new Item[0]);
+                                            for(int a=0; a< partidas.length; a++)
+                                            {
+                                                partidas[a].setIntPinMed((double)value);
+                                                session.update(partidas[a]);
+                                            }
+                                            session.getTransaction().commit();
+                                            vector.setElementAt(value, col);
+                                            this.dataVector.setElementAt(vector, row);
+                                            fireTableCellUpdated(row, col);
+                                            if(session.isOpen()==true)
+                                                session.close();
+                                        }
+                                        else
+                                        {
+                                            JOptionPane.showMessageDialog(null, "La partida ya no existe");
+                                            buscaItems();
+                                        }
+                                    }
+                                    catch(Exception e)
+                                    {
+                                        session.getTransaction().rollback();
+                                        System.out.println(e);
+                                        JOptionPane.showMessageDialog(null, "Error al actualizar los datos"); 
+                                    }
+                                    finally
+                                    {
+                                        if(session.isOpen()==true)
+                                            session.close();
+                                    }
+                                }
+                                else
+                                {
+                                    JOptionPane.showMessageDialog(null, "Acceso denegado"); 
+                                }
+                            }catch(Exception e)
+                            {
+                                System.out.println(e);
+                            }
+                            if(session!=null)
+                                if(session.isOpen()==true)
+                                    session.close();
+                        }
+                        break;
+                        
+                    case 10:
+                        if(vector.get(col)==null)
+                        {
+                            vector.setElementAt(value, col);
+                            this.dataVector.setElementAt(vector, row);
+                            fireTableCellUpdated(row, col);
+                        }
+                        else
+                        {
+                            Session session = HibernateUtil.getSessionFactory().openSession();
+                            try
+                            {
+                                session.beginTransaction().begin();
+                                usr = (Usuario)session.get(Usuario.class, usr.getIdUsuario());
+                                if(usr.getRespaldar()==true)
+                                {
+                                    try
+                                    {
+                                        Item part=(Item) session.get(Item.class, Integer.parseInt(t_conceptos.getValueAt(row, 0).toString()));
+                                        if(part!=null)
+                                        {
+                                            Item[] partidas=(Item[]) session.createCriteria(Item.class).add(Restrictions.eq("catalogo.idCatalogo", part.getCatalogo().getIdCatalogo())).list().toArray(new Item[0]);
+                                            for(int a=0; a< partidas.length; a++)
+                                            {
+                                                partidas[a].setIntPinMax((double)value);
+                                                session.update(partidas[a]);
+                                            }
+                                            session.update(part);
+                                            session.getTransaction().commit();
+                                            vector.setElementAt(value, col);
+                                            this.dataVector.setElementAt(vector, row);
+                                            fireTableCellUpdated(row, col);
+                                            if(session.isOpen()==true)
+                                                session.close();
+                                        }
+                                        else
+                                        {
+                                            JOptionPane.showMessageDialog(null, "La partida ya no existe");
+                                            buscaItems();
+                                        }
+                                    }
+                                    catch(Exception e)
+                                    {
+                                        session.getTransaction().rollback();
+                                        System.out.println(e);
+                                        JOptionPane.showMessageDialog(null, "Error al actualizar los datos"); 
+                                    }
+                                    finally
+                                    {
+                                        if(session.isOpen()==true)
+                                            session.close();
+                                    }
+                                }
+                                else
+                                {
+                                    JOptionPane.showMessageDialog(null, "Acceso denegado"); 
+                                }
+                            }catch(Exception e)
+                            {
+                                System.out.println(e);
+                            }
+                            if(session!=null)
+                                if(session.isOpen()==true)
+                                    session.close();
+                        }
+                        break;
+                       
+                    case 11:
+                        if(vector.get(col)==null)
+                        {
+                            vector.setElementAt(value, col);
+                            this.dataVector.setElementAt(vector, row);
+                            fireTableCellUpdated(row, col);
+                        }
+                        else
+                        {
+                            Session session = HibernateUtil.getSessionFactory().openSession();
+                            try
+                            {
+                                session.beginTransaction().begin();
+                                usr = (Usuario)session.get(Usuario.class, usr.getIdUsuario());
+                                if(usr.getRespaldar()==true)
+                                {
+                                    try
+                                    {
+                                        Item part=(Item) session.get(Item.class, Integer.parseInt(t_conceptos.getValueAt(row, 0).toString()));
+                                        if(part!=null)
+                                        {
+                                            Item[] partidas=(Item[]) session.createCriteria(Item.class).add(Restrictions.eq("catalogo.idCatalogo", part.getCatalogo().getIdCatalogo())).list().toArray(new Item[0]);
+                                            Posicion pos=null;
+                                            if(((String)value).compareTo("NA")!=0)
+                                                 pos = (Posicion) session.createCriteria(Posicion.class).add(Restrictions.eq("descripcion", ubicacion.getSelectedItem().toString())).uniqueResult();
+                                            for(int a=0; a< partidas.length; a++)
+                                            {
+                                                partidas[a].setPosicion(pos);
+                                                session.update(partidas[a]);
+                                            }
+                                            session.update(part);
+                                            session.getTransaction().commit();
+                                            vector.setElementAt(value, col);
+                                            this.dataVector.setElementAt(vector, row);
+                                            fireTableCellUpdated(row, col);
+                                            if(session.isOpen()==true)
+                                                session.close();
+                                        }
+                                        else
+                                        {
+                                            JOptionPane.showMessageDialog(null, "La partida ya no existe");
+                                            buscaItems();
+                                        }
+                                    }
+                                    catch(Exception e)
+                                    {
+                                        session.getTransaction().rollback();
+                                        System.out.println(e);
+                                        JOptionPane.showMessageDialog(null, "Error al actualizar los datos"); 
+                                    }
+                                    finally
+                                    {
+                                        if(session.isOpen()==true)
+                                            session.close();
+                                    }
+                                }
+                                else
+                                {
+                                    JOptionPane.showMessageDialog(null, "Acceso denegado"); 
+                                }
+                            }catch(Exception e)
+                            {
+                                System.out.println(e);
+                            }
+                            if(session!=null)
+                                if(session.isOpen()==true)
+                                    session.close();
+                        }
+                        break;
+                        
                     default:
                         vector.setElementAt(value, col);
                         this.dataVector.setElementAt(vector, row);
@@ -140,6 +755,7 @@ public class editaGrupo extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        ubicacion = new javax.swing.JComboBox();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         t_datos = new javax.swing.JTable();
@@ -159,6 +775,9 @@ public class editaGrupo extends javax.swing.JPanel {
         t_conceptos = new javax.swing.JTable();
         jButton2 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
+
+        ubicacion.setFont(new java.awt.Font("Dialog", 0, 9)); // NOI18N
+        ubicacion.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "NA", "IZQ", "DER" }));
 
         setBackground(new java.awt.Color(255, 255, 255));
         setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "Edita Servicios", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Arial", 1, 12))); // NOI18N
@@ -194,6 +813,12 @@ public class editaGrupo extends javax.swing.JPanel {
         t_datos.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 t_datosMouseClicked(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                t_datosMouseExited(evt);
+            }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                t_datosMousePressed(evt);
             }
         });
         jScrollPane1.setViewportView(t_datos);
@@ -393,14 +1018,14 @@ public class editaGrupo extends javax.swing.JPanel {
 
             },
             new String [] {
-                "ID", "Descripción", "Grupo Mecánico"
+                "ID", "Descripción", "Grupo Mecánico", "I. DM", "Camb", "Rep. Min", "Rep. Med", "Rep. Max", "Pin. Min", "Pin. Med", "Pin. Max", "ubicacion"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.Object.class
+                java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                false, false, false, true, true, true, true, true, true, true, true, true
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -570,7 +1195,7 @@ public class editaGrupo extends javax.swing.JPanel {
         {
             this.borra_cajas();
             if(t_datos.getSelectedRow()>=0)
-            {;
+            {
                 nombre.setText(t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString());
                 nb=t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString();
                 descripcion.setText(t_datos.getValueAt(t_datos.getSelectedRow(), 1).toString());            
@@ -715,7 +1340,6 @@ public class editaGrupo extends javax.swing.JPanel {
                 if(session.isOpen())
                     session.close();
                 buscaItems();
-                buscaItems();
             }
         }
         else
@@ -754,12 +1378,21 @@ public class editaGrupo extends javax.swing.JPanel {
                 if(session.isOpen())
                     session.close();
                 buscaItems();
-                buscaItems();
             }
         }
         else
             JOptionPane.showMessageDialog(null, "¡Debes seleccionar primero un servicio de la lista!");
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void t_datosMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_t_datosMousePressed
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_t_datosMousePressed
+
+    private void t_datosMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_t_datosMouseExited
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_t_datosMouseExited
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Eliminar1;
@@ -781,6 +1414,7 @@ public class editaGrupo extends javax.swing.JPanel {
     public javax.swing.JTextField nombre;
     private javax.swing.JTable t_conceptos;
     private javax.swing.JTable t_datos;
+    private javax.swing.JComboBox ubicacion;
     // End of variables declaration//GEN-END:variables
 
     private List<Object[]> executeHQLQuery(String hql) {
@@ -834,22 +1468,37 @@ public class editaGrupo extends javax.swing.JPanel {
             {
                 session.beginTransaction();
                 //servicio =(Servicio)session.get(Servicio.class, t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString());
-                Item [] renglones =(Item[])session.createCriteria(Item.class).add(Restrictions.eq("servicio.idServicio", t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString())).addOrder(Order.asc("idReparacion")).list().toArray(new Item[0]);
+                Item [] renglones =(Item[])session.createCriteria(Item.class).add(Restrictions.eq("servicio.idServicio", t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString())).createAlias("catalogo", "cat").createAlias("cat.especialidad", "esp").addOrder(Order.asc("esp.descripcion")).addOrder(Order.asc("cat.nombre")).list().toArray(new Item[0]);
                 if(renglones!=null)
                 {
                     //Item [] renglones=(Item[])servicio.getItems().toArray(new Item[0]);
-                    t_conceptos.setModel(ModeloTablaConcepto(renglones.length, columnas));
+                    t_conceptos.setModel(ModeloTablaConcepto(renglones.length, columnas1));
                     for(int i=0; i<renglones.length; i++)
                     {
                         mItem.setValueAt(renglones[i].getIdReparacion(), i, 0);
                         mItem.setValueAt(renglones[i].getCatalogo().getNombre(), i, 1);
                         mItem.setValueAt(renglones[i].getCatalogo().getEspecialidad().getDescripcion(), i, 2);
+                        mItem.setValueAt(renglones[i].getIntDesm(), i, 3);
+                        mItem.setValueAt(renglones[i].getIntCamb(), i, 4);
+                        mItem.setValueAt(renglones[i].getIntRepMin(), i, 5);
+                        mItem.setValueAt(renglones[i].getIntRepMed(), i, 6);
+                        mItem.setValueAt(renglones[i].getIntRepMax(), i, 7);
+                        mItem.setValueAt(renglones[i].getIntPinMin(), i, 8);
+                        mItem.setValueAt(renglones[i].getIntPinMed(), i, 9);
+                        mItem.setValueAt(renglones[i].getIntPinMax(), i, 10);
+                        if(renglones[i].getPosicion()!=null)
+                        {
+                            mItem.setValueAt(renglones[i].getPosicion().getDescripcion(), i, 11);
+                        }
+                        else
+                        {
+                            mItem.setValueAt("NA", i, 11);
+                        }
                     }
                 }
                 else
                 {
                     t_conceptos.setModel(ModeloTablaConcepto(0, columnas));
-                    System.out.println("2");
                 }
                 session.getTransaction().commit();
             } catch (HibernateException he)
@@ -912,7 +1561,8 @@ public class editaGrupo extends javax.swing.JPanel {
     public void tabla_tamaños2()
     {
         TableColumnModel col_model = t_conceptos.getColumnModel();
-
+        FormatoEditor fe=new FormatoEditor();
+        t_conceptos.setDefaultEditor(Double.class, fe);
         for (int i=0; i<t_conceptos.getColumnCount(); i++)
         {
   	      TableColumn column = col_model.getColumn(i);
@@ -924,8 +1574,17 @@ public class editaGrupo extends javax.swing.JPanel {
                   case 1:
                       column.setPreferredWidth(550);
                       break; 
+                  case 2:
+                      column.setPreferredWidth(250);
+                      break; 
+                  case 11:
+                      column.setPreferredWidth(250);
+                      DefaultCellEditor editor = new DefaultCellEditor(ubicacion);
+                      column.setCellEditor(editor); 
+                      editor.setClickCountToStart(2);
+                      break; 
                   default:
-                      column.setPreferredWidth(200);
+                      column.setPreferredWidth(80);
                       break;   
               }
         }
@@ -941,10 +1600,25 @@ public class editaGrupo extends javax.swing.JPanel {
             t_conceptos.getColumnModel().getColumn(x).setHeaderRenderer(new Render1(c1));
         tabla_tamaños();
         tabla_tamaños2();
+        t_conceptos.setDefaultRenderer(Double.class, formato); 
+        
         t_datos.setShowVerticalLines(true);
         t_datos.setShowHorizontalLines(true);
         
         t_conceptos.setShowVerticalLines(true);
         t_conceptos.setShowHorizontalLines(true);
+    }
+    
+    private void ubicaciones()
+    {
+        ubicacion.removeAllItems();
+        String consulta="from Posicion";
+        ubicacion.addItem("NA");
+        List <Object[]> resultList=executeHQLQuery(consulta);
+        for (Object o : resultList)
+        {
+            Posicion actor = (Posicion) o;
+            ubicacion.addItem(actor.getDescripcion());
+        }
     }
 }

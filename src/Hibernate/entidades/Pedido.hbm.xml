@@ -100,6 +100,12 @@
         <property name="ventana" type="string">
             <column name="ventana" length="5" />
         </property>
+        <property name="tipoCambio" type="java.lang.Double">
+            <column name="tipo_cambio" precision="22" scale="0"/>
+        </property>
+        <property name="soporte" type="java.lang.Boolean">
+            <column name="soporte" />
+        </property>
         <set name="partidaExternas" table="partida_externa" inverse="true" lazy="true" fetch="select" cascade="all">
             <key>
                 <column name="id_pedido" />

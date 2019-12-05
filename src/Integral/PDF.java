@@ -11,6 +11,7 @@ import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
+import com.itextpdf.text.ExceptionConverter;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.Paragraph;
@@ -21,7 +22,9 @@ import com.itextpdf.text.pdf.ColumnText;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfPage;
 import com.itextpdf.text.pdf.PdfPageEventHelper;
+import com.itextpdf.text.pdf.PdfTemplate;
 import com.itextpdf.text.pdf.PdfWriter;
 import java.awt.Desktop;
 import java.io.BufferedReader;
@@ -31,6 +34,9 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -45,6 +51,8 @@ public class PDF {
     public String ruta;
     public HeaderFooter even;
     public static String autoriza1="", autoriza2="";
+    public static long  dig1;
+    public static long  dig2;
     public PDF()
     {
         try
@@ -55,6 +63,9 @@ public class PDF {
             if((ruta = b.readLine())==null)
                 ruta="";
             b.close();
+            Random rng=new Random();
+            dig1 = rng.nextInt(90000000)+10000000;
+            dig2 = rng.nextInt(90000000)+10000000;
         }
         catch(IOException e)
         {
@@ -93,6 +104,21 @@ public class PDF {
                 HeaderFooter event = new HeaderFooter();
                 writer.setPageEvent(event);
             }
+            if(titulo.compareToIgnoreCase("factura")==0)
+            {
+                HeaderFooter3 event = new HeaderFooter3();
+                writer.setPageEvent(event);
+            }
+            if(titulo.compareToIgnoreCase("Operaciones-No-Autorizado")==0)
+            {
+                HeaderFooter2 event = new HeaderFooter2();
+                writer.setPageEvent(event);
+            }
+            if(titulo.compareToIgnoreCase("Operaciones-Autorizado")==0)
+            {
+                HeaderFooter4 event = new HeaderFooter4();
+                writer.setPageEvent(event);
+            }
             document.open();
             contenido = writer.getDirectContent();
 
@@ -120,7 +146,21 @@ public class PDF {
                 //HeaderFooter1 event = new HeaderFooter1();
                 //writer.setPageEvent(event);
             }
-            
+            if(titulo.compareToIgnoreCase("factura")==0)
+            {
+                HeaderFooter3 event = new HeaderFooter3();
+                writer.setPageEvent(event);
+            }
+            if(titulo.compareToIgnoreCase("Operaciones-No-Autorizado")==0)
+            {
+                HeaderFooter2 event = new HeaderFooter2();
+                writer.setPageEvent(event);
+            }
+            if(titulo.compareToIgnoreCase("Operaciones-Autorizado")==0)
+            {
+                HeaderFooter4 event = new HeaderFooter4();
+                writer.setPageEvent(event);
+            }
             document.open();
             contenido = writer.getDirectContent();
             
@@ -427,6 +467,30 @@ public class PDF {
             return null;
         }
     }
+    
+    public Chunk crearImagen(String archivo, int x, int y, int escala, boolean local) 
+    {
+        try
+        {
+            RandomAccessFile rf1;
+            if(local==true)
+                rf1 = new RandomAccessFile(archivo, "r");
+            else
+                rf1 = new RandomAccessFile(ruta+archivo, "r");
+            int size1 = (int)rf1.length();
+            byte imagedata[] = new byte[size1];
+            rf1.readFully(imagedata);
+            rf1.close();
+            Image img11 = Image.getInstance(imagedata);
+            img11.scalePercent(escala);
+            Chunk logo = new Chunk(img11, x, y);
+            return logo;
+        }catch(Exception e)
+        {
+            System.out.println(e);
+            return null;
+        }
+    }
     /**
      * Crea un objeto imagen de tipo Chunk
      * @param archivo Ruta de la imagen
@@ -537,6 +601,84 @@ public static class HeaderFooter1 extends PdfPageEventHelper {
         reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Solicita", 120, 10, 0);
         reporte.contenido.roundRectangle(370, 20, 180, 1, 0);
         reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Autoriza", 440, 10, 0);*/
+        }
+    }
+
+    public static class HeaderFooter3 extends PdfPageEventHelper {
+        PdfContentByte cb;
+        PdfTemplate total;
+        public void onOpenDocument(PdfWriter writer, Document document) {
+            total = writer.getDirectContent().createTemplate(30, 16);  
+        }
+    
+        public void onEndPage (PdfWriter writer, Document document) {
+            String hoja="Pag. "+document.getPageNumber()+" de ";
+            try {
+                ColumnText.showTextAligned(writer.getDirectContent(),PdfContentByte.ALIGN_LEFT, new Phrase(hoja), 240, 15, 0);
+                Image img=Image.getInstance(total);
+                img.setAbsolutePosition(295, 15);
+                writer.getDirectContent().addImage(img);
+                
+            }
+            catch(Exception de) {
+                de.printStackTrace();
+            }
+        }
+        
+        public void onCloseDocument(PdfWriter writer, Document document) {
+             int num=writer.getPageNumber()-1;
+             ColumnText.showTextAligned(total, PdfContentByte.ALIGN_LEFT, new Phrase(""+num), 0, 0, 0);
+        }
+    }
+    
+    public static class HeaderFooter2 extends PdfPageEventHelper {
+        PdfContentByte cb;
+        PdfTemplate total;
+        public void onOpenDocument(PdfWriter writer, Document document) {
+            total = writer.getDirectContent().createTemplate(30, 16);  
+        }
+    
+        public void onEndPage (PdfWriter writer, Document document) {
+            //String hoja="Pag. "+document.getPageNumber()+" de ";
+            try {
+                ColumnText.showTextAligned(writer.getDirectContent(),PdfContentByte.ALIGN_LEFT, new Phrase("Codigo de Generación:"+dig1+""+dig2), 240, 15, 0);
+                Image img=Image.getInstance("imagenes/NoAutorizado.png");
+                img.setAbsolutePosition(100, 15);
+                writer.getDirectContent().addImage(img);
+            }
+            catch(Exception de) {
+                de.printStackTrace();
+            }
+        }
+        
+        public void onCloseDocument(PdfWriter writer, Document document) {
+             //int num=writer.getPageNumber()-1;
+             //ColumnText.showTextAligned(total, PdfContentByte.ALIGN_LEFT, new Phrase(""+num), 0, 0, 0);
+        }
+    }
+    public static class HeaderFooter4 extends PdfPageEventHelper {
+        PdfContentByte cb;
+        PdfTemplate total;
+        public void onOpenDocument(PdfWriter writer, Document document) {
+            total = writer.getDirectContent().createTemplate(30, 16);  
+        }
+    
+        public void onEndPage (PdfWriter writer, Document document) {
+            //String hoja="Pag. "+document.getPageNumber()+" de ";
+            try {
+                ColumnText.showTextAligned(writer.getDirectContent(),PdfContentByte.ALIGN_LEFT, new Phrase("Codigo de Generación:"+dig1+""+dig2), 240, 15, 0);
+                Image img=Image.getInstance("imagenes/Autorizado.png");
+                img.setAbsolutePosition(100, 15);
+                writer.getDirectContent().addImage(img);
+            }
+            catch(Exception de) {
+                de.printStackTrace();
+            }
+        }
+        
+        public void onCloseDocument(PdfWriter writer, Document document) {
+             //int num=writer.getPageNumber()-1;
+             //ColumnText.showTextAligned(total, PdfContentByte.ALIGN_LEFT, new Phrase(""+num), 0, 0, 0);
         }
     }
 }

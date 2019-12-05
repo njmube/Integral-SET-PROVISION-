@@ -8,6 +8,7 @@ package Compras;
 
 import Hibernate.Util.HibernateUtil;
 import Hibernate.entidades.Configuracion;
+import Hibernate.entidades.Marca;
 import Hibernate.entidades.Orden;
 import Hibernate.entidades.Partida;
 import Hibernate.entidades.PartidaExterna;
@@ -60,6 +61,7 @@ import Integral.PDF;
 import Integral.Render1;
 import Integral.VerticalBarUI;
 import Integral.calendario;
+import Marca.buscaMarca;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -77,13 +79,15 @@ public class reportePedidos extends javax.swing.JPanel {
     Herramientas h;
     FormatoTabla formato;
     //private Session session;
-    String[] columnas = new String [] {"Pedido", "Fecha", "O. Taller", "Usuario", "Proveedor", "Nombre de Proveedor", "Facturar a", "Observaciones", "Autorizo", "Monto tot."};
+    String[] columnas = new String [] {"Pedido", "Fecha", "O. Taller","Marca", "Tipo", "Usuario", "Proveedor", "Nombre de Proveedor", "Facturar a", "Observaciones", "Autorizo", "Monto tot."};
     DefaultTableModel model;
+    int configuracion=1;
     /**
      * Creates new form reportePedidos
      */
-    public reportePedidos(Usuario us, String ses) {
+    public reportePedidos(Usuario us, String ses, int configuracion) {
         initComponents();
+        this.configuracion=configuracion;
         scroll.getVerticalScrollBar().setUI(new VerticalBarUI());
         scroll.getHorizontalScrollBar().setUI(new HorizontalBarUI());
         usr=us;
@@ -102,6 +106,8 @@ public class reportePedidos extends javax.swing.JPanel {
                     java.lang.String.class, 
                     java.lang.Integer.class, 
                     java.lang.String.class, 
+                    java.lang.String.class, 
+                    java.lang.String.class, 
                     java.lang.Integer.class, 
                     java.lang.String.class, 
                     java.lang.String.class, 
@@ -110,7 +116,7 @@ public class reportePedidos extends javax.swing.JPanel {
                     java.lang.Double.class,
                 };
                 boolean[] canEdit = new boolean [] {
-                    false, false, false, false, false, false, false, false, false, false
+                    false, false, false, false, false, false, false, false, false, false, false, false
                 };
 
                 public void setValueAt(Object value, int row, int col)
@@ -147,28 +153,28 @@ public class reportePedidos extends javax.swing.JPanel {
                     column.setPreferredWidth(110);
                     break;
                 case 2:
-                    column.setPreferredWidth(30);
+                    column.setPreferredWidth(20);
                     break;      
                 case 3:
-                    column.setPreferredWidth(50);
+                    column.setPreferredWidth(60);
                     break; 
                 case 4:
                     column.setPreferredWidth(10);
                     break; 
                 case 5:
-                    column.setPreferredWidth(200);
+                    column.setPreferredWidth(100);
                     break; 
                 case 6:
-                    column.setPreferredWidth(200);
+                    column.setPreferredWidth(10);
                     break; 
                 case 7:
-                    column.setPreferredWidth(50);
+                    column.setPreferredWidth(200);
                     break; 
                 case 8:
-                    column.setPreferredWidth(50);
+                    column.setPreferredWidth(200);
                     break;      
                 case 9:
-                    column.setPreferredWidth(50);
+                    column.setPreferredWidth(100);
                     break; 
                 default:
                     column.setPreferredWidth(40);
@@ -230,6 +236,9 @@ public class reportePedidos extends javax.swing.JPanel {
         cb_adicional = new javax.swing.JCheckBox();
         cb_externo = new javax.swing.JCheckBox();
         cb_inventario = new javax.swing.JCheckBox();
+        jPanel8 = new javax.swing.JPanel();
+        t_marca = new javax.swing.JTextField();
+        b_busca_marca = new javax.swing.JButton();
         scroll = new javax.swing.JScrollPane();
         t_datos = new javax.swing.JTable();
 
@@ -238,7 +247,7 @@ public class reportePedidos extends javax.swing.JPanel {
         jPanel1.setBackground(new java.awt.Color(254, 254, 254));
 
         jPanel2.setBackground(new java.awt.Color(254, 254, 254));
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "Ordenar por:", 1, 2, new java.awt.Font("Arial", 1, 11))); // NOI18N
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "Ordenar por:", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Arial", 1, 11))); // NOI18N
 
         c_orden.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Pedido", "Fecha", "Proveedor" }));
 
@@ -253,17 +262,14 @@ public class reportePedidos extends javax.swing.JPanel {
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(22, 22, 22)
-                .addComponent(c_orden, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(c_orden, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         jPanel3.setBackground(new java.awt.Color(254, 254, 254));
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "Filtrar por:", 1, 2, new java.awt.Font("Arial", 1, 11))); // NOI18N
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "Filtrar por:", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Arial", 1, 11))); // NOI18N
 
         jPanel4.setBackground(new java.awt.Color(254, 254, 254));
-        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "Fecha de pedido", 2, 5, new java.awt.Font("Arial", 1, 10))); // NOI18N
+        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "Fecha de pedido", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.BOTTOM, new java.awt.Font("Arial", 1, 10))); // NOI18N
 
         t_fecha1.setEditable(false);
         t_fecha1.setBackground(new java.awt.Color(204, 255, 255));
@@ -351,7 +357,7 @@ public class reportePedidos extends javax.swing.JPanel {
         );
 
         jPanel5.setBackground(new java.awt.Color(254, 254, 254));
-        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "Proveedor", 2, 5, new java.awt.Font("Arial", 1, 10))); // NOI18N
+        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "Proveedor", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.BOTTOM, new java.awt.Font("Arial", 1, 10))); // NOI18N
 
         l_id_cliente.setEnabled(false);
 
@@ -389,7 +395,7 @@ public class reportePedidos extends javax.swing.JPanel {
         );
 
         jPanel6.setBackground(new java.awt.Color(254, 254, 254));
-        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "No de orden", 2, 5, new java.awt.Font("Arial", 1, 10))); // NOI18N
+        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "No de orden", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.BOTTOM, new java.awt.Font("Arial", 1, 10))); // NOI18N
 
         b_busca_orden.setBackground(new java.awt.Color(2, 135, 242));
         b_busca_orden.setIcon(new ImageIcon("imagenes/buscar.png"));
@@ -414,7 +420,7 @@ public class reportePedidos extends javax.swing.JPanel {
                 .addComponent(t_orden, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(b_busca_orden, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -423,7 +429,7 @@ public class reportePedidos extends javax.swing.JPanel {
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(t_orden, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(b_busca_orden, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
 
         jButton1.setBackground(new java.awt.Color(2, 135, 242));
@@ -469,7 +475,7 @@ public class reportePedidos extends javax.swing.JPanel {
         });
 
         jPanel7.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Tipo", 2, 5));
+        jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Tipo", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.BOTTOM));
 
         cb_interno.setText("INTERNO");
 
@@ -560,12 +566,51 @@ public class reportePedidos extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jPanel8.setBackground(new java.awt.Color(254, 254, 254));
+        jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "Ordenar por:", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Arial", 1, 11))); // NOI18N
+
+        t_marca.setBackground(new java.awt.Color(204, 255, 255));
+        t_marca.setEnabled(false);
+
+        b_busca_marca.setBackground(new java.awt.Color(2, 135, 242));
+        b_busca_marca.setIcon(new ImageIcon("imagenes/buscar.png"));
+        b_busca_marca.setMaximumSize(new java.awt.Dimension(32, 8));
+        b_busca_marca.setMinimumSize(new java.awt.Dimension(32, 8));
+        b_busca_marca.setPreferredSize(new java.awt.Dimension(32, 8));
+        b_busca_marca.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_busca_marcaActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(t_marca, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(b_busca_marca, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(t_marca, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(b_busca_marca, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -573,8 +618,11 @@ public class reportePedidos extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGap(0, 2, Short.MAX_VALUE))
         );
 
@@ -585,15 +633,22 @@ public class reportePedidos extends javax.swing.JPanel {
 
             },
             new String [] {
-                "Pedido", "Fecha", "O. Taller", "Usuario", "Prov.", "Nombre de Proveedor", "Facturar a", "Observaciones", "Autorizo1", "Monto Tot."
+                "Pedido", "Fecha", "O. Taller", "Marca", "Tipo", "Usuario", "Prov.", "Nombre de Proveedor", "Facturar a", "Observaciones", "Autorizo1", "Monto Tot."
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Double.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Double.class
+            };
+            boolean[] canEdit = new boolean [] {
+                true, false, false, false, false, false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
             }
         });
         t_datos.getTableHeader().setReorderingAllowed(false);
@@ -607,7 +662,20 @@ public class reportePedidos extends javax.swing.JPanel {
         h=new Herramientas(usr, 0);
         h.session(sessionPrograma);
 
-        calendario cal =new calendario(new javax.swing.JFrame(), true);
+        calendario cal =new calendario(new javax.swing.JFrame(), true, false);
+        if(t_fecha1.getText().compareToIgnoreCase("AAAA-MM-DD")!=0)
+        {
+            String [] cadena = t_fecha1.getText().split(" ");
+            String [] fecha = cadena[0].split("-");
+
+            Calendar calendario1 = Calendar.getInstance();
+            calendario1.set(Calendar.MONTH, Integer.parseInt(fecha[1])-1);
+            calendario1.set(Calendar.DAY_OF_MONTH, Integer.parseInt(fecha[2]));
+            calendario1.set(Calendar.YEAR, Integer.parseInt(fecha[0]));
+            cal.p_fecha.setCurrent(calendario1);
+            cal.p_fecha.setSelectedDate(calendario1);
+        }
+        
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         cal.setLocation((d.width/2)-(cal.getWidth()/2), (d.height/2)-(cal.getHeight()/2));
         cal.setVisible(true);
@@ -629,7 +697,7 @@ public class reportePedidos extends javax.swing.JPanel {
         h=new Herramientas(usr, 0);
         h.session(sessionPrograma);
 
-        calendario cal =new calendario(new javax.swing.JFrame(), true);
+        calendario cal =new calendario(new javax.swing.JFrame(), true, false);
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         cal.setLocation((d.width/2)-(cal.getWidth()/2), (d.height/2)-(cal.getHeight()/2));
         cal.setVisible(true);
@@ -655,7 +723,7 @@ public class reportePedidos extends javax.swing.JPanel {
         h=new Herramientas(usr, 0);
         h.session(sessionPrograma);
 
-        buscaProveedor obj = new buscaProveedor(new javax.swing.JFrame(), true, this.usr, this.sessionPrograma);
+        buscaProveedor obj = new buscaProveedor(new javax.swing.JFrame(), true, this.usr, this.sessionPrograma,0);
         obj.t_busca.requestFocus();
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
@@ -673,7 +741,7 @@ public class reportePedidos extends javax.swing.JPanel {
         h=new Herramientas(usr, 0);
         h.session(sessionPrograma);
 
-        buscaOrden obj = new buscaOrden(new javax.swing.JFrame(), true, this.usr,0);
+        buscaOrden obj = new buscaOrden(new javax.swing.JFrame(), true, this.usr,0, configuracion);
         obj.t_busca.requestFocus();
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
@@ -694,12 +762,40 @@ public class reportePedidos extends javax.swing.JPanel {
         int entro=0, otro=0;
         if(t_orden.getText().compareTo("")!=0)
         {
-            consulta+="LEFT JOIN FETCH ped.partidas partP "
+            if(t_marca.getText().compareTo("")==0)
+            {
+                consulta+="LEFT JOIN FETCH ped.partidas partP "
+                        + "LEFT JOIN partP.ordenByIdOrden ord "
+                        + "where ord.idOrden="+t_orden.getText();
+                aux+= "where ped.orden.idOrden="+t_orden.getText();
+            }
+            else
+            {
+                consulta+="LEFT JOIN FETCH ped.partidas partP "
                     + "LEFT JOIN partP.ordenByIdOrden ord "
-                    + "where ord.idOrden="+t_orden.getText();
-            aux+= "where ped.orden.idOrden="+t_orden.getText();
+                    + "LEFT JOIN ord.marca mar "
+                    + "where mar.idMarca='"+t_marca.getText()+"' and ord.idOrden="+t_orden.getText();
+                aux+= "LEFT JOIN ped.orden ord "
+                    + "LEFT JOIN ord.marca mar "
+                    + "where mar.idMarca='"+t_orden.getText()+"' and ord.idOrden="+t_orden.getText();
+            }
             entro=1;
             otro=1;
+        }
+        else
+        {
+            if(t_marca.getText().compareTo("")!=0)
+            {
+                consulta+="LEFT JOIN FETCH ped.partidas partP "
+                    + "LEFT JOIN partP.ordenByIdOrden ord "
+                    + "LEFT JOIN ord.marca mar "
+                    + "where mar.idMarca='"+t_marca.getText()+"'";
+                aux+= "LEFT JOIN ped.orden ord "
+                    + "LEFT JOIN ord.marca mar "
+                    + "where mar.idMarca='"+t_orden.getText()+"'";
+                entro=1;
+                otro=1;
+            }
         }
         if(t_fecha1.getText().compareTo("AAAA-MM-DD")!=0)
         {
@@ -851,7 +947,8 @@ public class reportePedidos extends javax.swing.JPanel {
             }
             if(resultList.size()>0)
             {
-                t_datos.setModel(ModeloTablaReporte(resultList.size(), columnas));
+                model=ModeloTablaReporte(resultList.size(), columnas);
+                t_datos.setModel(model);
                 int i=0;
                 for (Object o : resultList) 
                 {
@@ -862,23 +959,35 @@ public class reportePedidos extends javax.swing.JPanel {
                     PartidaExterna[] partEx=(PartidaExterna[])actor.getPartidaExternas().toArray(new PartidaExterna[0]);
 
                     if(part.length>0)
+                    {
                         model.setValueAt(part[0].getOrdenByIdOrden().getIdOrden(), i, 2);
+                        model.setValueAt(part[0].getOrdenByIdOrden().getMarca().getIdMarca(), i, 3);
+                        model.setValueAt(part[0].getOrdenByIdOrden().getTipo().getTipoNombre(), i, 4);
+                    }
                     else
                     {
                         if(actor.getOrden()!=null)
+                        {
                             model.setValueAt(actor.getOrden().getIdOrden(), i, 2);    
+                            model.setValueAt(actor.getOrden().getMarca().getMarcaNombre(), i, 3);    
+                            model.setValueAt(actor.getOrden().getTipo().getTipoNombre(), i, 4);    
+                        }
                         else
+                        {
                             model.setValueAt("", i, 2);
+                            model.setValueAt("", i, 3);
+                            model.setValueAt("", i, 4);
+                        }
                     }
-                    model.setValueAt(actor.getUsuarioByIdUsuario().getIdUsuario(), i, 3);
-                    model.setValueAt(actor.getProveedorByIdProveedor().getIdProveedor(), i, 4);
-                    model.setValueAt(actor.getProveedorByIdProveedor().getNombre(), i, 5);
-                    model.setValueAt(actor.getProveedorByIdEmpresa().getNombre(), i, 6);
-                    model.setValueAt(actor.getNotas(), i, 7);
+                    model.setValueAt(actor.getUsuarioByIdUsuario().getIdUsuario(), i, 5);
+                    model.setValueAt(actor.getProveedorByIdProveedor().getIdProveedor(), i, 6);
+                    model.setValueAt(actor.getProveedorByIdProveedor().getNombre(), i, 7);
+                    model.setValueAt(actor.getProveedorByIdEmpresa().getNombre(), i, 8);
+                    model.setValueAt(actor.getNotas(), i, 9);
                     if(actor.getUsuarioByAutorizo2()!=null)
-                        model.setValueAt(actor.getUsuarioByAutorizo2().getIdUsuario(), i, 8);
+                        model.setValueAt(actor.getUsuarioByAutorizo2().getIdUsuario(), i, 10);
                     else
-                        model.setValueAt("Sin autorizar", i, 8);
+                        model.setValueAt("Sin autorizar", i, 10);
                     double tot=0.0d;
                     if(part.length>0)
                     {
@@ -890,7 +999,7 @@ public class reportePedidos extends javax.swing.JPanel {
                         for(int x=0; x<partEx.length; x++)
                             tot+=partEx[x].getCantidad()*partEx[x].getCosto();
                     }
-                    model.setValueAt(tot, i, 9);
+                    model.setValueAt(tot, i, 11);
                     i++;
                 }
             }
@@ -953,19 +1062,22 @@ public class reportePedidos extends javax.swing.JPanel {
                         {
                             for(int j=0; j<t_datos.getColumnCount(); j++)
                             {
-                                if(t_datos.getColumnName(j).compareTo("Monto tot.")==0)
+                                if(j!=3 && j!=4)
                                 {
-                                    if(t_datos.getValueAt(i, j)!=null)
-                                        tabla.addCell(reporte.celda(formatoPorcentaje.format(t_datos.getValueAt(i, j)), font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
+                                    if(t_datos.getColumnName(j).compareTo("Monto tot.")==0)
+                                    {
+                                        if(t_datos.getValueAt(i, j)!=null)
+                                            tabla.addCell(reporte.celda(formatoPorcentaje.format(t_datos.getValueAt(i, j)), font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
+                                        else
+                                            tabla.addCell(reporte.celda("0.00", font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
+                                    }
                                     else
-                                        tabla.addCell(reporte.celda("0.00", font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
-                                }
-                                else
-                                {
-                                    if(t_datos.getValueAt(i, j)!=null)
-                                        tabla.addCell(reporte.celda(""+t_datos.getValueAt(i, j), font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
-                                    else
-                                        tabla.addCell(reporte.celda("", font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
+                                    {
+                                        if(t_datos.getValueAt(i, j)!=null)
+                                            tabla.addCell(reporte.celda(""+t_datos.getValueAt(i, j), font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
+                                        else
+                                            tabla.addCell(reporte.celda("", font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
+                                    }
                                 }
                             }
                         }
@@ -1106,7 +1218,7 @@ public class reportePedidos extends javax.swing.JPanel {
                         if(autorizado.isSelected()==true)
                         {
                             pedidos = (Pedido[]) session.createCriteria(Pedido.class)
-                                .add(Restrictions.and(Restrictions.isNotNull("usuarioByAutorizo") , 
+                                .add(Restrictions.and(Restrictions.isNotNull("usuarioByAutorizo2") , 
                                         Restrictions.in("idPedido", no)) 
                                 ).list().toArray(new Pedido[0]);
                         }
@@ -1133,9 +1245,9 @@ public class reportePedidos extends javax.swing.JPanel {
                                         if(ren1.getInstruccion() != null)
                                             anotacion = ren1.getInstruccion();
                                         if(ren1.getEjemplar()!=null)
-                                            nuevo=new Renglon(""+aux.getIdPedido(), ren1.getEjemplar().getIdParte(), ren1.getCatalogo().getNombre()+" "+anotacion, ren1.getCantPcp(),  ren1.getMed(),  ren1.getPcp(), ""+ren1.getOrdenByIdOrden().getIdOrden(), ""+ren1.getIdEvaluacion()+"-"+ren1.getSubPartida());
+                                            nuevo=new Renglon(""+aux.getIdPedido(), ren1.getEjemplar().getIdParte(), ren1.getCatalogo().getNombre()+" "+anotacion, ren1.getCantPcp(),  ren1.getMed(),  ren1.getPcp(), ""+ren1.getOrdenByIdOrden().getIdOrden(), ""+ren1.getIdEvaluacion()+"-"+ren1.getSubPartida(), aux.getProveedorByIdProveedor().getNombre());
                                         else
-                                            nuevo=new Renglon(""+aux.getIdPedido(), "", ren1.getCatalogo().getNombre()+" "+anotacion, ren1.getCantPcp(),  ren1.getMed(),  ren1.getPcp(), ""+ren1.getOrdenByIdOrden().getIdOrden(), ""+ren1.getIdEvaluacion()+"-"+ren1.getSubPartida());
+                                            nuevo=new Renglon(""+aux.getIdPedido(), "", ren1.getCatalogo().getNombre()+" "+anotacion, ren1.getCantPcp(),  ren1.getMed(),  ren1.getPcp(), ""+ren1.getOrdenByIdOrden().getIdOrden(), ""+ren1.getIdEvaluacion()+"-"+ren1.getSubPartida(), aux.getProveedorByIdProveedor().getNombre());
                                         ordena.add(nuevo);
                                     }
                                 }
@@ -1147,7 +1259,7 @@ public class reportePedidos extends javax.swing.JPanel {
                                     {
                                         PartidaExterna ren2=par[b];
                                         Renglon nuevo;
-                                        nuevo=new Renglon(""+aux.getIdPedido(), ren2.getNoParte(), ren2.getDescripcion(), ren2.getCantidad(),  ren2.getUnidad(),  ren2.getCosto(), "", ""+"EXT");
+                                        nuevo=new Renglon(""+aux.getIdPedido(), ren2.getNoParte(), ren2.getDescripcion(), ren2.getCantidad(),  ren2.getUnidad(),  ren2.getCosto(), "", ""+"EXT", aux.getProveedorByIdProveedor().getNombre());
                                         ordena.add(nuevo);
                                     }
                                 }
@@ -1159,7 +1271,7 @@ public class reportePedidos extends javax.swing.JPanel {
                                     {
                                         PartidaExterna ren2=par[b];
                                         Renglon nuevo;
-                                        nuevo=new Renglon(""+aux.getIdPedido(), ren2.getNoParte(), ren2.getDescripcion(), ren2.getCantidad(),  ren2.getUnidad(),  ren2.getCosto(), ""+aux.getOrden().getIdOrden(), "DIR");
+                                        nuevo=new Renglon(""+aux.getIdPedido(), ren2.getNoParte(), ren2.getDescripcion(), ren2.getCantidad(),  ren2.getUnidad(),  ren2.getCosto(), ""+aux.getOrden().getIdOrden(), "DIR", aux.getProveedorByIdProveedor().getNombre());
                                         ordena.add(nuevo);
                                     }
                                 }
@@ -1170,7 +1282,7 @@ public class reportePedidos extends javax.swing.JPanel {
                                     {
                                         PartidaExterna ren2=par[b];
                                         Renglon nuevo;
-                                        nuevo=new Renglon(""+aux.getIdPedido(), ren2.getEjemplar().getIdParte(), ren2.getDescripcion(), ren2.getCantidad(),  ren2.getUnidad(),  ren2.getCosto(), "", "INV");
+                                        nuevo=new Renglon(""+aux.getIdPedido(), ren2.getEjemplar().getIdParte(), ren2.getDescripcion(), ren2.getCantidad(),  ren2.getUnidad(),  ren2.getCosto(), "", "INV", aux.getProveedorByIdProveedor().getNombre());
                                         ordena.add(nuevo);
                                     }
                                 }
@@ -1275,7 +1387,7 @@ public class reportePedidos extends javax.swing.JPanel {
                         if(autorizado.isSelected()==true)
                         {
                             pedidos = (Pedido[]) session.createCriteria(Pedido.class)
-                                .add(Restrictions.and(Restrictions.isNotNull("usuarioByAutorizo") , 
+                                .add(Restrictions.and(Restrictions.isNotNull("usuarioByAutorizo2") , 
                                         Restrictions.in("idPedido", no)) 
                                 ).list().toArray(new Pedido[0]);
                         }
@@ -1299,9 +1411,9 @@ public class reportePedidos extends javax.swing.JPanel {
                                         Partida ren1=par[b];
                                         Renglon nuevo;
                                         if(ren1.getEjemplar()!=null)
-                                            nuevo=new Renglon(""+aux.getIdPedido(), ren1.getEjemplar().getIdParte(), ren1.getCatalogo().getNombre(), ren1.getCantPcp(),  ren1.getMed(),  ren1.getPcp(), ""+ren1.getOrdenByIdOrden().getIdOrden(), ""+ren1.getIdEvaluacion()+"-"+ren1.getSubPartida());
+                                            nuevo=new Renglon(""+aux.getIdPedido(), ren1.getEjemplar().getIdParte(), ren1.getCatalogo().getNombre(), ren1.getCantPcp(),  ren1.getMed(),  ren1.getPcp(), ""+ren1.getOrdenByIdOrden().getIdOrden(), ""+ren1.getIdEvaluacion()+"-"+ren1.getSubPartida(), aux.getProveedorByIdProveedor().getNombre());
                                         else
-                                            nuevo=new Renglon(""+aux.getIdPedido(), "", ren1.getCatalogo().getNombre(), ren1.getCantPcp(),  ren1.getMed(),  ren1.getPcp(), ""+ren1.getOrdenByIdOrden().getIdOrden(), ""+ren1.getIdEvaluacion()+"-"+ren1.getSubPartida());
+                                            nuevo=new Renglon(""+aux.getIdPedido(), "", ren1.getCatalogo().getNombre(), ren1.getCantPcp(),  ren1.getMed(),  ren1.getPcp(), ""+ren1.getOrdenByIdOrden().getIdOrden(), ""+ren1.getIdEvaluacion()+"-"+ren1.getSubPartida(), aux.getProveedorByIdProveedor().getNombre());
                                         ordena.add(nuevo);
                                     }
                                 }
@@ -1313,7 +1425,7 @@ public class reportePedidos extends javax.swing.JPanel {
                                     {
                                         PartidaExterna ren2=par[b];
                                         Renglon nuevo;
-                                        nuevo=new Renglon(""+aux.getIdPedido(), ren2.getNoParte(), ren2.getDescripcion(), ren2.getCantidad(),  ren2.getUnidad(),  ren2.getCosto(), "", ""+"Ext");
+                                        nuevo=new Renglon(""+aux.getIdPedido(), ren2.getNoParte(), ren2.getDescripcion(), ren2.getCantidad(),  ren2.getUnidad(),  ren2.getCosto(), "", ""+"Ext", aux.getProveedorByIdProveedor().getNombre());
                                         ordena.add(nuevo);
                                     }
                                 }
@@ -1325,7 +1437,7 @@ public class reportePedidos extends javax.swing.JPanel {
                                     {
                                         PartidaExterna ren2=par[b];
                                         Renglon nuevo;
-                                        nuevo=new Renglon(""+aux.getIdPedido(), ren2.getNoParte(), ren2.getDescripcion(), ren2.getCantidad(),  ren2.getUnidad(),  ren2.getCosto(), ""+aux.getOrden().getIdOrden(), "DIR");
+                                        nuevo=new Renglon(""+aux.getIdPedido(), ren2.getNoParte(), ren2.getDescripcion(), ren2.getCantidad(),  ren2.getUnidad(),  ren2.getCosto(), ""+aux.getOrden().getIdOrden(), "DIR", aux.getProveedorByIdProveedor().getNombre());
                                         ordena.add(nuevo);
                                     }
                                 }
@@ -1336,7 +1448,7 @@ public class reportePedidos extends javax.swing.JPanel {
                                     {
                                         PartidaExterna ren2=par[b];
                                         Renglon nuevo;
-                                        nuevo=new Renglon(""+aux.getIdPedido(), ren2.getEjemplar().getIdParte(), ren2.getDescripcion(), ren2.getCantidad(),  ren2.getUnidad(),  ren2.getCosto(), "", "INV");
+                                        nuevo=new Renglon(""+aux.getIdPedido(), ren2.getEjemplar().getIdParte(), ren2.getDescripcion(), ren2.getCantidad(),  ren2.getUnidad(),  ren2.getCosto(), "", "INV", aux.getProveedorByIdProveedor().getNombre());
                                         ordena.add(nuevo);
                                     }
                                 }
@@ -1365,28 +1477,31 @@ public class reportePedidos extends javax.swing.JPanel {
                                 Cell celda5 = fila.createCell(5);
                                 Cell celda6 = fila.createCell(6);
                                 Cell celda7 = fila.createCell(7);
+                                Cell celda8 = fila.createCell(7);
                                 if(c==0)
                                 {
                                     celda0.setCellValue("Pedido");
-                                    celda1.setCellValue("NP");
-                                    celda2.setCellValue("Descripcion");
-                                    celda3.setCellValue("Cant");
-                                    celda4.setCellValue("Med");
-                                    celda5.setCellValue("Precio");
-                                    celda6.setCellValue("Orden");
-                                    celda7.setCellValue("Partida");
+                                    celda1.setCellValue("Proveedor");
+                                    celda2.setCellValue("NP");
+                                    celda3.setCellValue("Descripcion");
+                                    celda4.setCellValue("Cant");
+                                    celda5.setCellValue("Med");
+                                    celda6.setCellValue("Precio");
+                                    celda7.setCellValue("Orden");
+                                    celda8.setCellValue("Partida");
                                 }
                                 else
                                 {
                                     Renglon r1=(Renglon)ordena.get(c-1);
                                     celda0.setCellValue(r1.pedido);
-                                    celda1.setCellValue(r1.np);
-                                    celda2.setCellValue(r1.descripcion);
-                                    celda3.setCellValue(formatoPorcentaje.format(r1.cant));
-                                    celda4.setCellValue(r1.med);
-                                    celda5.setCellValue(formatoPorcentaje.format(r1.precio));
-                                    celda6.setCellValue(""+r1.orden);
-                                    celda7.setCellValue(r1.partida);
+                                    celda1.setCellValue(r1.proveedor);
+                                    celda2.setCellValue(r1.np);
+                                    celda3.setCellValue(r1.descripcion);
+                                    celda4.setCellValue(formatoPorcentaje.format(r1.cant));
+                                    celda5.setCellValue(r1.med);
+                                    celda6.setCellValue(formatoPorcentaje.format(r1.precio));
+                                    celda7.setCellValue(""+r1.orden);
+                                    celda8.setCellValue(r1.partida);
                                 }
                             }
                             
@@ -1411,6 +1526,29 @@ public class reportePedidos extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_jButton5ActionPerformed
 
+    private void b_busca_marcaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_busca_marcaActionPerformed
+        // TODO add your handling code here:
+        h=new Herramientas(usr, 0);
+        h.session(sessionPrograma);
+
+        buscaMarca obj = new buscaMarca(new javax.swing.JFrame(), true, this.sessionPrograma, this.usr, false);
+        obj.t_busca.requestFocus();
+        obj.formatoTabla();
+        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+        obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
+        obj.setVisible(true);
+
+        Marca actor=obj.getReturnStatus();
+        if(actor!=null)
+        {
+            t_marca.setText(actor.getIdMarca());
+        }
+        else
+        {
+            t_marca.setText("");
+        }
+    }//GEN-LAST:event_b_busca_marcaActionPerformed
+
 
 public void cabecera(PDF reporte, BaseFont bf, PdfPTable tabla)
    {
@@ -1421,7 +1559,7 @@ public void cabecera(PDF reporte, BaseFont bf, PdfPTable tabla)
         reporte.contenido.roundRectangle(250, 700, 325, 45, 5);
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction().begin();
-        Configuracion con= (Configuracion)session.get(Configuracion.class, 1);
+        Configuracion con= (Configuracion)session.get(Configuracion.class, configuracion);
         reporte.inicioTexto();
         reporte.contenido.setFontAndSize(bf, 14);
         reporte.contenido.setColorFill(BaseColor.BLACK);
@@ -1467,7 +1605,7 @@ public void cabeceraReporte(PDF reporte, BaseFont bf, PdfPTable tabla)
         reporte.contenido.roundRectangle(250, 700, 325, 45, 5);
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction().begin();
-        Configuracion con= (Configuracion)session.get(Configuracion.class, 1);
+        Configuracion con= (Configuracion)session.get(Configuracion.class, configuracion);
         reporte.inicioTexto();
         reporte.contenido.setFontAndSize(bf, 14);
         reporte.contenido.setColorFill(BaseColor.BLACK);
@@ -1543,8 +1681,9 @@ public void cabeceraReporte(PDF reporte, BaseFont bf, PdfPTable tabla)
         double precio=0.0d;
         String orden="";
         String partida="";
+        String proveedor="";
         
-        public Renglon(String pedido, String np, String descripcion,  double cant,  String med,  double precio, String orden, String partida)
+        public Renglon(String pedido, String np, String descripcion,  double cant,  String med,  double precio, String orden, String partida, String proveedor)
         {
             this.pedido=pedido;
             this.np=np;
@@ -1554,12 +1693,14 @@ public void cabeceraReporte(PDF reporte, BaseFont bf, PdfPTable tabla)
             this.precio=precio;
             this.orden=orden;
             this.partida=partida;
+            this.proveedor=proveedor;
         }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox autorizado;
     private javax.swing.JButton b_busca_cliente;
+    public javax.swing.JButton b_busca_marca;
     public javax.swing.JButton b_busca_orden;
     private javax.swing.JButton b_fecha_siniestro;
     private javax.swing.JButton b_fecha_siniestro1;
@@ -1582,11 +1723,13 @@ public void cabeceraReporte(PDF reporte, BaseFont bf, PdfPTable tabla)
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
     private javax.swing.JTextField l_id_cliente;
     private javax.swing.JScrollPane scroll;
     private javax.swing.JTable t_datos;
     private javax.swing.JTextField t_fecha1;
     private javax.swing.JTextField t_fecha2;
+    public javax.swing.JTextField t_marca;
     public javax.swing.JTextField t_orden;
     // End of variables declaration//GEN-END:variables
 }

@@ -9,6 +9,7 @@ package Almacen;
 import Empleados.buscaEmpleado;
 import Herramientas.buscaHerramienta;
 import Hibernate.Util.HibernateUtil;
+import Hibernate.entidades.Configuracion;
 import Hibernate.entidades.Empleado;
 import Hibernate.entidades.Herramienta;
 import Hibernate.entidades.Usuario;
@@ -55,11 +56,13 @@ public class Responsiva extends javax.swing.JPanel {
     Herramientas h;
     Usuario usr;
     String sessionPrograma="";
+    int configuracion=1;
     /**
      * Creates new form Responsiva
      */
-    public Responsiva(Usuario usuario, String ses) {
+    public Responsiva(Usuario usuario, String ses, int configuracion) {
         initComponents();
+        this.configuracion=configuracion;
         formatoTabla();
         usr=usuario;
         sessionPrograma=ses;
@@ -511,6 +514,7 @@ public class Responsiva extends javax.swing.JPanel {
             String puesto="";
             if(t_datos.getRowCount()>0){
                 //consulta
+                Configuracion con=(Configuracion)session.get(Configuracion.class, configuracion);
                 Query q = session.createSQLQuery("select empleado.id_empleado, empleado.nombre as empleado,puestos.nombre as puesto from empleado inner join puestos on puestos.id_puestos=empleado.id_puesto where empleado.id_empleado="+t_id_empleado.getText()+";");
                 q.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
                 List lista = q.list();
@@ -568,6 +572,12 @@ public class Responsiva extends javax.swing.JPanel {
                 }catch(Exception e){
                     fdfDoc.setField("Nombre", "");
                 }
+                //nombre
+                try{
+                    fdfDoc.setField("Empresa", con.getEmpresa());
+                }catch(Exception e){
+                    fdfDoc.setField("Empresa", "");
+                }
                 //puesto
                 try{
                     fdfDoc.setField("Puesto", puesto);
@@ -607,7 +617,7 @@ public class Responsiva extends javax.swing.JPanel {
                 cb.endText();
                 stamp.close();
                 reporte.cerrar();
-                reporte.visualizar("reportes/Responsivas/"+valor+"CartaResponsiva.pdf");            
+                reporte.visualizar2("reportes/Responsivas/"+valor+"CartaResponsiva.pdf");            
             }else{
                 JOptionPane.showMessageDialog(this, "No Existe Ninguna Responsiva");
             }

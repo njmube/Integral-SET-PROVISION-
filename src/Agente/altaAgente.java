@@ -165,9 +165,8 @@ public class altaAgente extends javax.swing.JDialog {
     private void b_cancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_cancelarActionPerformed
 
         int opt=JOptionPane.showConfirmDialog(this, "¡Los datos capturados se eliminarán!");
-        System.out.println(opt);
         if(opt==0)
-        borra_cajas();
+            borra_cajas();
     }//GEN-LAST:event_b_cancelarActionPerformed
 
     private void b_guardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_guardarActionPerformed

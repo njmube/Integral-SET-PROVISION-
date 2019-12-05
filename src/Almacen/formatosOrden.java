@@ -40,14 +40,16 @@ public class formatosOrden {
     String sessionPrograma="";
     Usuario usr;
     Almacen miAlmacen;
-    public formatosOrden(Usuario u, String ses, Almacen al)
+    int configuracion=1;
+    public formatosOrden(Usuario u, String ses, Almacen al, int configuracion)
     {
+        this.configuracion=configuracion;
         sessionPrograma=ses;
         usr=u;
         miAlmacen=al;
     }
     
-    void formato()
+    void formato(boolean op)
     {
         h=new Herramientas(usr, 0);
         h.session(sessionPrograma);
@@ -59,7 +61,7 @@ public class formatosOrden {
             formatoPorcentaje.setMinimumFractionDigits(2);
             
             session.beginTransaction().begin();
-            BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.WINANSI, BaseFont.NOT_EMBEDDED);
+            BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.MACROMAN, BaseFont.EMBEDDED);//NOT_EMBEDDED
             PDF reporte = new PDF();
             Date fecha = new Date();
             DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
@@ -93,8 +95,8 @@ public class formatosOrden {
             File folder = new File("reportes"+complemento);
             folder.mkdirs();
             reporte.Abrir2(PageSize.LETTER, "Almacen", "reportes"+complemento+"/"+valor+"-"+miAlmacen.getIdAlmacen()+"-almacen.pdf");
-            Font font = new Font(Font.FontFamily.HELVETICA, 7, Font.BOLD);
-            BaseColor cabecera=BaseColor.GRAY;
+            Font font = new Font(Font.FontFamily.HELVETICA, 7, Font.NORMAL);
+            BaseColor cabecera=BaseColor.WHITE;
             BaseColor contenido=BaseColor.WHITE;
             int centro=Element.ALIGN_CENTER;
             int izquierda=Element.ALIGN_LEFT;
@@ -102,12 +104,12 @@ public class formatosOrden {
             float tam[]=new float[]{20,20,80,190,20,30};
             PdfPTable tabla=reporte.crearTabla(6, tam, 100, Element.ALIGN_LEFT);
             
-            tabla.addCell(reporte.celda("N°", font, cabecera, centro, 0, 1, Rectangle.RECTANGLE));
-            tabla.addCell(reporte.celda("#", font, cabecera, centro, 0, 1, Rectangle.RECTANGLE));
-            tabla.addCell(reporte.celda("N° Parte", font, cabecera, centro, 0, 1,Rectangle.RECTANGLE));
-            tabla.addCell(reporte.celda("Descripción", font, cabecera, centro, 0, 1, Rectangle.RECTANGLE));
-            tabla.addCell(reporte.celda("Med", font, cabecera, centro, 0, 1, Rectangle.RECTANGLE));
-            tabla.addCell(reporte.celda("Cant", font, cabecera, centro, 0, 1, Rectangle.RECTANGLE));
+            tabla.addCell(reporte.celda("N°", font, cabecera, centro, 0, 1, Rectangle.BOTTOM));
+            tabla.addCell(reporte.celda("#", font, cabecera, centro, 0, 1, Rectangle.BOTTOM));
+            tabla.addCell(reporte.celda("N° Parte", font, cabecera, centro, 0, 1,Rectangle.BOTTOM));
+            tabla.addCell(reporte.celda("Descripción", font, cabecera, centro, 0, 1, Rectangle.BOTTOM));
+            tabla.addCell(reporte.celda("Med", font, cabecera, centro, 0, 1, Rectangle.BOTTOM));
+            tabla.addCell(reporte.celda("Cant", font, cabecera, centro, 0, 1, Rectangle.BOTTOM));
             
             cabeceraCompra(reporte, bf, tabla, miAlmacen, ord);
             int ren=0;
@@ -121,57 +123,62 @@ public class formatosOrden {
                     renglon ++;
                     if(mov[i].getPartida()!=null)
                     {
-                        tabla.addCell(reporte.celda(""+mov[i].getPartida().getIdEvaluacion(), font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
-                        tabla.addCell(reporte.celda(""+mov[i].getPartida().getSubPartida(), font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
+                        tabla.addCell(reporte.celda(""+mov[i].getPartida().getIdEvaluacion(), font, contenido, izquierda, 0,1,12));
+                        tabla.addCell(reporte.celda(""+mov[i].getPartida().getSubPartida(), font, contenido, derecha, 0,1,12));
                         if(mov[i].getPartida().getEjemplar()!=null)
-                            tabla.addCell(reporte.celda(""+mov[i].getPartida().getEjemplar().getIdParte(), font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
+                            tabla.addCell(reporte.celda(""+mov[i].getPartida().getEjemplar().getIdParte(), font, contenido, derecha, 0,1,12));
                         else
-                            tabla.addCell(reporte.celda(" ", font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
+                            tabla.addCell(reporte.celda(" ", font, contenido, derecha, 0,1,12));
                         String anotacion="";
                         if(mov[i].getPartida().getInstruccion()!=null)
                             anotacion=mov[i].getPartida().getInstruccion();
-                        tabla.addCell(reporte.celda(mov[i].getPartida().getCatalogo().getNombre()+" "+anotacion, font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
-                        tabla.addCell(reporte.celda(mov[i].getPartida().getMed(), font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
-                        tabla.addCell(reporte.celda(formatoPorcentaje.format(mov[i].getCantidad()), font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
+                        tabla.addCell(reporte.celda(mov[i].getPartida().getCatalogo().getNombre()+" "+anotacion, font, contenido, izquierda, 0,1,12));
+                        tabla.addCell(reporte.celda(mov[i].getPartida().getMed(), font, contenido, izquierda, 0,1,12));
+                        tabla.addCell(reporte.celda(formatoPorcentaje.format(mov[i].getCantidad()), font, contenido, derecha, 0,1,12));
                     }
                     else
                     {
                         if(miAlmacen.getOperacion()==8 || miAlmacen.getOperacion()==9)
                         {
-                            tabla.addCell(reporte.celda("-", font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
-                            tabla.addCell(reporte.celda("", font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
-                            tabla.addCell(reporte.celda(mov[i].getEjemplar().getIdParte(), font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
-                            tabla.addCell(reporte.celda(mov[i].getEjemplar().getCatalogo(), font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
-                            tabla.addCell(reporte.celda(mov[i].getEjemplar().getMedida(), font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
-                            tabla.addCell(reporte.celda(formatoPorcentaje.format(mov[i].getCantidad()), font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
+                            tabla.addCell(reporte.celda("-", font, contenido, izquierda, 0,1,12));
+                            tabla.addCell(reporte.celda("", font, contenido, derecha, 0,1,12));
+                            tabla.addCell(reporte.celda(mov[i].getEjemplar().getIdParte(), font, contenido, derecha, 0,1,12));
+                            tabla.addCell(reporte.celda(mov[i].getEjemplar().getCatalogo().getNombre(), font, contenido, izquierda, 0,1,12));
+                            tabla.addCell(reporte.celda(mov[i].getEjemplar().getMedida(), font, contenido, izquierda, 0,1,12));
+                            tabla.addCell(reporte.celda(formatoPorcentaje.format(mov[i].getCantidad()), font, contenido, derecha, 0,1,12));
                         }
                         else
                         {
-                            tabla.addCell(reporte.celda("-", font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
-                            tabla.addCell(reporte.celda("", font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
-                            if(mov[i].getPartidaExterna().getNoParte()!=null)
-                                tabla.addCell(reporte.celda(mov[i].getPartidaExterna().getNoParte(), font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
+                            tabla.addCell(reporte.celda("-", font, contenido, izquierda, 0,1,12));
+                            tabla.addCell(reporte.celda("", font, contenido, derecha, 0,1,12));
+                            if(mov[i].getPartidaExterna().getEjemplar()!=null)
+                                tabla.addCell(reporte.celda(mov[i].getPartidaExterna().getEjemplar().getIdParte(), font, contenido, derecha, 0,1,12));
                             else
-                                tabla.addCell(reporte.celda(" ", font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
-                            tabla.addCell(reporte.celda(mov[i].getPartidaExterna().getDescripcion(), font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
-                            tabla.addCell(reporte.celda(mov[i].getPartidaExterna().getUnidad(), font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
-                            tabla.addCell(reporte.celda(formatoPorcentaje.format(mov[i].getCantidad()), font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
+                            {
+                                if(mov[i].getPartidaExterna().getNoParte()!=null)
+                                    tabla.addCell(reporte.celda(mov[i].getPartidaExterna().getNoParte(), font, contenido, derecha, 0,1,12));
+                                else
+                                    tabla.addCell(reporte.celda(" ", font, contenido, derecha, 0,1,12));
+                            }
+                            tabla.addCell(reporte.celda(mov[i].getPartidaExterna().getDescripcion(), font, contenido, izquierda, 0,1,12));
+                            tabla.addCell(reporte.celda(mov[i].getPartidaExterna().getUnidad(), font, contenido, izquierda, 0,1,12));
+                            tabla.addCell(reporte.celda(formatoPorcentaje.format(mov[i].getCantidad()), font, contenido, derecha, 0,1,12));
                         }
                     }
                     ren++;
                 }
                 for(renglon=renglon; renglon<19; renglon++)
                 {
-                    tabla.addCell(reporte.celda(" ", font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
-                    tabla.addCell(reporte.celda(" ", font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
-                    tabla.addCell(reporte.celda(" ", font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
-                    tabla.addCell(reporte.celda(" ", font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
-                    tabla.addCell(reporte.celda(" ", font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
-                    tabla.addCell(reporte.celda(" ", font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
+                    tabla.addCell(reporte.celda(" ", font, contenido, izquierda, 0,1,12));
+                    tabla.addCell(reporte.celda(" ", font, contenido, derecha, 0,1,12));
+                    tabla.addCell(reporte.celda(" ", font, contenido, derecha, 0,1,12));
+                    tabla.addCell(reporte.celda(" ", font, contenido, izquierda, 0,1,12));
+                    tabla.addCell(reporte.celda(" ", font, contenido, izquierda, 0,1,12));
+                    tabla.addCell(reporte.celda(" ", font, contenido, derecha, 0,1,12));
                 }
             }
-            tabla.addCell(reporte.celda("Notas: ", font, contenido, izquierda, 0,1,Rectangle.BOTTOM));
-            tabla.addCell(reporte.celda(miAlmacen.getNotas(), font, contenido, izquierda, 7,1,Rectangle.BOTTOM));
+            tabla.addCell(reporte.celda("Notas: ", font, contenido, izquierda, 0,1,3));
+            tabla.addCell(reporte.celda(miAlmacen.getNotas(), font, contenido, izquierda, 7,1,3));
             session.beginTransaction().rollback();
 
             tabla.setHeaderRows(1);
@@ -210,9 +217,8 @@ public class formatosOrden {
             miAlmacen=(Almacen)session.get(Almacen.class, miAlmacen.getIdAlmacen());
             DecimalFormat formatoPorcentaje = new DecimalFormat("#,##0.00");
             formatoPorcentaje.setMinimumFractionDigits(2);
-            
             session.beginTransaction().begin();
-            BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.WINANSI, BaseFont.NOT_EMBEDDED);
+            BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.MACROMAN, BaseFont.EMBEDDED);//NOT_EMBEDDED
             PDF reporte = new PDF();
             Date fecha = new Date();
             DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
@@ -260,14 +266,14 @@ public class formatosOrden {
             
             float[] tam=new float[]{20,20,80,190,20,30};//,50,50
             PdfPTable tabla=reporte.crearTabla(6, tam, 100, Element.ALIGN_LEFT);//8
-            tabla.addCell(reporte.celda("N°", font, cabecera, centro, 0, 1, Rectangle.RECTANGLE));
-            tabla.addCell(reporte.celda("#", font, cabecera, centro, 0, 1, Rectangle.RECTANGLE));
-            tabla.addCell(reporte.celda("N° Parte", font, cabecera, centro, 0, 1,Rectangle.RECTANGLE));
-            tabla.addCell(reporte.celda("Descripción", font, cabecera, centro, 0, 1, Rectangle.RECTANGLE));
-            tabla.addCell(reporte.celda("Med", font, cabecera, centro, 0, 1, Rectangle.RECTANGLE));
-            tabla.addCell(reporte.celda("Cant", font, cabecera, centro, 0, 1, Rectangle.RECTANGLE));
-            //tabla.addCell(reporte.celda("Costo c/u", font, cabecera, centro, 0, 1, Rectangle.RECTANGLE));
-            //tabla.addCell(reporte.celda("Total", font, cabecera, centro, 0, 1, Rectangle.RECTANGLE));
+            tabla.addCell(reporte.celda("N°", font, cabecera, centro, 0, 1, Rectangle.BOTTOM));
+            tabla.addCell(reporte.celda("#", font, cabecera, centro, 0, 1, Rectangle.BOTTOM));
+            tabla.addCell(reporte.celda("N° Parte", font, cabecera, centro, 0, 1,Rectangle.BOTTOM));
+            tabla.addCell(reporte.celda("Descripción", font, cabecera, centro, 0, 1, Rectangle.BOTTOM));
+            tabla.addCell(reporte.celda("Med", font, cabecera, centro, 0, 1, Rectangle.BOTTOM));
+            tabla.addCell(reporte.celda("Cant", font, cabecera, centro, 0, 1, Rectangle.BOTTOM));
+            //tabla.addCell(reporte.celda("Costo c/u", font, cabecera, centro, 0, 1, Rectangle.BOTTOM));
+            //tabla.addCell(reporte.celda("Total", font, cabecera, centro, 0, 1, Rectangle.BOTTOM));
             
             cabeceraCompra(reporte, bf, tabla, miAlmacen, ord);
             
@@ -280,28 +286,28 @@ public class formatosOrden {
                 {
                     int r=i+1;
                     renglon++;
-                    tabla.addCell(reporte.celda("-", font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
-                    tabla.addCell(reporte.celda("", font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
-                    tabla.addCell(reporte.celda(mov[i].getEjemplar().getIdParte(), font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
-                    tabla.addCell(reporte.celda(mov[i].getEjemplar().getCatalogo(), font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
-                    tabla.addCell(reporte.celda(mov[i].getEjemplar().getMedida(), font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
-                    tabla.addCell(reporte.celda(formatoPorcentaje.format(mov[i].getCantidad()), font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
-                    //tabla.addCell(reporte.celda(formatoPorcentaje.format(mov[i].getValor()), font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
+                    tabla.addCell(reporte.celda("-", font, contenido, izquierda, 0,1,12));
+                    tabla.addCell(reporte.celda("", font, contenido, derecha, 0,1,12));
+                    tabla.addCell(reporte.celda(mov[i].getEjemplar().getIdParte(), font, contenido, derecha, 0,1,12));
+                    tabla.addCell(reporte.celda(mov[i].getEjemplar().getComentario(), font, contenido, izquierda, 0,1,12));
+                    tabla.addCell(reporte.celda(mov[i].getEjemplar().getMedida(), font, contenido, izquierda, 0,1,12));
+                    tabla.addCell(reporte.celda(formatoPorcentaje.format(mov[i].getCantidad()), font, contenido, derecha, 0,1,12));
+                    //tabla.addCell(reporte.celda(formatoPorcentaje.format(mov[i].getValor()), font, contenido, derecha, 0,1,12));
                     //double sum=mov[i].getCantidad() * mov[i].getValor();
                     //total+=sum;
-                    //tabla.addCell(reporte.celda(formatoPorcentaje.format(sum), font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
+                    //tabla.addCell(reporte.celda(formatoPorcentaje.format(sum), font, contenido, derecha, 0,1,12));
                     ren++;
                 }
                 for(renglon=renglon; renglon<19; renglon++)
                 {
-                    tabla.addCell(reporte.celda(" ", font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
-                    tabla.addCell(reporte.celda(" ", font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
-                    tabla.addCell(reporte.celda(" ", font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
-                    tabla.addCell(reporte.celda(" ", font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
-                    tabla.addCell(reporte.celda(" ", font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
-                    tabla.addCell(reporte.celda(" ", font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
-                    //tabla.addCell(reporte.celda(" ", font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
-                    //tabla.addCell(reporte.celda(" ", font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
+                    tabla.addCell(reporte.celda(" ", font, contenido, izquierda, 0,1,12));
+                    tabla.addCell(reporte.celda(" ", font, contenido, derecha, 0,1,12));
+                    tabla.addCell(reporte.celda(" ", font, contenido, derecha, 0,1,12));
+                    tabla.addCell(reporte.celda(" ", font, contenido, izquierda, 0,1,12));
+                    tabla.addCell(reporte.celda(" ", font, contenido, izquierda, 0,1,12));
+                    tabla.addCell(reporte.celda(" ", font, contenido, derecha, 0,1,12));
+                    //tabla.addCell(reporte.celda(" ", font, contenido, derecha, 0,1,12));
+                    //tabla.addCell(reporte.celda(" ", font, contenido, derecha, 0,1,12));
                 }
             }
             tabla.addCell(reporte.celda("Notas: ", font, contenido, izquierda, 0,1,Rectangle.BOTTOM));
@@ -354,7 +360,7 @@ public class formatosOrden {
         {
             reporte.contenido.setLineWidth(0.5f);
             reporte.contenido.setColorStroke(new GrayColor(0.2f));
-            reporte.contenido.setColorFill(new GrayColor(0.9f));
+            //reporte.contenido.setColorFill(new GrayColor(0.9f));
             reporte.contenido.roundRectangle(35, 755, 280, 10, 0);
             reporte.contenido.roundRectangle(35, 735, 280, 20, 0);
             ////*2
@@ -364,42 +370,44 @@ public class formatosOrden {
             reporte.inicioTexto();
             reporte.contenido.setFontAndSize(bf, 13);
             reporte.contenido.setColorFill(BaseColor.BLACK);
-            reporte.agregaObjeto(reporte.crearImagen("imagenes/grande300115.jpg", 335, -23, 30));
-            /*2*/reporte.agregarImagen(reporte.crearImagen("imagenes/grande300115.jpg", 100, -420, 30));
+            Configuracion config=(Configuracion)session.get(Configuracion.class, configuracion);
+            reporte.agregaObjeto(reporte.crearImagen("imagenes/"+config.getLogo(), 345, -23, 20));
+            /*2*/reporte.agregarImagen(reporte.crearImagen("imagenes/"+config.getLogo(), 345, -420, 20));
             reporte.contenido.setFontAndSize(bf, 12);
             reporte.contenido.setColorFill(BaseColor.BLACK);
+            int numAlm=Integer.parseInt(almacen.getAlmacen())+1;
             if(miAlmacen.getTipoMovimiento()==1)
             {
                 if(miAlmacen.getOperacion()==4)
-                    reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Movimientos en Almacén (Entrada de Material): "+almacen.getIdAlmacen(), 35, 767, 0);
+                    reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Movimientos en Almacén "+numAlm+" (Entrada de Material): "+almacen.getIdAlmacen(), 35, 767, 0);
                 if(miAlmacen.getOperacion()==5)
-                    reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Movimientos de Almacén (Devolución de material de operarios): "+almacen.getIdAlmacen(), 35, 767, 0);
+                    reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Movimientos de Almacén "+numAlm+" (Devolución de material de operarios): "+almacen.getIdAlmacen(), 35, 767, 0);
                 if(miAlmacen.getOperacion()==8)
-                    reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Movimientos de Almacén (Devolución de consumible): "+almacen.getIdAlmacen(), 35, 767 , 0);            
+                    reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Movimientos de Almacén "+numAlm+" (Devolución de consumible): "+almacen.getIdAlmacen(), 35, 767 , 0);            
                 //*********2
                 if(miAlmacen.getOperacion()==4)
-                    reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Movimientos en Almacén (Entrada de Material): "+almacen.getIdAlmacen(), 35, 370, 0);                
+                    reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Movimientos en Almacén "+numAlm+" (Entrada de Material): "+almacen.getIdAlmacen(), 35, 370, 0);                
                 if(miAlmacen.getOperacion()==5)
-                    reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Movimientos de Almacén (Devolución de material de operarios): "+almacen.getIdAlmacen(), 35, 370 , 0);            
+                    reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Movimientos de Almacén "+numAlm+" (Devolución de material de operarios): "+almacen.getIdAlmacen(), 35, 370 , 0);            
                 if(miAlmacen.getOperacion()==8)
-                    reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Movimientos de Almacén (Devolución de consumible): "+almacen.getIdAlmacen(), 35, 370 , 0);            
+                    reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Movimientos de Almacén "+numAlm+" (Devolución de consumible): "+almacen.getIdAlmacen(), 35, 370 , 0);            
                 ////
             }
             else
             {
                 if(miAlmacen.getOperacion()==4)
-                    reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Movimiento de Almacén (Devolución de material a proveedor): "+almacen.getIdAlmacen(), 35, 767, 0);
+                    reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Movimientos de Almacén "+numAlm+" (Devolución de material a proveedor): "+almacen.getIdAlmacen(), 35, 767, 0);
                 if(miAlmacen.getOperacion()==5)
-                    reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Movimientos de Almacén (Entrega de material a operarios): "+almacen.getIdAlmacen(), 35, 767, 0);
+                    reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Movimientos de Almacén "+numAlm+" (Entrega de material a operarios): "+almacen.getIdAlmacen(), 35, 767, 0);
                 if(miAlmacen.getOperacion()==8)
-                    reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Movimientos de Almacén (Entrega de consumible): "+almacen.getIdAlmacen(), 35, 767, 0);
+                    reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Movimientos de Almacén "+numAlm+" (Entrega de consumible): "+almacen.getIdAlmacen(), 35, 767, 0);
                 //*********2
                 if(miAlmacen.getOperacion()==4)
-                    reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Movimiento de Almacén (Devolución de material a proveedor): "+almacen.getIdAlmacen(), 35, 370, 0);
+                    reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Movimiento de Almacén "+numAlm+" (Devolución de material a proveedor): "+almacen.getIdAlmacen(), 35, 370, 0);
                 if(miAlmacen.getOperacion()==5)
-                    reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Movimientos de Almacén (Entrega de material a operarios): "+almacen.getIdAlmacen(), 35, 370, 0);
+                    reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Movimientos de Almacén "+numAlm+" (Entrega de material a operarios): "+almacen.getIdAlmacen(), 35, 370, 0);
                 if(miAlmacen.getOperacion()==8)
-                    reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Movimientos de Almacén (Entrega de consumible): "+almacen.getIdAlmacen(), 35, 370, 0);
+                    reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Movimientos de Almacén "+numAlm+" (Entrega de consumible): "+almacen.getIdAlmacen(), 35, 370, 0);
                 ///
             }
 

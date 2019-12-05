@@ -18,6 +18,7 @@ import javax.swing.InputMap;
 import javax.swing.JOptionPane;
 import Hibernate.entidades.Orden;
 import Hibernate.entidades.Usuario;
+import Integral.FormatoEditor;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -25,8 +26,12 @@ import java.util.Vector;
 import javax.swing.ImageIcon;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -41,7 +46,7 @@ public class buscaExtra extends javax.swing.JDialog {
     public static final ArrayList RET_CANCEL =null;
     InputMap map = new InputMap();
     DefaultTableModel model;
-    String[] columnas = new String [] {"id", "No Empleado", "Nombre", "Asignación"};
+    String[] columnas = new String [] {"id", "Emp.", "Nombre", "Asignación","Descripción"};
     Usuario user;
     String sessionPrograma;
     Herramientas h;
@@ -57,6 +62,7 @@ public class buscaExtra extends javax.swing.JDialog {
         this.ord_act=ord_act;
         t_datos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         executeQuery();
+        tabla_tamaños();
     }
     
     DefaultTableModel ModeloTablaReporte(int renglones, String columnas[])
@@ -67,10 +73,11 @@ public class buscaExtra extends javax.swing.JDialog {
                     java.lang.String.class, 
                     java.lang.String.class,
                     java.lang.String.class,
+                    java.lang.String.class,
                     java.lang.String.class
                 };
                 boolean[] canEdit = new boolean [] {
-                    false, false, false, false
+                    false, false, false, false, false
                 };
 
                 public void setValueAt(Object value, int row, int col)
@@ -79,13 +86,6 @@ public class buscaExtra extends javax.swing.JDialog {
                         Object celda = ((Vector)this.dataVector.elementAt(row)).elementAt(col);
                         switch(col)
                         {
-                            case 0:
-                                    vector.setElementAt(value, col);
-                                    this.dataVector.setElementAt(vector, row);
-                                    fireTableCellUpdated(row, col);
-                                    //calcula_totales();
-                                    break;
-
                             default:
                                     vector.setElementAt(value, col);
                                     this.dataVector.setElementAt(vector, row);
@@ -141,14 +141,14 @@ public class buscaExtra extends javax.swing.JDialog {
 
             },
             new String [] {
-                "id", "No Empleado", "Nombre", "Asignación"
+                "id", "No Empleado", "Nombre", "Asignación", "Descripción"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -173,7 +173,7 @@ public class buscaExtra extends javax.swing.JDialog {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 564, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 737, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -243,6 +243,7 @@ public class buscaExtra extends javax.swing.JDialog {
                 aux.add(t_datos.getValueAt(t_datos.getSelectedRow(), 1).toString()); 
                 aux.add(t_datos.getValueAt(t_datos.getSelectedRow(), 2).toString()); 
                 aux.add(t_datos.getValueAt(t_datos.getSelectedRow(), 3).toString()); 
+                aux.add(t_datos.getValueAt(t_datos.getSelectedRow(), 4).toString()); 
                 if(session!=null)
                     if(session.isOpen())
                         session.close();
@@ -279,7 +280,7 @@ public class buscaExtra extends javax.swing.JDialog {
         try {
             session.beginTransaction();
             ord_act = (Orden)session.get(Orden.class, ord_act.getIdOrden());
-            Query q_consumido = session.createSQLQuery("select id_adicional, trabajo_extra.id_empleado, empleado.nombre, fecha_destajo " +
+            Query q_consumido = session.createSQLQuery("select id_adicional, trabajo_extra.id_empleado, empleado.nombre, fecha_destajo, notas " +
             "from trabajo_extra left join empleado on empleado.id_empleado=trabajo_extra.id_empleado where id_orden="+ord_act.getIdOrden());
             q_consumido.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
             ArrayList partidas=(ArrayList)q_consumido.list();
@@ -287,7 +288,7 @@ public class buscaExtra extends javax.swing.JDialog {
             for(int x=0; x<partidas.size(); x++)                            
             {           
                 java.util.HashMap map=(java.util.HashMap)partidas.get(x);
-                model.addRow(new Object[]{map.get("id_adicional").toString(), map.get("id_empleado").toString(), map.get("nombre").toString(), map.get("fecha_destajo").toString()});
+                model.addRow(new Object[]{map.get("id_adicional").toString(), map.get("id_empleado").toString(), map.get("nombre").toString(), map.get("fecha_destajo").toString(), map.get("notas").toString()});
             }
             titulos();
             session.getTransaction().commit();
@@ -304,6 +305,40 @@ public class buscaExtra extends javax.swing.JDialog {
         }
     }
 
+    public void tabla_tamaños()
+   {
+        TableColumnModel col_model = t_datos.getColumnModel();
+        DefaultTableCellRenderer tcr = new DefaultTableCellRenderer();
+        tcr.setHorizontalAlignment(SwingConstants.RIGHT);
+        FormatoEditor fe=new FormatoEditor();
+        t_datos.setDefaultEditor(Double.class, fe);
+        for (int i=0; i<t_datos.getColumnCount(); i++)
+        {
+  	      TableColumn column = col_model.getColumn(i);
+              switch(i)
+              {
+                  case 0:
+                      column.setPreferredWidth(30);
+                      break;
+                  case 1:
+                      column.setPreferredWidth(20);
+                      break;
+                  case 2:
+                      column.setPreferredWidth(200);
+                      break;
+                  case 3:
+                      column.setPreferredWidth(60);
+                      break;
+                  case 4:
+                      column.setPreferredWidth(250);
+                      break;
+              }
+        }
+        JTableHeader header = t_datos.getTableHeader();
+        header.setBackground(new java.awt.Color(2, 135, 242));//102,102,102
+        header.setForeground(Color.white);
+   }  
+    
 public void titulos()
     {
         Color c1 = new java.awt.Color(2, 135, 242);

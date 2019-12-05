@@ -42,7 +42,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
@@ -57,6 +59,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 /**
@@ -75,6 +78,7 @@ public class RCuentas extends javax.swing.JPanel {
     FormatoTabla formato, formato1;
     Object []valores;
     Object []valores1;
+    DefaultListModel listModel = new DefaultListModel();;
     /**
      * Creates new form RCuentas
      */
@@ -86,6 +90,28 @@ public class RCuentas extends javax.swing.JPanel {
         menu=op;
         usr=usuario;
         sessionPrograma=ses;
+        listaRfc();
+    }
+    void listaRfc()
+    {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try
+        {
+            Configuracion[] con=(Configuracion[]) session.createCriteria(Configuracion.class).addOrder(Order.asc("idConfiguracion")).list().toArray(new Configuracion[0]);
+            listModel.removeAllElements();
+            for(int r=0; r<con.length; r++){
+                listModel.addElement(con[r].getRfc());
+            }
+        }catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            if(session!=null)
+                if(session.isOpen())
+                    session.close();
+        }
     }
 
     /**
@@ -116,6 +142,9 @@ public class RCuentas extends javax.swing.JPanel {
         b_fecha_siniestro3 = new javax.swing.JButton();
         cb_fecha = new javax.swing.JComboBox();
         cb = new javax.swing.JComboBox();
+        jPanel5 = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        l_rfc = new JList(listModel);
 
         setBackground(new java.awt.Color(254, 254, 254));
 
@@ -127,7 +156,7 @@ public class RCuentas extends javax.swing.JPanel {
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "Estatus", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Arial", 1, 11))); // NOI18N
 
         lista.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "POR COBRAR", "COBRADA", "INCOBRABLE", "CANCELADO", "PENDIENTE" };
+            String[] strings = { "POR COBRAR", "COBRADA", "INCOBRABLE", "CANCELADO", "PENDIENTE", "SUSTITUIDA" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
@@ -145,7 +174,7 @@ public class RCuentas extends javax.swing.JPanel {
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                 .addContainerGap())
         );
@@ -253,31 +282,52 @@ public class RCuentas extends javax.swing.JPanel {
 
         cb.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "FACTURA", "NOTA" }));
 
+        jPanel5.setBackground(new java.awt.Color(254, 254, 254));
+        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "Emisor RFC", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Arial", 1, 11))); // NOI18N
+
+        l_rfc.setSelectionBackground(new java.awt.Color(2, 135, 242));
+        jScrollPane3.setViewportView(l_rfc);
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(cb, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(cb_fecha, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(t_fecha4, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(1, 1, 1)
-                                .addComponent(b_fecha_siniestro3, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(t_fecha3, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(1, 1, 1)
-                                .addComponent(b_fecha_siniestro2, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(jPanel4Layout.createSequentialGroup()
+                            .addComponent(jLabel4)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(t_fecha4, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(1, 1, 1)
+                            .addComponent(b_fecha_siniestro3, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel4Layout.createSequentialGroup()
+                            .addComponent(jLabel3)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(t_fecha3, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(1, 1, 1)
+                            .addComponent(b_fecha_siniestro2, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(cb_fecha, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(cb, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -301,6 +351,7 @@ public class RCuentas extends javax.swing.JPanel {
                         .addGap(3, 3, 3)
                         .addComponent(t_fecha4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(b_fecha_siniestro3, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)))
+            .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -318,8 +369,8 @@ public class RCuentas extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(jButton3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
-                            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jButton4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -358,7 +409,7 @@ public class RCuentas extends javax.swing.JPanel {
 
     private void b_fecha_siniestro3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_fecha_siniestro3ActionPerformed
         // TODO add your handling code here:
-        calendario cal =new calendario(new javax.swing.JFrame(), true);
+        calendario cal =new calendario(new javax.swing.JFrame(), true, false);
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         cal.setLocation((d.width/2)-(cal.getWidth()/2), (d.height/2)-(cal.getHeight()/2));
         cal.setVisible(true);
@@ -389,7 +440,7 @@ public class RCuentas extends javax.swing.JPanel {
 
     private void b_fecha_siniestro2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_fecha_siniestro2ActionPerformed
         // TODO add your handling code here:
-        calendario cal =new calendario(new javax.swing.JFrame(), true);
+        calendario cal =new calendario(new javax.swing.JFrame(), true, false);
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         cal.setLocation((d.width/2)-(cal.getWidth()/2), (d.height/2)-(cal.getHeight()/2));
         cal.setVisible(true);
@@ -575,10 +626,10 @@ public class RCuentas extends javax.swing.JPanel {
             {
                 Criteria consulta=session.createCriteria(Factura.class);
                 if(valores.length>0)
-                consulta.add(Restrictions.in("estatus", valores));
+                    consulta.add(Restrictions.in("estatus", valores));
                 String campo="fecha";
                 if(cb_fecha.getSelectedItem().toString().compareToIgnoreCase("Estatus")==0)
-                campo="f_estatus";
+                 campo="f_estatus";
                 if(t_fecha3.getText().compareTo("AAAA-MM-DD")!=0)
                 {
                     consulta.add(Restrictions.sqlRestriction("STR_TO_DATE("+campo+", '%Y-%m-%d') >= '"+t_fecha3.getText()+"'"));
@@ -587,7 +638,22 @@ public class RCuentas extends javax.swing.JPanel {
                 {
                     consulta.add(Restrictions.sqlRestriction("STR_TO_DATE("+campo+", '%Y-%m-%d') <= '"+t_fecha4.getText()+"'"));
                 }
+                int[] rfcs = l_rfc.getSelectedIndices();
+                
+                if(rfcs.length>0)
+                {
+                    String con="rfc_emisor in(";
+                    for(int x=0; x<rfcs.length; x++)
+                    {
+                        con+="'"+this.listModel.getElementAt(rfcs[x]).toString()+"'";
+                        if(x+1<rfcs.length)
+                            con+=",";
+                    }
+                    con += ")";
+                    consulta.add(Restrictions.sqlRestriction(con));
+                }
                 Factura[] facturas = (Factura[])consulta.list().toArray(new Factura[0]);
+
                 model=(DefaultTableModel)t_datos.getModel();
                 if(facturas.length>0)
                 {
@@ -600,14 +666,20 @@ public class RCuentas extends javax.swing.JPanel {
                         //"ID", "FECHA", "RFC", "R. SOCIAL", "F. FISCAL", "SERIE", "FOLIO", "MONTO", "ESTATUS", "F. ESTATUS", "NOTAS"
                         renglon[0]=""+actor.getIdFactura();
                         if(actor.getFechaFiscal()!=null)
-                        renglon[1]=actor.getFechaFiscal();
+                            renglon[1]=actor.getFechaFiscal();
                         else
-                        renglon[1]="";
+                            renglon[1]="";
                         renglon[2]=actor.getRfcReceptor();
                         renglon[3]=actor.getNombreReceptor();
                         renglon[4]=actor.getFFiscal();
-                        renglon[5]=actor.getSerie();
-                        renglon[6]=actor.getFolio();
+                        if(actor.getSerie()!=null)
+                            renglon[5]=actor.getSerie();
+                        else
+                            renglon[5]=actor.getSerieExterno();
+                        if(actor.getFolio()!=null)
+                            renglon[6]=actor.getFolio();
+                        else
+                            renglon[6]=actor.getFolioExterno();
                         Concepto[] ren=(Concepto[])actor.getConceptos().toArray(new Concepto[0]);
                         BigDecimal total=new BigDecimal("0.0");
                         for(int w=0; w<actor.getConceptos().size(); w++)
@@ -628,9 +700,9 @@ public class RCuentas extends javax.swing.JPanel {
 
                         renglon[8]=actor.getEstatus();
                         if(actor.getfEstatus()!=null)
-                        renglon[9]=actor.getfEstatus().toString();
+                            renglon[9]=actor.getfEstatus().toString();
                         else
-                        renglon[9]="";
+                            renglon[9]="";
                         renglon[10]=actor.getTexto();
                         model.addRow(renglon);
                     }
@@ -642,10 +714,10 @@ public class RCuentas extends javax.swing.JPanel {
             {
                 Criteria consulta=session.createCriteria(Nota.class);
                 if(valores.length>0)
-                consulta.add(Restrictions.in("estatus", valores));
+                    consulta.add(Restrictions.in("estatus", valores));
                 String campo="fecha";
                 if(cb_fecha.getSelectedItem().toString().compareToIgnoreCase("Estatus")==0)
-                campo="f_estatus";
+                    campo="f_estatus";
                 if(t_fecha3.getText().compareTo("AAAA-MM-DD")!=0)
                 {
                     consulta.add(Restrictions.sqlRestriction("STR_TO_DATE("+campo+", '%Y-%m-%d') >= '"+t_fecha3.getText()+"'"));
@@ -673,8 +745,14 @@ public class RCuentas extends javax.swing.JPanel {
                         renglon[2]=actor.getRfcReceptor();
                         renglon[3]=actor.getNombreReceptor();
                         renglon[4]=actor.getFFiscal();
-                        renglon[5]=actor.getSerie();
-                        renglon[6]=actor.getFolio();
+                        if(actor.getSerie()!=null)
+                            renglon[5]=actor.getSerie();
+                        else
+                            renglon[5]=actor.getSerieExterno();
+                        if(actor.getFolio()!=null)
+                            renglon[6]=actor.getFolio();
+                        else
+                            renglon[6]=actor.getFolioExterno();
                         Concepto[] ren=(Concepto[])actor.getConceptos().toArray(new Concepto[0]);
                         BigDecimal total=new BigDecimal("0.0");
                         for(int w=0; w<actor.getConceptos().size(); w++)
@@ -695,9 +773,9 @@ public class RCuentas extends javax.swing.JPanel {
 
                         renglon[8]=actor.getEstatus();
                         if(actor.getfEstatus()!=null)
-                        renglon[9]=actor.getfEstatus().toString();
+                            renglon[9]=actor.getfEstatus().toString();
                         else
-                        renglon[9]="";
+                            renglon[9]="";
                         renglon[10]=actor.getTexto();
                         model.addRow(renglon);
                     }
@@ -729,9 +807,12 @@ public class RCuentas extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JList l_rfc;
     private javax.swing.JList lista;
     private javax.swing.JTable t_datos;
     private javax.swing.JTextField t_fecha3;

@@ -41,6 +41,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
@@ -86,9 +87,18 @@ public class Provision extends javax.swing.JPanel {
         sessionPrograma=ses;
         formato =new FormatoTabla();
         formatoTabla();
+        Calendar fecha = Calendar.getInstance();
+        int ano = fecha.get(Calendar.YEAR);
+        System.out.println(ano);
+        for(int a=2017; a<=ano; a++)
+        {
+            cb_ano.addItem(""+a);
+            cb_ano1.addItem(""+a);
+            cb_ano2.addItem(""+a);
+        }
     }
     
-    public void archivoExcel(String NoPoliza, String NoMes, String NoReclamo)
+    public void archivoExcel(String NoPoliza, String NoMes, String NoReclamo, String ano)
     {
         Session session = HibernateUtil.getSessionFactory().openSession();
         try
@@ -98,7 +108,7 @@ public class Provision extends javax.swing.JPanel {
             {
                 Query query1 = session.createQuery("SELECT DISTINCT reg FROM Asiento reg "
                     + "LEFT JOIN reg.excelProvision ex "
-                    + "where ex.poliza="+NoPoliza+" AND MONTH(ex.fecha)="+NoMes+" and ex.tipo='Dr' ORDER BY reg.idAsiento ASC");
+                    + "where ex.poliza="+NoPoliza+" AND MONTH(ex.fecha)='"+NoMes+"' AND year(ex.fecha)='"+ano+"' and ex.tipo='Dr' ORDER BY reg.idAsiento ASC");
                 Asientos = (Asiento[])query1.list().toArray(new Asiento[0]);
             }
             else
@@ -119,7 +129,7 @@ public class Provision extends javax.swing.JPanel {
                     ruta = jF1.getSelectedFile().getAbsolutePath(); 
                     if(ruta!=null)
                     {
-                        generaExcel(""+Asientos[0].getExcelProvision().getPoliza(), ""+(calendario.get(Calendar.MONTH)+1), ruta);
+                        generaExcel(""+Asientos[0].getExcelProvision().getPoliza(), ""+(calendario.get(Calendar.MONTH)+1), ruta, cb_ano1.getSelectedItem().toString());
                         JOptionPane.showMessageDialog(this, "¡Listo!");
                     }
                 }
@@ -139,7 +149,7 @@ public class Provision extends javax.swing.JPanel {
         try
         {
             Query query1 = session.createQuery("SELECT DISTINCT ex FROM Excel ex "
-                        + "where MONTH(ex.fecha)="+cb_mes1.getSelectedItem()+" and ex.tipo='Dr' ORDER BY poliza ASC");
+                        + "where MONTH(ex.fecha)="+cb_mes1.getSelectedItem()+" AND year(ex.fecha)='"+cb_ano2.getSelectedItem().toString()+"' and ex.tipo='Dr' ORDER BY poliza ASC");
             Excel[] listaPoliza = (Excel[])query1.list().toArray(new Excel[0]); 
             t_datos.setModel(ModeloTablaReporte(listaPoliza.length, columnas));
             for(int x=0; x<listaPoliza.length; x++)
@@ -167,7 +177,7 @@ public class Provision extends javax.swing.JPanel {
             if(session.isOpen())
                 session.close();
     }
-    public void generaExcel(String noPoliza, String noMes, String ruta)
+    public void generaExcel(String noPoliza, String noMes, String ruta, String ano)
     {
         DecimalFormat formatoPorcentaje = new DecimalFormat("#,##0.00");
         formatoPorcentaje.setMinimumFractionDigits(2);
@@ -178,7 +188,7 @@ public class Provision extends javax.swing.JPanel {
         {
             Query query1 = session.createQuery("SELECT DISTINCT reg FROM Asiento reg "
                 + "LEFT JOIN reg.excelProvision ex "
-                + "where ex.poliza = "+noPoliza+" AND MONTH(ex.fecha)="+noMes+" and ex.tipo='Dr' ORDER BY reg.idAsiento ASC");
+                + "where ex.poliza = "+noPoliza+" AND MONTH(ex.fecha)='"+noMes+"' AND year(ex.fecha)='"+ano+"'  and ex.tipo='Dr' ORDER BY reg.idAsiento ASC");
             Asiento[] Asientos = (Asiento[])query1.list().toArray(new Asiento[0]);
 
             Path FROM = Paths.get("imagenes/Diario.xls");
@@ -323,6 +333,8 @@ public class Provision extends javax.swing.JPanel {
         jLabel11 = new javax.swing.JLabel();
         t_inicio = new javax.swing.JFormattedTextField();
         t_fin = new javax.swing.JFormattedTextField();
+        jLabel12 = new javax.swing.JLabel();
+        cb_ano = new javax.swing.JComboBox();
         jScrollPane1 = new javax.swing.JScrollPane();
         panel_provision = new javax.swing.JPanel();
         p_consulta = new javax.swing.JPanel();
@@ -335,6 +347,8 @@ public class Provision extends javax.swing.JPanel {
         jLabel5 = new javax.swing.JLabel();
         t_reclamo1 = new javax.swing.JTextField();
         cb_mes = new javax.swing.JComboBox();
+        cb_ano1 = new javax.swing.JComboBox();
+        jLabel13 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         panel_provision1 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
@@ -342,6 +356,8 @@ public class Provision extends javax.swing.JPanel {
         jButton2 = new javax.swing.JButton();
         cb_mes1 = new javax.swing.JComboBox();
         jLabel6 = new javax.swing.JLabel();
+        cb_ano2 = new javax.swing.JComboBox();
+        jLabel14 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         t_datos = new javax.swing.JTable();
 
@@ -463,7 +479,7 @@ public class Provision extends javax.swing.JPanel {
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
 
-        jButton1.setText("Generar Provision de Pagos");
+        jButton1.setText("Generar Provision Pagos");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -492,6 +508,8 @@ public class Provision extends javax.swing.JPanel {
 
         t_fin.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
 
+        jLabel12.setText("Año");
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -504,9 +522,9 @@ public class Provision extends javax.swing.JPanel {
                 .addComponent(jLabel11)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(t_fin, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 85, Short.MAX_VALUE)
-                .addComponent(jButton1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cb_poliza, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -514,6 +532,10 @@ public class Provision extends javax.swing.JPanel {
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(t_mes, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel12)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cb_ano, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton3)
                 .addContainerGap())
@@ -532,7 +554,9 @@ public class Provision extends javax.swing.JPanel {
                     .addComponent(jLabel10)
                     .addComponent(jLabel11)
                     .addComponent(t_inicio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(t_fin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(t_fin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel12)
+                    .addComponent(cb_ano, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -594,6 +618,8 @@ public class Provision extends javax.swing.JPanel {
 
         cb_mes.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" }));
 
+        jLabel13.setText("Año");
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -607,7 +633,11 @@ public class Provision extends javax.swing.JPanel {
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cb_mes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(19, 19, 19)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel13)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(cb_ano1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(t_reclamo1, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -615,7 +645,7 @@ public class Provision extends javax.swing.JPanel {
                 .addComponent(b_buscar1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(b_xls1)
-                .addContainerGap(346, Short.MAX_VALUE))
+                .addContainerGap(300, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -623,16 +653,19 @@ public class Provision extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel5)
-                        .addComponent(t_reclamo1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(b_buscar1)
-                        .addComponent(b_xls1))
-                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(t_poliza1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel3)
                         .addComponent(jLabel4)
-                        .addComponent(cb_mes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(14, Short.MAX_VALUE))
+                        .addComponent(cb_mes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel13)
+                        .addComponent(cb_ano1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel5)
+                            .addComponent(t_reclamo1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(b_buscar1)
+                            .addComponent(b_xls1))))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
 
         p_consulta.add(jPanel4, java.awt.BorderLayout.NORTH);
@@ -662,6 +695,8 @@ public class Provision extends javax.swing.JPanel {
 
         jLabel6.setText("Mes:");
 
+        jLabel14.setText("Año");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -672,8 +707,12 @@ public class Provision extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cb_mes1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel14)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cb_ano2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton2)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(593, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -682,7 +721,9 @@ public class Provision extends javax.swing.JPanel {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(cb_mes1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2))
+                    .addComponent(jButton2)
+                    .addComponent(jLabel14)
+                    .addComponent(cb_ano2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(23, Short.MAX_VALUE))
         );
 
@@ -753,6 +794,7 @@ public class Provision extends javax.swing.JPanel {
                     panel_provision.setAutoscrolls(true);
                     panel_provision.repaint();
                     panel_provision.updateUI();
+                    Excel excel=null;
 
                     //for(int li=0; li<listaProveedor.size(); li++)
                     //{
@@ -773,8 +815,16 @@ public class Provision extends javax.swing.JPanel {
                             Calendar calendario = Calendar.getInstance();
                             t_mes.setText(""+(calendario.get(Calendar.MONTH)+1));
 
-                            Excel excel=new Excel();
-                            for (i=0; i<rec.length; i++) {
+                            excel=new Excel();
+                            //if(i==0)//Registro del excel
+                            //{
+                                excel.setPoliza(Integer.parseInt(poliza.get("poliza").toString()));
+                                excel.setFecha(fecha);
+                                excel.setConcepto("Provision de pagos");
+                                excel.setTipo("Dr");
+                                session.saveOrUpdate(excel);
+                            //}
+                            for (int i=0; i<rec.length; i++) {
                                 Reclamo rec1=rec[i];
                                 usr=(Usuario)session.get(Usuario.class, usr.getIdUsuario());
                                 Cuentas cuenta_prov=rec1.getProveedor().getCuentasByCtaProv();
@@ -786,14 +836,6 @@ public class Provision extends javax.swing.JPanel {
                                     Cuentas iva_x_acreditar = (Cuentas)session.createCriteria(Cuentas.class).add(Restrictions.eq("idCuentas", "1190-002-000")).uniqueResult();
                                     Cuentas iva_compras = (Cuentas)session.createCriteria(Cuentas.class).add(Restrictions.eq("idCuentas", "1191-004-000")).uniqueResult();
 
-                                    if(i==0)//Registro del excel
-                                    {
-                                        excel.setPoliza(Integer.parseInt(poliza.get("poliza").toString()));
-                                        excel.setFecha(fecha);
-                                        excel.setConcepto("Provision de pagos");
-                                        excel.setTipo("Dr");
-                                        session.save(excel);
-                                    }
                                     //Registro de Asiento
                                     Asiento asiento=new Asiento();
                                     asiento.setReclamo(rec[i]);
@@ -965,11 +1007,11 @@ public class Provision extends javax.swing.JPanel {
                 if(ruta!=null)
                 {
                     if(cb_poliza.getSelectedItem().toString().compareTo("TODAS")!=0)
-                        generaExcel(cb_poliza.getSelectedItem().toString(), t_mes.getText(), ruta);
+                        generaExcel(cb_poliza.getSelectedItem().toString(), t_mes.getText(), ruta, cb_ano.getSelectedItem().toString());
                     else
                     {
                         for(int op=1; op<cb_poliza.getItemCount(); op++)
-                            generaExcel(cb_poliza.getItemAt(op).toString(), t_mes.getText(), ruta);
+                            generaExcel(cb_poliza.getItemAt(op).toString(), t_mes.getText(), ruta,cb_ano.getSelectedItem().toString());
                     }
                     JOptionPane.showMessageDialog(this, "¡Listo!");
                 }
@@ -988,7 +1030,7 @@ public class Provision extends javax.swing.JPanel {
                 {
                     Query query1 = session.createQuery("SELECT DISTINCT reg FROM Asiento reg "
                         + "LEFT JOIN reg.excelProvision ex "
-                        + "where ex.poliza="+t_poliza1.getText()+" AND MONTH(ex.fecha)="+cb_mes.getSelectedItem()+" and ex.tipo='Dr' ORDER BY reg.idAsiento ASC");
+                        + "where ex.poliza="+t_poliza1.getText()+" AND MONTH(ex.fecha)="+cb_mes.getSelectedItem()+" AND year(ex.fecha)='"+cb_ano1.getSelectedItem().toString()+"' and ex.tipo='Dr' ORDER BY reg.idAsiento ASC");
                     Asientos = (Asiento[])query1.list().toArray(new Asiento[0]);
                 }
                 else
@@ -1031,7 +1073,7 @@ public class Provision extends javax.swing.JPanel {
         // TODO add your handling code here:
         if(t_poliza1.getText().compareTo("")!=0 || t_reclamo1.getText().compareTo("")!=0)
         {
-            archivoExcel(t_poliza1.getText(), cb_mes.getSelectedItem().toString(), t_reclamo1.getText());
+            archivoExcel(t_poliza1.getText(), cb_mes.getSelectedItem().toString(), t_reclamo1.getText(), cb_ano1.getSelectedItem().toString());
         }
     }//GEN-LAST:event_b_xls1ActionPerformed
 
@@ -1123,14 +1165,16 @@ public class Provision extends javax.swing.JPanel {
         if(t_datos.getSelectedRow()>-1)
         {
             String mi=t_datos.getValueAt(t_datos.getSelectedRow(), 2).toString().split("-")[1];
-            archivoExcel(t_datos.getValueAt(t_datos.getSelectedRow(), 1).toString(), mi, "");
+            String mi1=t_datos.getValueAt(t_datos.getSelectedRow(), 2).toString().split("-")[0];
+            archivoExcel(t_datos.getValueAt(t_datos.getSelectedRow(), 1).toString(), mi, "", mi1);
         }
     }//GEN-LAST:event_archivoActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
         String mi=t_fecha_aux.getText().split("-")[1];
-        archivoExcel(t_poliza_aux.getText(), mi, "");
+        String mi1=t_fecha_aux.getText().split("-")[0];
+        archivoExcel(t_poliza_aux.getText(), mi, "", mi1);
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void t_concepto_auxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_concepto_auxActionPerformed
@@ -1236,6 +1280,9 @@ public class Provision extends javax.swing.JPanel {
     private javax.swing.JMenuItem archivo;
     private javax.swing.JButton b_buscar1;
     private javax.swing.JButton b_xls1;
+    private javax.swing.JComboBox cb_ano;
+    private javax.swing.JComboBox cb_ano1;
+    private javax.swing.JComboBox cb_ano2;
     private javax.swing.JComboBox cb_mes;
     private javax.swing.JComboBox cb_mes1;
     private javax.swing.JComboBox cb_poliza;
@@ -1247,6 +1294,9 @@ public class Provision extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

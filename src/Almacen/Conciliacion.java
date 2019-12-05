@@ -281,6 +281,7 @@ public class Conciliacion extends javax.swing.JPanel {
                         model.setValueAt(map.get("nombre"), i, 2);
                         model.setValueAt(map.get("autorizado"), i, 3);
                         model.setValueAt(map.get("facturado"), i, 4);
+                        model.setCeldaEditable(i, 4, true);
                         model.setValueAt(map.get("id"), i, 5);
                         model.setValueAt(map.get("id_externo"), i, 6);
                         model.setValueAt(map.get("Cantidad_aut"), i, 7);//cant Aut
@@ -1436,7 +1437,7 @@ public class Conciliacion extends javax.swing.JPanel {
         {
             for(int y=0; y<renglones; y++)
             {
-                celdaEditable[x][y]=false;
+                celdaEditable[x][y]=true;
             }
         }
         this.setDataVector(new Object [renglones][columnas.length], columnas);
@@ -1472,7 +1473,8 @@ public class Conciliacion extends javax.swing.JPanel {
                                     try
                                     {
                                         session.beginTransaction().begin();
-                                        if(t_datos.getValueAt(row, 1).toString().compareTo("I")==0)
+                                        System.out.print("OK");
+                                        if(t_datos.getValueAt(row, 1).toString().compareTo("O")==0 || t_datos.getValueAt(row, 1).toString().compareTo("C")==0 || t_datos.getValueAt(row, 1).toString().compareTo("A")==0)
                                         {
                                             Partida par=(Partida)session.get(Partida.class, (Integer)t_datos.getValueAt(row, 0));
                                             par.setFacturado((boolean)value);

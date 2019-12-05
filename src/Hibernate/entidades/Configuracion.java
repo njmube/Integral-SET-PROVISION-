@@ -1,6 +1,9 @@
 package Hibernate.entidades;
 // Generated 21/08/2015 05:39:10 PM by Hibernate Tools 3.6.0
 
+import java.util.Date;
+
+
 
 
 /**
@@ -15,6 +18,7 @@ public class Configuracion  implements java.io.Serializable {
      private String logo;
      private String sello;
      private String cinta;
+     private String facturaLogo;
      private Integer iva;
      private String requestor;
      private String rfc;
@@ -39,6 +43,11 @@ public class Configuracion  implements java.io.Serializable {
      private String clave;
      private String serie;
      private String serie1;
+     private String serie2;
+     private Double version;
+     private Double tipoCambio;
+     private Date fechaCambio;
+     private String noProveedor;
 
     public Configuracion() {
     }
@@ -47,13 +56,15 @@ public class Configuracion  implements java.io.Serializable {
     public Configuracion(int idConfiguracion) {
         this.idConfiguracion = idConfiguracion;
     }
-    public Configuracion(int idConfiguracion, Usuario usuario, String empresa, String logo, String sello, String cinta, Integer iva, String requestor, String rfc, String usuario_1, String nombre, String cp, String direccion, String no, String colonia, String municipio, String estado, String pais, String contacto, String mail, String sucursal, String tel, String emailFinkok, String claveFinkok, String pac, String cer, String llave, String clave, String serie, String serie1) {
+
+    public Configuracion(int idConfiguracion, Usuario usuario, String empresa, String logo, String sello, String cinta, String facturaLogo, Integer iva, String requestor, String rfc, String usuario_1, String nombre, String cp, String direccion, String no, String colonia, String municipio, String estado, String pais, String contacto, String mail, String sucursal, String tel, String emailFinkok, String claveFinkok, String pac, String cer, String llave, String clave, String serie, String serie1, String serie2, Double version, Double tipoCambio, Date fechaCambio,String noProveedor) {
        this.idConfiguracion = idConfiguracion;
        this.usuario = usuario;
        this.empresa = empresa;
        this.logo = logo;
        this.sello = sello;
        this.cinta = cinta;
+       this.facturaLogo=facturaLogo;
        this.iva = iva;
        this.requestor = requestor;
        this.rfc = rfc;
@@ -77,7 +88,12 @@ public class Configuracion  implements java.io.Serializable {
        this.llave=llave;
        this.clave=clave;
        this.serie=serie;
-       this.serie=serie1;
+       this.serie1=serie1;
+       this.serie2=serie2;
+       this.version = version;
+       this.tipoCambio = tipoCambio;
+       this.fechaCambio = fechaCambio;
+       this.noProveedor = noProveedor;
     }
    
     public int getIdConfiguracion() {
@@ -122,6 +138,15 @@ public class Configuracion  implements java.io.Serializable {
     public void setCinta(String cinta) {
         this.cinta = cinta;
     }
+    
+    public String getFacturaLogo() {
+        return this.facturaLogo;
+    }
+    
+    public void setfacturaLogo(String facturaLogo) {
+        this.facturaLogo=facturaLogo;
+    }
+    
     public Integer getIva() {
         return this.iva;
     }
@@ -300,6 +325,47 @@ public class Configuracion  implements java.io.Serializable {
     public void setSerie1(String serie1) {
         this.serie1 = serie1;
     }
+    
+    public String getSerie2() {
+        return this.serie2;
+    }
+    
+    public void setSerie2(String serie2) {
+        this.serie2 = serie2;
+    }
+    
+    public Double getVersion() {
+        return this.version;
+    }
+    
+    public void setVersion(Double version) {
+        this.version = version;
+    }
+    
+    public Date getFechaCambio() {
+        return this.fechaCambio;
+    }
+    
+    public void setFechaCambio(Date fechaCambio) {
+        this.fechaCambio= fechaCambio;
+    }
+    
+    public Double getTipoCambio() {
+        return this.tipoCambio;
+    }
+    
+    public void setTipoCambio(Double tipoCambio) {
+        this.tipoCambio = tipoCambio;
+    }
+    
+     public void setNoProveedor(String noProveedor) {
+        this.noProveedor = noProveedor;
+    }
+    
+    public String getNoProveedor() {
+        return this.noProveedor;
+    }
+    
 }
 
 

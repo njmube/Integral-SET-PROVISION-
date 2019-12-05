@@ -26,12 +26,14 @@ import javax.swing.JFileChooser;
 import javax.swing.table.DefaultTableModel;
 import org.hibernate.Session;
 import Integral.ExtensionFileFilter;
+import Integral.Ftp;
 import Integral.Herramientas;
 import Integral.Imagen;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import org.apache.commons.net.ftp.FTPFile;
 
 
 /**
@@ -51,26 +53,24 @@ public final class Galeria extends javax.swing.JPanel {
     String sessionPrograma="";
     Herramientas h;
     String edo="";
-    String ruta;
+    String rutaFTP;
     JFileChooser selector;
     
-    public Galeria(String id, Usuario usuario, String estado, String ses) {
+    public Galeria(String id, Usuario usuario, String estado, String ses, String ruta) {
         sessionPrograma=ses;
         usr=usuario;
         orden=id;
         edo=estado;
         initComponents();
-        
-        ruta="";
-        try
-        {
-            FileReader f = new FileReader("config.txt");
-            BufferedReader b = new BufferedReader(f);
-            if((ruta = b.readLine())==null)
-                ruta="";
+        try{
+        FileReader fil = new FileReader("ftp.txt");
+            BufferedReader b = new BufferedReader(fil);
+            if((rutaFTP = b.readLine())==null)
+                rutaFTP="";
             b.close();
-        }catch(Exception e){e.printStackTrace();}
-                    
+            fil.close();
+        }catch(Exception e){}
+        
         if(usr.getEditaGaleria()==false)
         {
             edo="sin permiso";
@@ -242,60 +242,68 @@ public final class Galeria extends javax.swing.JPanel {
             Session session = HibernateUtil.getSessionFactory().openSession();
             try
             {
-                for(int x=0; x<archivo.length; x++)
-                {
-                    session.beginTransaction().begin();
-                    if(archivo[x].exists())
+                Ftp miFtp=new Ftp();
+                boolean respuesta=true;
+                respuesta=miFtp.conectar(rutaFTP, "compras", "04650077", 3310);
+                if(respuesta==true){
+                    for(int x=0; x<archivo.length; x++)
                     {
-                        File folder = new File(ruta+"ordenes/"+orden);
-                        folder.mkdirs();
-                        folder = new File(ruta+"ordenes/"+orden+"/miniatura");
-                        folder.mkdirs();
-                        Random rng=new Random();
-                        long  dig8 = rng.nextInt(90000000)+10000000;
-                        destino = new File(ruta+"ordenes/"+orden+"/"+dig8+".jpg");
-                        File miniatura = new File(ruta+"ordenes/"+orden+"/miniatura/"+dig8+".jpg");
+                        session.beginTransaction().begin();
+                        if(archivo[x].exists())
+                        {
+                            Random rng=new Random();
+                            long  dig8 = rng.nextInt(90000000)+10000000;
+                            if(!miFtp.cambiarDirectorio("/ordenes/"+orden))
+                                if(miFtp.crearDirectorio("/ordenes/"+orden))
+                                    miFtp.cambiarDirectorio("/ordenes/"+orden);
+                            respuesta=miFtp.subirArchivo(archivo[x].getPath(), dig8+".jpg");
+                            
+                            File temp = File.createTempFile("tmp", ".jpg");
+                            String ruta=archivo[x].getPath();
+                            javax.swing.JPanel p=new Imagen(ruta, 385, 250, 0, 0, 385, 250);
+                            BufferedImage dibujo =new BufferedImage(385, 250, BufferedImage.TYPE_INT_RGB);
+                            Graphics g = dibujo.getGraphics();
+                            p.paint(g);
+                            ImageIO.write((RenderedImage)dibujo, "jpg", temp); // Salvar la imagen en el fichero
+                            
+                            if(!miFtp.cambiarDirectorio("/ordenes/"+orden+"/miniatura"))
+                                if(miFtp.crearDirectorio("/ordenes/"+orden+"/miniatura"))
+                                    miFtp.cambiarDirectorio("/ordenes/"+orden+"/miniatura");
+                            respuesta=miFtp.subirArchivo(temp.getPath(), dig8+".jpg");
+                            temp.delete();
+                            
+                            miFtp.cambiarDirectorio("/");
+                            
+                            ord = (Orden)session.get(Orden.class, Integer.parseInt(orden)); 
+                            //*******obtenemos fecha con hora******
+                            Date fecha_orden = new Date();
+                            DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");//YYYY-MM-DD HH:MM:SS
+                            String valor=dateFormat.format(fecha_orden);
+                            String [] fecha = valor.split("-");
+                            String [] hora=fecha[2].split(":");
+                            String [] aux=hora[0].split(" ");
+                            fecha[2]=aux[0];
+                            hora[0]=aux[1];
+                            Calendar calendario = Calendar.getInstance();
+                            calendario.set(
+                                Integer.parseInt(fecha[2]), 
+                                Integer.parseInt(fecha[1])-1, 
+                                Integer.parseInt(fecha[0]), 
+                                Integer.parseInt(hora[0]), 
+                                Integer.parseInt(hora[1]), 
+                                Integer.parseInt(hora[2]));
+                            Foto img=new Foto(ord, dig8+".jpg", calendario.getTime());
+                            //******************************************
 
-                        String ruta=archivo[x].getPath();
-                        javax.swing.JPanel p=new Imagen(ruta, 385, 250, 0, 0, 385, 250);
-                        BufferedImage dibujo =new BufferedImage(385, 250, BufferedImage.TYPE_INT_RGB);
-                        Graphics g = dibujo.getGraphics();
-                        p.paint(g);
-                        ImageIO.write((RenderedImage)dibujo, "jpg", miniatura); // Salvar la imagen en el fichero
-
-                        BufferedImage dibujoGrande =ImageIO.read(archivo[x]);
-                        ImageIO.write((RenderedImage)dibujoGrande, "jpg", destino); // Salvar la imagen en el fichero*/
-
-                        ord = (Orden)session.get(Orden.class, Integer.parseInt(orden)); 
-
-                        //*******obtenemos fecha con hora******
-                        Date fecha_orden = new Date();
-                        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");//YYYY-MM-DD HH:MM:SS
-                        String valor=dateFormat.format(fecha_orden);
-                        String [] fecha = valor.split("-");
-                        String [] hora=fecha[2].split(":");
-                        String [] aux=hora[0].split(" ");
-                        fecha[2]=aux[0];
-                        hora[0]=aux[1];
-                        Calendar calendario = Calendar.getInstance();
-                        calendario.set(
-                            Integer.parseInt(fecha[2]), 
-                            Integer.parseInt(fecha[1])-1, 
-                            Integer.parseInt(fecha[0]), 
-                            Integer.parseInt(hora[0]), 
-                            Integer.parseInt(hora[1]), 
-                            Integer.parseInt(hora[2]));
-                        Foto img=new Foto(ord, dig8+".jpg", calendario.getTime());
-                        //******************************************
-
-                        ord.addFoto(img);
-                        session.saveOrUpdate(ord);
-                        session.getTransaction().commit();
-                    }
-                    else
-                    {
-                        session.getTransaction().rollback();
-                        destino.deleteOnExit();
+                            ord.addFoto(img);
+                            session.saveOrUpdate(ord);
+                            session.getTransaction().commit();
+                        }
+                        else
+                        {
+                            session.getTransaction().rollback();
+                            destino.deleteOnExit();
+                        }
                     }
                 }
             }catch (Exception ioe)
@@ -316,7 +324,7 @@ public final class Galeria extends javax.swing.JPanel {
         // TODO add your handling code here:
         try
         {
-        Carpeta nueva=new Carpeta(null, true, ruta+"ordenes/"+orden+"/");
+        Carpeta nueva=new Carpeta(null, true, rutaFTP, "/ordenes/"+orden+"/");
         nueva.setSize(700,450);
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         nueva.setLocation((d.width/2)-(nueva.getWidth()/2), (d.height/2)-(nueva.getHeight()/2));
@@ -363,7 +371,7 @@ public final class Galeria extends javax.swing.JPanel {
             {
                 for(int i=0; i<fotos.length; i++)
                 {
-                    miniatura m=new miniatura(fotos[i], this.orden, edo, ruta);
+                    miniatura m=new miniatura(fotos[i], this.orden, edo, rutaFTP);
                     p_cinta.add(m);
                 }
             }

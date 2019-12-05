@@ -42,7 +42,7 @@ public class buscaPartida extends javax.swing.JDialog {
     public static final Partida[] RET_CANCEL =null;
     InputMap map = new InputMap();
     DefaultTableModel model;
-    String[] columnas = new String [] {"N°","#","Grupo","Descripción","Folio","Código"};
+    String[] columnas = new String [] {"N°","#","Grupo","Descripción","Folio","Código", "☺"};
     Orden ord;
     String sessionPrograma="";
     Herramientas h;
@@ -69,7 +69,7 @@ public class buscaPartida extends javax.swing.JDialog {
     
     DefaultTableModel ModeloTablaReporte(int renglones, String columnas[])
     {
-        model = new DefaultTableModel(new Object [renglones][6], columnas)
+        model = new DefaultTableModel(new Object [renglones][7], columnas)
         {
             Class[] types = new Class [] {
                 java.lang.Integer.class,
@@ -77,10 +77,11 @@ public class buscaPartida extends javax.swing.JDialog {
                 java.lang.String.class, 
                 java.lang.String.class, 
                 java.lang.String.class,
-                java.lang.String.class
+                java.lang.String.class,
+                javax.swing.ImageIcon.class,/*Prioridad*/
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false
+                false, false, false, false, false, false, false
             };
             public void setValueAt(Object value, int row, int col)
             {
@@ -394,6 +395,26 @@ public class buscaPartida extends javax.swing.JDialog {
                     model.setValueAt(par[i].getEjemplar().getIdParte(), i, 5);//código
                 else
                     model.setValueAt("", i, 5);
+                
+                /*if(par[i].getPrioridad()!=4)
+                    model.setValueAt(par[i].getPrioridad(), i, 6);
+                else
+                    model.setValueAt("", i, 6);*/
+                switch(par[i].getPrioridad())
+                {
+                    case 1:
+                        model.setValueAt(new ImageIcon("imagenes/1.png"), i, 6);
+                        break;
+                    case 2:
+                        model.setValueAt(new ImageIcon("imagenes/2.png"), i, 6);
+                        break;
+                    case 3:
+                        model.setValueAt(new ImageIcon("imagenes/3.png"), i, 6);
+                        break;
+                    case 4:
+                        model.setValueAt(new ImageIcon("imagenes/4.png"), i, 6);
+                        break;
+                }
             }
         }
         else
@@ -421,13 +442,16 @@ public class buscaPartida extends javax.swing.JDialog {
                     column.setPreferredWidth(100);
                     break;
                 case 3:
-                    column.setPreferredWidth(200);
+                    column.setPreferredWidth(270);
                     break;
                 case 4:
                     column.setPreferredWidth(20);
                     break;
                 case 5:
                     column.setPreferredWidth(20);
+                    break;
+                case 6:
+                    column.setPreferredWidth(5);
                     break;
                 default:
                     column.setPreferredWidth(40);

@@ -22,15 +22,20 @@ import Hibernate.entidades.Factura;
 import Hibernate.entidades.Nota;
 import Hibernate.entidades.Orden;
 import Hibernate.entidades.Usuario;
+import Integral.HorizontalBarUI;
+import Integral.VerticalBarUI;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Toolkit;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
+import javax.swing.JScrollBar;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
@@ -62,10 +67,15 @@ public class buscaNota extends javax.swing.JDialog {
     String idBuscar="", ruta="";
     int opcion=1;
     boolean bandera=true;
+    int inicio=0;
+    boolean parar=false;
+    final JScrollBar scrollBar;
+    int configuracion=1;
     
     /** Creates new form acceso */
-    public buscaNota(java.awt.Frame parent, boolean modal, String ses, Usuario usuario, int op) {
+    public buscaNota(java.awt.Frame parent, boolean modal, String ses, Usuario usuario, int op, int configuracion) {
         super(parent, modal);
+        this.configuracion=configuracion;
         opcion=op;
         sessionPrograma=ses;
         usr=usuario;
@@ -80,11 +90,26 @@ public class buscaNota extends javax.swing.JDialog {
             fil=null;
             b=null;
         }catch(Exception e){}
+        scrollBar = scroll.getVerticalScrollBar();
+        scrollBar.addAdjustmentListener(new AdjustmentListener() {
+            public void adjustmentValueChanged(AdjustmentEvent ae) {
+                if(parar==false)
+                {
+                    int extent = scrollBar.getModel().getExtent();
+                    extent+=scrollBar.getValue();
+                    if(extent==scrollBar.getMaximum())
+                        buscaDato();
+                }
+              //System.out.println("actual: " + extent+" maximo:"+scrollBar.getMaximum());
+            }
+          });
         getRootPane().setDefaultButton(b_seleccionar);
         formato =new FormatoTabla();
         t_datos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         t_datos.setModel(ModeloTablaReporte(0, columnas));
         formatoTabla();
+        scroll.getVerticalScrollBar().setUI(new VerticalBarUI());
+        scroll.getHorizontalScrollBar().setUI(new HorizontalBarUI());
         buscaDato();
         if(usr.getCancelarFactura()==true)
             b_cancelar.setEnabled(true);
@@ -168,7 +193,7 @@ public class buscaNota extends javax.swing.JDialog {
         c_filtro = new javax.swing.JComboBox();
         jLabel1 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        scroll = new javax.swing.JScrollPane();
         t_datos = new javax.swing.JTable();
         b_seleccionar = new javax.swing.JButton();
         b_cancelar = new javax.swing.JButton();
@@ -260,7 +285,7 @@ public class buscaNota extends javax.swing.JDialog {
                 t_datosKeyPressed(evt);
             }
         });
-        jScrollPane1.setViewportView(t_datos);
+        scroll.setViewportView(t_datos);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -268,13 +293,13 @@ public class buscaNota extends javax.swing.JDialog {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 950, Short.MAX_VALUE)
+                .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 950, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE)
+                .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -377,7 +402,7 @@ public class buscaNota extends javax.swing.JDialog {
                             if(factura!=null)
                             {
                                 Dimension d;
-                                GeneraNota genera3=new GeneraNota(new Frame(), true, this.usr, sessionPrograma, factura);
+                                GeneraNota genera3=new GeneraNota(new Frame(), true, this.usr, sessionPrograma, factura, configuracion);
                                 d = Toolkit.getDefaultToolkit().getScreenSize();
                                 genera3.setLocation((d.width/2)-(genera3.getWidth()/2), (d.height/2)-(genera3.getHeight()/2));
                                 genera3.consulta();
@@ -412,11 +437,15 @@ public class buscaNota extends javax.swing.JDialog {
     }//GEN-LAST:event_b_seleccionarActionPerformed
 
     private void t_buscaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_buscaKeyReleased
-        buscaDato();
+        inicio=0;
+        parar=false;
+        this.buscaDato();
     }//GEN-LAST:event_t_buscaKeyReleased
 
     private void c_filtroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_c_filtroActionPerformed
-        buscaDato();
+        inicio=0;
+        parar=false;
+        this.buscaDato();
     }//GEN-LAST:event_c_filtroActionPerformed
 
     private void b_cancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_cancelarActionPerformed
@@ -530,10 +559,9 @@ public class buscaNota extends javax.swing.JDialog {
                                                     break;
 
                                                 case "1"://se cancelo correcto
-                                                    ArrayList resp=(ArrayList)guarda.get(1);
-                                                    ArrayList arr=(ArrayList)guarda.get(1);
-                                                    ArrayList aq=(ArrayList)arr.get(0);
-                                                    switch(aq.get(1).toString())
+                                                    ArrayList lista_estatus=(ArrayList)guarda.get(2);
+                                                    ArrayList estatus_recibidos=(ArrayList)lista_estatus.get(0);
+                                                    switch(estatus_recibidos.get(1).toString())
                                                     {
                                                         case "201":
                                                         factura=(Nota) session.createCriteria(Nota.class).add(Restrictions.eq("FFiscal", idBuscar)).uniqueResult();
@@ -640,7 +668,7 @@ public class buscaNota extends javax.swing.JDialog {
                                                             progreso.setString("Listo");
                                                             progreso.setIndeterminate(false);
                                                             bandera=true;
-                                                            JOptionPane.showMessageDialog(null, "Error.- "+aq.get(1).toString());
+                                                            JOptionPane.showMessageDialog(null, "Error.- "+estatus_recibidos.get(1).toString()+guarda.get(1));
                                                             break;
                                                     }
                                                     break;
@@ -728,8 +756,8 @@ public class buscaNota extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JProgressBar progreso;
+    private javax.swing.JScrollPane scroll;
     public javax.swing.JTextField t_busca;
     private javax.swing.JTable t_datos;
     // End of variables declaration//GEN-END:variables
@@ -759,35 +787,43 @@ public class buscaNota extends javax.swing.JDialog {
         Session session = HibernateUtil.getSessionFactory().openSession();
         try
         {
+            int siguente=inicio+20;
+            consulta+=" limit "+inicio+", 20";
             session.beginTransaction().begin();
             Query query = session.createSQLQuery(consulta);
             query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
             ArrayList resultList=(ArrayList)query.list();
             if(resultList.size()>0)
             {
-                int i=0;
-                model.getDataVector().removeAllElements();
+                DefaultTableModel modelo= (DefaultTableModel)t_datos.getModel();
+                if(inicio==0)
+                    modelo.setNumRows(0);
                 for (int x=0; x<resultList.size(); x++) 
                 {
                     java.util.HashMap map=(java.util.HashMap)resultList.get(x);
                     if(map.get("folio_externo")==null)
                     {
                         Object[] renglon=new Object[]{map.get("id"),map.get("fecha").toString(),map.get("rfc_receptor"),map.get("nombre_receptor"),map.get("f_fiscal"),map.get("serie"),map.get("folio"),map.get("tot"),map.get("estado_factura")};
-                        model.addRow(renglon);
+                        modelo.addRow(renglon);
                     }
                     else
                     {
                         Object[] renglon=new Object[]{map.get("id"),map.get("fecha").toString(),map.get("rfc_receptor"),map.get("nombre_receptor"),map.get("f_fiscal"),map.get("serie_externo"),map.get("folio_externo"),map.get("tot"),map.get("estado_factura")};
-                        model.addRow(renglon);
+                        modelo.addRow(renglon);
                     }
-                    i++;
                 }
+                inicio=siguente;
             }
             else
-                model.getDataVector().removeAllElements();
+            {
+                parar=true;
+                if(inicio==0)
+                {
+                    DefaultTableModel modelo= (DefaultTableModel)t_datos.getModel();
+                    modelo.setNumRows(0);
+                }
+            }
             t_datos.revalidate();
-            t_busca.requestFocus();
-            //formatoTabla();
         }catch(Exception e)
         {
             System.out.println(e);

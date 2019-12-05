@@ -14,5 +14,63 @@
         <many-to-one name="servicio" class="Hibernate.entidades.Servicio" fetch="select">
             <column name="id_servicio" length="15" not-null="true" />
         </many-to-one>
+        <many-to-one name="posicion" class="Hibernate.entidades.Posicion" fetch="select">
+            <column name="id_posicion" length="15" />
+        </many-to-one>
+        <property name="intDesm" type="double">
+            <column name="int_desm" precision="22" scale="0" not-null="true">
+                <comment>desmontar interno</comment>
+            </column>
+        </property>
+        <property name="intCamb" type="double">
+            <column name="Int_camb" precision="22" scale="0" not-null="true">
+                <comment>cambiar interno</comment>
+            </column>
+        </property>
+        <property name="intRepMin" type="double">
+            <column name="Int_rep_min" precision="22" scale="0" not-null="true">
+                <comment>reparacion minima interno</comment>
+            </column>
+        </property>
+        <property name="intRepMed" type="double">
+            <column name="Int_rep_med" precision="22" scale="0" not-null="true">
+                <comment>reparacion media interno</comment>
+            </column>
+        </property>
+        <property name="intRepMax" type="double">
+            <column name="Int_rep_max" precision="22" scale="0" not-null="true">
+                <comment>reparacion maxima interno</comment>
+            </column>
+        </property>
+        <property name="intPinMin" type="double">
+            <column name="int_pin_min" precision="22" scale="0" not-null="true">
+                <comment>pintura minima interno</comment>
+            </column>
+        </property>
+        <property name="intPinMed" type="double">
+            <column name="int_pin_med" precision="22" scale="0" not-null="true">
+                <comment>pintura media interno</comment>
+            </column>
+        </property>
+        <property name="intPinMax" type="double">
+            <column name="int_pin_max" precision="22" scale="0" not-null="true">
+                <comment>pintura maxima interno</comment>
+            </column>
+        </property>
+        <property name="costoOri" type="double">
+            <column name="costo_ori" precision="22" scale="0" not-null="true">
+                <comment>costo de pieza original</comment>
+            </column>
+        </property>
+        <property name="costoNal" type="double">
+            <column name="costo_nal" precision="22" scale="0" not-null="true">
+                <comment>costo de pieza nacional</comment>
+            </column>
+        </property>
+        <property name="costoDesm" type="double">
+            <column name="costo_desm" precision="22" scale="0" not-null="true">
+                <comment>costo de pieza desmontada</comment>
+            </column>
+        </property>
     </class>
 </hibernate-mapping>

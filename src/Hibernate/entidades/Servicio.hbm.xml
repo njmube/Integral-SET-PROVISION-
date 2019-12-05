@@ -17,5 +17,11 @@
             </key>
             <one-to-many class="Hibernate.entidades.Item" />
         </set>
+        <set name="ordenes" table="orden" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_plantilla" length="15" not-null="true" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Orden" />
+        </set>
     </class>
 </hibernate-mapping>

@@ -7,9 +7,14 @@ import java.util.List;
 import javax.swing.InputMap;
 import javax.swing.JOptionPane;
 import Hibernate.entidades.Usuario;
+import Integral.HorizontalBarUI;
+import Integral.VerticalBarUI;
 import java.awt.Color;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 import java.awt.event.KeyEvent;
 import javax.swing.ImageIcon;
+import javax.swing.JScrollBar;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
@@ -29,18 +34,38 @@ public class buscaEjemplarAlmacen extends javax.swing.JDialog {
     Herramientas h;
     Usuario usr;
     String orden;
+    int noAlmacen;
+    int inicio=0;
+    boolean parar=false;
+    final JScrollBar scrollBar;
     
-    public buscaEjemplarAlmacen(java.awt.Frame parent, boolean modal, String ses, Usuario usuario, String orden, String trabajo, String especialidad) {
+    public buscaEjemplarAlmacen(java.awt.Frame parent, boolean modal, String ses, Usuario usuario, String orden, String trabajo, String especialidad, int almacen) {
         super(parent, modal);
+        noAlmacen=almacen;
         this.orden=orden;
         sessionPrograma=ses;
         usr=usuario;
         this.especialidad=especialidad;
         this.trabajo=trabajo;
         initComponents();
+        scrollBar = scroll.getVerticalScrollBar();
+        scrollBar.addAdjustmentListener(new AdjustmentListener() {
+            public void adjustmentValueChanged(AdjustmentEvent ae) {
+                if(parar==false)
+                {
+                    int extent = scrollBar.getModel().getExtent();
+                    extent+=scrollBar.getValue();
+                    if(extent==scrollBar.getMaximum())
+                        executeHQLQuery();
+                }
+              //System.out.println("actual: " + extent+" maximo:"+scrollBar.getMaximum());
+            }
+          });
         getRootPane().setDefaultButton(jButton1);
         t_datos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         formatoTabla();
+        scroll.getVerticalScrollBar().setUI(new VerticalBarUI());
+        scroll.getHorizontalScrollBar().setUI(new HorizontalBarUI());
         executeHQLQuery();
     }
     
@@ -68,7 +93,7 @@ public class buscaEjemplarAlmacen extends javax.swing.JDialog {
         jLabel1 = new javax.swing.JLabel();
         cb_tipo = new javax.swing.JComboBox();
         jPanel3 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        scroll = new javax.swing.JScrollPane();
         t_datos = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
 
@@ -125,11 +150,11 @@ public class buscaEjemplarAlmacen extends javax.swing.JDialog {
 
             },
             new String [] {
-                "No Parte", "Modelo", "Marca", "Tipo", "Catálogo", "Medida", "Existencia", "Operario", "-", "$ C/U", "-"
+                "No Parte", "", "Marca", "", "Catálogo", "Medida", "Existencia", "Operario", "-", "$ C/U", "-"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
                 false, false, false, false, false, false, false, false, false, false, false
@@ -150,7 +175,7 @@ public class buscaEjemplarAlmacen extends javax.swing.JDialog {
                 t_datosKeyPressed(evt);
             }
         });
-        jScrollPane1.setViewportView(t_datos);
+        scroll.setViewportView(t_datos);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -158,13 +183,13 @@ public class buscaEjemplarAlmacen extends javax.swing.JDialog {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 869, Short.MAX_VALUE)
+                .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 869, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(scroll, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -222,6 +247,8 @@ public class buscaEjemplarAlmacen extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void t_buscaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_buscaKeyReleased
+        inicio=0;
+        parar=false;
         executeHQLQuery();
     }//GEN-LAST:event_t_buscaKeyReleased
 
@@ -238,12 +265,12 @@ public class buscaEjemplarAlmacen extends javax.swing.JDialog {
                 if(orden.compareTo("")==0)
                 {
                     op= new Object[]{
-                        t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString(),
-                        t_datos.getValueAt(t_datos.getSelectedRow(), 1).toString(),
-                        t_datos.getValueAt(t_datos.getSelectedRow(), 2).toString(),
-                        t_datos.getValueAt(t_datos.getSelectedRow(), 3).toString(),
-                        t_datos.getValueAt(t_datos.getSelectedRow(), 4).toString(),
-                        t_datos.getValueAt(t_datos.getSelectedRow(), 5).toString(),
+                        t_datos.getValueAt(t_datos.getSelectedRow(), 0),
+                        t_datos.getValueAt(t_datos.getSelectedRow(), 1),
+                        t_datos.getValueAt(t_datos.getSelectedRow(), 2),
+                        t_datos.getValueAt(t_datos.getSelectedRow(), 3),
+                        t_datos.getValueAt(t_datos.getSelectedRow(), 4),
+                        t_datos.getValueAt(t_datos.getSelectedRow(), 5),
                         Double.parseDouble(t_datos.getValueAt(t_datos.getSelectedRow(), 6).toString()),
                         Double.parseDouble(t_datos.getValueAt(t_datos.getSelectedRow(), 8).toString()),
                     };
@@ -251,12 +278,12 @@ public class buscaEjemplarAlmacen extends javax.swing.JDialog {
                 else
                 {
                     op= new Object[]{
-                        t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString(),
-                        t_datos.getValueAt(t_datos.getSelectedRow(), 1).toString(),
-                        t_datos.getValueAt(t_datos.getSelectedRow(), 2).toString(),
+                        t_datos.getValueAt(t_datos.getSelectedRow(), 0),
+                        t_datos.getValueAt(t_datos.getSelectedRow(), 1),
+                        t_datos.getValueAt(t_datos.getSelectedRow(), 2),
                         Double.parseDouble(t_datos.getValueAt(t_datos.getSelectedRow(), 3).toString()),
-                        t_datos.getValueAt(t_datos.getSelectedRow(), 4).toString(),
-                        t_datos.getValueAt(t_datos.getSelectedRow(), 5).toString(),
+                        t_datos.getValueAt(t_datos.getSelectedRow(), 4),
+                        t_datos.getValueAt(t_datos.getSelectedRow(), 5),
                         Double.parseDouble(t_datos.getValueAt(t_datos.getSelectedRow(), 6).toString()),
                         Double.parseDouble(t_datos.getValueAt(t_datos.getSelectedRow(), 7).toString()),
                         Double.parseDouble(t_datos.getValueAt(t_datos.getSelectedRow(), 8).toString()),
@@ -298,7 +325,7 @@ public class buscaEjemplarAlmacen extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane scroll;
     public javax.swing.JTextField t_busca;
     private javax.swing.JTable t_datos;
     // End of variables declaration//GEN-END:variables
@@ -311,8 +338,16 @@ public class buscaEjemplarAlmacen extends javax.swing.JDialog {
             String texto="";
             if(orden.compareTo("")==0)
             {
-                texto="select id_parte as id, if(modelo is null,'', modelo) as modelo, if(id_marca is null, '', id_marca) as marca, if(tipo_nombre is null,'', tipo_nombre) as tipo, id_catalogo, medida, existencias, 0.0 as cero, precio " +
-                      "from ejemplar where inventario=1 and ";
+                if(noAlmacen==0)
+                {
+                    texto="select id_parte as id, if(id_marca is null, '', id_marca) as marca, comentario, medida, existencias as valor, 0.0 as cero, precio " +
+                          "from ejemplar where inventario=1 and ";
+                }
+                else
+                {
+                    texto="select id_parte as id, if(id_marca is null, '', id_marca) as marca, comentario, medida, existencias2 as valor, 0.0 as cero, precio " +
+                          "from ejemplar where inventario=1 and ";
+                }
             }
             else
             {
@@ -324,23 +359,23 @@ public class buscaEjemplarAlmacen extends javax.swing.JDialog {
                 switch(especialidad){
                     case "HOJALATERIA":
                         aux1=" and almacen.especialidad='H'";
-                        aux2="and esp_hoj=true";
+                        aux2="and especialidad='H'";
                         break;
                     case "MECANICA":
                         aux1=" and almacen.especialidad='M'";
-                        aux2="and esp_mec=true";
+                        aux2="and especialidad='M'";
                         break;
                     case "SUSPENSION":
                         aux1=" and almacen.especialidad='S'";
-                        aux2="and esp_sus=true";
+                        aux2="and especialidad='S'";
                         break;
                     case "ELECTRICO":
                         aux1=" and almacen.especialidad='E'";
-                        aux2="and esp_ele=true";
+                        aux2="and especialidad='E'";
                         break;
                     case "PINTURA":
                         aux1=" and almacen.especialidad='P'";
-                        aux2="and esp_pin=true";
+                        aux2="and especialidad='P'";
                         break;
                     case "ADICIONAL":
                         aux2="and consumible.tipo='A'";
@@ -350,28 +385,55 @@ public class buscaEjemplarAlmacen extends javax.swing.JDialog {
                         break;    
                 }
                 
-                texto="select ejemplar.id_Parte as id, if(modelo is null,'', modelo) as modelo, if(id_marca is null, '', id_marca) as marca, ejemplar.existencias, id_catalogo, ejemplar.medida, 0.0 as cero, " +
-                      "( (select if(sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) from ejemplar left join movimiento on ejemplar.id_Parte=movimiento.id_Parte " +
-                      "left join almacen on movimiento.id_almacen=almacen.id_almacen where ejemplar.id_Parte=id and almacen.id_orden="+orden+" and almacen.tipo_movimiento=2 and almacen.operacion=8 "+aux+aux1+") - " +
-                      "(select if(sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) from ejemplar left join movimiento on ejemplar.id_Parte=movimiento.id_Parte " +
-                      "left join almacen on movimiento.id_almacen=almacen.id_almacen where ejemplar.id_Parte=id and almacen.id_orden="+orden+" and almacen.tipo_movimiento=1 and almacen.operacion=8 "+aux+aux1+") )as operario, consumible.cantidad as tipo, ejemplar.precio " +
-                      "from consumible left join ejemplar on consumible.id_Parte=ejemplar.id_Parte where inventario=1 "+aux2+" and id_orden="+orden+" and ";
+                if(noAlmacen==0)
+                {
+                    texto="select ejemplar.id_Parte as id, if(id_marca is null, '', id_marca) as marca, ejemplar.existencias as valor, comentario, ejemplar.medida, 0.0 as cero, " +
+                          "( (select if(sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) from ejemplar left join movimiento on ejemplar.id_Parte=movimiento.id_Parte " +
+                          "left join almacen on movimiento.id_almacen=almacen.id_almacen where ejemplar.id_Parte=id and almacen.id_orden="+orden+" and almacen.tipo_movimiento=2 and almacen.operacion=8 "+aux+aux1+") - " +
+                          "(select if(sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) from ejemplar left join movimiento on ejemplar.id_Parte=movimiento.id_Parte " +
+                          "left join almacen on movimiento.id_almacen=almacen.id_almacen where ejemplar.id_Parte=id and almacen.id_orden="+orden+" and almacen.tipo_movimiento=1 and almacen.operacion=8 "+aux+aux1+") )as operario, consumible.cantidad as tipo, ejemplar.precio " +
+                          "from consumible left join ejemplar on consumible.id_Parte=ejemplar.id_Parte where inventario=1 "+aux2+" and id_orden="+orden+" and ";
+                }
+                else
+                {
+                    texto="select ejemplar.id_Parte as id, if(id_marca is null, '', id_marca) as marca, ejemplar.existencias2 as valor, comentario, ejemplar.medida, 0.0 as cero, " +
+                          "( (select if(sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) from ejemplar left join movimiento on ejemplar.id_Parte=movimiento.id_Parte " +
+                          "left join almacen on movimiento.id_almacen=almacen.id_almacen where ejemplar.id_Parte=id and almacen.id_orden="+orden+" and almacen.tipo_movimiento=2 and almacen.operacion=8 "+aux+aux1+") - " +
+                          "(select if(sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) from ejemplar left join movimiento on ejemplar.id_Parte=movimiento.id_Parte " +
+                          "left join almacen on movimiento.id_almacen=almacen.id_almacen where ejemplar.id_Parte=id and almacen.id_orden="+orden+" and almacen.tipo_movimiento=1 and almacen.operacion=8 "+aux+aux1+") )as operario, consumible.cantidad as tipo, ejemplar.precio " +
+                          "from consumible left join ejemplar on consumible.id_Parte=ejemplar.id_Parte where inventario=1 "+aux2+" and id_orden="+orden+" and ";
+                }
             }
             if(cb_tipo.getSelectedItem().toString().compareTo("clave")==0)
-                texto+="ejemplar.id_Parte like '"+t_busca.getText()+"%'";
+                texto+="ejemplar.id_Parte like '%"+t_busca.getText()+"%'";
             else
-                texto+="id_catalogo like '"+t_busca.getText()+"%'";
+                texto+="comentario like '%"+t_busca.getText()+"%'";
+            
+            int siguente=inicio+20;
+            texto+=" limit "+inicio+", 20";
             q = session.createSQLQuery(texto);
             q.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
             List resultList = q.list();
-            model=(DefaultTableModel)t_datos.getModel();
-            model.setRowCount(0);
-            int i=0;
-            for (Object o : resultList) 
+            DefaultTableModel modelo= (DefaultTableModel)t_datos.getModel();
+            if(inicio==0)
+                modelo.setNumRows(0);
+            if(resultList.size()>0)
             {
-                java.util.HashMap actor=(java.util.HashMap)o;
-                Object[] vector=new Object[]{actor.get("id"), actor.get("modelo"),actor.get("marca"),actor.get("tipo"), actor.get("id_catalogo"),actor.get("medida"),actor.get("existencias"),actor.get("operario"),actor.get("cero"), actor.get("precio"), actor.get("cero")};
-                model.addRow(vector);
+                for (Object o : resultList) 
+                {
+                    java.util.HashMap actor=(java.util.HashMap)o;
+                    Object[] vector=new Object[]{actor.get("id"), "", actor.get("marca"), actor.get("tipo"),actor.get("comentario"),actor.get("medida"),actor.get("valor"),actor.get("operario"),actor.get("cero"), actor.get("precio"), actor.get("cero")};
+                    modelo.addRow(vector);
+                }
+                inicio=siguente;
+            }
+            else
+            {
+                parar=true;
+                if(inicio==0)
+                {
+                    modelo.setNumRows(0);
+                }
             }
             session.disconnect();
         } catch (Exception he) {

@@ -1,0 +1,1501 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cfdi:Comprobante xmlns:cfdi="http://www.sat.gob.mx/cfd/3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="3.3" Serie="TOL" Folio="175" Fecha="2018-01-17T01:20:09" Sello="fEDNP2WkbANQYW5aZc6DmUMLMmN5dzTZlaEUF29cjXxGETPN4lwSKCb0FIryi9Mgl4K/x/E086YNQpOB68Qsi0wFfr1U3UKYUa0ZhUWSLGEkZ4sytqFipyB3vS6GEH0HfQCUIz06kMkQXZKQ6LbjAM7hqErSjRCkDU2v9zV6De0OGMUjmRKydYLGWvRJHqu2rPVUus5SHUiqiv6gWogtl+FABHRSDnzZybKCT1f5/7Ooc6LZD6J1nIT83CTniIby0vRrEVUp8wQiX67lKu30lAzUi6XY0MCKx/PXQima453eLU0DTqSD6YBTpTiIqzB1MWiBzT/8lcLnBf5SuCPNDA==" FormaPago="03" NoCertificado="00001000000307294155" Certificado="MIIFGzCCBAOgAwIBAgIUMDAwMDEwMDAwMDAzMDcyOTQxNTUwDQYJKoZIhvcNAQELBQAwggGKMTgwNgYDVQQDDC9BLkMuIGRlbCBTZXJ2aWNpbyBkZSBBZG1pbmlzdHJhY2nDs24gVHJpYnV0YXJpYTEvMC0GA1UECgwmU2VydmljaW8gZGUgQWRtaW5pc3RyYWNpw7NuIFRyaWJ1dGFyaWExODA2BgNVBAsML0FkbWluaXN0cmFjacOzbiBkZSBTZWd1cmlkYWQgZGUgbGEgSW5mb3JtYWNpw7NuMR8wHQYJKoZIhvcNAQkBFhBhY29kc0BzYXQuZ29iLm14MSYwJAYDVQQJDB1Bdi4gSGlkYWxnbyA3NywgQ29sLiBHdWVycmVybzEOMAwGA1UEEQwFMDYzMDAxCzAJBgNVBAYTAk1YMRkwFwYDVQQIDBBEaXN0cml0byBGZWRlcmFsMRQwEgYDVQQHDAtDdWF1aHTDqW1vYzEVMBMGA1UELRMMU0FUOTcwNzAxTk4zMTUwMwYJKoZIhvcNAQkCDCZSZXNwb25zYWJsZTogQ2xhdWRpYSBDb3ZhcnJ1YmlhcyBPY2hvYTAeFw0xNTA2MDgxNjEzMDdaFw0xOTA2MDgxNjEzMDdaMIHjMSUwIwYDVQQDExxJTVBFUklBIFRSVUNLIFBBUlRTIFNBIERFIENWMSUwIwYDVQQpExxJTVBFUklBIFRSVUNLIFBBUlRTIFNBIERFIENWMSUwIwYDVQQKExxJTVBFUklBIFRSVUNLIFBBUlRTIFNBIERFIENWMSUwIwYDVQQtExxJVFAxNTAzMjZNUDEgLyBQRVZNODAwNTE4R1U0MR4wHAYDVQQFExUgLyBQRVZNODAwNTE4SE1DUkxSMDMxJTAjBgNVBAsTHElNUEVSSUEgVFJVQ0sgUEFSVFMgU0EgREUgQ1YwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCDv2+UY6C1NRb0+klMY5p/Tbh5bYODj8y4CYeQcHbfmZyVCU6FoeTzWGVO6Bd4Hp/s/W6C6nPBhJjh4nh6byvwhAP3gcwPY332vAyyy/q3uzAzaM9JUKAt6vwYvgZtQ7l8x8w/R+d+XlC1yiliByTiD+72x+TKgww9+LhQO/jYoCAO27A1fMghI4I0BrworzIaKHhMTvs2T9lHL9DWU8HzyHqvjvCME7cK96jVFyXiwKrYWPdAGOHPwAU0RCcZspdZkqBhodQgX/6bV4+tDd3l1vw/IWwuRCOOnt3K23EvlpCksdMlsPKJYMkcLglbEqmXDigLiU8aR1G6rD8ZX2vjAgMBAAGjHTAbMAwGA1UdEwEB/wQCMAAwCwYDVR0PBAQDAgbAMA0GCSqGSIb3DQEBCwUAA4IBAQCpMlMzhz6ua7FFbqBto3RnzRoHK7V5VHWfoU7VCrOhT+X6FgEOKVVcgvJsoMaEuyvli9QBbE3miqnQbAjPfU9xN/PqEXvUPVKY39vy9U7YRnLlszszdPukG814tudUULr/kq7okLXeExpFP99+jEvnY4wiFZtkJ/MoDNSWjNh14naJqOAAMDSZx41Xo129WVWbCDOeeI6Jg2+WBj9Qg1S4S4jlRw0F8hMQVqBj8EGX6sSae9F25xD2mHKsXG4c0UyRqt7yhOGdwAiUr4IEh+6sx4zM+sLFKofiEZ4nCAGO+RtYdZAJqUWlY3bLwWK5MkdognorvvchLSN+QT2RdUEw" CondicionesDePago="PAGO EN PARCIALIDADES O DIFERIDO" SubTotal="213663.00" Moneda="MXN" TipoCambio="1" Total="247849.08" TipoDeComprobante="I" MetodoPago="PPD" LugarExpedicion="50120" xsi:schemaLocation="http://www.sat.gob.mx/cfd/3 http://www.sat.gob.mx/sitio_internet/cfd/3/cfdv33.xsd">
+  <cfdi:Emisor Rfc="ITP150326MP1" Nombre="IMPERIA TRUCK PARTS S.A. DE C.V." RegimenFiscal="601" />
+  <cfdi:Receptor Rfc="QCS931209G49" Nombre="QUALITAS COMPANIA DE SEGUROS SA DE CV" UsoCFDI="G03" />
+  <cfdi:Conceptos>
+    <cfdi:Concepto ClaveProdServ="20121445" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="CINCHO TANQUE COM" ValorUnitario="1200.00" Importe="2400.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="2400.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="384.00" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="15121807" Cantidad="45.00" ClaveUnidad="LTR" Unidad="LTS" Descripcion="ANTICONGELANTE" ValorUnitario="21.27" Importe="957.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="957.00001500" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="153.12" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="39122106" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="ABRAZADERA CRUCETA" ValorUnitario="1692.00" Importe="1692.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="1692.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="270.72" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="31162414" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="ABRAZADERA EJE DELAN" ValorUnitario="1080.00" Importe="1080.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="1080.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="172.80" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="31162414" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="ABRAZADERA MANGUERA" ValorUnitario="88.00" Importe="88.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="88.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="14.08" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="20121445" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="AJUSTADOR QUINTA RUEDA" ValorUnitario="1517.00" Importe="1517.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="1517.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="242.72" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="ALERON DERECHO DORMI" ValorUnitario="2461.00" Importe="2461.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="2461.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="393.76" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="ALERON SUPERIOR DERECHO" ValorUnitario="4300.00" Importe="4300.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="4300.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="688.00" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="ALERON SUPERIOR IZQUIERDO" ValorUnitario="3400.00" Importe="3400.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="3400.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="544.00" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="12161700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="AMORTIGUA PTA COST" ValorUnitario="1716.00" Importe="1716.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="1716.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="274.56" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="12161700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="AMORTIGUADOR 2DO EJE" ValorUnitario="2187.00" Importe="2187.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="2187.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="349.92" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="12161700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="AMORTIGUADOR CABINA" ValorUnitario="2020.00" Importe="2020.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="2020.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="323.20" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="12161700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="AMORTIGUADOR COFRE" ValorUnitario="1408.00" Importe="1408.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="1408.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="225.28" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="25173300" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="BAYONETA DEP DIRECCION" ValorUnitario="1839.00" Importe="1839.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="1839.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="294.24" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="25174807" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="BISAGRA PUERTA DERECHA" ValorUnitario="4583.00" Importe="4583.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="4583.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="733.28" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="20121445" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="BOLSA AIRE SUSPENCIO" ValorUnitario="1812.00" Importe="1812.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="1812.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="289.92" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="20121445" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="BOLSA SUSPESION 2DO" ValorUnitario="2124.00" Importe="2124.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="2124.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="339.84" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="31171605" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="BUJE QUINTA RUEDA" ValorUnitario="2292.00" Importe="2292.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="2292.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="366.72" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="31171605" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="BUJES DELANTEROS DE" ValorUnitario="2010.00" Importe="2010.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="2010.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="321.60" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="26111700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="CABLE 7 HILOS" ValorUnitario="2417.00" Importe="2417.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="2417.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="386.72" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="26111700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="CANUELA EXTERIOR CRI" ValorUnitario="1495.00" Importe="1495.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="1495.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="239.20" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="26111700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="CANUELA INTERIORCRIS" ValorUnitario="2178.00" Importe="2178.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="2178.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="348.48" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="24101800" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="CENTROS DE MUELLE1/" ValorUnitario="88.00" Importe="88.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="88.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="14.08" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="31201521" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="CINTA PEGAMOLDURAS" ValorUnitario="902.00" Importe="902.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="902.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="144.32" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="COLUMNA DIRECCION" ValorUnitario="3870.00" Importe="3870.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="3870.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="619.20" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="26112000" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="COLUMPIO PARA CARDAN" ValorUnitario="2069.00" Importe="2069.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="2069.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="331.04" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="27112800" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="CONEXION CODO" ValorUnitario="403.00" Importe="403.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="403.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="64.48" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="COSTADO DERECHO DORM" ValorUnitario="38917.00" Importe="38917.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="38917.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="6226.72" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="25172300" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="CRISTAL VENTA PTA DE" ValorUnitario="2063.00" Importe="2063.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="2063.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="330.08" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="39122109" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="CRUCETA FLECHA CARDA" ValorUnitario="2187.00" Importe="2187.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="2187.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="349.92" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="CUARTO DIRECCI DER" ValorUnitario="643.00" Importe="643.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="643.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="102.88" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="DEFENSA CENTRAL DEF" ValorUnitario="4800.00" Importe="4800.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="4800.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="768.00" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="25173900" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="ELEVADOR CRISTAL PUE" ValorUnitario="1939.00" Importe="1939.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="1939.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="310.24" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="31241700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="ESPEJO BANQUETERO" ValorUnitario="1509.00" Importe="1509.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="1509.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="241.44" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="31241700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="ESPEJO LATERAL DEREC" ValorUnitario="3299.00" Importe="3299.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="3299.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="527.84" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="10141605" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="ESTRIBO INFERIOR DER" ValorUnitario="865.00" Importe="865.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="865.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="138.40" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="95121624" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="FARO DERECHO" ValorUnitario="3200.00" Importe="3200.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="3200.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="512.00" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="95121624" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="FARO NEBLINERO DERECHO" ValorUnitario="650.00" Importe="650.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="650.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="104.00" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="95121624" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="FARO NEBLINERO IZQUI" ValorUnitario="650.00" Importe="650.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="650.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="104.00" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="31162404" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="GRAPAS MOSQUITERA" ValorUnitario="324.00" Importe="324.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="324.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="51.84" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="GUARDAFANGO DELANTERO TRASERO IZQ CABINA" ValorUnitario="1124.00" Importe="1124.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="1124.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="179.84" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="GUARDAFANGO DELANTER IZQ" ValorUnitario="928.00" Importe="928.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="928.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="148.48" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="25102001" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="HULE CINCHO TANQUE" ValorUnitario="1750.00" Importe="1750.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="1750.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="280.00" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="25172300" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="HULE MARCO PARABRISAS" ValorUnitario="1549.00" Importe="1549.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="1549.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="247.84" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="24112003" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="HULE TOLVA DE LLUVIA" ValorUnitario="1030.00" Importe="1030.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="1030.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="164.80" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="LODERA TRASERA IZQUIERDA" ValorUnitario="440.00" Importe="440.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="440.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="70.40" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="11162111" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="MALLA MOSQUITERA" ValorUnitario="959.00" Importe="959.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="959.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="153.44" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="40101801" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="MANGUERA SUP RADIADOR" ValorUnitario="1465.00" Importe="1465.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="1465.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="234.40" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="26112000" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="MUELAS QUINTA RUEDA" ValorUnitario="3592.00" Importe="3592.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="3592.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="574.72" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="25172300" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="PARABRISAS" ValorUnitario="3256.00" Importe="3256.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="3256.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="520.96" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="25172605" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="PARRILLA" ValorUnitario="5200.00" Importe="5200.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="5200.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="832.00" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="PEGAMENTO FUSSOR 100" ValorUnitario="4260.00" Importe="4260.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="4260.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="681.60" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="31161600" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="PERNO QUINTA RUEDA" ValorUnitario="1630.00" Importe="1630.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="1630.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="260.80" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="39111521" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="PLAFON BLANCO TRASER" ValorUnitario="331.00" Importe="331.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="331.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="52.96" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="39111521" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="PLAFON COSTADO DEREC" ValorUnitario="350.00" Importe="350.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="350.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="56.00" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="11131501" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="PLUMAS BRAZO LIMPIAD" ValorUnitario="376.00" Importe="376.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="376.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="60.16" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="26111500" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="PUENTE DE TRANSMISIO" ValorUnitario="1144.00" Importe="1144.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="1144.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="183.04" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="25172200" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="PUERTA DERECHA CABIN" ValorUnitario="17893.00" Importe="17893.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="17893.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="2862.88" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="30103206" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="REJILLA BOCINA DER" ValorUnitario="44.00" Importe="44.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="44.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="7.04" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="RESBALON EXT DER CAB" ValorUnitario="144.00" Importe="144.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="144.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="23.04" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="RESBALON EXT DER CAB" ValorUnitario="144.00" Importe="144.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="144.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="23.04" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="RETENES PARA MAZA" ValorUnitario="540.00" Importe="540.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="540.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="86.40" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="26112000" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="RONDANAS DE RELLENO" ValorUnitario="352.00" Importe="352.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="352.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="56.32" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="12161700" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="ROTULAS AMORTIGUADO" ValorUnitario="31.00" Importe="62.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="62.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="9.92" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="26111700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="SEGURO TAPA FARO" ValorUnitario="296.00" Importe="296.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="296.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="47.36" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="SELLADOR SIKFLEX" ValorUnitario="1176.00" Importe="1176.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="1176.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="188.16" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="SOP ALERON SP IZQ" ValorUnitario="390.00" Importe="390.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="390.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="62.40" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="SOP INF BARRA ESTABI" ValorUnitario="1526.00" Importe="1526.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="1526.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="244.16" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="SOPORTE INTERMEDIO A" ValorUnitario="2386.00" Importe="2386.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="2386.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="381.76" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="26101500" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="TACON DELANTERO MOTO" ValorUnitario="2069.00" Importe="2069.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="2069.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="331.04" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="26101500" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="TACON TRASERO MOTOR" ValorUnitario="4316.00" Importe="4316.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="4316.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="690.56" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="25172400" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="TANQUE COMB 120 GAL" ValorUnitario="6300.00" Importe="6300.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="6300.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="1008.00" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="24122004" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="TAPA FARO DERECHO CO" ValorUnitario="270.00" Importe="270.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="270.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="43.20" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="24122004" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="TAPA FARO IZQUIERDO" ValorUnitario="270.00" Importe="270.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="270.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="43.20" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="24122004" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="TAPA INFERIOR BRAZO DER" ValorUnitario="319.00" Importe="319.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="319.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="51.04" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="24122004" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="TAPON PARA DEPOSITO" ValorUnitario="49.00" Importe="49.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="49.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="7.84" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="26101700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="TORNILLO FLECHA CARD" ValorUnitario="800.00" Importe="800.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="800.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="128.00" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="31161700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="TUERCAS PARA COFRE" ValorUnitario="10.00" Importe="10.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="10.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="1.60" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="26111600" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="TURBO" ValorUnitario="18500.00" Importe="18500.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="18500.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="2960.00" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="40141600" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="VALVULA NIVELADORA DE" ValorUnitario="2493.00" Importe="2493.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="2493.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="398.88" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="40141600" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="VALVULA NIVELADORA S" ValorUnitario="1146.00" Importe="1146.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="1146.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="183.36" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="30102400" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="VARILLA VALVULA NIVE" ValorUnitario="699.00" Importe="699.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="699.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="111.84" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="31181800" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="VESTIDURA COSTADO DO" ValorUnitario="2981.00" Importe="2981.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="2981.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="476.96" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="31181800" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="VESTIDURA TOLDO CABI" ValorUnitario="2375.00" Importe="2375.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="2375.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="380.00" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="31181800" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="VESTIDURA TOLDO DORM" ValorUnitario="2375.00" Importe="2375.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="2375.000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="380.00" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+  </cfdi:Conceptos>
+  <cfdi:Impuestos TotalImpuestosTrasladados="34186.08">
+    <cfdi:Traslados>
+      <cfdi:Traslado Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="34186.08" />
+    </cfdi:Traslados>
+  </cfdi:Impuestos>
+  <cfdi:Complemento>
+    <tfd:TimbreFiscalDigital xmlns:tfd="http://www.sat.gob.mx/TimbreFiscalDigital" xsi:schemaLocation="http://www.sat.gob.mx/TimbreFiscalDigital http://www.sat.gob.mx/sitio_internet/cfd/TimbreFiscalDigital/TimbreFiscalDigitalv11.xsd" Version="1.1" SelloCFD="fEDNP2WkbANQYW5aZc6DmUMLMmN5dzTZlaEUF29cjXxGETPN4lwSKCb0FIryi9Mgl4K/x/E086YNQpOB68Qsi0wFfr1U3UKYUa0ZhUWSLGEkZ4sytqFipyB3vS6GEH0HfQCUIz06kMkQXZKQ6LbjAM7hqErSjRCkDU2v9zV6De0OGMUjmRKydYLGWvRJHqu2rPVUus5SHUiqiv6gWogtl+FABHRSDnzZybKCT1f5/7Ooc6LZD6J1nIT83CTniIby0vRrEVUp8wQiX67lKu30lAzUi6XY0MCKx/PXQima453eLU0DTqSD6YBTpTiIqzB1MWiBzT/8lcLnBf5SuCPNDA==" NoCertificadoSAT="00001000000405332712" RfcProvCertif="FIN1203015JA" UUID="A3CA6AF0-B284-43E2-AB03-7E009B2C86AA" FechaTimbrado="2018-01-17T15:42:10" SelloSAT="xbWse4jsrP0rcw8RtsrDgy1ENKO/ktPLJOroMMbKU4ElV+MDCZ2UWga+3rByvI3bOfbPspJmvOLWRNEAECH2DQ0GGCLStRQ/xgBGHf2XAs3YSWofStp+P2TxbYALoqLEM8RJgtwNNrLisMP1Nd7CGxSaI2sSwGpzyZzWV5jazCh8rcAoeThCs2x8lAcKRoKJR+kIuZUdiSrre2S2cQTf7m4ax8wJAMr6oBaYxb2cQNVMsGmWxjfjcU+brZVhLNfTtcgYr8ARZz6fIBcNiq5mrjENCGXjf3o0tChXMj39vEtocQwxx/3gByheFf6IpFnytGOgvPhSJuyHSi8nQ2q5lg==" />
+  </cfdi:Complemento>
+  <cfdi:Addenda>
+    <ECFD version="1.0">
+      <Documento ID="T33175">
+        <Encabezado>
+          <IdDoc>
+            <NroAprob>00000</NroAprob>
+            <AnoAprob>00000</AnoAprob>
+            <Tipo>33</Tipo>
+            <Folio>175</Folio>
+            <Estado>ORIGINAL</Estado>
+            <NumeroInterno>50</NumeroInterno>
+            <FechaEmis>2018-01-17T15:42:10</FechaEmis>
+            <FormaPago>PAGO EN PARCIALIDADES O DIFERIDO</FormaPago>
+            <Area>
+              <IdArea>001</IdArea>
+              <IdRevision>003</IdRevision>
+            </Area>
+          </IdDoc>
+          <ExEmisor>
+            <RFCEmisor>ITP150326MP1</RFCEmisor>
+            <NmbEmisor>IMPERIA TRUCK PARTS S.A. DE C.V.</NmbEmisor>
+            <CodigoExEmisor>
+              <TpoCdgIntEmisor>EXT</TpoCdgIntEmisor>
+              <CdgIntEmisor>25367</CdgIntEmisor>
+            </CodigoExEmisor>
+            <DomFiscal>
+              <Calle>SEGUNDA DE LA CADENA</Calle>
+              <NroExterior>30</NroExterior>
+              <Colonia>REFORMA</Colonia>
+              <Localidad>Estado de México</Localidad>
+              <Municipio>SAN MATEO ATENCO</Municipio>
+              <Estado>Estado de México</Estado>
+              <Pais>MEXICO</Pais>
+              <CodigoPostal>50120</CodigoPostal>
+            </DomFiscal>
+            <ContactoEmisor>
+              <Tipo>matriz</Tipo>
+              <Nombre>Braulio A. Ramirez Alba</Nombre>
+              <eMail>braulio_ramirez@tractoservicio.com</eMail>
+              <Telefono>7221996100</Telefono>
+            </ContactoEmisor>
+          </ExEmisor>
+          <ExReceptor>
+            <RFCRecep>QCS931209G49</RFCRecep>
+            <NmbRecep>QUALITAS COMPANIA DE SEGUROS SA DE CV</NmbRecep>
+            <DomFiscalRcp>
+              <Calle>JOSE MARIA CASTORENA</Calle>
+              <NroExterior>426</NroExterior>
+              <Colonia>SAN JOSE DE LOS CEDROS</Colonia>
+              <Localidad>CIUDAD DE MEXICO</Localidad>
+              <Municipio>CUAJIMALPA</Municipio>
+              <Estado>CIUDAD DE MEXICO</Estado>
+              <Pais>MEXICO</Pais>
+              <CodigoPostal>05200</CodigoPostal>
+            </DomFiscalRcp>
+            <LugarRecep>
+              <Calle>JOSE MARIA CASTORENA</Calle>
+              <NroExterior>426</NroExterior>
+              <Colonia>SAN JOSE DE LOS CEDROS</Colonia>
+              <Localidad>CIUDAD DE MEXICO</Localidad>
+              <Municipio>CUAJIMALPA</Municipio>
+              <Estado>CIUDAD DE MEXICO</Estado>
+              <Pais>MEXICO</Pais>
+              <CodigoPostal>05200</CodigoPostal>
+            </LugarRecep>
+            <ContactoReceptor>
+              <Tipo>coordinador</Tipo>
+              <Nombre>Liliana Segura</Nombre>
+              <eMail>lsegura@qualitas.com.mx</eMail>
+              <Telefono>7221996100</Telefono>
+            </ContactoReceptor>
+          </ExReceptor>
+          <Totales>
+            <Moneda>MXN</Moneda>
+            <SubTotal>213663.000015</SubTotal>
+            <MntBase>213663.000015</MntBase>
+            <MntImp>34186.0800024</MntImp>
+            <VlrPagar>247849.0800174</VlrPagar>
+            <VlrPalabras>DOSCIENTOS CUARENTA Y SIETE MIL OCHOCIENTOS CUARENTA Y NUEVE PESOS 08/100 M.N.</VlrPalabras>
+          </Totales>
+          <ExImpuestos>
+            <TipoImp>IVA</TipoImp>
+            <TasaImp>16.00</TasaImp>
+            <MontoImp>34186.0800024</MontoImp>
+          </ExImpuestos>
+          <Poliza>
+            <Tipo>DAÑOS</Tipo>
+            <Numero>0780457126</Numero>
+            <INC>17</INC>
+            <TpoCliente>0</TpoCliente>
+            <NroReporte>04171373522</NroReporte>
+            <NroSint>04171243818</NroSint>
+          </Poliza>
+          <Vehiculo>
+            <Tipo>PARTICULAR</Tipo>
+            <Marca>VOLVO</Marca>
+            <Modelo>VNM</Modelo>
+            <Ano>2007</Ano>
+            <Color>BLANCO</Color>
+            <NroSerie>4V4MC9GH47N480618</NroSerie>
+            <Placa>90AF8W</Placa>
+          </Vehiculo>
+        </Encabezado>
+        <Detalle>
+          <NroLinDet>1</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>CINCHO TANQUE COM</DscItem>
+          <QtyItem>2.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.0121445E7</PrcNetoItem>
+          <MontoNetoItem>4.024289E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>2</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>ANTICONGELANTE</DscItem>
+          <QtyItem>45.0</QtyItem>
+          <UnmdItem>LTS</UnmdItem>
+          <PrcNetoItem>1.5121807E7</PrcNetoItem>
+          <MontoNetoItem>6.80481315E8</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>3</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>ABRAZADERA CRUCETA</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>3.9122106E7</PrcNetoItem>
+          <MontoNetoItem>3.9122106E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>4</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>ABRAZADERA EJE DELAN</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>3.1162414E7</PrcNetoItem>
+          <MontoNetoItem>3.1162414E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>5</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>ABRAZADERA MANGUERA</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>3.1162414E7</PrcNetoItem>
+          <MontoNetoItem>3.1162414E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>6</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>AJUSTADOR QUINTA RUEDA</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.0121445E7</PrcNetoItem>
+          <MontoNetoItem>2.0121445E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>7</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>ALERON DERECHO DORMI</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.51747E7</PrcNetoItem>
+          <MontoNetoItem>2.51747E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>8</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>ALERON SUPERIOR DERECHO</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.51747E7</PrcNetoItem>
+          <MontoNetoItem>2.51747E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>9</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>ALERON SUPERIOR IZQUIERDO</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.51747E7</PrcNetoItem>
+          <MontoNetoItem>2.51747E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>10</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>AMORTIGUA PTA COST</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>1.21617E7</PrcNetoItem>
+          <MontoNetoItem>1.21617E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>11</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>AMORTIGUADOR 2DO EJE</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>1.21617E7</PrcNetoItem>
+          <MontoNetoItem>1.21617E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>12</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>AMORTIGUADOR CABINA</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>1.21617E7</PrcNetoItem>
+          <MontoNetoItem>1.21617E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>13</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>AMORTIGUADOR COFRE</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>1.21617E7</PrcNetoItem>
+          <MontoNetoItem>1.21617E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>14</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>BAYONETA DEP DIRECCION</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.51733E7</PrcNetoItem>
+          <MontoNetoItem>2.51733E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>15</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>BISAGRA PUERTA DERECHA</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.5174807E7</PrcNetoItem>
+          <MontoNetoItem>2.5174807E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>16</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>BOLSA AIRE SUSPENCIO</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.0121445E7</PrcNetoItem>
+          <MontoNetoItem>2.0121445E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>17</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>BOLSA SUSPESION 2DO</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.0121445E7</PrcNetoItem>
+          <MontoNetoItem>2.0121445E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>18</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>BUJE QUINTA RUEDA</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>3.1171605E7</PrcNetoItem>
+          <MontoNetoItem>3.1171605E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>19</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>BUJES DELANTEROS DE</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>3.1171605E7</PrcNetoItem>
+          <MontoNetoItem>3.1171605E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>20</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>CABLE 7 HILOS</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.61117E7</PrcNetoItem>
+          <MontoNetoItem>2.61117E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>21</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>CANUELA EXTERIOR CRI</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.61117E7</PrcNetoItem>
+          <MontoNetoItem>2.61117E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>22</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>CANUELA INTERIORCRIS</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.61117E7</PrcNetoItem>
+          <MontoNetoItem>2.61117E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>23</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>CENTROS DE MUELLE1/</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.41018E7</PrcNetoItem>
+          <MontoNetoItem>2.41018E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>24</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>CINTA PEGAMOLDURAS</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>3.1201521E7</PrcNetoItem>
+          <MontoNetoItem>3.1201521E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>25</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>COLUMNA DIRECCION</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.51747E7</PrcNetoItem>
+          <MontoNetoItem>2.51747E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>26</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>COLUMPIO PARA CARDAN</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.6112E7</PrcNetoItem>
+          <MontoNetoItem>2.6112E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>27</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>CONEXION CODO</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.71128E7</PrcNetoItem>
+          <MontoNetoItem>2.71128E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>28</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>COSTADO DERECHO DORM</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.51747E7</PrcNetoItem>
+          <MontoNetoItem>2.51747E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>29</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>CRISTAL VENTA PTA DE</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.51723E7</PrcNetoItem>
+          <MontoNetoItem>2.51723E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>30</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>CRUCETA FLECHA CARDA</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>3.9122109E7</PrcNetoItem>
+          <MontoNetoItem>3.9122109E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>31</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>CUARTO DIRECCI DER</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.51747E7</PrcNetoItem>
+          <MontoNetoItem>2.51747E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>32</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>DEFENSA CENTRAL DEF</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.51747E7</PrcNetoItem>
+          <MontoNetoItem>2.51747E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>33</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>ELEVADOR CRISTAL PUE</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.51739E7</PrcNetoItem>
+          <MontoNetoItem>2.51739E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>34</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>ESPEJO BANQUETERO</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>3.12417E7</PrcNetoItem>
+          <MontoNetoItem>3.12417E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>35</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>ESPEJO LATERAL DEREC</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>3.12417E7</PrcNetoItem>
+          <MontoNetoItem>3.12417E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>36</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>ESTRIBO INFERIOR DER</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>1.0141605E7</PrcNetoItem>
+          <MontoNetoItem>1.0141605E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>37</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>FARO DERECHO</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>9.5121624E7</PrcNetoItem>
+          <MontoNetoItem>9.5121624E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>38</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>FARO NEBLINERO DERECHO</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>9.5121624E7</PrcNetoItem>
+          <MontoNetoItem>9.5121624E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>39</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>FARO NEBLINERO IZQUI</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>9.5121624E7</PrcNetoItem>
+          <MontoNetoItem>9.5121624E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>40</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>GRAPAS MOSQUITERA</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>3.1162404E7</PrcNetoItem>
+          <MontoNetoItem>3.1162404E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>41</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>GUARDAFANGO DELANTERO TRASERO IZQ CABINA</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.51747E7</PrcNetoItem>
+          <MontoNetoItem>2.51747E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>42</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>GUARDAFANGO DELANTER IZQ</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.51747E7</PrcNetoItem>
+          <MontoNetoItem>2.51747E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>43</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>HULE CINCHO TANQUE</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.5102001E7</PrcNetoItem>
+          <MontoNetoItem>2.5102001E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>44</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>HULE MARCO PARABRISAS</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.51723E7</PrcNetoItem>
+          <MontoNetoItem>2.51723E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>45</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>HULE TOLVA DE LLUVIA</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.4112003E7</PrcNetoItem>
+          <MontoNetoItem>2.4112003E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>46</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>LODERA TRASERA IZQUIERDA</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.51747E7</PrcNetoItem>
+          <MontoNetoItem>2.51747E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>47</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>MALLA MOSQUITERA</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>1.1162111E7</PrcNetoItem>
+          <MontoNetoItem>1.1162111E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>48</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>MANGUERA SUP RADIADOR</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>4.0101801E7</PrcNetoItem>
+          <MontoNetoItem>4.0101801E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>49</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>MUELAS QUINTA RUEDA</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.6112E7</PrcNetoItem>
+          <MontoNetoItem>2.6112E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>50</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>PARABRISAS</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.51723E7</PrcNetoItem>
+          <MontoNetoItem>2.51723E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>51</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>PARRILLA</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.5172605E7</PrcNetoItem>
+          <MontoNetoItem>2.5172605E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>52</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>PEGAMENTO FUSSOR 100</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.51747E7</PrcNetoItem>
+          <MontoNetoItem>2.51747E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>53</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>PERNO QUINTA RUEDA</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>3.11616E7</PrcNetoItem>
+          <MontoNetoItem>3.11616E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>54</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>PLAFON BLANCO TRASER</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>3.9111521E7</PrcNetoItem>
+          <MontoNetoItem>3.9111521E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>55</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>PLAFON COSTADO DEREC</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>3.9111521E7</PrcNetoItem>
+          <MontoNetoItem>3.9111521E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>56</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>PLUMAS BRAZO LIMPIAD</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>1.1131501E7</PrcNetoItem>
+          <MontoNetoItem>1.1131501E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>57</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>PUENTE DE TRANSMISIO</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.61115E7</PrcNetoItem>
+          <MontoNetoItem>2.61115E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>58</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>PUERTA DERECHA CABIN</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.51722E7</PrcNetoItem>
+          <MontoNetoItem>2.51722E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>59</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>REJILLA BOCINA DER</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>3.0103206E7</PrcNetoItem>
+          <MontoNetoItem>3.0103206E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>60</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>RESBALON EXT DER CAB</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.51747E7</PrcNetoItem>
+          <MontoNetoItem>2.51747E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>61</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>RESBALON EXT DER CAB</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.51747E7</PrcNetoItem>
+          <MontoNetoItem>2.51747E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>62</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>RETENES PARA MAZA</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.51747E7</PrcNetoItem>
+          <MontoNetoItem>2.51747E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>63</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>RONDANAS DE RELLENO</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.6112E7</PrcNetoItem>
+          <MontoNetoItem>2.6112E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>64</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>ROTULAS AMORTIGUADO</DscItem>
+          <QtyItem>2.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>1.21617E7</PrcNetoItem>
+          <MontoNetoItem>2.43234E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>65</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>SEGURO TAPA FARO</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.61117E7</PrcNetoItem>
+          <MontoNetoItem>2.61117E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>66</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>SELLADOR SIKFLEX</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.51747E7</PrcNetoItem>
+          <MontoNetoItem>2.51747E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>67</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>SOP ALERON SP IZQ</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.51747E7</PrcNetoItem>
+          <MontoNetoItem>2.51747E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>68</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>SOP INF BARRA ESTABI</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.51747E7</PrcNetoItem>
+          <MontoNetoItem>2.51747E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>69</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>SOPORTE INTERMEDIO A</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.51747E7</PrcNetoItem>
+          <MontoNetoItem>2.51747E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>70</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>TACON DELANTERO MOTO</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.61015E7</PrcNetoItem>
+          <MontoNetoItem>2.61015E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>71</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>TACON TRASERO MOTOR</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.61015E7</PrcNetoItem>
+          <MontoNetoItem>2.61015E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>72</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>TANQUE COMB 120 GAL</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.51724E7</PrcNetoItem>
+          <MontoNetoItem>2.51724E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>73</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>TAPA FARO DERECHO CO</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.4122004E7</PrcNetoItem>
+          <MontoNetoItem>2.4122004E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>74</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>TAPA FARO IZQUIERDO</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.4122004E7</PrcNetoItem>
+          <MontoNetoItem>2.4122004E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>75</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>TAPA INFERIOR BRAZO DER</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.4122004E7</PrcNetoItem>
+          <MontoNetoItem>2.4122004E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>76</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>TAPON PARA DEPOSITO</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.4122004E7</PrcNetoItem>
+          <MontoNetoItem>2.4122004E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>77</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>TORNILLO FLECHA CARD</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.61017E7</PrcNetoItem>
+          <MontoNetoItem>2.61017E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>78</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>TUERCAS PARA COFRE</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>3.11617E7</PrcNetoItem>
+          <MontoNetoItem>3.11617E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>79</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>TURBO</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>2.61116E7</PrcNetoItem>
+          <MontoNetoItem>2.61116E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>80</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>VALVULA NIVELADORA DE</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>4.01416E7</PrcNetoItem>
+          <MontoNetoItem>4.01416E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>81</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>VALVULA NIVELADORA S</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>4.01416E7</PrcNetoItem>
+          <MontoNetoItem>4.01416E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>82</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>VARILLA VALVULA NIVE</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>3.01024E7</PrcNetoItem>
+          <MontoNetoItem>3.01024E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>83</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>VESTIDURA COSTADO DO</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>3.11818E7</PrcNetoItem>
+          <MontoNetoItem>3.11818E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>84</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>VESTIDURA TOLDO CABI</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>3.11818E7</PrcNetoItem>
+          <MontoNetoItem>3.11818E7</MontoNetoItem>
+        </Detalle>
+        <Detalle>
+          <NroLinDet>85</NroLinDet>
+          <DscLang>ES</DscLang>
+          <DscItem>VESTIDURA TOLDO DORM</DscItem>
+          <QtyItem>1.0</QtyItem>
+          <UnmdItem>PZAS</UnmdItem>
+          <PrcNetoItem>3.11818E7</PrcNetoItem>
+          <MontoNetoItem>3.11818E7</MontoNetoItem>
+        </Detalle>
+        <TimeStamp>2018-01-17T15:42:10</TimeStamp>
+      </Documento>
+      <Personalizados>
+        <campoString name="montoManoObra">0.0</campoString>
+        <campoString name="montoRefacciones">3.104228688E9</campoString>
+        <campoString name="fechaFiniquito">2018-01-17T15:42:10</campoString>
+        <campoString name="fechaEntregaRefacciones">2018-01-17T15:42:10</campoString>
+        <campoString name="oficinaEntregaFactura">078</campoString>
+        <campoString name="folioElectronico">17R503705899</campoString>
+        <campoString name="montoDeducible">0.00</campoString>
+        <campoString name="bancoDepositoDeducible">X</campoString>
+        <campoString name="fechaDepositoDeducible">000-00-00</campoString>
+        <campoString name="folioFicha_ReferenciaDeducible" />
+        <campoString name="montoDemerito_Recupero">0.00</campoString>
+        <campoString name="bancoDepositoDemerito_Recupero">X</campoString>
+        <campoString name="fechaDepositoDemerito_Recupero">0000-00-00</campoString>
+        <campoString name="folioFicha_ReferenciaDemerito" />
+        <campoString name="UUID">A3CA6AF0-B284-43E2-AB03-7E009B2C86AA</campoString>
+        <campoString name="Default1">string</campoString>
+        <campoString name="Default2">string</campoString>
+      </Personalizados>
+    </ECFD>
+  </cfdi:Addenda>
+</cfdi:Comprobante>

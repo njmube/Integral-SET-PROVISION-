@@ -14,6 +14,7 @@ public class Servicio  implements java.io.Serializable {
      private String idServicio;
      private String descripcion;
      private Set items = new HashSet(0);
+     private Set ordenes = new HashSet(0);
 
     public Servicio() {
     }
@@ -22,10 +23,11 @@ public class Servicio  implements java.io.Serializable {
     public Servicio(String idServicio) {
         this.idServicio = idServicio;
     }
-    public Servicio(String idServicio, String descripcion, Set items) {
+    public Servicio(String idServicio, String descripcion, Set items, Set ordenes) {
        this.idServicio = idServicio;
        this.descripcion = descripcion;
        this.items = items;
+       this.ordenes = ordenes;
     }
    
     public String getIdServicio() {
@@ -42,6 +44,7 @@ public class Servicio  implements java.io.Serializable {
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
+    
     public Set getItems() {
         return this.items;
     }
@@ -50,6 +53,13 @@ public class Servicio  implements java.io.Serializable {
         this.items = items;
     }
 
+    public Set getOrdenes() {
+        return this.ordenes;
+    }
+    
+    public void setOrdenes(Set ordenes) {
+        this.ordenes = ordenes;
+    }
 
 
 

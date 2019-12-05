@@ -20,6 +20,8 @@ import javax.swing.InputMap;
 import javax.swing.JOptionPane;
 import Hibernate.entidades.Orden;
 import Hibernate.entidades.Usuario;
+import Integral.HorizontalBarUI;
+import Integral.VerticalBarUI;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
@@ -34,10 +36,13 @@ import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileOutputStream;
 import javax.swing.ImageIcon;
+import javax.swing.JScrollBar;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
@@ -67,17 +72,37 @@ public class buscaOrden extends javax.swing.JDialog {
     int op=0;
     private Usuario actor=null;
     String[] columnas = new String [] {"No orden", "Ingreso","Aseguradora", "Siniestro", "Poliza", "Reporte", "Inciso", "Fecha sin.", "Cliente", "Email", "Tel", "Tipo", "Marca", "Placas", "Motor", "Año", "Serie", "Economico", "Estatus"};
+    int inicio=0;
+    boolean parar=false;
+    final JScrollBar scrollBar;
+    int configuracion=1;
     
     /** Creates new form acceso */
-    public buscaOrden(java.awt.Frame parent, boolean modal, Usuario User, int op) {
+    public buscaOrden(java.awt.Frame parent, boolean modal, Usuario User, int op, int configuracion) {
         super(parent, modal);
+        this.configuracion=configuracion;
         actor=User;
         this.op=op;
         initComponents();
+        scrollBar = scroll.getVerticalScrollBar();
+        scrollBar.addAdjustmentListener(new AdjustmentListener() {
+            public void adjustmentValueChanged(AdjustmentEvent ae) {
+                if(parar==false)
+                {
+                    int extent = scrollBar.getModel().getExtent();
+                    extent+=scrollBar.getValue();
+                    if(extent==scrollBar.getMaximum())
+                        buscaDato();
+                }
+              //System.out.println("actual: " + extent+" maximo:"+scrollBar.getMaximum());
+            }
+          });
         getRootPane().setDefaultButton(jButton1);
         t_datos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         t_datos.setModel(ModeloTablaReporte(0, columnas));
         formatoTabla();
+        scroll.getVerticalScrollBar().setUI(new VerticalBarUI());
+        scroll.getHorizontalScrollBar().setUI(new HorizontalBarUI());
         buscaDato();
     }
     
@@ -166,8 +191,7 @@ public class buscaOrden extends javax.swing.JDialog {
         t_busca = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         c_filtro = new javax.swing.JComboBox();
-        cb_todos = new javax.swing.JCheckBox();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        scroll = new javax.swing.JScrollPane();
         t_datos = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
@@ -201,13 +225,6 @@ public class buscaOrden extends javax.swing.JDialog {
             }
         });
 
-        cb_todos.setText("Todos");
-        cb_todos.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cb_todosActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -219,9 +236,7 @@ public class buscaOrden extends javax.swing.JDialog {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(t_busca, javax.swing.GroupLayout.PREFERRED_SIZE, 377, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cb_todos)
-                .addContainerGap(159, Short.MAX_VALUE))
+                .addContainerGap(216, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -229,9 +244,8 @@ public class buscaOrden extends javax.swing.JDialog {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(t_busca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1)
-                    .addComponent(c_filtro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cb_todos))
-                .addGap(0, 16, Short.MAX_VALUE))
+                    .addComponent(c_filtro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 18, Short.MAX_VALUE))
         );
 
         t_datos.setModel(new javax.swing.table.DefaultTableModel(
@@ -270,7 +284,7 @@ public class buscaOrden extends javax.swing.JDialog {
                 t_datosKeyPressed(evt);
             }
         });
-        jScrollPane1.setViewportView(t_datos);
+        scroll.setViewportView(t_datos);
 
         jButton1.setBackground(new java.awt.Color(2, 135, 242));
         jButton1.setForeground(new java.awt.Color(255, 255, 255));
@@ -314,14 +328,14 @@ public class buscaOrden extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton1)
                 .addContainerGap())
-            .addComponent(jScrollPane1)
+            .addComponent(scroll)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(scroll, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -376,11 +390,15 @@ public class buscaOrden extends javax.swing.JDialog {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void t_buscaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_buscaKeyReleased
+        inicio=0;
+        parar=false;
         this.buscaDato();
     }//GEN-LAST:event_t_buscaKeyReleased
 
     private void c_filtroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_c_filtroActionPerformed
-       this.buscaDato();
+       inicio=0;
+        parar=false;
+        this.buscaDato();
     }//GEN-LAST:event_c_filtroActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -432,13 +450,14 @@ public class buscaOrden extends javax.swing.JDialog {
             BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.WINANSI, BaseFont.NOT_EMBEDDED);
             PDF reporte = new PDF();
             reporte.Abrir(PageSize.LEGAL.rotate(), "Consulta de ordenes", "reportes/consulta.pdf");
-            reporte.agregaObjeto(reporte.crearImagen("imagenes/empresa300115.jpg", 00, -32, 17));
+            session.beginTransaction().begin();
+            Configuracion con= (Configuracion)session.get(Configuracion.class, configuracion);
+            reporte.agregaObjeto(reporte.crearImagen("imagenes/"+con.getCinta(), 00, -32, 17));
             reporte.contenido.setLineWidth(0.5f);
             reporte.contenido.setColorStroke(new GrayColor(0.2f));
             reporte.contenido.setColorFill(new GrayColor(0.9f));
             reporte.contenido.roundRectangle(30, 535, 945, 60, 5);
-            session.beginTransaction().begin();
-            Configuracion con= (Configuracion)session.get(Configuracion.class, 1);
+            
             reporte.inicioTexto();
                 reporte.contenido.setFontAndSize(bf, 14);
                 reporte.contenido.setColorFill(BaseColor.BLACK);
@@ -555,21 +574,15 @@ public class buscaOrden extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_t_datosMouseClicked
 
-    private void cb_todosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_todosActionPerformed
-        // TODO add your handling code here:
-        this.buscaDato();
-    }//GEN-LAST:event_cb_todosActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox c_filtro;
-    private javax.swing.JCheckBox cb_todos;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane scroll;
     public javax.swing.JTextField t_busca;
     private javax.swing.JTable t_datos;
     // End of variables declaration//GEN-END:variables
@@ -654,40 +667,54 @@ private void buscaDato()
         Session session = HibernateUtil.getSessionFactory().openSession();
         try
         {
-            if(cb_todos.isSelected()==false)
-                consulta+=" limit 200";
+            int siguente=inicio+20;
+            consulta+=" limit "+inicio+", 20";
             Query q = session.createSQLQuery(consulta);
             q.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
             List resultList = q.list();
-            model.setRowCount(0);
-            for (Object o : resultList) 
+            if(resultList.size()>0)
             {
-                java.util.HashMap ord=(java.util.HashMap)o;
-                Object[] renglon=new Object[19];
-                //Orden actor = (Orden) o;
-                renglon[0]=ord.get("id_orden");
-                renglon[1]=ord.get("fecha_siniestro");
-                renglon[2]=ord.get("nom");
-                renglon[3]=ord.get("siniestro");
-                renglon[4]=ord.get("poliza");
-                renglon[5]=ord.get("no_reporte");
-                renglon[6]=ord.get("inciso");
-                renglon[7]=ord.get("fecha");
-                renglon[8]=ord.get("nombre");
-                renglon[9]=ord.get("email");
-                renglon[10]=ord.get("telefono");
-                renglon[11]=ord.get("tipo_nombre");
-                renglon[12]=ord.get("marca_nombre");
-                renglon[13]=ord.get("no_placas");
-                renglon[14]=ord.get("no_motor");
-                renglon[15]=ord.get("modelo");
-                renglon[16]=ord.get("no_serie");
-                renglon[17]=ord.get("no_economico");
-                renglon[18]=ord.get("estatus_nombre");
-                model.addRow(renglon);
+                DefaultTableModel modelo= (DefaultTableModel)t_datos.getModel();
+                if(inicio==0)
+                    modelo.setNumRows(0);
+                for (Object o : resultList) 
+                {
+                    java.util.HashMap ord=(java.util.HashMap)o;
+                    Object[] renglon=new Object[19];
+                    //Orden actor = (Orden) o;
+                    renglon[0]=ord.get("id_orden");
+                    renglon[1]=ord.get("fecha_siniestro");
+                    renglon[2]=ord.get("nom");
+                    renglon[3]=ord.get("siniestro");
+                    renglon[4]=ord.get("poliza");
+                    renglon[5]=ord.get("no_reporte");
+                    renglon[6]=ord.get("inciso");
+                    renglon[7]=ord.get("fecha");
+                    renglon[8]=ord.get("nombre");
+                    renglon[9]=ord.get("email");
+                    renglon[10]=ord.get("telefono");
+                    renglon[11]=ord.get("tipo_nombre");
+                    renglon[12]=ord.get("marca_nombre");
+                    renglon[13]=ord.get("no_placas");
+                    renglon[14]=ord.get("no_motor");
+                    renglon[15]=ord.get("modelo");
+                    renglon[16]=ord.get("no_serie");
+                    renglon[17]=ord.get("no_economico");
+                    renglon[18]=ord.get("estatus_nombre");
+                    modelo.addRow(renglon);
+                }
+                inicio=siguente;
             }
-            t_busca.requestFocus();
-            resultList=null;
+            else
+            {
+                parar=true;
+                if(inicio==0)
+                {
+                    DefaultTableModel modelo= (DefaultTableModel)t_datos.getModel();
+                    modelo.setNumRows(0);
+                }
+            }
+                resultList=null;
         }catch(Exception e)
         {
             System.out.println(e);

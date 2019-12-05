@@ -21,15 +21,21 @@ import Hibernate.entidades.Configuracion;
 import Hibernate.entidades.Factura;
 import Hibernate.entidades.Orden;
 import Hibernate.entidades.Usuario;
+import Integral.HorizontalBarUI;
+import Integral.VerticalBarUI;
+import api.ApiTurbo;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Toolkit;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
+import javax.swing.JScrollBar;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
@@ -52,7 +58,7 @@ public class buscaFactura extends javax.swing.JDialog {
     public static final Factura RET_CANCEL =null;
     InputMap map = new InputMap();
     DefaultTableModel model;
-    String[] columnas = new String [] {"ID", "Fecha", "RFC Receptor", "Razon Social", "Folio Fiscal", "Serie", "Folio", "Monto sin IVA", "Estado"};
+    String[] columnas = new String [] {"ID", "Fecha", "RFC Receptor", "Razon Social", "Folio Fiscal", "Serie", "Folio", "Monto sin IVA", "Estado", "Suc"};
     String sessionPrograma="";
     Herramientas h;
     Usuario usr;
@@ -61,10 +67,15 @@ public class buscaFactura extends javax.swing.JDialog {
     String idBuscar="", ruta="";
     int opcion=1;
     boolean bandera=true;
+    int inicio=0;
+    boolean parar=false;
+    final JScrollBar scrollBar;
+    int configuracion=1;
     
     /** Creates new form acceso */
-    public buscaFactura(java.awt.Frame parent, boolean modal, String ses, Usuario usuario, int op) {
+    public buscaFactura(java.awt.Frame parent, boolean modal, String ses, Usuario usuario, int op, int configuracion) {
         super(parent, modal);
+        this.configuracion=configuracion;
         opcion=op;
         sessionPrograma=ses;
         usr=usuario;
@@ -79,11 +90,26 @@ public class buscaFactura extends javax.swing.JDialog {
             fil=null;
             b=null;
         }catch(Exception e){}
+        scrollBar = scroll.getVerticalScrollBar();
+        scrollBar.addAdjustmentListener(new AdjustmentListener() {
+            public void adjustmentValueChanged(AdjustmentEvent ae) {
+                if(parar==false)
+                {
+                    int extent = scrollBar.getModel().getExtent();
+                    extent+=scrollBar.getValue();
+                    if(extent==scrollBar.getMaximum())
+                        buscaDato();
+                }
+              //System.out.println("actual: " + extent+" maximo:"+scrollBar.getMaximum());
+            }
+          });
         getRootPane().setDefaultButton(b_seleccionar);
         formato =new FormatoTabla();
         t_datos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         t_datos.setModel(ModeloTablaReporte(0, columnas));
         formatoTabla();
+        scroll.getVerticalScrollBar().setUI(new VerticalBarUI());
+        scroll.getHorizontalScrollBar().setUI(new HorizontalBarUI());
         buscaDato();
         if(usr.getCancelarFactura()==true)
             b_cancelar.setEnabled(true);
@@ -93,7 +119,7 @@ public class buscaFactura extends javax.swing.JDialog {
     
     DefaultTableModel ModeloTablaReporte(int renglones, String columnas[])
         {
-            model = new DefaultTableModel(new Object [renglones][6], columnas)
+            model = new DefaultTableModel(new Object [renglones][10], columnas)
             {
                 Class[] types = new Class [] {
                     java.lang.String.class, 
@@ -104,10 +130,11 @@ public class buscaFactura extends javax.swing.JDialog {
                     java.lang.String.class, 
                     java.lang.String.class, 
                     java.lang.Double.class, 
+                    java.lang.String.class,
                     java.lang.String.class
                 };
                 boolean[] canEdit = new boolean [] {
-                    false, false, false, false, false, false, false, false, false
+                    false, false, false, false, false, false, false, false, false, false
                 };
 
                 public void setValueAt(Object value, int row, int col)
@@ -166,6 +193,7 @@ public class buscaFactura extends javax.swing.JDialog {
         jButton2 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
+        jButton7 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
@@ -173,7 +201,7 @@ public class buscaFactura extends javax.swing.JDialog {
         c_filtro = new javax.swing.JComboBox();
         jLabel1 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        scroll = new javax.swing.JScrollPane();
         t_datos = new javax.swing.JTable();
         b_seleccionar = new javax.swing.JButton();
         b_cancelar = new javax.swing.JButton();
@@ -209,6 +237,14 @@ public class buscaFactura extends javax.swing.JDialog {
             }
         });
 
+        jButton7.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
+        jButton7.setText("Alsea");
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout addendasLayout = new javax.swing.GroupLayout(addendas.getContentPane());
         addendas.getContentPane().setLayout(addendasLayout);
         addendasLayout.setHorizontalGroup(
@@ -220,9 +256,14 @@ public class buscaFactura extends javax.swing.JDialog {
                     .addGroup(addendasLayout.createSequentialGroup()
                         .addComponent(jButton2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(addendasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(addendasLayout.createSequentialGroup()
+                                .addGap(10, 10, 10)
+                                .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(addendasLayout.createSequentialGroup()
+                                .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         addendasLayout.setVerticalGroup(
@@ -235,7 +276,9 @@ public class buscaFactura extends javax.swing.JDialog {
                     .addComponent(jButton2)
                     .addComponent(jButton6)
                     .addComponent(jButton5))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton7)
+                .addContainerGap())
         );
 
         jButton3.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
@@ -308,14 +351,14 @@ public class buscaFactura extends javax.swing.JDialog {
 
             },
             new String [] {
-                "ID", "Fecha", "RFC Receptor", "Razon Social", "Folio Fiscal", "Serie", "Folio", "Monto", "Estado"
+                "ID", "Fecha", "RFC Receptor", "Razon Social", "Folio Fiscal", "Serie", "Folio", "Monto", "Estado", "Suc"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -333,7 +376,7 @@ public class buscaFactura extends javax.swing.JDialog {
                 t_datosKeyPressed(evt);
             }
         });
-        jScrollPane1.setViewportView(t_datos);
+        scroll.setViewportView(t_datos);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -341,13 +384,13 @@ public class buscaFactura extends javax.swing.JDialog {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 950, Short.MAX_VALUE)
+                .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 950, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE)
+                .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -451,7 +494,7 @@ public class buscaFactura extends javax.swing.JDialog {
                             switch(factura.getAddenda())
                             {
                                 case "qualitas":
-                                    QUALITAS genera=new QUALITAS(new Frame(), true, this.usr, sessionPrograma, factura);
+                                    QUALITAS genera=new QUALITAS(new Frame(), true, this.usr, sessionPrograma, factura,configuracion);
                                     d = Toolkit.getDefaultToolkit().getScreenSize();
                                     genera.setLocation((d.width/2)-(genera.getWidth()/2), (d.height/2)-(genera.getHeight()/2));
                                     genera.consulta();
@@ -471,7 +514,7 @@ public class buscaFactura extends javax.swing.JDialog {
                                     genera1=null;
                                     break;
                                 case "gnp":
-                                    GNP genera2=new GNP(new Frame(), true, this.usr, sessionPrograma, factura);
+                                    GNP genera2=new GNP(new Frame(), true, this.usr, sessionPrograma, factura,configuracion);
                                     d = Toolkit.getDefaultToolkit().getScreenSize();
                                     genera2.setLocation((d.width/2)-(genera2.getWidth()/2), (d.height/2)-(genera2.getHeight()/2));
                                     genera2.consulta();
@@ -483,7 +526,7 @@ public class buscaFactura extends javax.swing.JDialog {
                                 //case "mapfre":
     //                                            break;
                                 case"general":
-                                    General genera3=new General(new Frame(), true, this.usr, sessionPrograma, factura);
+                                    General genera3=new General(new Frame(), true, this.usr, sessionPrograma, factura,configuracion);
                                     d = Toolkit.getDefaultToolkit().getScreenSize();
                                     genera3.setLocation((d.width/2)-(genera3.getWidth()/2), (d.height/2)-(genera3.getHeight()/2));
                                     genera3.consulta();
@@ -532,11 +575,15 @@ public class buscaFactura extends javax.swing.JDialog {
     }//GEN-LAST:event_b_seleccionarActionPerformed
 
     private void t_buscaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_buscaKeyReleased
-        buscaDato();
+        inicio=0;
+        parar=false;
+        this.buscaDato();
     }//GEN-LAST:event_t_buscaKeyReleased
 
     private void c_filtroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_c_filtroActionPerformed
-        buscaDato();
+        inicio=0;
+        parar=false;
+        this.buscaDato();
     }//GEN-LAST:event_c_filtroActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -548,7 +595,7 @@ public class buscaFactura extends javax.swing.JDialog {
             factura=(Factura)session.get(Factura.class, factura.getIdFactura());
             session.beginTransaction().commit();
             addendas.setVisible(false);
-            QUALITAS genera=new QUALITAS(new javax.swing.JFrame(), true, usr, sessionPrograma, factura);
+            QUALITAS genera=new QUALITAS(new javax.swing.JFrame(), true, usr, sessionPrograma, factura,configuracion);
             Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
             genera.setLocation((d.width/2)-(genera.getWidth()/2), (d.height/2)-(genera.getHeight()/2));
             genera.consulta();
@@ -602,7 +649,7 @@ public class buscaFactura extends javax.swing.JDialog {
             factura=(Factura)session.get(Factura.class, factura.getIdFactura());
             session.beginTransaction().commit();
             addendas.setVisible(false);
-            GNP genera=new GNP(new javax.swing.JFrame(), true, usr, sessionPrograma, factura);
+            GNP genera=new GNP(new javax.swing.JFrame(), true, usr, sessionPrograma, factura,configuracion);
             Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
             genera.setLocation((d.width/2)-(genera.getWidth()/2), (d.height/2)-(genera.getHeight()/2));
             genera.consulta();
@@ -629,7 +676,7 @@ public class buscaFactura extends javax.swing.JDialog {
             factura=(Factura)session.get(Factura.class, factura.getIdFactura());
             session.beginTransaction().commit();
             addendas.setVisible(false);
-            General genera=new General(new javax.swing.JFrame(), true, usr, sessionPrograma, factura);
+            General genera=new General(new javax.swing.JFrame(), true, usr, sessionPrograma, factura,configuracion);
             Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
             genera.setLocation((d.width/2)-(genera.getWidth()/2), (d.height/2)-(genera.getHeight()/2));
             genera.consulta();
@@ -712,6 +759,7 @@ public class buscaFactura extends javax.swing.JDialog {
                                                             }
                                                             factura.setOrden(null);
                                                             factura.setEstadoFactura("Cancelado");
+                                                            factura.setEstatus("CANCELADO");
                                                             session.update(factura);
                                                             session.beginTransaction().commit();
                                                             t_datos.setValueAt("Cancelado", t_datos.getSelectedRow(), 8);
@@ -757,14 +805,14 @@ public class buscaFactura extends javax.swing.JDialog {
                                             factura=(Factura) session.createCriteria(Factura.class).add(Restrictions.eq("FFiscal", idBuscar)).uniqueResult();
                                             //"clave", "key", "cer", "rita destino", "claveFinkok", "uuid a cancelar", "usuario finkok"
                                             ArrayList datos=new ArrayList();
-                                            datos.add(config1.getClave());
-                                            datos.add(ruta+"config/"+config1.getLlave());
-                                            datos.add(ruta+"config/"+config1.getCer());
-                                            datos.add("pom/");
-                                            datos.add(config1.getClaveFinkok());
-                                            datos.add(idBuscar);
-                                            datos.add(config1.getEmailFinkok());
-                                            datos.add(factura.getRfcEmisor());
+                                            datos.add(config1.getClave());//0
+                                            datos.add(ruta+"config/"+config1.getLlave());//1
+                                            datos.add(ruta+"config/"+config1.getCer());//2
+                                            datos.add("pom/");//3
+                                            datos.add(config1.getClaveFinkok());//4
+                                            datos.add(idBuscar);//5
+                                            datos.add(config1.getEmailFinkok());//6
+                                            datos.add(factura.getRfcEmisor());//7
                                             ArrayList guarda=api1.llamarSoapElimina(datos);
                                             switch(guarda.get(0).toString())
                                             {
@@ -794,6 +842,7 @@ public class buscaFactura extends javax.swing.JDialog {
                                                             }
                                                             factura.setOrden(null);
                                                             factura.setEstadoFactura("Cancelado");
+                                                            factura.setEstatus("CANCELADO");
                                                             session.update(factura);
                                                             session.beginTransaction().commit();
                                                             t_datos.setValueAt("Cancelado", t_datos.getSelectedRow(), 8);
@@ -819,6 +868,7 @@ public class buscaFactura extends javax.swing.JDialog {
                                                             {
                                                                 factura.setOrden(null);
                                                                 factura.setEstadoFactura("Cancelado");
+                                                                factura.setEstatus("CANCELADO");
                                                                 session.update(factura);
                                                                 session.beginTransaction().commit();
                                                                 t_datos.setValueAt("Cancelado", t_datos.getSelectedRow(), 8);
@@ -888,6 +938,151 @@ public class buscaFactura extends javax.swing.JDialog {
                                                             progreso.setIndeterminate(false);
                                                             bandera=true;
                                                             JOptionPane.showMessageDialog(null, "Error.- "+aq.get(1).toString());
+                                                            break;
+                                                    }
+                                                    break;
+                                            }
+                                            break;
+                                        case "T":
+                                            factura=(Factura)session.get(Factura.class, factura.getIdFactura());
+                                            Configuracion config2=(Configuracion)session.createCriteria(Configuracion.class).add(Restrictions.eq("empresa", factura.getNombreEmisor())).setMaxResults(1).uniqueResult();
+                                            ApiTurbo api2=new ApiTurbo(ruta);
+                                            factura=(Factura) session.createCriteria(Factura.class).add(Restrictions.eq("FFiscal", idBuscar)).uniqueResult();
+                                            //"clave", "key", "cer", "rita destino", "claveFinkok", "uuid a cancelar", "usuario finkok"
+                                            ArrayList datos2=new ArrayList();
+                                            datos2.add(config2.getClave());
+                                            datos2.add(ruta+"config/"+config2.getLlave());
+                                            datos2.add(ruta+"config/"+config2.getCer());
+                                            datos2.add("pom/");
+                                            datos2.add(config2.getClaveFinkok());
+                                            datos2.add(idBuscar);
+                                            datos2.add(config2.getEmailFinkok());
+                                            datos2.add(factura.getRfcEmisor());
+                                                                                        
+                                            ArrayList guarda2=api2.llamarSoapElimina(datos2);
+                                            switch(guarda2.get(0).toString())
+                                            {
+                                                case "0":
+                                                    habilita(true);
+                                                    progreso.setString("Listo");
+                                                    progreso.setIndeterminate(false);
+                                                    bandera=true;
+                                                    JOptionPane.showMessageDialog(null, "Error: "+guarda2.get(1).toString());
+                                                    break;
+
+                                                case "1"://se cancelo correcto
+                                                    ArrayList lista_estatus=(ArrayList)guarda2.get(2);
+                                                    ArrayList estatus_recibidos=(ArrayList)lista_estatus.get(0);
+                                                    switch(estatus_recibidos.get(1).toString())
+                                                    {
+                                                        case "201":
+                                                            factura=(Factura) session.createCriteria(Factura.class).add(Restrictions.eq("FFiscal", idBuscar)).uniqueResult();
+                                                            if(factura!=null)
+                                                            {
+                                                                Orden aux=factura.getOrden();
+                                                                if(aux!=null)
+                                                                {
+                                                                    aux.setNoFactura(null);
+                                                                    session.update(aux);
+                                                                }
+                                                                factura.setOrden(null);
+                                                                factura.setEstadoFactura("Cancelado");
+                                                                factura.setEstatus("CANCELADO");
+                                                                session.update(factura);
+                                                                session.beginTransaction().commit();
+                                                                t_datos.setValueAt("Cancelado", t_datos.getSelectedRow(), 8);
+                                                                habilita(true);
+                                                                progreso.setString("Listo");
+                                                                progreso.setIndeterminate(false);
+                                                                bandera=true;
+                                                                JOptionPane.showMessageDialog(null, "El UUID ya esta cancelado");
+                                                            }
+                                                            else
+                                                            {
+                                                                habilita(true);
+                                                                progreso.setString("Listo");
+                                                                progreso.setIndeterminate(false);
+                                                                bandera=true;
+                                                                JOptionPane.showMessageDialog(null, "El UUID ya esta cancelado pero no pudo actualizarse la base de datos");
+                                                            }
+                                                            break;
+
+                                                        case "202":
+                                                            factura=(Factura) session.createCriteria(Factura.class).add(Restrictions.eq("FFiscal", idBuscar)).uniqueResult();
+                                                            if(factura!=null)
+                                                            {
+                                                                factura.setOrden(null);
+                                                                factura.setEstadoFactura("Cancelado");
+                                                                factura.setEstatus("CANCELADO");
+                                                                session.update(factura);
+                                                                session.beginTransaction().commit();
+                                                                t_datos.setValueAt("Cancelado", t_datos.getSelectedRow(), 8);
+                                                                habilita(true);
+                                                                progreso.setString("Listo");
+                                                                progreso.setIndeterminate(false);
+                                                                bandera=true;
+                                                                JOptionPane.showMessageDialog(null, "El UUID ya esta cancelado");
+                                                            }
+                                                            else
+                                                            {
+                                                                habilita(true);
+                                                                progreso.setString("Listo");
+                                                                progreso.setIndeterminate(false);
+                                                                bandera=true;
+                                                                JOptionPane.showMessageDialog(null, "El UUID ya esta cancelado pero no pudo actualizarse la base de datos");
+                                                            }
+                                                            break;
+                                                        case "203":
+                                                            habilita(true);
+                                                            progreso.setString("Listo");
+                                                            progreso.setIndeterminate(false);
+                                                            bandera=true;
+                                                            JOptionPane.showMessageDialog(null, "UUID no corresponde al emisor");
+                                                            break;
+                                                        case "204":
+                                                            habilita(true);
+                                                            progreso.setString("Listo");
+                                                            progreso.setIndeterminate(false);
+                                                            bandera=true;
+                                                            JOptionPane.showMessageDialog(null, "El CFDI no aplica para cancelación");
+                                                            break;
+                                                        case "205":
+                                                            habilita(true);
+                                                            progreso.setString("Listo");
+                                                            progreso.setIndeterminate(false);
+                                                            bandera=true;
+                                                            JOptionPane.showMessageDialog(null, "El UUID no existe o no ha sido procesado por el SAT.");
+                                                            break;
+                                                        case "704":
+                                                            habilita(true);
+                                                            progreso.setString("Listo");
+                                                            progreso.setIndeterminate(false);
+                                                            bandera=true;
+                                                            JOptionPane.showMessageDialog(null, "Error con la contraseña de la llave Privada");
+                                                        case "708":
+                                                            habilita(true);
+                                                            progreso.setString("Listo");
+                                                            progreso.setIndeterminate(false);
+                                                            bandera=true;
+                                                            JOptionPane.showMessageDialog(null, "No se pudo conectar al SAT");
+                                                        case "711":
+                                                            habilita(true);
+                                                            progreso.setString("Listo");
+                                                            progreso.setIndeterminate(false);
+                                                            bandera=true;
+                                                            JOptionPane.showMessageDialog(null, "Error con el certificado al cancelar");
+                                                        case "712":
+                                                            habilita(true);
+                                                            progreso.setString("Listo");
+                                                            progreso.setIndeterminate(false);
+                                                            bandera=true;
+                                                            JOptionPane.showMessageDialog(null, "El número de 'noCertificado' es diferente al del número de certificado del atributo 'certificado'");
+                                                        default:
+                                                            habilita(true);
+                                                            progreso.setString("Listo");
+                                                            progreso.setIndeterminate(false);
+                                                            bandera=true;
+                                                            JOptionPane.showMessageDialog(null, "Error.- "+estatus_recibidos.get(1).toString()+guarda2.get(1));
                                                             break;
                                                     }
                                                     break;
@@ -974,6 +1169,33 @@ public class buscaFactura extends javax.swing.JDialog {
         t_datos.getSelectionModel().setSelectionInterval(0,0);
     }//GEN-LAST:event_t_buscaActionPerformed
 
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        // TODO add your handling code here:
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try
+        {
+            session.beginTransaction().begin();
+            factura=(Factura)session.get(Factura.class, factura.getIdFactura());
+            session.beginTransaction().commit();
+            addendas.setVisible(false);
+            Alsea genera=new Alsea(new javax.swing.JFrame(), true, usr, sessionPrograma, factura,configuracion);
+            Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+            genera.setLocation((d.width/2)-(genera.getWidth()/2), (d.height/2)-(genera.getHeight()/2));
+            genera.consulta();
+            genera.setVisible(true);
+        }catch(Exception e)
+        {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "error al consultar la factura");
+        }
+        finally
+        {
+            if(session!=null)
+                if(session.isOpen())
+                    session.close();
+        }
+    }//GEN-LAST:event_jButton7ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDialog addendas;
     private javax.swing.JButton b_cancelar;
@@ -983,13 +1205,14 @@ public class buscaFactura extends javax.swing.JDialog {
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel24;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JProgressBar progreso;
+    private javax.swing.JScrollPane scroll;
     public javax.swing.JTextField t_busca;
     private javax.swing.JTable t_datos;
     // End of variables declaration//GEN-END:variables
@@ -998,7 +1221,7 @@ public class buscaFactura extends javax.swing.JDialog {
     private void buscaDato()
     {
         //ID, RFC, Razon Social, Folio Fiscal, Serie, Folio, Estado
-        String consulta="select id_factura as id, rfc_receptor, nombre_receptor, f_fiscal, serie, folio, estado_factura, (select sum(if(descuento=0, (precio*cantidad), (precio-(precio*(descuento/100)))*cantidad )) as total from concepto where id_factura=id) as tot, fecha, folio_externo, serie_externo from factura ";
+        String consulta="select id_factura as id, rfc_receptor, nombre_receptor, f_fiscal, serie, folio, estado_factura, (select sum(if(descuento=0, (precio*cantidad), (precio-(precio*(descuento/100)))*cantidad )) as total from concepto where id_factura=id) as tot, fecha, folio_externo, serie_externo, id_tultitlan from factura ";
         if(c_filtro.getSelectedItem().toString().compareTo("ID")==0)
             consulta+="where id_factura like '%" + t_busca.getText() +"%'";
         if(c_filtro.getSelectedItem().toString().compareTo("RFC")==0)
@@ -1019,33 +1242,49 @@ public class buscaFactura extends javax.swing.JDialog {
         Session session = HibernateUtil.getSessionFactory().openSession();
         try
         {
+            int siguente=inicio+20;
+            consulta+=" limit "+inicio+", 20";
             Query query = session.createSQLQuery(consulta);
             query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
             ArrayList resultList=(ArrayList)query.list();
             
             if(resultList.size()>0)
             {
-                model.getDataVector().removeAllElements();
+                DefaultTableModel modelo= (DefaultTableModel)t_datos.getModel();
+                if(inicio==0)
+                    modelo.setNumRows(0);
                 for (int x=0; x<resultList.size(); x++) 
                 {
                     java.util.HashMap map=(java.util.HashMap)resultList.get(x);
                     if(map.get("folio_externo")==null)
                     {
-                        Object[] renglon=new Object[]{map.get("id"),map.get("fecha").toString(),map.get("rfc_receptor"),map.get("nombre_receptor"),map.get("f_fiscal"),map.get("serie"),map.get("folio"),map.get("tot"),map.get("estado_factura")};
-                        model.addRow(renglon);
+                        String sucursal="";
+                        if(map.get("id_tultitlan")!=null)
+                            sucursal="Tul";
+                        Object[] renglon=new Object[]{map.get("id"),map.get("fecha").toString(),map.get("rfc_receptor"),map.get("nombre_receptor"),map.get("f_fiscal"),map.get("serie"),map.get("folio"),map.get("tot"),map.get("estado_factura"),sucursal};
+                        modelo.addRow(renglon);
                     }
                     else
                     {
-                        Object[] renglon1=new Object[]{map.get("id"),map.get("fecha").toString(),map.get("rfc_receptor"),map.get("nombre_receptor"),map.get("f_fiscal"),map.get("serie_externo"),map.get("folio_externo"),map.get("tot"),map.get("estado_factura")};
-                        model.addRow(renglon1);
+                        String sucursal="";
+                        if(map.get("id_tultitlan")!=null)
+                            sucursal="Tul";
+                        Object[] renglon1=new Object[]{map.get("id"),map.get("fecha").toString(),map.get("rfc_receptor"),map.get("nombre_receptor"),map.get("f_fiscal"),map.get("serie_externo"),map.get("folio_externo"),map.get("tot"),map.get("estado_factura"), sucursal};
+                        modelo.addRow(renglon1);
                     }
                 }
+                inicio=siguente;
             }
             else
-                model.getDataVector().removeAllElements();
+            {
+                parar=true;
+                if(inicio==0)
+                {
+                    DefaultTableModel modelo= (DefaultTableModel)t_datos.getModel();
+                    modelo.setNumRows(0);
+                }
+            }
             t_datos.revalidate();
-            t_busca.requestFocus();
-            formatoTabla();
         }catch(Exception e)
         {
             e.printStackTrace();
@@ -1095,7 +1334,7 @@ public class buscaFactura extends javax.swing.JDialog {
                       column.setPreferredWidth(100);
                       break;
                   case 9:
-                      column.setPreferredWidth(80);
+                      column.setPreferredWidth(30);
                       break;
                   default:
                       column.setPreferredWidth(40);

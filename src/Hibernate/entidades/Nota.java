@@ -1,5 +1,5 @@
 package Hibernate.entidades;
-// Generated 21/08/2015 05:39:10 PM by Hibernate Tools 3.6.0
+// Generated 21/12/2017 08:34:30 AM by Hibernate Tools 3.6.0
 
 
 import java.util.Date;
@@ -13,7 +13,9 @@ public class Nota  implements java.io.Serializable {
 
 
      private Integer idNota;
+     private Double version;
      private Orden orden;
+     private UsoCfdi usoCfdi;
      private Usuario usuarioByAutorizo;
      private OrdenExterna ordenExterna;
      private Usuario usuarioByGenero;
@@ -71,7 +73,7 @@ public class Nota  implements java.io.Serializable {
      private Date fechaMedioPago;
      private Date fechaCondicionesPago;
      private String riesgo;
-     private int iva;
+     private Integer iva;
      private String extra;
      private String estatus;
      private Date fEstatus;
@@ -83,13 +85,18 @@ public class Nota  implements java.io.Serializable {
      private String selloCfdi;
      private String certificadoSat;
      private String certificadoEmisor;
+     private Double descDeducible;
+     private String tipoRelacion;
+     private Set relacionsForRelacionNota = new HashSet(0);
      private Set conceptos = new HashSet(0);
+     private Set relacionsForIdNota = new HashSet(0);
 
     public Nota() {
     }
 
-    public Nota(Orden orden, Usuario usuarioByAutorizo, OrdenExterna ordenExterna, Usuario usuarioByGenero, Date fecha, String rfcEmisor, String nombreEmisor, String calleEmisor, String coloniaEmisor, String numeroExteriorEmisor, String municipioEmisor, String estadoEmisor, String paisEmisor, String cpEmisor, String rfcReceptor, String nombreReceptor, String calleReceptor, String coloniaReceptor, String numeroExteriorReceptor, String municipioReceptor, String estadoReceptor, String paisReceptor, String cpReceptor, Double deducible, String estadoFactura, String FFiscal, String fechaFiscal, String serie, String folio, String metodoPago, String cuentaPago, String moneda, Double factorCambio, String area, String tipoPoliza, String tipoEmisor, String contactoEmisor, String correoEmisor, String telefonoEmisor, String tipoReceptor, String contactoReceptor, String correoReceptor, String telefonoReceptor, String codigoOficina, String foliosElectronicos, String nombreDocumento, String error, String addenda, String riEmosor, String riReceptor, String proveedor, String condicionesPago, String tipoFacturacion, String descripcionEmisor, String medioPago, Date fechaMedioPago, Date fechaCondicionesPago, int iva, String riesgo, String extra, String estatus, Date fEstatus, String texto, Integer folioExterno, String serieExterno, String pac, String selloSat, String selloCfdi, String certificadoSat, String certificadoEmisor, Set conceptos) {
+    public Nota(Orden orden, UsoCfdi usoCfdi, Usuario usuarioByAutorizo, OrdenExterna ordenExterna, Usuario usuarioByGenero, Date fecha, String rfcEmisor, String nombreEmisor, String calleEmisor, String coloniaEmisor, String numeroExteriorEmisor, String municipioEmisor, String estadoEmisor, String paisEmisor, String cpEmisor, String rfcReceptor, String nombreReceptor, String calleReceptor, String coloniaReceptor, String numeroExteriorReceptor, String municipioReceptor, String estadoReceptor, String paisReceptor, String cpReceptor, Double deducible, String estadoFactura, String FFiscal, String fechaFiscal, String serie, String folio, String metodoPago, String cuentaPago, String moneda, Double factorCambio, String area, String tipoPoliza, String tipoEmisor, String contactoEmisor, String correoEmisor, String telefonoEmisor, String tipoReceptor, String contactoReceptor, String correoReceptor, String telefonoReceptor, String codigoOficina, String foliosElectronicos, String nombreDocumento, String error, String addenda, String riEmosor, String riReceptor, String proveedor, String condicionesPago, String tipoFacturacion, String descripcionEmisor, String medioPago, Date fechaMedioPago, Date fechaCondicionesPago, String riesgo, Integer iva, String extra, String estatus, Date fEstatus, String texto, Integer folioExterno, String serieExterno, String pac, String selloSat, String selloCfdi, String certificadoSat, String certificadoEmisor, Double descDeducible, String tipoRelacion, Set relacionsForRelacionNota, Set conceptos, Set relacionsForIdNota) {
        this.orden = orden;
+       this.usoCfdi = usoCfdi;
        this.usuarioByAutorizo = usuarioByAutorizo;
        this.ordenExterna = ordenExterna;
        this.usuarioByGenero = usuarioByGenero;
@@ -148,18 +155,22 @@ public class Nota  implements java.io.Serializable {
        this.fechaCondicionesPago = fechaCondicionesPago;
        this.riesgo = riesgo;
        this.iva = iva;
-       this.conceptos = conceptos;
        this.extra = extra;
        this.estatus = estatus;
-       this.fEstatus= fEstatus;
+       this.fEstatus = fEstatus;
        this.texto = texto;
-       this.folioExterno=folioExterno;
-       this.serieExterno=serieExterno;
-       this.pac=pac;
-       this.selloSat=selloSat;
-       this.selloCfdi=selloCfdi;
-       this.certificadoSat=certificadoSat;
-       this.certificadoEmisor=certificadoEmisor;
+       this.folioExterno = folioExterno;
+       this.serieExterno = serieExterno;
+       this.pac = pac;
+       this.selloSat = selloSat;
+       this.selloCfdi = selloCfdi;
+       this.certificadoSat = certificadoSat;
+       this.certificadoEmisor = certificadoEmisor;
+       this.descDeducible = descDeducible;
+       this.tipoRelacion = tipoRelacion;
+       this.relacionsForRelacionNota = relacionsForRelacionNota;
+       this.conceptos = conceptos;
+       this.relacionsForIdNota = relacionsForIdNota;
     }
    
     public Integer getIdNota() {
@@ -169,12 +180,26 @@ public class Nota  implements java.io.Serializable {
     public void setIdNota(Integer idNota) {
         this.idNota = idNota;
     }
+    public Double getVersion() {
+        return this.version;
+    }
+    
+    public void setVersion(Double version) {
+        this.version = version;
+    }
     public Orden getOrden() {
         return this.orden;
     }
     
     public void setOrden(Orden orden) {
         this.orden = orden;
+    }
+    public UsoCfdi getUsoCfdi() {
+        return this.usoCfdi;
+    }
+    
+    public void setUsoCfdi(UsoCfdi usoCfdi) {
+        this.usoCfdi = usoCfdi;
     }
     public Usuario getUsuarioByAutorizo() {
         return this.usuarioByAutorizo;
@@ -575,19 +600,13 @@ public class Nota  implements java.io.Serializable {
     public void setRiesgo(String riesgo) {
         this.riesgo = riesgo;
     }
-    public Set getConceptos() {
-        return this.conceptos;
-    }
-    
-    public void setConceptos(Set conceptos) {
-        this.conceptos = conceptos;
-    }
-
-
-    public int getIva() {
+    public Integer getIva() {
         return this.iva;
     }
-
+    
+    public void setIva(Integer iva) {
+        this.iva = iva;
+    }
     public String getExtra() {
         return this.extra;
     }
@@ -595,11 +614,6 @@ public class Nota  implements java.io.Serializable {
     public void setExtra(String extra) {
         this.extra = extra;
     }
-    
-    public void setIva(int iva) {
-        this.iva = iva;
-    }
-
     public String getEstatus() {
         return this.estatus;
     }
@@ -607,7 +621,6 @@ public class Nota  implements java.io.Serializable {
     public void setEstatus(String estatus) {
         this.estatus = estatus;
     }
-    
     public Date getfEstatus() {
         return this.fEstatus;
     }
@@ -615,7 +628,6 @@ public class Nota  implements java.io.Serializable {
     public void setfEstatus(Date fEstatus) {
         this.fEstatus = fEstatus;
     }
-    
     public String getTexto() {
         return this.texto;
     }
@@ -623,7 +635,6 @@ public class Nota  implements java.io.Serializable {
     public void setTexto(String texto) {
         this.texto = texto;
     }
-    
     public Integer getFolioExterno() {
         return this.folioExterno;
     }
@@ -638,7 +649,6 @@ public class Nota  implements java.io.Serializable {
     public void setSerieExterno(String serieExterno) {
         this.serieExterno = serieExterno;
     }
-    
     public String getPac() {
         return this.pac;
     }
@@ -646,7 +656,6 @@ public class Nota  implements java.io.Serializable {
     public void setPac(String pac) {
         this.pac = pac;
     }
-    
     public String getSelloSat() {
         return this.selloSat;
     }
@@ -675,6 +684,45 @@ public class Nota  implements java.io.Serializable {
     public void setCertificadoEmisor(String certificadoEmisor) {
         this.certificadoEmisor = certificadoEmisor;
     }
+    public Double getDescDeducible() {
+        return this.descDeducible;
+    }
+    
+    public void setDescDeducible(Double descDeducible) {
+        this.descDeducible = descDeducible;
+    }
+    public String getTipoRelacion() {
+        return this.tipoRelacion;
+    }
+    
+    public void setTipoRelacion(String tipoRelacion) {
+        this.tipoRelacion = tipoRelacion;
+    }
+    public Set getRelacionsForRelacionNota() {
+        return this.relacionsForRelacionNota;
+    }
+    
+    public void setRelacionsForRelacionNota(Set relacionsForRelacionNota) {
+        this.relacionsForRelacionNota = relacionsForRelacionNota;
+    }
+    public Set getConceptos() {
+        return this.conceptos;
+    }
+    
+    public void setConceptos(Set conceptos) {
+        this.conceptos = conceptos;
+    }
+    public Set getRelacionsForIdNota() {
+        return this.relacionsForIdNota;
+    }
+    
+    public void setRelacionsForIdNota(Set relacionsForIdNota) {
+        this.relacionsForIdNota = relacionsForIdNota;
+    }
+
+
+
+
 }
 
 

@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 29/11/2017 10:51:31 AM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.Avance" table="avance">
+        <id name="idAvance" type="java.lang.Integer">
+            <column name="id_avance" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="orden" class="Hibernate.entidades.Orden" fetch="select">
+            <column name="id_orden" />
+        </many-to-one>
+        <property name="fechaEnvio" type="timestamp">
+            <column name="fecha_envio" length="19" />
+        </property>
+        <property name="comentario" type="string">
+            <column name="comentario" length="150" />
+        </property>
+        <property name="idUsuario" type="string">
+            <column name="id_usuario" length="10" />
+        </property>
+        <property name="visto" type="java.lang.Byte">
+            <column name="visto" />
+        </property>
+        <property name="fechaVisto" type="timestamp">
+            <column name="fecha_visto" length="19" />
+        </property>
+    </class>
+</hibernate-mapping>

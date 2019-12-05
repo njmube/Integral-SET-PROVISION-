@@ -52,12 +52,14 @@ public class ResponsablesOP extends javax.swing.JPanel {
     String estado="";
     String ruta="";
     String sessionPrograma="";
+    int configuracion=1;
     /**
      * Creates new form Responsables
      */
-    public ResponsablesOP(String ses, Usuario usuario) {
+    public ResponsablesOP(String ses, Usuario usuario, int configuracion) {
         sessionPrograma=ses;
         usr=usuario;
+        this.configuracion=configuracion;
         initComponents();
         jButton1.setIcon(new ImageIcon("imagenes/pdf.png"));
         ruta="";
@@ -996,7 +998,7 @@ public class ResponsablesOP extends javax.swing.JPanel {
     private void b_buscaroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_buscaroActionPerformed
         //h=new Herramientas(usr, 0);
         //h.session(sessionPrograma);
-        buscaOrden obj = new buscaOrden(new javax.swing.JFrame(), true, usr,0);
+        buscaOrden obj = new buscaOrden(new javax.swing.JFrame(), true, usr,0, configuracion);
         obj.t_busca.requestFocus();
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
@@ -1151,7 +1153,7 @@ public class ResponsablesOP extends javax.swing.JPanel {
         h=new Herramientas(usr, 0);
         h.session(sessionPrograma);
 
-        calendario cal =new calendario(new javax.swing.JFrame(), true);
+        calendario cal =new calendario(new javax.swing.JFrame(), true, false);
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         cal.setLocation((d.width/2)-(cal.getWidth()/2), (d.height/2)-(cal.getHeight()/2));
         cal.setVisible(true);
@@ -1183,7 +1185,7 @@ public class ResponsablesOP extends javax.swing.JPanel {
         h=new Herramientas(usr, 0);
         h.session(sessionPrograma);
 
-        calendario cal =new calendario(new javax.swing.JFrame(), true);
+        calendario cal =new calendario(new javax.swing.JFrame(), true, false);
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         cal.setLocation((d.width/2)-(cal.getWidth()/2), (d.height/2)-(cal.getHeight()/2));
         cal.setVisible(true);
@@ -1215,7 +1217,7 @@ public class ResponsablesOP extends javax.swing.JPanel {
         h=new Herramientas(usr, 0);
         h.session(sessionPrograma);
 
-        calendario cal =new calendario(new javax.swing.JFrame(), true);
+        calendario cal =new calendario(new javax.swing.JFrame(), true, false);
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         cal.setLocation((d.width/2)-(cal.getWidth()/2), (d.height/2)-(cal.getHeight()/2));
         cal.setVisible(true);
@@ -1247,7 +1249,7 @@ public class ResponsablesOP extends javax.swing.JPanel {
          h=new Herramientas(usr, 0);
         h.session(sessionPrograma);
 
-        calendario cal =new calendario(new javax.swing.JFrame(), true);
+        calendario cal =new calendario(new javax.swing.JFrame(), true, false);
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         cal.setLocation((d.width/2)-(cal.getWidth()/2), (d.height/2)-(cal.getHeight()/2));
         cal.setVisible(true);
@@ -1279,7 +1281,7 @@ public class ResponsablesOP extends javax.swing.JPanel {
         h=new Herramientas(usr, 0);
         h.session(sessionPrograma);
 
-        calendario cal =new calendario(new javax.swing.JFrame(), true);
+        calendario cal =new calendario(new javax.swing.JFrame(), true,false);
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         cal.setLocation((d.width/2)-(cal.getWidth()/2), (d.height/2)-(cal.getHeight()/2));
         cal.setVisible(true);
@@ -1555,7 +1557,7 @@ public class ResponsablesOP extends javax.swing.JPanel {
                 if(fotos.length>0){
                     try{
                         Image img;
-                        img = Image.getInstance("ordenes/"+ord.getIdOrden()+"/miniatura/"+fotos[0].getDescripcion());
+                        img = Image.getInstance(ruta+"ordenes/"+ord.getIdOrden()+"/miniatura/"+fotos[0].getDescripcion());
                         img.setAbsolutePosition(30, 495);
                         img.scaleAbsoluteWidth(124);
                         img.scaleAbsoluteHeight(80);

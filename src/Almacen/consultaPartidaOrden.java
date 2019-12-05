@@ -245,7 +245,7 @@ public class consultaPartidaOrden extends javax.swing.JDialog {
     // End of variables declaration//GEN-END:variables
     private List returnStatus = RET_CANCEL;
          
-    public void busca(String tipo, String valor, String movimiento, String complemento, String complemento2)
+    public void busca(String tipo, String valor, String movimiento, String complemento, String complemento2, String complemento3)
     {
         Session session = HibernateUtil.getSessionFactory().openSession();
         try
@@ -365,26 +365,12 @@ public class consultaPartidaOrden extends javax.swing.JDialog {
                             java.lang.Double.class, java.lang.Double.class
                         };
                         String[] columnas = new String [] {"Id","Partida","Tipo","N° Parte","Descripción","Medida","Operario","Entregadas"};
-                        /*Query query = session.createQuery("SELECT DISTINCT part FROM Partida part "
-                                + "LEFT JOIN FETCH part.movimientos movPart "
-                                + "LEFT JOIN movPart.almacen alm "
-                                + "where alm.operacion=5 and part.ordenByIdOrden.idOrden="+Integer.parseInt(t_orden.getText()));
-                        List partidas = query.list();
                         
-                        Query query1 = session.createQuery("SELECT DISTINCT partEx FROM PartidaExterna partEx "
-                                + "LEFT JOIN FETCH partEx.movimientos movEx "
-                                + "LEFT JOIN movEx.almacen alm "
-                                + "where alm.operacion=5 and partEx.pedido.partida.ordenByIdOrden.idOrden="+Integer.parseInt(t_orden.getText()));
-                        List partidasExternas = query1.list();*/
                         String q1="SELECT DISTINCT part FROM Partida part "
                                 + "LEFT JOIN FETCH part.movimientos movPart "
                                 + "LEFT JOIN movPart.almacen alm "
                                 + "where alm.operacion=5 and part.ordenByIdOrden.idOrden="+Integer.parseInt(t_orden.getText())+complemento;
                         
-                        /*String q2="SELECT DISTINCT partEx FROM PartidaExterna partEx "
-                                + "LEFT JOIN FETCH partEx.movimientos movEx "
-                                + "LEFT JOIN movEx.almacen alm "
-                                + "where alm.operacion=5 and partEx.pedido.partida.ordenByIdOrden.idOrden="+Integer.parseInt(t_orden.getText())+complemento2;*/
                         String q2="SELECT DISTINCT partEx FROM PartidaExterna partEx "
                                 + "LEFT JOIN FETCH partEx.movimientos movEx "
                                 + "LEFT JOIN movEx.almacen alm "
@@ -415,10 +401,15 @@ public class consultaPartidaOrden extends javax.swing.JDialog {
                             double total=entregadas-devueltas;
                             model.setValueAt(par.getIdPartida(), a, 0);
                             model.setValueAt(par.getIdEvaluacion()+"-"+par.getSubPartida(), a, 1);
-                            if(par.getPedido()==null)
-                                model.setValueAt("COM.", a, 2);
-                            else
+                            if(par.getPedido()!=null)
                                 model.setValueAt("PED.", a, 2);
+                            else
+                            {
+                                if(par.isSurteAlmacen()==true)
+                                    model.setValueAt("ALM.", a, 2);
+                                else
+                                    model.setValueAt("COM.", a, 2);
+                            }
                             if(par.getEjemplar()!=null)
                                 model.setValueAt(par.getEjemplar().getIdParte(), a, 3);
                             else
@@ -467,36 +458,25 @@ public class consultaPartidaOrden extends javax.swing.JDialog {
                         {
                             java.lang.String.class, java.lang.String.class, java.lang.String.class, 
                             java.lang.String.class, java.lang.String.class, java.lang.String.class, 
-                            java.lang.Double.class, java.lang.Double.class, java.lang.Double.class, java.lang.Boolean.class
+                            java.lang.Double.class, java.lang.Double.class, java.lang.Double.class,
+                            java.lang.Double.class,java.lang.Boolean.class
                         };
-                        String[] columnas = new String [] {"Id","Partida","Tipo","N° Parte","Descripción","Medida","Existencias","Operario","Entregadas","Solicita"};
-                        /*Query query = session.createQuery("SELECT DISTINCT part FROM Partida part "
-                                + "LEFT JOIN FETCH part.movimientos movPart "
-                                + "LEFT JOIN movPart.almacen alm "
-                                + "where part.ordenByIdOrden.idOrden="+Integer.parseInt(t_orden.getText())
-                                + " and alm!="+null);
-                        List partidas = query.list();
-                        
-                        Query query1 = session.createQuery("SELECT DISTINCT partEx FROM PartidaExterna partEx "
-                                + "LEFT JOIN FETCH partEx.movimientos movEx "
-                                + "LEFT JOIN movEx.almacen alm "
-                                + "where alm.operacion in (3, 5) and partEx.pedido.partida.ordenByIdOrden.idOrden="+Integer.parseInt(t_orden.getText()));
-                        List partidasExternas = query1.list();*/
+                        String[] columnas = new String [] {"Id","Partida","Tipo","N° Parte","Descripción","Medida","Solicitado","Existencias","Operario","Entregadas","Solicita"};
                         
                         String q1="SELECT DISTINCT part FROM Partida part "
                                 + "LEFT JOIN FETCH part.movimientos movPart "
                                 + "LEFT JOIN movPart.almacen alm "
                                 + "where part.ordenByIdOrden.idOrden="+Integer.parseInt(t_orden.getText())
-                                + " and alm!="+null+complemento;
+                                + " and alm!="+null+" and part.surteAlmacen=false "+complemento;
                         
-                        /*String q2="SELECT DISTINCT partEx FROM PartidaExterna partEx "
-                                + "LEFT JOIN FETCH partEx.movimientos movEx "
-                                + "LEFT JOIN movEx.almacen alm "
-                                + "where alm.operacion in (3, 5) and partEx.pedido.partida.ordenByIdOrden.idOrden="+Integer.parseInt(t_orden.getText())+complemento2;*/
-                       String q2="SELECT DISTINCT partEx FROM PartidaExterna partEx "
+                        String q2="SELECT DISTINCT partEx FROM PartidaExterna partEx "
                                 + "LEFT JOIN FETCH partEx.movimientos movEx "
                                 + "LEFT JOIN movEx.almacen alm "
                                 + "where alm.operacion in (3, 5) and partEx.pedido.orden.idOrden="+Integer.parseInt(t_orden.getText())+complemento2;
+                        
+                        String q3="SELECT DISTINCT part FROM Partida part "
+                                + "where part.ordenByIdOrden.idOrden="+Integer.parseInt(t_orden.getText())
+                                + " and part.surteAlmacen=true "+complemento3;
                         
                         Query query = session.createQuery(q1);
                         List partidas = query.list();
@@ -504,7 +484,10 @@ public class consultaPartidaOrden extends javax.swing.JDialog {
                         Query query1 = session.createQuery(q2);
                         List partidasExternas = query1.list();
                         
-                        model=new MyModel(partidas.size()+partidasExternas.size(), columnas, types);
+                        Query query2 = session.createQuery(q3);
+                        List partidasAlmacen = query2.list();
+                        
+                        model=new MyModel(partidas.size()+partidasAlmacen.size()+partidasExternas.size(), columnas, types);
                         t_datos.setModel(model);
                         for(int a=0; a<partidas.size(); a++)
                         {
@@ -547,12 +530,69 @@ public class consultaPartidaOrden extends javax.swing.JDialog {
                                 anotacion=par.getInstruccion();
                             model.setValueAt(par.getCatalogo().getNombre()+" "+anotacion, a, 4);
                             model.setValueAt(par.getMed(), a, 5);
-                            model.setValueAt(total, a, 6);
-                            model.setValueAt(total_operario, a, 7);
-                            model.setValueAt(0.0d, a, 8);
-                            //model.setValueAt(par.getPerdidases().size(), a, 9);
-                            model.setValueAt(par.getOp(), a, 9);
+                            if(par.getPedido()!=null)
+                                model.setValueAt(par.getCantPcp(), a, 6);
+                            else
+                                model.setValueAt(par.getCantidadAut(), a, 6);
+                            model.setValueAt(total, a, 7);
+                            model.setValueAt(total_operario, a, 8);
+                            model.setValueAt(0.0d, a, 9);
+                            model.setValueAt(par.getOp(), a, 10);
                         }
+                        
+                        for(int a=0; a<partidasAlmacen.size(); a++)
+                        {
+                            Partida par = (Partida) partidasAlmacen.get(a);
+                            Movimiento[] mov=(Movimiento[])par.getMovimientos().toArray(new Movimiento[0]);
+                            double entradas=0, devoluciones=0, entregadas=0, devueltas=0;
+                            for(int b=0; b<mov.length; b++)
+                            {
+                                Almacen alm=mov[b].getAlmacen();
+                                //Entradas por pedido interno
+                                if(alm.getTipoMovimiento()==1 && alm.getOperacion()==1)
+                                    entradas+=mov[b].getCantidad();
+                                if(alm.getTipoMovimiento()==2 && alm.getOperacion()==1)
+                                    devoluciones+=mov[b].getCantidad();
+                                //entrada por compañia
+                                if(alm.getTipoMovimiento()==1 && alm.getOperacion()==4)
+                                    entradas+=mov[b].getCantidad();
+                                if(alm.getTipoMovimiento()==2 && alm.getOperacion()==4)
+                                    devoluciones+=mov[b].getCantidad();
+                                if(alm.getTipoMovimiento()==1 && alm.getOperacion()==5)
+                                    devueltas+=mov[b].getCantidad();
+                                if(alm.getTipoMovimiento()==2 && alm.getOperacion()==5)
+                                    entregadas+=mov[b].getCantidad();
+                            }
+                            double total_Pedido=entradas-devoluciones;
+                            double total_operario=entregadas-devueltas;
+                            double total=total_Pedido-total_operario;
+                            model.setValueAt(par.getIdPartida(), a+partidas.size(), 0);
+                            model.setValueAt(par.getIdEvaluacion()+"-"+par.getSubPartida(), a+partidas.size(), 1);
+                            model.setValueAt("ALM.", a+partidas.size(), 2);
+                            if(par.getEjemplar()!=null)
+                                model.setValueAt(par.getEjemplar().getIdParte(), a+partidas.size(), 3);
+                            else
+                                model.setValueAt("", a+partidas.size(), 3);
+                            String anotacion="";
+                            if(par.getInstruccion()!=null)
+                                anotacion=par.getInstruccion();
+                            model.setValueAt(par.getCatalogo().getNombre()+" "+anotacion, a+partidas.size(), 4);
+                            model.setValueAt(par.getMed(), a+partidas.size(), 5);
+                            model.setValueAt(par.getCantidadAut(), a+partidas.size(), 6);
+                            if(par.getEjemplar()!=null)
+                            {
+                                if(par.getEjemplar().getExistencias()!=null)
+                                    model.setValueAt(par.getEjemplar().getExistencias(), a+partidas.size(), 7);
+                                else
+                                    model.setValueAt(0.0d, a+partidas.size(), 7);
+                            }
+                            else
+                                model.setValueAt(0.0d, a+partidas.size(), 7);
+                            model.setValueAt(total_operario, a+partidas.size(), 8);
+                            model.setValueAt(0.0d, a+partidas.size(), 9);
+                            model.setValueAt(par.getOp(), a+partidas.size(), 10);
+                        }
+                        
                         for(int a=0; a<partidasExternas.size(); a++)
                         {
                             PartidaExterna par = (PartidaExterna) partidasExternas.get(a);
@@ -573,22 +613,22 @@ public class consultaPartidaOrden extends javax.swing.JDialog {
                             double total_Pedido=entradas-devoluciones;
                             double total_operario=entregadas-devueltas;
                             double total=total_Pedido-total_operario;
-                            model.setValueAt(par.getIdPartidaExterna(), a+partidas.size(), 0);
+                            model.setValueAt(par.getIdPartidaExterna(), a+partidas.size()+partidasAlmacen.size(), 0);
                             //model.setValueAt(par.getPedido().getPartida().getIdEvaluacion()+"-"+par.getPedido().getPartida().getSubPartida(), a+partidas.size(), 1);
-                            model.setValueAt("-", a+partidas.size(), 1);
-                            model.setValueAt("ADI.", a+partidas.size(), 2);
+                            model.setValueAt("-", a+partidas.size()+partidasAlmacen.size(), 1);
+                            model.setValueAt("ADI.", a+partidas.size()+partidasAlmacen.size(), 2);
                             if(par.getNoParte()!=null)
-                                model.setValueAt(par.getNoParte(), a+partidas.size(), 3);
+                                model.setValueAt(par.getNoParte(), a+partidas.size()+partidasAlmacen.size(), 3);
                             else
-                                model.setValueAt("", a+partidas.size(), 3);
+                                model.setValueAt("", a+partidas.size()+partidasAlmacen.size(), 3);
                             //model.setValueAt(par.getPedido().getPartida().getCatalogo().getNombre()+"/"+par.getDescripcion(), a+partidas.size(), 4);
-                            model.setValueAt(par.getDescripcion(), a+partidas.size(), 4);
-                            model.setValueAt(par.getUnidad(), a+partidas.size(), 5);
-                            model.setValueAt(total, a+partidas.size(), 6);
-                            model.setValueAt(total_operario, a+partidas.size(), 7);
-                            model.setValueAt(0.0d, a+partidas.size(), 8);
-                            //model.setValueAt(0, a+partidas.size(), 9);
-                            model.setValueAt(par.getOp(), a+partidas.size(), 9);
+                            model.setValueAt(par.getDescripcion(), a+partidas.size()+partidasAlmacen.size(), 4);
+                            model.setValueAt(par.getUnidad(), a+partidas.size()+partidasAlmacen.size(), 5);
+                            model.setValueAt(par.getCantidad(), a+partidas.size()+partidasAlmacen.size(), 6);
+                            model.setValueAt(total, a+partidas.size()+partidasAlmacen.size(), 7);
+                            model.setValueAt(total_operario, a+partidas.size()+partidasAlmacen.size(), 8);
+                            model.setValueAt(0.0d, a+partidas.size()+partidasAlmacen.size(), 9);
+                            model.setValueAt(par.getOp(), a+partidas.size()+partidasAlmacen.size(), 10);
                         }
                     }
                 }
@@ -674,6 +714,12 @@ public class consultaPartidaOrden extends javax.swing.JDialog {
                 celdaEditable.add(aux);
             }
             setDataVector(new Object [renglones][columnas.length], columnas);
-        }   
+        }
+        
+        public boolean isCellEditable(int rowIndex, int columnIndex) 
+        {
+            List aux=(List)celdaEditable.get(rowIndex);
+            return (boolean)aux.get(columnIndex);
+        }
     }
 }

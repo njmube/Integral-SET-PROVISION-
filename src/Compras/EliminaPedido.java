@@ -42,6 +42,7 @@ import Integral.VerticalBarUI;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.text.SimpleDateFormat;
+import javax.swing.DefaultCellEditor;
 /**
  *
  * @author ESPECIALIZADO TOLUCA
@@ -69,7 +70,7 @@ public class EliminaPedido extends javax.swing.JPanel {
     int menu=0;
     public Pedido pedido=null;
     String[] columnas = new String [] {
-        "Interno","N0","#","N° Parte","Folio","Descripción","Med","Plazo","Cant","Costo c/u","Total"
+        "Interno","N0","#","N° Parte","Folio","Descripción","Med","Plazo","Cant","Costo c/u", "Tipo", "Total"
     };
     FormatoTabla formato;
         /**
@@ -131,6 +132,7 @@ public class EliminaPedido extends javax.swing.JPanel {
         t_proveedor = new javax.swing.JTextField();
         t_clave = new javax.swing.JTextField();
         t_id_aseguradora = new javax.swing.JTextField();
+        tipo = new javax.swing.JComboBox();
         jPanel4 = new javax.swing.JPanel();
         l_busca = new javax.swing.JLabel();
         b_busca = new javax.swing.JButton();
@@ -147,6 +149,9 @@ public class EliminaPedido extends javax.swing.JPanel {
         jScrollPane2 = new javax.swing.JScrollPane();
         t_notas = new javax.swing.JTextArea();
         l_notas = new javax.swing.JLabel();
+        t_cambio = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        r_autorizar2 = new javax.swing.JRadioButton();
         scroll = new javax.swing.JScrollPane();
         t_datos = new javax.swing.JTable();
         p_arriba = new javax.swing.JPanel();
@@ -297,6 +302,39 @@ public class EliminaPedido extends javax.swing.JPanel {
         t_id_aseguradora.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
         t_id_aseguradora.setDisabledTextColor(new java.awt.Color(2, 38, 253));
 
+        tipo.setFont(new java.awt.Font("Dialog", 0, 9)); // NOI18N
+        tipo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "-", "ori", "nal", "des" }));
+        tipo.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tipoMouseClicked(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                tipoMouseReleased(evt);
+            }
+        });
+        tipo.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+                tipoPopupMenuWillBecomeInvisible(evt);
+            }
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+            }
+        });
+        tipo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tipoActionPerformed(evt);
+            }
+        });
+        tipo.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                tipoFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                tipoFocusLost(evt);
+            }
+        });
+
         setBackground(new java.awt.Color(255, 255, 255));
         setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "Eliminación de Pedidos", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Arial", 1, 12))); // NOI18N
         setLayout(new java.awt.BorderLayout());
@@ -399,6 +437,31 @@ public class EliminaPedido extends javax.swing.JPanel {
         l_notas.setFont(new java.awt.Font("Arial", 0, 10)); // NOI18N
         l_notas.setText("Notas:");
 
+        t_cambio.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        t_cambio.setText("0.0");
+        t_cambio.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
+        t_cambio.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                t_cambioFocusLost(evt);
+            }
+        });
+        t_cambio.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                t_cambioKeyTyped(evt);
+            }
+        });
+
+        jLabel7.setText("Tipo Cambio:");
+
+        r_autorizar2.setFont(new java.awt.Font("Arial", 0, 10)); // NOI18N
+        r_autorizar2.setText("Autorizacion 2");
+        r_autorizar2.setEnabled(false);
+        r_autorizar2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                r_autorizar2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -414,10 +477,16 @@ public class EliminaPedido extends javax.swing.JPanel {
                         .addComponent(b_busca, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(b_eliminar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 331, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel7)
+                        .addGap(6, 6, 6)
+                        .addComponent(t_cambio, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 180, Short.MAX_VALUE)
                         .addComponent(l_notas))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(r_autorizar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(r_autorizar2)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -439,9 +508,15 @@ public class EliminaPedido extends javax.swing.JPanel {
                         .addComponent(t_busca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(l_busca))
                     .addComponent(b_busca, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(b_eliminar))
+                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(t_cambio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel7))
+                        .addComponent(b_eliminar)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(r_autorizar)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(r_autorizar)
+                    .addComponent(r_autorizar2))
                 .addContainerGap())
         );
 
@@ -454,10 +529,11 @@ public class EliminaPedido extends javax.swing.JPanel {
 
             },
             new String [] {
-                "#", "R. Valua", "N° Parte", "Folio", "Descripción", "Medida", "Plazo", "Cantidad", "Costo c/u", "Total"
+                "#", "R. Valua", "N° Parte", "Folio", "Descripción", "Medida", "Plazo", "Cantidad", "Costo c/u", "Tipo", "Total"
             }
         ));
         t_datos.setAutoscrolls(false);
+        t_datos.setColumnSelectionAllowed(true);
         t_datos.getTableHeader().setReorderingAllowed(false);
         scroll.setViewportView(t_datos);
         t_datos.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
@@ -925,7 +1001,7 @@ public class EliminaPedido extends javax.swing.JPanel {
         {
             if(t_pedido.getText().compareTo("")!=0)
             {
-                if(r_autorizar.isSelected()==false)
+                if(r_autorizar.isSelected()==false && r_autorizar2.isSelected()==false)
                 {
                     int opt=JOptionPane.showConfirmDialog(this, "¡Confirma que deseas eliminar el pedido!");
                     if(opt==0)
@@ -1067,6 +1143,50 @@ public class EliminaPedido extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void tipoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tipoMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tipoMouseClicked
+
+    private void tipoMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tipoMouseReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tipoMouseReleased
+
+    private void tipoPopupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_tipoPopupMenuWillBecomeInvisible
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tipoPopupMenuWillBecomeInvisible
+
+    private void tipoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tipoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tipoActionPerformed
+
+    private void tipoFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tipoFocusGained
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tipoFocusGained
+
+    private void tipoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tipoFocusLost
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tipoFocusLost
+
+    private void t_cambioFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_cambioFocusLost
+       
+    }//GEN-LAST:event_t_cambioFocusLost
+
+    private void t_cambioKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_cambioKeyTyped
+        // TODO add your handling code here:
+        char caracter = evt.getKeyChar();
+        // Verificar si la tecla pulsada no es un digito
+        if(((caracter < '0') ||
+            (caracter > '9')) &&
+        (caracter != '\b' /*corresponde a BACK_SPACE*/) && caracter!='.')
+        {
+            evt.consume();  // ignorar el evento de teclado
+        }
+    }//GEN-LAST:event_t_cambioKeyTyped
+
+    private void r_autorizar2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_r_autorizar2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_r_autorizar2ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDialog autorizarCosto;
     private javax.swing.JButton b_autorizar;
@@ -1078,6 +1198,7 @@ public class EliminaPedido extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel13;
@@ -1111,11 +1232,13 @@ public class EliminaPedido extends javax.swing.JPanel {
     private javax.swing.JPanel p_arriba;
     private javax.swing.JPanel p_interno_centro;
     private javax.swing.JRadioButton r_autorizar;
+    private javax.swing.JRadioButton r_autorizar2;
     private javax.swing.JScrollPane scroll;
     private javax.swing.JFormattedTextField t_IVA;
     private javax.swing.JTextField t_asegurado;
     private javax.swing.JTextField t_aseguradora;
     private javax.swing.JTextField t_busca;
+    private javax.swing.JTextField t_cambio;
     private javax.swing.JTextField t_clave;
     private javax.swing.JTextField t_colonia;
     private javax.swing.JPasswordField t_contra;
@@ -1142,6 +1265,7 @@ public class EliminaPedido extends javax.swing.JPanel {
     private javax.swing.JTextField t_tipo;
     private javax.swing.JFormattedTextField t_total;
     private javax.swing.JTextField t_user;
+    private javax.swing.JComboBox tipo;
     // End of variables declaration//GEN-END:variables
 
    
@@ -1185,7 +1309,13 @@ public class EliminaPedido extends javax.swing.JPanel {
                 case 9:               
                     column.setPreferredWidth(30);
                     break;
-                case 10:               
+                case 10:
+                    column.setPreferredWidth(10);
+                    DefaultCellEditor editor2 = new DefaultCellEditor(tipo);
+                    column.setCellEditor(editor2); 
+                    editor2.setClickCountToStart(0);
+                    break;
+                case 11:               
                     column.setPreferredWidth(30);
                     break;
                 default:
@@ -1230,6 +1360,11 @@ public class EliminaPedido extends javax.swing.JPanel {
             Session session = HibernateUtil.getSessionFactory().openSession();
             try
             {
+                pedido = (Pedido)session.get(Pedido.class, pedido.getIdPedido());
+                t_cambio.setEditable(false);
+                if(Double.parseDouble(pedido.getTipoCambio().toString())>0.0)
+                    t_cambio.setText(""+Double.parseDouble(pedido.getTipoCambio().toString()));
+                
                 this.t_pedido.setText("");
                 this.t_proveedor.setText("");
                 this.t_plazo.setText("");
@@ -1456,7 +1591,16 @@ public class EliminaPedido extends javax.swing.JPanel {
                             model.setValueAt(0, r, 9);
                         double sum=part[r].getCantPcp()*part[r].getPcp();
                         tot+=sum;
-                        model.setValueAt(sum, r, 10);
+                        
+                        String tipo_pieza="";
+                        if(part[r].getTipoPieza()!=null){
+                            tipo_pieza = part[r].getTipoPieza().toString();
+                        }else
+                            tipo_pieza="-";
+                        
+                        model.setValueAt(tipo_pieza, r , 10);
+                        
+                        model.setValueAt(sum, r, 11);
                     }
                 }
                 if(c_tipo.getSelectedItem().toString().compareTo("Externo")==0 || c_tipo.getSelectedItem().toString().compareTo("Adicional")==0)
@@ -1492,7 +1636,10 @@ public class EliminaPedido extends javax.swing.JPanel {
                             model.setValueAt(0, r, 9);
                         double sum=partEx[r].getCantidad()*partEx[r].getCosto();
                         tot+=sum;
-                        model.setValueAt(sum, r, 10);
+                        
+                        model.setValueAt("", r, 10);
+                        
+                        model.setValueAt(sum, r, 11);
                     }
                 }
                 
@@ -1526,7 +1673,10 @@ public class EliminaPedido extends javax.swing.JPanel {
                             model.setValueAt(0, r, 9);
                         double sum=partEx[r].getCantidad()*partEx[r].getCosto();
                         tot+=sum;
-                        model.setValueAt(sum, r, 10);
+                        
+                        model.setValueAt("", r, 10);
+                        
+                        model.setValueAt(sum, r, 11);
                     }
                 }
                 
@@ -1536,10 +1686,31 @@ public class EliminaPedido extends javax.swing.JPanel {
                 t_total.setValue(tot+iva);
                 
                 //checar si la orden ya fue autorizada
+                if(pedido.getUsuarioByAutorizo2()!=null)
+                {
+                    r_autorizar2.setSelected(true);
+                    r_autorizar2.setText(pedido.getUsuarioByAutorizo2().getEmpleado().getNombre());
+                }
+                else
+                {
+                    r_autorizar2.setSelected(false);
+                    r_autorizar2.setText("Autorizacion 2");
+                }
+                
                 if(pedido.getUsuarioByAutorizo()!=null)
                 {
                     r_autorizar.setSelected(true);
                     r_autorizar.setText(pedido.getUsuarioByAutorizo().getEmpleado().getNombre());
+                }
+                else
+                {
+                    r_autorizar.setSelected(false);
+                    r_autorizar.setText("Autorizacion 1");
+                    b_eliminar.setEnabled(true);
+                }
+                
+                if(pedido.getUsuarioByAutorizo()!=null && pedido.getUsuarioByAutorizo2()!=null)
+                {
                     model.setColumnaEditable(0, false);
                     model.setColumnaEditable(1, false);
                     model.setColumnaEditable(2, false);
@@ -1552,8 +1723,6 @@ public class EliminaPedido extends javax.swing.JPanel {
                 }
                 else
                 {
-                    r_autorizar.setSelected(false);
-                    r_autorizar.setText("Autorizacion 1");
                     b_eliminar.setEnabled(true);
                 }
                 
@@ -1615,6 +1784,7 @@ public class EliminaPedido extends javax.swing.JPanel {
                 this.t_asegurado.setText("");
                 this.t_folio_externo.setText("");
                 this.r_autorizar.setEnabled(false);
+                this.r_autorizar2.setEnabled(false);
                 
                 b_eliminar.setEnabled(false);
                 session.beginTransaction().rollback();
@@ -1664,6 +1834,7 @@ public class EliminaPedido extends javax.swing.JPanel {
             java.lang.String.class/*Plazo*/, 
             java.lang.Double.class/*Cantidad*/, 
             java.lang.Double.class/*Costo c/u*/, 
+            java.lang.String.class/*Tipo*/, 
             java.lang.Double.class/*Total*/ 
         };
         int ren=0;

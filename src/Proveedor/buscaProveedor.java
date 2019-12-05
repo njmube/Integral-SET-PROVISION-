@@ -31,10 +31,15 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import Integral.Herramientas;
+import Integral.HorizontalBarUI;
 import Integral.Render1;
+import Integral.VerticalBarUI;
 import java.awt.Desktop;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 import java.io.File;
 import java.io.FileOutputStream;
+import javax.swing.JScrollBar;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -51,68 +56,40 @@ public class buscaProveedor extends javax.swing.JDialog {
     //private Session session;
     Herramientas h;
     InputMap map = new InputMap();
-    DefaultTableModel model;
     String[] columnas = new String [] {"Clave","Nombre","Direccion","Tel. 1","Tel. 2","Hoj", "Mec", "Sus", "Ele"};
     Usuario usr;
     String sessionPrograma;
+    int inicio=0, opcion=0;
+    boolean parar=false;
+    final JScrollBar scrollBar;
     
     /** Creates new form acceso */
-    public buscaProveedor(java.awt.Frame parent, boolean modal, Usuario u, String ses) {
+    public buscaProveedor(java.awt.Frame parent, boolean modal, Usuario u, String ses, int opcion) {
         super(parent, modal);
         initComponents();
+        scrollBar = scroll.getVerticalScrollBar();
+        scrollBar.addAdjustmentListener(new AdjustmentListener() {
+            public void adjustmentValueChanged(AdjustmentEvent ae) {
+                if(parar==false)
+                {
+                    int extent = scrollBar.getModel().getExtent();
+                    extent+=scrollBar.getValue();
+                    if(extent==scrollBar.getMaximum())
+                        buscaDato();
+                }
+            }
+          });
         getRootPane().setDefaultButton(jButton5);
         usr=u;
+        this.opcion=opcion;
         sessionPrograma=ses;
         t_datos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         formatoTabla();
+        scroll.getVerticalScrollBar().setUI(new VerticalBarUI());
+        scroll.getHorizontalScrollBar().setUI(new HorizontalBarUI());
         buscaDato();
     }
     
-    DefaultTableModel ModeloTablaReporte(int renglones, String columnas[])
-    {
-        model = new DefaultTableModel(new Object [renglones][9], columnas)
-        {
-            Class[] types = new Class [] {
-                java.lang.Integer.class,
-                java.lang.String.class, 
-                java.lang.String.class, 
-                java.lang.String.class, 
-                java.lang.String.class,
-                java.lang.Boolean.class, 
-                java.lang.Boolean.class, 
-                java.lang.Boolean.class, 
-                java.lang.Boolean.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false,false,false,false,false,false
-            };
-            public void setValueAt(Object value, int row, int col)
-            {
-                Vector vector = (Vector)this.dataVector.elementAt(row);
-                Object celda = ((Vector)this.dataVector.elementAt(row)).elementAt(col);
-                switch(col)
-                {
-                    case 0:
-                        vector.setElementAt(value, col);
-                        this.dataVector.setElementAt(vector, row);
-                        fireTableCellUpdated(row, col);
-                        break;
-                    default:
-                        vector.setElementAt(value, col);
-                        this.dataVector.setElementAt(vector, row);
-                        fireTableCellUpdated(row, col);
-                        break;
-                }
-            }
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        };
-        return model;
-    }
     private void doClose(Proveedor o) {
         returnStatus = o;
         setVisible(false);
@@ -137,7 +114,7 @@ public class buscaProveedor extends javax.swing.JDialog {
         jLabel1 = new javax.swing.JLabel();
         c_filtro = new javax.swing.JComboBox();
         jPanel3 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        scroll = new javax.swing.JScrollPane();
         t_datos = new javax.swing.JTable();
         jButton5 = new javax.swing.JButton();
         bt_actualiza2 = new javax.swing.JButton();
@@ -206,10 +183,10 @@ public class buscaProveedor extends javax.swing.JDialog {
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class, java.lang.Boolean.class, java.lang.Boolean.class, java.lang.Boolean.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, true, true, true, true, true, true, true
+                false, false, false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -232,7 +209,7 @@ public class buscaProveedor extends javax.swing.JDialog {
                 t_datosKeyPressed(evt);
             }
         });
-        jScrollPane1.setViewportView(t_datos);
+        scroll.setViewportView(t_datos);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -240,13 +217,13 @@ public class buscaProveedor extends javax.swing.JDialog {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 867, Short.MAX_VALUE)
+                .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 867, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE)
+                .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -320,11 +297,15 @@ public class buscaProveedor extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void t_buscaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_buscaKeyReleased
+        inicio=0;
+        parar=false;
         this.buscaDato();
     }//GEN-LAST:event_t_buscaKeyReleased
 
     private void c_filtroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_c_filtroActionPerformed
-       this.buscaDato();
+        inicio=0;
+        parar=false;
+        this.buscaDato();
     }//GEN-LAST:event_c_filtroActionPerformed
 
     private void t_buscaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_buscaActionPerformed
@@ -505,7 +486,7 @@ public class buscaProveedor extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane scroll;
     public javax.swing.JTextField t_busca;
     private javax.swing.JTable t_datos;
     // End of variables declaration//GEN-END:variables
@@ -515,6 +496,8 @@ public class buscaProveedor extends javax.swing.JDialog {
             Session session = HibernateUtil.getSessionFactory().openSession();
             session.beginTransaction();
             Query q = session.createQuery(hql);
+            q.setFirstResult(inicio);
+            q.setMaxResults(20);
             List resultList = q.list();
             session.getTransaction().commit();
             session.disconnect();
@@ -534,43 +517,55 @@ public class buscaProveedor extends javax.swing.JDialog {
             consulta+=" where obj.nombre like '%" + t_busca.getText() +"%'";
         if(c_filtro.getSelectedItem().toString().compareTo("Dirección")==0)
             consulta+=" where obj.direccion like '%" + t_busca.getText() +"%'";
+        if(opcion==1)
+            consulta += " and facturar=1";
 
+        int siguente=inicio+20;
         List <Object[]> resultList=executeHQLQuery(consulta);
         if(resultList.size()>0)
         {
-            t_datos.setModel(ModeloTablaReporte(resultList.size(), columnas));
-            int i=0;
+            DefaultTableModel modelo= (DefaultTableModel)t_datos.getModel();
+            if(inicio==0)
+                modelo.setNumRows(0);
             for (Object o : resultList) 
             {
                 Proveedor actor = (Proveedor) o;
-                model.setValueAt(actor.getIdProveedor(), i, 0);
-                model.setValueAt(actor.getNombre(), i, 1);
-                model.setValueAt(actor.getDireccion(), i, 2);
-                model.setValueAt(actor.getTel1(), i, 3);
-                model.setValueAt(actor.getTel2(), i, 4);
+                Object[] renglon=new Object[9];
+                //Orden actor = (Orden) o;
+                renglon[0]=actor.getIdProveedor();
+                renglon[1]=actor.getNombre();
+                renglon[2]=actor.getDireccion();
+                renglon[3]=actor.getTel1();
+                renglon[4]=actor.getTel2();
                 if(actor.isEspHojalateria()==false)
-                    model.setValueAt(false, i, 5);
+                    renglon[5]=false;
                 else
-                    model.setValueAt(true, i, 5);
+                    renglon[5]=true;
                 if(actor.isEspMecanica()==false)
-                    model.setValueAt(false, i, 6);
+                    renglon[6]=false;
                 else
-                    model.setValueAt(true, i, 6);
+                    renglon[6]=true;
                 if(actor.isEspSuspension()==false)
-                    model.setValueAt(false, i, 7);
+                    renglon[7]=false;
                 else
-                    model.setValueAt(true, i, 7);
+                    renglon[7]=true;
                 if(actor.isEspElectricidad()==false)
-                    model.setValueAt(false, i, 8);
+                    renglon[8]=false;
                 else
-                    model.setValueAt(true, i, 8);
-                i++;
+                    renglon[8]=true;
+                modelo.addRow(renglon);
             }
+            inicio=siguente;
         }
         else
-            t_datos.setModel(ModeloTablaReporte(0, columnas));
-            t_busca.requestFocus();
-            formatoTabla();
+        {
+            parar=true;
+            if(inicio==0)
+            {
+                DefaultTableModel modelo= (DefaultTableModel)t_datos.getModel();
+                modelo.setNumRows(0);
+            }
+        }
     }
     private Proveedor returnStatus = RET_CANCEL;
     

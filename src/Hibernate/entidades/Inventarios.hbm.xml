@@ -1,0 +1,366 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 5/04/2019 03:57:43 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.Inventarios" table="inventarios" catalog="mydb">
+        <id name="idInventarios" type="java.lang.Integer">
+            <column name="id_inventarios" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="orden" class="Hibernate.entidades.Orden" fetch="select">
+            <column name="id_orden" />
+        </many-to-one>
+        <property name="tipo" type="string">
+            <column name="tipo" length="1" />
+        </property>
+        <property name="firmaCliente" type="binary">
+            <column name="firma_cliente" />
+        </property>
+        <property name="llanta1" type="java.lang.Boolean">
+            <column name="llanta1" />
+        </property>
+        <property name="llanta2" type="java.lang.Boolean">
+            <column name="llanta2" />
+        </property>
+        <property name="llanta3" type="java.lang.Boolean">
+            <column name="llanta3" />
+        </property>
+        <property name="llanta4" type="java.lang.Boolean">
+            <column name="llanta4" />
+        </property>
+        <property name="llanta5" type="java.lang.Boolean">
+            <column name="llanta5" />
+        </property>
+        <property name="llanta6" type="java.lang.Boolean">
+            <column name="llanta6" />
+        </property>
+        <property name="llanta7" type="java.lang.Boolean">
+            <column name="llanta7" />
+        </property>
+        <property name="llanta8" type="java.lang.Boolean">
+            <column name="llanta8" />
+        </property>
+        <property name="llanta9" type="java.lang.Boolean">
+            <column name="llanta9" />
+        </property>
+        <property name="llanta10" type="java.lang.Boolean">
+            <column name="llanta10" />
+        </property>
+        <property name="gas1" type="string">
+            <column name="gas1" length="45" />
+        </property>
+        <property name="gas2" type="string">
+            <column name="gas2" length="45" />
+        </property>
+        <property name="gas3" type="string">
+            <column name="gas3" length="45" />
+        </property>
+        <property name="gas4" type="string">
+            <column name="gas4" length="45" />
+        </property>
+        <property name="comentarios" type="string">
+            <column name="comentarios" length="200" />
+        </property>
+        <property name="defensa" type="string">
+            <column name="defensa" length="45" />
+        </property>
+        <property name="spoilerDeDefensa" type="string">
+            <column name="`spoiler-de-defensa`" length="45" />
+        </property>
+        <property name="farosNeblineros" type="string">
+            <column name="`faros-neblineros`" length="45" />
+        </property>
+        <property name="faros" type="string">
+            <column name="faros" length="45" />
+        </property>
+        <property name="cofre" type="string">
+            <column name="cofre" length="45" />
+        </property>
+        <property name="bicelesDeFaro" type="string">
+            <column name="`biceles-de-faro`" length="45" />
+        </property>
+        <property name="emblemas" type="string">
+            <column name="emblemas" length="45" />
+        </property>
+        <property name="concavosDeCofre" type="string">
+            <column name="`concavos-de-cofre`" length="45" />
+        </property>
+        <property name="accesorios" type="string">
+            <column name="accesorios" length="45" />
+        </property>
+        <property name="limpiadores" type="string">
+            <column name="limpiadores" length="45" />
+        </property>
+        <property name="parabrisas" type="string">
+            <column name="parabrisas" length="45" />
+        </property>
+        <property name="cristalesLaterales" type="string">
+            <column name="`cristales-laterales`" length="45" />
+        </property>
+        <property name="cristalesDeToldo" type="string">
+            <column name="`cristales-de-toldo`" length="45" />
+        </property>
+        <property name="espejosLaterales" type="string">
+            <column name="`espejos-laterales`" length="45" />
+        </property>
+        <property name="puertas" type="string">
+            <column name="puertas" length="45" />
+        </property>
+        <property name="lienzosDeCostado" type="string">
+            <column name="`lienzos-de-costado`" length="45" />
+        </property>
+        <property name="puertasDeDormitorio" type="string">
+            <column name="`puertas-de-dormitorio`" length="45" />
+        </property>
+        <property name="puertasDeHerramientas" type="string">
+            <column name="`puertas-de-herramientas`" length="45" />
+        </property>
+        <property name="pasamanos" type="string">
+            <column name="pasamanos" length="45" />
+        </property>
+        <property name="llaves" type="string">
+            <column name="llaves" length="45" />
+        </property>
+        <property name="loderasDelanteras" type="string">
+            <column name="`loderas-delanteras`" length="45" />
+        </property>
+        <property name="cajaDeBaterias" type="string">
+            <column name="`caja-de-baterias`" length="45" />
+        </property>
+        <property name="loderasIntermedias" type="string">
+            <column name="`loderas-intermedias`" length="45" />
+        </property>
+        <property name="escaleraDeServicio" type="string">
+            <column name="`escalera-de-servicio`" length="45" />
+        </property>
+        <property name="plataformaDeServicio" type="string">
+            <column name="`plataforma-de-servicio`" length="45" />
+        </property>
+        <property name="torreDeManitas" type="string">
+            <column name="`torre-de-manitas`" length="45" />
+        </property>
+        <property name="manitasDeAireConMangueras" type="string">
+            <column name="`manitas-de-aire-con-mangueras`" length="45" />
+        </property>
+        <property name="cableMacho7Hilos" type="string">
+            <column name="`cable-macho-7-hilos`" length="45" />
+        </property>
+        <property name="loderasTraseras" type="string">
+            <column name="`loderas-traseras`" length="45" />
+        </property>
+        <property name="taponesTanquesCombustible" type="string">
+            <column name="`tapones-tanques-combustible`" length="45" />
+        </property>
+        <property name="antenaViaSatelite" type="string">
+            <column name="`antena-via-satelite`" length="45" />
+        </property>
+        <property name="placas" type="string">
+            <column name="placas" length="45" />
+        </property>
+        <property name="gato" type="string">
+            <column name="gato" length="45" />
+        </property>
+        <property name="herramientas" type="string">
+            <column name="herramientas" length="45" />
+        </property>
+        <property name="senalesDeEmergencia" type="string">
+            <column name="`señalesDeEmergencia`" length="45" />
+        </property>
+        <property name="llaveDeRuedas" type="string">
+            <column name="`llave-de-ruedas`" length="45" />
+        </property>
+        <property name="extinguidor" type="string">
+            <column name="extinguidor" length="45" />
+        </property>
+        <property name="radiador" type="string">
+            <column name="radiador" length="45" />
+        </property>
+        <property name="ventilador" type="string">
+            <column name="ventilador" length="45" />
+        </property>
+        <property name="alternador" type="string">
+            <column name="alternador" length="45" />
+        </property>
+        <property name="turbo" type="string">
+            <column name="turbo" length="45" />
+        </property>
+        <property name="multiples" type="string">
+            <column name="multiples" length="45" />
+        </property>
+        <property name="moduloEcM" type="string">
+            <column name="`modulo-(ecm)`" length="45" />
+        </property>
+        <property name="transmision" type="string">
+            <column name="transmision" length="45" />
+        </property>
+        <property name="marcha" type="string">
+            <column name="marcha" length="45" />
+        </property>
+        <property name="cornetasDeAire" type="string">
+            <column name="`cornetas-de-aire`" length="45" />
+        </property>
+        <property name="cajaDeDireccion" type="string">
+            <column name="`caja-de-direccion`" length="45" />
+        </property>
+        <property name="carter" type="string">
+            <column name="carter" length="45" />
+        </property>
+        <property name="bayonetaAceiteDeMotor" type="string">
+            <column name="`bayoneta-aceite-de-motor`" length="45" />
+        </property>
+        <property name="filtros" type="string">
+            <column name="filtros" length="45" />
+        </property>
+        <property name="cardan" type="string">
+            <column name="cardan" length="45" />
+        </property>
+        <property name="baterias" type="string">
+            <column name="baterias" length="45" />
+        </property>
+        <property name="escape" type="string">
+            <column name="escape" length="45" />
+        </property>
+        <property name="tanquesDeCombustible" type="string">
+            <column name="`tanques-de-combustible`" length="45" />
+        </property>
+        <property name="tablero" type="string">
+            <column name="tablero" length="45" />
+        </property>
+        <property name="estereo" type="string">
+            <column name="estereo" length="45" />
+        </property>
+        <property name="cb" type="string">
+            <column name="cb" length="45" />
+        </property>
+        <property name="bocinas" type="string">
+            <column name="bocinas" length="45" />
+        </property>
+        <property name="encendedor" type="string">
+            <column name="encendedor" length="45" />
+        </property>
+        <property name="viceras" type="string">
+            <column name="viceras" length="45" />
+        </property>
+        <property name="tapetes" type="string">
+            <column name="tapetes" length="45" />
+        </property>
+        <property name="cortinas" type="string">
+            <column name="cortinas" length="45" />
+        </property>
+        <property name="lucesInterioresDeCabina" type="string">
+            <column name="`luces-interiores-de-cabina`" length="45" />
+        </property>
+        <property name="lucesInterioresDormitorio" type="string">
+            <column name="`luces-interiores-dormitorio`" length="45" />
+        </property>
+        <property name="cenicero" type="string">
+            <column name="cenicero" length="45" />
+        </property>
+        <property name="palancaDeDireccionales" type="string">
+            <column name="`palanca-de-direccionales`" length="45" />
+        </property>
+        <property name="consolaCabina" type="string">
+            <column name="`consola-cabina`" length="45" />
+        </property>
+        <property name="consolaDormitorio" type="string">
+            <column name="`consola-dormitorio`" length="45" />
+        </property>
+        <property name="colchon" type="string">
+            <column name="colchon" length="45" />
+        </property>
+        <property name="vestiduraCabina" type="string">
+            <column name="`vestidura-cabina`" length="45" />
+        </property>
+        <property name="asientos" type="string">
+            <column name="asientos" length="45" />
+        </property>
+        <property name="vestiduraDormitorio" type="string">
+            <column name="`vestidura-dormitorio`" length="45" />
+        </property>
+        <property name="palancaDeVelocidades" type="string">
+            <column name="`palanca-de-velocidades`" length="45" />
+        </property>
+        <property name="tecladoGpsViaSatelite" type="string">
+            <column name="`teclado-gps-via-satelite`" length="45" />
+        </property>
+        <property name="frente" type="string">
+            <column name="frente" length="45" />
+        </property>
+        <property name="costadoIzquierdo" type="string">
+            <column name="`costado-izquierdo`" length="45" />
+        </property>
+        <property name="costadoDerecho" type="string">
+            <column name="`costado-derecho`" length="45" />
+        </property>
+        <property name="toldo" type="string">
+            <column name="toldo" length="45" />
+        </property>
+        <property name="piso" type="string">
+            <column name="piso" length="45" />
+        </property>
+        <property name="puertaLateral" type="string">
+            <column name="`puerta-lateral`" length="45" />
+        </property>
+        <property name="puertasTraseras" type="string">
+            <column name="`puertas-traseras`" length="45" />
+        </property>
+        <property name="bastidorOChasis" type="string">
+            <column name="`bastidor-o-chasis`" length="45" />
+        </property>
+        <property name="patines" type="string">
+            <column name="patines" length="45" />
+        </property>
+        <property name="portallantas" type="string">
+            <column name="portallantas" length="45" />
+        </property>
+        <property name="ejes" type="string">
+            <column name="ejes" length="45" />
+        </property>
+        <property name="rines" type="string">
+            <column name="rines" length="45" />
+        </property>
+        <property name="llantas" type="string">
+            <column name="llantas" length="45" />
+        </property>
+        <property name="plafonera" type="string">
+            <column name="plafonera" length="45" />
+        </property>
+        <property name="estribo" type="string">
+            <column name="estribo" length="45" />
+        </property>
+        <property name="bordaSuperiorIzquierda" type="string">
+            <column name="`borda-superior-izquierda`" length="45" />
+        </property>
+        <property name="bordaSuperiorDerecha" type="string">
+            <column name="`borda-superior-derecha`" length="45" />
+        </property>
+        <property name="bordaInferiorIzquierda" type="string">
+            <column name="`borda-inferior-izquierda`" length="45" />
+        </property>
+        <property name="bordaInferiorDerecha" type="string">
+            <column name="`borda-inferior-derecha`" length="45" />
+        </property>
+        <property name="suspensionTrasera" type="string">
+            <column name="`suspension-trasera`" length="45" />
+        </property>
+        <property name="ventilador_1" type="string">
+            <column name="`ventilador-`" length="45" />
+        </property>
+        <property name="alternador_1" type="string">
+            <column name="`alternador-`" length="45" />
+        </property>
+        <property name="marcha_1" type="string">
+            <column name="`marcha-`" length="45" />
+        </property>
+        <property name="bayonetaAceiteMotor" type="string">
+            <column name="`bayoneta-aceite-motor`" length="45" />
+        </property>
+        <property name="filtros_1" type="string">
+            <column name="`filtros-`" length="45" />
+        </property>
+        <property name="baterias_1" type="string">
+            <column name="`baterias-`" length="45" />
+        </property>
+    </class>
+</hibernate-mapping>

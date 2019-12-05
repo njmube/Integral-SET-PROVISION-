@@ -1,6 +1,6 @@
-configuracion de correo para avisar de asignaciones a usuarios, orden uno por renglon: smtp, ttl, puerto, cuenta, contraseÃ±a 
-mail.tractoservicio.com
-true
-2525
+configuracion de correo para avisar de asignaciones a usuarios, orden uno por renglon: smtp, ttl, puerto, cuenta, contraseña 
+smtp.1and1.mx
+false
+587
 notificacionset@tractoservicio.com
-Notificacion2016
+Notificacion2018

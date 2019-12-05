@@ -23,6 +23,9 @@
         <property name="cinta" type="string">
             <column name="cinta" length="45" />
         </property>
+        <property name="facturaLogo" type="string">
+            <column name="factura_logo" length="45" />
+        </property>
         <property name="iva" type="java.lang.Integer">
             <column name="iva" />
         </property>
@@ -94,6 +97,21 @@
         </property>
         <property name="serie1" type="string">
             <column name="serie1" length="3" />
+        </property>
+        <property name="serie2" type="string">
+            <column name="serie2" length="3" />
+        </property>
+        <property name="tipoCambio" type="java.lang.Double">
+            <column name="tipo_cambio" precision="22" scale="0" />
+        </property>
+        <property name="version" type="java.lang.Double">
+            <column name="version" precision="22" scale="0" />
+        </property>
+        <property name="fechaCambio" type="date">
+            <column name="fecha_tipo_cambio" length="10"/>
+        </property>
+        <property name="noProveedor" type="string">
+            <column name="no_proveedor" length="10"/>
         </property>
     </class>
 </hibernate-mapping>

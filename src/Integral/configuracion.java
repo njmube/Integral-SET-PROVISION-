@@ -22,6 +22,7 @@ import java.io.OutputStream;
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import org.hibernate.Session;
+import org.hibernate.criterion.Order;
 
 /**
  *
@@ -66,78 +67,156 @@ public class configuracion extends javax.swing.JPanel {
         this.p_img=p_img;
         sessionPrograma=ses;
         usr=usuario;
+        cargaEmpresas();
         busca(1);
     }
 
+    void cargaEmpresas(){
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try
+        {
+            Configuracion[] con=(Configuracion[]) session.createCriteria(Configuracion.class).addOrder(Order.asc("idConfiguracion")).list().toArray(new Configuracion[0]);
+            c_empresa.removeAllItems();
+            c_empresa.addItem("SELECCIONAR");
+            for(int r=0; r<con.length; r++){
+                c_empresa.addItem(con[r].getEmpresa());
+            }
+        }catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            if(session!=null)
+                if(session.isOpen())
+                    session.close();
+        }
+    }
     public void busca(int no)
     {
         Session session = HibernateUtil.getSessionFactory().openSession();
         try
         {
-            Configuracion con = (Configuracion)session.get(Configuracion.class, no);
-            if(con!=null)
+            if(no!=0)
             {
-                p_logo.add(new Imagen("imagenes/"+con.getLogo(), 232, 158, 1, 1,231, 157));//logo
-                p_logo.repaint();
-                p_sello.add(new Imagen("imagenes/"+con.getSello(), 232, 158, 1, 1,231, 157));//sello
-                p_sello.repaint();
-                p_cinta.add(new Imagen("imagenes/"+con.getCinta(), 554, 158, 1, 1, 555, 157));//cinta
-                p_cinta.repaint();
-                p_factura.add(new Imagen("imagenes/factura300115.jpg", 554, 158, 1, 1, 555, 157));//factura
-                p_factura.repaint();
-                c_empresa.setSelectedItem(con.getEmpresa());
-                t_requestor.setText(con.getRequestor());
-                t_rfc_emisor.setText(con.getRfc());
-                t_usuario.setText(con.getUsuario_1());
-                t_razon_social.setText(con.getNombre());
-                t_direccion.setText(con.getDireccion());
-                t_colonia.setText(con.getColonia());
-                c_estado.setSelectedItem(con.getEstado());
-                t_contacto.setText(con.getContacto());
-                t_cp.setText(con.getCp());
-                t_numero.setText(con.getNo());
-                t_municipio.setText(con.getMunicipio());
-                c_pais.setSelectedItem(con.getPais());
-                t_mail.setText(con.getMail());
-                t_iva.setText(""+con.getIva());
-                t_sucursal.setText(con.getSucursal());
-                if(con.getTel()!=null)
-                    t_tel.setText(con.getTel());
-                else
-                    t_tel.setText("");
-                t_usuario_finkok.setText(con.getEmailFinkok());
-                t_clave_finkok.setText(con.getClaveFinkok());
-                if(con.getCer()!=null)
-                    t_cer.setText(con.getCer());
-                else
-                    t_cer.setText("");
-                if(con.getLlave()!=null)
-                    t_key.setText(con.getLlave());
-                else
-                    t_key.setText("");
-                if(con.getClave()!=null)
-                    t_clave.setText(con.getClave());
-                else
-                    t_clave.setText("");
-                
-                switch(con.getPac())
+                Configuracion con = (Configuracion)session.get(Configuracion.class, no);
+                if(con!=null)
                 {
-                    case "MYSUITE":
-                        rb_mysuite.setSelected(true);
-                        rb_finkok.setSelected(false);
-                        break;
-                    case "FINKOK":
-                        rb_finkok.setSelected(true);
-                        rb_mysuite.setSelected(false);
-                        break;
-                    default:
-                        rb_mysuite.setSelected(true);
-                        rb_finkok.setSelected(false);
-                        break;
+                    p_logo.removeAll();
+                    p_logo.add(new Imagen("imagenes/"+con.getLogo(), 232, 158, 1, 1,231, 157));//logo
+                    p_logo.repaint();
+                    
+                    p_sello.removeAll();
+                    p_sello.add(new Imagen("imagenes/"+con.getSello(), 232, 158, 1, 1,231, 157));//sello
+                    p_sello.repaint();
+                    
+                    p_cinta.removeAll();
+                    p_cinta.add(new Imagen("imagenes/"+con.getCinta(), 554, 158, 1, 1, 555, 157));//cinta
+                    p_cinta.repaint();
+                    
+                    p_factura.removeAll();
+                    p_factura.add(new Imagen("imagenes/"+con.getFacturaLogo(), 554, 158, 1, 1, 555, 157));//factura
+                    p_factura.repaint();
+                    
+                    c_empresa.setSelectedItem(con.getEmpresa());
+                    
+                    t_requestor.setText(con.getRequestor());
+                    t_rfc_emisor.setText(con.getRfc());
+                    t_usuario.setText(con.getUsuario_1());
+                    t_razon_social.setText(con.getNombre());
+                    t_direccion.setText(con.getDireccion());
+                    t_colonia.setText(con.getColonia());
+                    c_estado.setSelectedItem(con.getEstado());
+                    t_contacto.setText(con.getContacto());
+                    t_cp.setText(con.getCp());
+                    t_numero.setText(con.getNo());
+                    t_municipio.setText(con.getMunicipio());
+                    c_pais.setSelectedItem(con.getPais());
+                    t_mail.setText(con.getMail());
+                    t_iva.setText(""+con.getIva());
+                    t_sucursal.setText(con.getSucursal());
+                    if(con.getTel()!=null)
+                        t_tel.setText(con.getTel());
+                    else
+                        t_tel.setText("");
+                    t_usuario_finkok.setText(con.getEmailFinkok());
+                    t_clave_finkok.setText(con.getClaveFinkok());
+                    if(con.getCer()!=null)
+                        t_cer.setText(con.getCer());
+                    else
+                        t_cer.setText("");
+                    if(con.getLlave()!=null)
+                        t_key.setText(con.getLlave());
+                    else
+                        t_key.setText("");
+                    if(con.getClave()!=null)
+                        t_clave.setText(con.getClave());
+                    else
+                        t_clave.setText("");
+
+                    switch(con.getPac())
+                    {
+                        case "MYSUITE":
+                            rb_mysuite.setSelected(true);
+                            rb_finkok.setSelected(false);
+                            break;
+                        case "FINKOK":
+                            rb_finkok.setSelected(true);
+                            rb_mysuite.setSelected(false);
+                            break;
+                        default:
+                            rb_mysuite.setSelected(true);
+                            rb_finkok.setSelected(false);
+                            break;
+                    }
+                    if(con.getSerie()!=null)
+                    t_serie.setText(con.getSerie());
+                    t_serie1.setText(con.getSerie1());
+                    t_serie2.setText(con.getSerie2());
                 }
-                if(con.getSerie()!=null)
-                t_serie.setText(con.getSerie());
-                t_serie1.setText(con.getSerie1());
+            }
+            else
+            {
+                p_logo.removeAll();
+                p_logo.repaint();
+
+                p_sello.removeAll();
+                p_sello.repaint();
+
+                p_cinta.removeAll();
+                p_cinta.repaint();
+
+                p_factura.removeAll();
+                p_factura.repaint();
+
+                c_empresa.setSelectedIndex(0);
+                t_requestor.setText("");
+                t_rfc_emisor.setText("");
+                t_usuario.setText("");
+                t_razon_social.setText("");
+                t_direccion.setText("");
+                t_colonia.setText("");
+                c_estado.setSelectedIndex(0);
+                t_contacto.setText("");
+                t_cp.setText("");
+                t_numero.setText("");
+                t_municipio.setText("");
+                c_pais.setSelectedItem("MEXICO");
+                t_mail.setText("");
+                t_iva.setText("");
+                t_sucursal.setText("");
+                t_tel.setText("");
+                t_usuario_finkok.setText("");
+                t_clave_finkok.setText("");
+                t_cer.setText("");
+                t_key.setText("");
+                t_clave.setText("");
+
+                rb_finkok.setSelected(true);
+                rb_mysuite.setSelected(false);
+                t_serie.setText("");
+                t_serie1.setText("");
+                t_serie2.setText("");
             }
         }catch(Exception e)
         {
@@ -224,6 +303,8 @@ public class configuracion extends javax.swing.JPanel {
         t_serie = new javax.swing.JTextField();
         t_serie1 = new javax.swing.JTextField();
         l_key2 = new javax.swing.JLabel();
+        l_key3 = new javax.swing.JLabel();
+        t_serie2 = new javax.swing.JTextField();
         rb_finkok = new javax.swing.JRadioButton();
         jPanel8 = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
@@ -546,7 +627,7 @@ public class configuracion extends javax.swing.JPanel {
                     .addGroup(jPanel9Layout.createSequentialGroup()
                         .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(t_requestor, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(t_requestor, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addGroup(jPanel9Layout.createSequentialGroup()
                             .addComponent(jLabel18)
@@ -560,7 +641,7 @@ public class configuracion extends javax.swing.JPanel {
                             .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(t_rfc_emisor, javax.swing.GroupLayout.DEFAULT_SIZE, 189, Short.MAX_VALUE)
                                 .addComponent(t_usuario)))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -657,6 +738,19 @@ public class configuracion extends javax.swing.JPanel {
 
         l_key2.setText("Serie N:");
 
+        l_key3.setText("Serie P:");
+
+        t_serie2.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                t_serie2FocusLost(evt);
+            }
+        });
+        t_serie2.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                t_serie2KeyTyped(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
         jPanel10.setLayout(jPanel10Layout);
         jPanel10Layout.setHorizontalGroup(
@@ -673,28 +767,35 @@ public class configuracion extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(t_clave_finkok))
                     .addGroup(jPanel10Layout.createSequentialGroup()
-                        .addComponent(jButton2)
+                        .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel10Layout.createSequentialGroup()
+                                .addComponent(jButton2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(t_cer, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(l_cer)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(l_key1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(t_serie, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel10Layout.createSequentialGroup()
+                                .addComponent(jButton3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(t_key, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(l_key3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(t_serie2, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(t_cer, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(l_key2)
+                            .addComponent(l_key))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(l_cer)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(l_key1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(t_serie, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(l_key2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(t_serie1, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel10Layout.createSequentialGroup()
-                        .addComponent(jButton3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(t_key, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(l_key)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(t_clave, javax.swing.GroupLayout.DEFAULT_SIZE, 182, Short.MAX_VALUE)))
+                        .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel10Layout.createSequentialGroup()
+                                .addComponent(t_serie1, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(t_clave))))
                 .addContainerGap())
         );
         jPanel10Layout.setVerticalGroup(
@@ -720,11 +821,15 @@ public class configuracion extends javax.swing.JPanel {
                         .addComponent(l_key1)
                         .addComponent(t_serie, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton3)
-                    .addComponent(t_key, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(l_key)
-                    .addComponent(t_clave, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(l_key3)
+                        .addComponent(t_serie2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jButton3)
+                        .addComponent(t_key, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(t_clave, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(l_key)))
                 .addContainerGap(20, Short.MAX_VALUE))
         );
 
@@ -748,11 +853,11 @@ public class configuracion extends javax.swing.JPanel {
                     .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addGap(108, 108, 108)
+                        .addGap(138, 138, 138)
                         .addComponent(rb_finkok)
-                        .addContainerGap(274, Short.MAX_VALUE))
+                        .addContainerGap(276, Short.MAX_VALUE))
                     .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         jPanel7Layout.setVerticalGroup(
@@ -1008,7 +1113,7 @@ public class configuracion extends javax.swing.JPanel {
 
         pestana.addTab("Contabilidad", jPanel6);
 
-        c_empresa.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "SERVICIO ESPECIALIZADO TOLUCA S.A. DE C.V.", "TRUCK BODY SHOP S.A. DE C.V." }));
+        c_empresa.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "SELECCIONAR" }));
         c_empresa.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 c_empresaItemStateChanged(evt);
@@ -1162,134 +1267,140 @@ public class configuracion extends javax.swing.JPanel {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        if(t_requestor.getText().compareTo("")!=0)
+        if(c_empresa.getSelectedIndex()>0)
         {
-            if(t_rfc_emisor.getText().compareTo("")!=0)
+            if(t_requestor.getText().compareTo("")!=0)
             {
-                if(t_usuario.getText().compareTo("")!=0)
+                if(t_rfc_emisor.getText().compareTo("")!=0)
                 {
-                    if(t_sucursal.getText().compareTo("")!=0)
+                    if(t_usuario.getText().compareTo("")!=0)
                     {
-                        if(t_direccion.getText().compareTo("")!=0)
+                        if(t_sucursal.getText().compareTo("")!=0)
                         {
-                            if(t_cp.getText().compareTo("")!=0)
+                            if(t_direccion.getText().compareTo("")!=0)
                             {
-                                if(t_municipio.getText().compareTo("")!=0)
+                                if(t_cp.getText().compareTo("")!=0)
                                 {
-                                    Session session = HibernateUtil.getSessionFactory().openSession();
-                                    try
+                                    if(t_municipio.getText().compareTo("")!=0)
                                     {
-                                        session.beginTransaction().commit();
-                                        this.usr=(Usuario)session.get(Usuario.class, usr.getIdUsuario());
-                                        Hibernate.entidades.Configuracion con = (Hibernate.entidades.Configuracion)session.get(Hibernate.entidades.Configuracion.class, c_empresa.getSelectedIndex()+1);
-                                        if(con!=null)
+                                        Session session = HibernateUtil.getSessionFactory().openSession();
+                                        try
                                         {
-                                            con.setUsuario(usr);
-                                            con.setIva(Integer.parseInt(t_iva.getText()));
-                                            con.setRequestor(t_requestor.getText());
-                                            con.setRfc(t_rfc_emisor.getText());
-                                            con.setUsuario_1(t_usuario.getText());//usuario de mysuite
-                                            con.setNombre(t_razon_social.getText());
-                                            con.setCp(t_cp.getText());
-                                            con.setDireccion(t_direccion.getText());
-                                            con.setNo(t_numero.getText());
-                                            con.setColonia(t_colonia.getText());
-                                            con.setMunicipio(t_municipio.getText());
-                                            con.setEstado(c_estado.getSelectedItem().toString());
-                                            con.setPais(c_pais.getSelectedItem().toString());
-                                            con.setContacto(t_contacto.getText());
-                                            con.setMail(t_mail.getText());
-                                            con.setTel(t_tel.getText());
-                                            con.setSucursal(t_sucursal.getText());
-                                            con.setEmailFinkok(t_usuario_finkok.getText());
-                                            con.setClaveFinkok(t_clave_finkok.getText());
-                                            con.setCer(t_cer.getText());
-                                            con.setLlave(t_key.getText());
-                                            con.setClave(t_clave.getText());
-                                            con.setSerie(t_serie.getText());
-                                            con.setSerie1(t_serie1.getText());
-                                            if(rb_mysuite.isSelected()==true)
-                                                con.setPac("MYSUITE");
-                                            else
-                                                con.setPac("FINKOK");
-                                            session.update(con);
-                                            if(this.entro_logo==1)
-                                            {
-                                                System.out.println(guardaFoto(f_logo, new File("imagenes/"+con.getLogo()), 451, 210, "jpg"));
-                                            }
-                                            if(this.entro_sello==1)
-                                            {
-                                                System.out.println(guardaFoto(f_sello, new File("imagenes/"+con.getSello()), 540, 300, "png"));
-                                            }
-                                            if(this.entro_cinta==1)
-                                            {
-                                                System.out.println(guardaFoto(f_cinta, new File("imagenes/"+con.getCinta()), 771, 110, "jpg"));
-                                            }
-                                            if(this.entro_factura==1)
-                                            {
-                                                System.out.println(guardaFoto(f_cinta, new File("imagenes/factura300115.jpg"), 771, 110, "jpg"));
-                                            }
                                             session.beginTransaction().commit();
-                                            p_img.updateUI();
-                                            javax.swing.JOptionPane.showMessageDialog(null, "Datos almacenados");
+                                            this.usr=(Usuario)session.get(Usuario.class, usr.getIdUsuario());
+                                            Hibernate.entidades.Configuracion con = (Hibernate.entidades.Configuracion)session.get(Hibernate.entidades.Configuracion.class, c_empresa.getSelectedIndex()+1);
+                                            if(con!=null)
+                                            {
+                                                con.setUsuario(usr);
+                                                con.setIva(Integer.parseInt(t_iva.getText()));
+                                                con.setRequestor(t_requestor.getText());
+                                                con.setRfc(t_rfc_emisor.getText());
+                                                con.setUsuario_1(t_usuario.getText());//usuario de mysuite
+                                                con.setNombre(t_razon_social.getText());
+                                                con.setCp(t_cp.getText());
+                                                con.setDireccion(t_direccion.getText());
+                                                con.setNo(t_numero.getText());
+                                                con.setColonia(t_colonia.getText());
+                                                con.setMunicipio(t_municipio.getText());
+                                                con.setEstado(c_estado.getSelectedItem().toString());
+                                                con.setPais(c_pais.getSelectedItem().toString());
+                                                con.setContacto(t_contacto.getText());
+                                                con.setMail(t_mail.getText());
+                                                con.setTel(t_tel.getText());
+                                                con.setSucursal(t_sucursal.getText());
+                                                con.setEmailFinkok(t_usuario_finkok.getText());
+                                                con.setClaveFinkok(t_clave_finkok.getText());
+                                                con.setCer(t_cer.getText());
+                                                con.setLlave(t_key.getText());
+                                                con.setClave(t_clave.getText());
+                                                con.setSerie(t_serie.getText());
+                                                con.setSerie1(t_serie1.getText());
+                                                con.setSerie2(t_serie2.getText());
+                                                if(rb_mysuite.isSelected()==true)
+                                                    con.setPac("MYSUITE");
+                                                else
+                                                    con.setPac("FINKOK");
+                                                session.update(con);
+                                                if(this.entro_logo==1)
+                                                {
+                                                    System.out.println(guardaFoto(f_logo, new File("imagenes/"+con.getLogo()), 451, 210, "jpg"));
+                                                }
+                                                if(this.entro_sello==1)
+                                                {
+                                                    System.out.println(guardaFoto(f_sello, new File("imagenes/"+con.getSello()), 540, 300, "png"));
+                                                }
+                                                if(this.entro_cinta==1)
+                                                {
+                                                    System.out.println(guardaFoto(f_cinta, new File("imagenes/"+con.getCinta()), 771, 110, "jpg"));
+                                                }
+                                                if(this.entro_factura==1)
+                                                {
+                                                    System.out.println(guardaFoto(f_cinta, new File("imagenes/"+con.getFacturaLogo()), 771, 110, "jpg"));
+                                                }
+                                                session.beginTransaction().commit();
+                                                p_img.updateUI();
+                                                javax.swing.JOptionPane.showMessageDialog(null, "Datos almacenados");
+                                            }
+                                        }catch(Exception e)
+                                        {
+                                            session.beginTransaction().rollback();
+                                            javax.swing.JOptionPane.showMessageDialog(null, "no se pudo actualizar");
                                         }
-                                    }catch(Exception e)
-                                    {
-                                        session.beginTransaction().rollback();
-                                        javax.swing.JOptionPane.showMessageDialog(null, "no se pudo actualizar");
+                                        if(session != null)
+                                            if(session.isOpen())
+                                                session.close();
                                     }
-                                    if(session != null)
-                                        if(session.isOpen())
-                                            session.close();
+                                    else
+                                    {
+                                        javax.swing.JOptionPane.showMessageDialog(null, "El municipio no puede estar vacio");
+                                        pestana.setSelectedIndex(1);
+                                        t_numero.requestFocus();
+                                    }
                                 }
                                 else
                                 {
-                                    javax.swing.JOptionPane.showMessageDialog(null, "El municipio no puede estar vacio");
+                                    javax.swing.JOptionPane.showMessageDialog(null, "El CP no puede estar vacio");
                                     pestana.setSelectedIndex(1);
-                                    t_numero.requestFocus();
+                                    t_cp.requestFocus();
                                 }
                             }
                             else
                             {
-                                javax.swing.JOptionPane.showMessageDialog(null, "El CP no puede estar vacio");
+                                javax.swing.JOptionPane.showMessageDialog(null, "La dirección no puede estar vacio");
                                 pestana.setSelectedIndex(1);
-                                t_cp.requestFocus();
+                                t_direccion.requestFocus();
                             }
                         }
                         else
                         {
-                            javax.swing.JOptionPane.showMessageDialog(null, "La dirección no puede estar vacio");
+                            javax.swing.JOptionPane.showMessageDialog(null, "La sucursal no puede estar vacia");
                             pestana.setSelectedIndex(1);
                             t_direccion.requestFocus();
                         }
                     }
                     else
                     {
-                        javax.swing.JOptionPane.showMessageDialog(null, "La sucursal no puede estar vacia");
+                        javax.swing.JOptionPane.showMessageDialog(null, "en Usuario de mysuite no puede estar vacio");
                         pestana.setSelectedIndex(1);
-                        t_direccion.requestFocus();
+                        t_usuario.requestFocus();
                     }
                 }
                 else
                 {
-                    javax.swing.JOptionPane.showMessageDialog(null, "en Usuario de mysuite no puede estar vacio");
+                    javax.swing.JOptionPane.showMessageDialog(null, "El RFC del emisor no puede estar vacio");
                     pestana.setSelectedIndex(1);
-                    t_usuario.requestFocus();
+                    t_rfc_emisor.requestFocus();
                 }
             }
             else
             {
-                javax.swing.JOptionPane.showMessageDialog(null, "El RFC del emisor no puede estar vacio");
+                javax.swing.JOptionPane.showMessageDialog(null, "El requestor no puede estar vacio");
                 pestana.setSelectedIndex(1);
-                t_rfc_emisor.requestFocus();
+                t_requestor.requestFocus();
             }
         }
         else
-        {
-            javax.swing.JOptionPane.showMessageDialog(null, "El requestor no puede estar vacio");
-            pestana.setSelectedIndex(1);
-            t_requestor.requestFocus();
-        }
+            javax.swing.JOptionPane.showMessageDialog(null, "Debe seleccionar una Empresa antes");
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void t_ivaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_ivaKeyReleased
@@ -1515,7 +1626,7 @@ public class configuracion extends javax.swing.JPanel {
 
     private void c_empresaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_c_empresaActionPerformed
         // TODO add your handling code here:
-        busca(c_empresa.getSelectedIndex()+1);
+        busca(c_empresa.getSelectedIndex());
     }//GEN-LAST:event_c_empresaActionPerformed
 
     private void t_serieKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_serieKeyTyped
@@ -1541,6 +1652,14 @@ public class configuracion extends javax.swing.JPanel {
         if(t_serie1.getText().length()>=3)
             evt.consume();
     }//GEN-LAST:event_t_serie1KeyTyped
+
+    private void t_serie2FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_serie2FocusLost
+        // TODO add your handling code here:
+    }//GEN-LAST:event_t_serie2FocusLost
+
+    private void t_serie2KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_serie2KeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_t_serie2KeyTyped
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1586,6 +1705,7 @@ public class configuracion extends javax.swing.JPanel {
     private javax.swing.JLabel l_key;
     private javax.swing.JLabel l_key1;
     private javax.swing.JLabel l_key2;
+    private javax.swing.JLabel l_key3;
     private javax.swing.JPanel p_cinta;
     private javax.swing.JPanel p_factura;
     private javax.swing.JPanel p_logo;
@@ -1610,6 +1730,7 @@ public class configuracion extends javax.swing.JPanel {
     private javax.swing.JTextField t_rfc_emisor;
     private javax.swing.JTextField t_serie;
     private javax.swing.JTextField t_serie1;
+    private javax.swing.JTextField t_serie2;
     private javax.swing.JTextField t_sucursal;
     private javax.swing.JTextField t_tel;
     private javax.swing.JTextField t_usuario;

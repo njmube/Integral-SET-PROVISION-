@@ -12,9 +12,7 @@ package Clientes;
 
 import Integral.Render1;
 import Hibernate.Util.HibernateUtil;
-import Hibernate.entidades.Acceso;
 import java.util.List;
-import java.util.Vector;
 import javax.swing.InputMap;
 import javax.swing.JOptionPane;
 import Hibernate.entidades.Clientes;
@@ -30,7 +28,6 @@ import javax.swing.table.TableColumnModel;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.criterion.Restrictions;
 
 /**
  *
@@ -40,8 +37,6 @@ public class buscaCliente extends javax.swing.JDialog {
 
     public static final Clientes RET_CANCEL =null;
     InputMap map = new InputMap();
-    DefaultTableModel model;
-    String[] columnas = new String [] {"Clave","Nombre","Direccion","Colonia","CP","RFC","Pob.","Edo","Tel","Email", "Contacto", "Nextel"};
     
     /** Creates new form acceso */
     public buscaCliente(java.awt.Frame parent, boolean modal) {
@@ -52,61 +47,6 @@ public class buscaCliente extends javax.swing.JDialog {
         formatoTabla();
         buscaDato();
     }
-    
-    DefaultTableModel ModeloTablaReporte(int renglones, String columnas[])
-        {
-            model = new DefaultTableModel(new Object [renglones][12], columnas)
-            {
-                Class[] types = new Class [] {
-                    java.lang.Integer.class,
-                    java.lang.String.class, 
-                    java.lang.String.class, 
-                    java.lang.String.class, 
-                    java.lang.String.class, 
-                    java.lang.String.class, 
-                    java.lang.String.class, 
-                    java.lang.String.class, 
-                    java.lang.String.class, 
-                    java.lang.String.class, 
-                    java.lang.String.class, 
-                    java.lang.String.class
-                };
-                boolean[] canEdit = new boolean [] {
-                    false, false, false, false,false,false,false,false,false,false, false, false
-                };
-
-                public void setValueAt(Object value, int row, int col)
-                 {
-                        Vector vector = (Vector)this.dataVector.elementAt(row);
-                        Object celda = ((Vector)this.dataVector.elementAt(row)).elementAt(col);
-                        switch(col)
-                        {
-                            case 0:
-                                    vector.setElementAt(value, col);
-                                    this.dataVector.setElementAt(vector, row);
-                                    fireTableCellUpdated(row, col);
-                                    //calcula_totales();
-                                    break;
-
-                            default:
-                                    vector.setElementAt(value, col);
-                                    this.dataVector.setElementAt(vector, row);
-                                    fireTableCellUpdated(row, col);
-                                    break;
-                        }
-                    }
-                
-                public Class getColumnClass(int columnIndex) {
-                    return types [columnIndex];
-                }
-
-                public boolean isCellEditable(int rowIndex, int columnIndex) {
-                    return canEdit [columnIndex];
-                }
-            };
-            return model;
-        }
-
     
     private void doClose(Clientes o) {
         returnStatus = o;       
@@ -126,22 +66,80 @@ public class buscaCliente extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        t_datos = new javax.swing.JTable();
+        jButton5 = new javax.swing.JButton();
         t_busca = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         c_filtro = new javax.swing.JComboBox();
-        jPanel3 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        t_datos = new javax.swing.JTable();
-        jButton5 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Consulta de Clientes");
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "Resultados", javax.swing.border.TitledBorder.RIGHT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Arial", 1, 11))); // NOI18N
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "Filtrar por:", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Arial", 1, 11))); // NOI18N
+        t_datos.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
 
+            },
+            new String [] {
+                "ID", "NOMBRE", "RFC", "DIRECCION", "NO°", "COLONIA", "POBLACION", "MUNICIPIO", "ESTADO", "CP", "CONTACTO", "TELEFONO", "EMAIL"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false, false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        t_datos.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        t_datos.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        t_datos.getTableHeader().setReorderingAllowed(false);
+        t_datos.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                t_datosKeyPressed(evt);
+            }
+        });
+        jScrollPane2.setViewportView(t_datos);
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 677, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 327, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jButton5.setBackground(new java.awt.Color(2, 135, 242));
+        jButton5.setForeground(new java.awt.Color(254, 254, 254));
+        jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/seleccionar.png"))); // NOI18N
+        jButton5.setToolTipText("Cargar registro seleccionado");
+        jButton5.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
+        t_busca.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         t_busca.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 t_buscaActionPerformed(evt);
@@ -153,8 +151,10 @@ public class buscaCliente extends javax.swing.JDialog {
             }
         });
 
+        jLabel1.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         jLabel1.setText("Contiene:");
 
+        c_filtro.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         c_filtro.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Nombre", "Clave", "Dirección", "Colonia", "RFC", "Población", "Estado" }));
         c_filtro.setNextFocusableComponent(t_busca);
         c_filtro.addActionListener(new java.awt.event.ActionListener() {
@@ -163,124 +163,34 @@ public class buscaCliente extends javax.swing.JDialog {
             }
         });
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(c_filtro, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(t_busca)
-                .addContainerGap())
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(t_busca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1)
-                    .addComponent(c_filtro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 15, Short.MAX_VALUE))
-        );
-
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "Resultados", javax.swing.border.TitledBorder.RIGHT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Arial", 1, 11))); // NOI18N
-
-        t_datos.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Clave", "Nombre", "Dirección", "Col.", "CP.", "RFC", "Población", "Estado", "Tel.", "Email"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false, true, true, true, true, true, true, true, true
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        t_datos.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        t_datos.getTableHeader().setReorderingAllowed(false);
-        t_datos.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                t_datosKeyPressed(evt);
-            }
-        });
-        jScrollPane1.setViewportView(t_datos);
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 867, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        jButton5.setBackground(new java.awt.Color(2, 135, 242));
-        jButton5.setForeground(new java.awt.Color(254, 254, 254));
-        jButton5.setIcon(new ImageIcon("imagenes/seleccionar.png"));
-        jButton5.setText("Seleccionar");
-        jButton5.setToolTipText("Cargar registro seleccionado");
-        jButton5.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton5)))
-                .addContainerGap())
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton5)
-                .addContainerGap())
-        );
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(c_filtro, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(t_busca)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(c_filtro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel1)
+                        .addComponent(t_busca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButton5, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -308,36 +218,38 @@ public class buscaCliente extends javax.swing.JDialog {
                 cli.setIdClientes(Integer.parseInt(t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString()));
                 cli.setNombre(t_datos.getValueAt(t_datos.getSelectedRow(), 1).toString());
                 try{
-                    cli.setDireccion(t_datos.getValueAt(t_datos.getSelectedRow(), 2).toString()); 
+                    cli.setRfc(t_datos.getValueAt(t_datos.getSelectedRow(), 2).toString());
                 }catch(Exception e){}
                 try{
-                    cli.setColonia(t_datos.getValueAt(t_datos.getSelectedRow(), 3).toString()); 
+                    cli.setDireccion(t_datos.getValueAt(t_datos.getSelectedRow(), 3).toString()); 
                 }catch(Exception e){}
                 try{
-                    cli.setCp(Integer.parseInt(t_datos.getValueAt(t_datos.getSelectedRow(), 4).toString()));
+                    cli.setNumeroExterior(t_datos.getValueAt(t_datos.getSelectedRow(), 4).toString()); 
                 }catch(Exception e){}
                 try{
-                    cli.setRfc(t_datos.getValueAt(t_datos.getSelectedRow(), 5).toString());
+                    cli.setColonia(t_datos.getValueAt(t_datos.getSelectedRow(), 5).toString()); 
                 }catch(Exception e){}
                 try{
                     cli.setPoblacion(t_datos.getValueAt(t_datos.getSelectedRow(), 6).toString()); 
                 }catch(Exception e){}
                 try{
-                    cli.setEstado(t_datos.getValueAt(t_datos.getSelectedRow(), 7).toString()); 
+                    cli.setMunicipio(t_datos.getValueAt(t_datos.getSelectedRow(), 7).toString());
                 }catch(Exception e){}
                 try{
-                    cli.setTelefono(t_datos.getValueAt(t_datos.getSelectedRow(), 8).toString()); 
+                    cli.setEstado(t_datos.getValueAt(t_datos.getSelectedRow(), 8).toString()); 
                 }catch(Exception e){}
                 try{
-                    cli.setEmail(t_datos.getValueAt(t_datos.getSelectedRow(), 9).toString());
+                    cli.setCp(Integer.parseInt(t_datos.getValueAt(t_datos.getSelectedRow(), 9).toString()));
                 }catch(Exception e){}
                 try{
                     cli.setContacto(t_datos.getValueAt(t_datos.getSelectedRow(), 10).toString());
                 }catch(Exception e){}
                 try{
-                    cli.setNextel(t_datos.getValueAt(t_datos.getSelectedRow(), 11).toString());
+                    cli.setTelefono(t_datos.getValueAt(t_datos.getSelectedRow(), 11).toString()); 
                 }catch(Exception e){}
-                
+                try{
+                    cli.setEmail(t_datos.getValueAt(t_datos.getSelectedRow(), 12).toString());
+                }catch(Exception e){}
                 doClose(cli);
             }
             else{
@@ -360,10 +272,8 @@ public class buscaCliente extends javax.swing.JDialog {
     private javax.swing.JComboBox c_filtro;
     private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     public javax.swing.JTextField t_busca;
     private javax.swing.JTable t_datos;
     // End of variables declaration//GEN-END:variables
@@ -387,47 +297,56 @@ public class buscaCliente extends javax.swing.JDialog {
     private void buscaDato()
     {
         String consulta="from Clientes obj";
-        if(c_filtro.getSelectedItem().toString().compareTo("Clave")==0)
-            consulta+=" where obj.idClientes like '%" + t_busca.getText() +"%'";
-        if(c_filtro.getSelectedItem().toString().compareTo("Nombre")==0)
-            consulta+=" where obj.nombre like '%" + t_busca.getText() +"%'";
-        if(c_filtro.getSelectedItem().toString().compareTo("Dirección")==0)
-            consulta+=" where obj.direccion like '%" + t_busca.getText() +"%'";
-        if(c_filtro.getSelectedItem().toString().compareTo("Colonia")==0)
-            consulta+=" where obj.colonia like '%" + t_busca.getText() +"%'";
-        if(c_filtro.getSelectedItem().toString().compareTo("Población")==0)
-            consulta+=" where obj.poblacion like '%" + t_busca.getText() +"%'";
-        if(c_filtro.getSelectedItem().toString().compareTo("RFC")==0)
-           consulta+=" where obj.rfc like '%" + t_busca.getText() +"%'";
-        if(c_filtro.getSelectedItem().toString().compareTo("Estado")==0)
-           consulta+=" where obj.estado like '%" + t_busca.getText() +"%'";
+        switch(c_filtro.getSelectedItem().toString())
+        {
+            case "Clave":
+                consulta+=" where obj.idClientes like '%" + t_busca.getText() +"%'";
+                break;
+            case "Nombre":
+                consulta+=" where obj.nombre like '%" + t_busca.getText() +"%'";
+                break;
+            case "Dirección":
+                consulta+=" where obj.direccion like '%" + t_busca.getText() +"%'";
+                break;
+            case "Colonia":
+                consulta+=" where obj.colonia like '%" + t_busca.getText() +"%'";
+                break;
+            case "Población":
+                consulta+=" where obj.poblacion like '%" + t_busca.getText() +"%'";
+                break;
+            case "RFC":
+                consulta+=" where obj.rfc like '%" + t_busca.getText() +"%'";
+                break;
+            case "Estado":
+                consulta+=" where obj.estado like '%" + t_busca.getText() +"%'";
+                break;
+        }
+           
         List <Object[]> resultList=executeHQLQuery(consulta);
+        DefaultTableModel model=(DefaultTableModel)t_datos.getModel();
+            model.setNumRows(0);
         if(resultList.size()>0)
         {
-            t_datos.setModel(ModeloTablaReporte(resultList.size(), columnas));
-            int i=0;
-            for (Object o : resultList) 
+            for (Object o : resultList)
             {
                 Clientes actor = (Clientes) o;
-                model.setValueAt(actor.getIdClientes(), i, 0);
-                model.setValueAt(actor.getNombre(), i, 1);
-                model.setValueAt(actor.getDireccion(), i, 2);
-                model.setValueAt(actor.getColonia(), i, 3);
-                model.setValueAt(actor.getCp(), i, 4);
-                model.setValueAt(actor.getRfc(), i, 5);
-                model.setValueAt(actor.getPoblacion(), i, 6);
-                model.setValueAt(actor.getEstado(), i, 7);
-                model.setValueAt(actor.getTelefono(), i, 8);
-                model.setValueAt(actor.getEmail(), i, 9);
-                model.setValueAt(actor.getContacto(), i, 10);
-                model.setValueAt(actor.getNextel(), i, 11);
-                i++;
+                model.addRow(new Object[]{
+                    actor.getIdClientes(),
+                    actor.getNombre(),
+                    actor.getRfc(),
+                    actor.getDireccion(),
+                    actor.getNumeroExterior(),
+                    actor.getColonia(),
+                    actor.getPoblacion(),
+                    actor.getMunicipio(),
+                    actor.getEstado(),
+                    actor.getCp(),
+                    actor.getContacto(),
+                    actor.getTelefono(),
+                    actor.getEmail()
+                });
             }
         }
-        else
-            t_datos.setModel(ModeloTablaReporte(0, columnas));
-        t_busca.requestFocus();
-        formatoTabla();
     }
     private Clientes returnStatus = RET_CANCEL;
     
@@ -440,44 +359,44 @@ public class buscaCliente extends javax.swing.JDialog {
             switch(i)
             {
                 case 0:
-                    column.setPreferredWidth(20);
+                    column.setPreferredWidth(50);
                     break;
                 case 1:
-                    column.setPreferredWidth(150);
+                    column.setPreferredWidth(350);
                     break;
                 case 2:
-                    column.setPreferredWidth(150);
+                    column.setPreferredWidth(110);
                     break;
                 case 3:
-                    column.setPreferredWidth(80);
+                    column.setPreferredWidth(200);
                     break;
                 case 4:
                     column.setPreferredWidth(40);
                     break;
                 case 5:
-                    column.setPreferredWidth(40);
+                    column.setPreferredWidth(200);
                     break;
                 case 6:
-                    column.setPreferredWidth(80);
-                     break;
+                    column.setPreferredWidth(150);
+                    break;
                 case 7:
-                    column.setPreferredWidth(40);
+                    column.setPreferredWidth(150);
                     break;
                 case 8:
-                    column.setPreferredWidth(40);
+                    column.setPreferredWidth(150);
                     break;
                 case 9:
                     column.setPreferredWidth(80);
                     break;
                 case 10:
-                    column.setPreferredWidth(150);
+                    column.setPreferredWidth(200);
                     break;
                 case 11:
-                    column.setPreferredWidth(80);
+                    column.setPreferredWidth(100);
                     break;
-                default:
-                    column.setPreferredWidth(40);
-                    break;         
+                case 12:
+                    column.setPreferredWidth(150);
+                    break;
               }
         }
         JTableHeader header = t_datos.getTableHeader();
@@ -490,6 +409,6 @@ public class buscaCliente extends javax.swing.JDialog {
             t_datos.getColumnModel().getColumn(x).setHeaderRenderer(new Render1(c1));
         tabla_tamaños();
         t_datos.setShowVerticalLines(true);
-        t_datos.setShowHorizontalLines(true);
+        //t_datos.setShowHorizontalLines(true);
     }
 }

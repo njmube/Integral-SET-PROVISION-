@@ -11,12 +11,17 @@ import Integral.DefaultTableHeaderCellRenderer;
 import Hibernate.Util.HibernateUtil;
 import Hibernate.entidades.Almacen;
 import Hibernate.entidades.Usuario;
+import Integral.HorizontalBarUI;
+import Integral.VerticalBarUI;
 import javax.swing.InputMap;
 import javax.swing.JOptionPane;
 import java.awt.Color;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
+import javax.swing.JScrollBar;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
@@ -40,15 +45,33 @@ public class buscaAlmacen extends javax.swing.JDialog {
     String sessionPrograma="";
     Herramientas h;
     FormatoTabla formato;
+    int inicio=0;
+    boolean parar=false;
+    final JScrollBar scrollBar;
     
     /** Creates new form acceso */
     public buscaAlmacen(java.awt.Frame parent, boolean modal, Usuario usuario) {
         super(parent, modal);
         initComponents();
+        scrollBar = scroll.getVerticalScrollBar();
+        scrollBar.addAdjustmentListener(new AdjustmentListener() {
+            public void adjustmentValueChanged(AdjustmentEvent ae) {
+                if(parar==false)
+                {
+                    int extent = scrollBar.getModel().getExtent();
+                    extent+=scrollBar.getValue();
+                    if(extent==scrollBar.getMaximum())
+                        buscaDato();
+                }
+              //System.out.println("actual: " + extent+" maximo:"+scrollBar.getMaximum());
+            }
+          });
         getRootPane().setDefaultButton(jButton5);
         usr=usuario;
         t_datos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         titulos();
+        scroll.getVerticalScrollBar().setUI(new VerticalBarUI());
+        scroll.getHorizontalScrollBar().setUI(new HorizontalBarUI());
         buscaDato();
     }    
 
@@ -76,11 +99,11 @@ public class buscaAlmacen extends javax.swing.JDialog {
         jLabel1 = new javax.swing.JLabel();
         c_filtro = new javax.swing.JComboBox();
         jButton5 = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        scroll = new javax.swing.JScrollPane();
         t_datos = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Búsqueda movimientos en Almacen");
+        setTitle("Búsqueda movimientos en Almacen.");
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
@@ -178,7 +201,7 @@ public class buscaAlmacen extends javax.swing.JDialog {
                 t_datosKeyPressed(evt);
             }
         });
-        jScrollPane1.setViewportView(t_datos);
+        scroll.setViewportView(t_datos);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -191,7 +214,7 @@ public class buscaAlmacen extends javax.swing.JDialog {
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButton5))
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 958, Short.MAX_VALUE))
+                    .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 958, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -199,7 +222,7 @@ public class buscaAlmacen extends javax.swing.JDialog {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE)
+                .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton5)
                 .addContainerGap())
@@ -221,12 +244,16 @@ public class buscaAlmacen extends javax.swing.JDialog {
 
     private void t_buscaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_buscaKeyReleased
         // TODO add your handling code here:
+        inicio=0;
+        parar=false;
         this.buscaDato();
     }//GEN-LAST:event_t_buscaKeyReleased
 
     private void c_filtroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_c_filtroActionPerformed
         // TODO add your handling code here:
-       this.buscaDato();
+       inicio=0;
+        parar=false;
+        this.buscaDato();
     }//GEN-LAST:event_c_filtroActionPerformed
 
     private void t_buscaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_buscaActionPerformed
@@ -311,7 +338,7 @@ public class buscaAlmacen extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane scroll;
     public javax.swing.JTextField t_busca;
     private javax.swing.JTable t_datos;
     // End of variables declaration//GEN-END:variables
@@ -350,9 +377,13 @@ public class buscaAlmacen extends javax.swing.JDialog {
         if(c_filtro.getSelectedItem().toString().compareTo("Entrego/recibió")==0)
             consulta+="where almacen.entrego like'%"+t_busca.getText()+"%'";
 
+        consulta+=" order by almacen.id_almacen desc"; 
+        
         Session session = HibernateUtil.getSessionFactory().openSession();
         try
         {
+            int siguente=inicio+20;
+            consulta+=" limit "+inicio+", 20";
             session.beginTransaction();
             Query q = session.createSQLQuery(consulta);
             q.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
@@ -366,8 +397,9 @@ public class buscaAlmacen extends javax.swing.JDialog {
             }
             int l1=resultList.size();
 
-            model=(DefaultTableModel)t_datos.getModel();
-            model.setNumRows(0);
+            DefaultTableModel modelo= (DefaultTableModel)t_datos.getModel();
+            if(inicio==0)
+                    modelo.setNumRows(0);
             if(l1>0)
             {
                 for (int x=0; x<l1; x++) 
@@ -481,10 +513,18 @@ public class buscaAlmacen extends javax.swing.JDialog {
                                 break;
                         }
                     }
-                    model.addRow(objeto);
+                    modelo.addRow(objeto);
+                }
+                inicio=siguente;
+            }
+            else
+            {
+                parar=true;
+                if(inicio==0)
+                {
+                    modelo.setNumRows(0);
                 }
             }
-            t_busca.requestFocus();
         }catch(Exception e)
         {
             System.out.println(e);

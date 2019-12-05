@@ -10,6 +10,7 @@ package Contabilidad;
  *
  * @author salvador
  */
+import alsea.ALSEA;
 import finkok.Comprobante.Conceptos;
 import finkok.Comprobante.Conceptos.Concepto;
 import finkok.Comprobante.Emisor;
@@ -23,6 +24,9 @@ import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.regex.Pattern;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -270,6 +274,59 @@ public class FinkokJavaToXML {
         return response;
     }
 
+    public boolean convierteXML(finkok33.Comprobante comprobante, String archivo) throws JAXBException
+    {
+        try
+        {
+            // create JAXB context and instantiate marshaller
+            if(comprobante.getTipoDeComprobante().value().compareTo("P")==0)
+            {
+                Class[] classes = new Class[2]; 
+                classes[0] = finkok33.Comprobante.class; 
+                classes[1] = Pagos10.Pagos.class; 
+                JAXBContext context = JAXBContext.newInstance(classes);
+                Marshaller m = context.createMarshaller();
+                m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+                m.setProperty(Marshaller.JAXB_SCHEMA_LOCATION, "http://www.sat.gob.mx/cfd/3 http://www.sat.gob.mx/sitio_internet/cfd/3/cfdv33.xsd http://www.sat.gob.mx/Pagos http://www.sat.gob.mx/sitio_internet/cfd/Pagos/Pagos10.xsd");
+                // Write to File
+                m.marshal(comprobante, new File(archivo));
+            }
+            else
+            {
+                JAXBContext context = JAXBContext.newInstance(finkok33.Comprobante.class);
+                Marshaller m = context.createMarshaller();
+                m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+                m.setProperty(Marshaller.JAXB_SCHEMA_LOCATION, "http://www.sat.gob.mx/cfd/3 http://www.sat.gob.mx/sitio_internet/cfd/3/cfdv33.xsd");
+                // Write to File
+                m.marshal(comprobante, new File(archivo));
+            }
+            return true;
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    public boolean convierteXML(ALSEA comprobante, String archivo) throws JAXBException
+    {
+        try
+        {
+           JAXBContext context = JAXBContext.newInstance(ALSEA.class);
+            Marshaller m = context.createMarshaller();
+            m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+           // m.setProperty(Marshaller.JAXB_SCHEMA_LOCATION, "http://www.mysuitemex.com/fact/schema/alsea.xsd");
+            // Write to File
+            m.marshal(comprobante, new File(archivo));
+            return true;
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+    }
     /**
      * @return the xml
      */

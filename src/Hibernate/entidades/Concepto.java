@@ -18,6 +18,8 @@ public class Concepto  implements java.io.Serializable {
      private double precio;
      private Double descuento;
      private Double recargo;
+     private Double iva;
+     private ProductoServicio productoServicio;
 
     public Concepto() {
     }
@@ -29,7 +31,7 @@ public class Concepto  implements java.io.Serializable {
         this.descripcion = descripcion;
         this.precio = precio;
     }
-    public Concepto(Nota nota, Factura factura, double cantidad, String medida, String descripcion, double precio, Double descuento, Double recargo) {
+    public Concepto(Nota nota, Factura factura, double cantidad, String medida, String descripcion, double precio, Double descuento, Double recargo, Double iva, ProductoServicio productoServicio) {
        this.nota = nota;
        this.factura = factura;
        this.cantidad = cantidad;
@@ -38,6 +40,8 @@ public class Concepto  implements java.io.Serializable {
        this.precio = precio;
        this.descuento = descuento;
        this.recargo = recargo;
+       this.iva = iva;
+       this.productoServicio = productoServicio;
     }
    
     public Integer getIdConcepto() {
@@ -104,7 +108,21 @@ public class Concepto  implements java.io.Serializable {
         this.recargo = recargo;
     }
 
+    public ProductoServicio getProductoServicio() {
+        return this.productoServicio;
+    }
+    
+    public void setProductoServicio(ProductoServicio productoServicio) {
+        this.productoServicio = productoServicio;
+    }
 
+    public Double getIva() {
+        return this.iva;
+    }
+    
+    public void setIva(Double iva) {
+        this.iva = iva;
+    }
 
 
 }

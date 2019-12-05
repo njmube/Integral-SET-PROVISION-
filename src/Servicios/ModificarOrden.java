@@ -30,11 +30,10 @@ import Compras.altaCompras;
 import Compras.avanceSurtido;
 import Compras.generaCotizacion;
 import Empleados.buscaEmpleado;
-import Hibernate.entidades.Acceso;
 import Hibernate.entidades.Agente;
 import Hibernate.entidades.Ajustador;
 import Hibernate.entidades.Empleado;
-import Hibernate.entidades.Notificacion;
+import Hibernate.entidades.HistorialFecha;
 import Hibernate.entidades.Reparacion;
 import Marca.buscaMarca;
 import Tipo.buscaTipo;
@@ -56,22 +55,21 @@ import org.hibernate.Session;
 import Integral.calendario;
 import Integral.Imagen;
 import Integral.ExtensionFileFilter;
+import Integral.Ftp;
 import java.awt.Graphics;
 import java.util.Random;
 import org.hibernate.criterion.Restrictions;
 import Integral.Herramientas;
 import Integral.HorizontalBarUI;
-import Integral.PeticionPost;
 import Integral.VerticalBarUI;
 import Operaciones.Destajo;
 import Valuacion.Autorizacion;
+import Valuacion.Estadistico;
 import Valuacion.PreFactura;
 import Valuacion.valuacion;
 import Valuacion.valuacionDirecta;
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Properties;
 import javax.mail.BodyPart;
 import javax.mail.Message;
@@ -109,15 +107,21 @@ public class ModificarOrden extends javax.swing.JPanel {
     Imagen im;
     valuacion r1;
     valuacionDirecta r2;
+    Estadistico r3;
     
     String id_ajustador="";
     String id_agente="";
     String id_tecnico="";
     
+    Date fecha_cliente = new Date();
+    Date fecha_taller= new Date();
+    int configuracion=1;
+    Hilo miHilo;
+    
     /**
      * Creates new form altaServicios
      */
-    public ModificarOrden(Usuario usuario, String envio_periodo, int opcion, String programa, String carpeta) {
+    public ModificarOrden(Usuario usuario, String envio_periodo, int opcion, String programa, String carpeta, int configuracion) {
         sessionPrograma=programa;
         usr=usuario;
         periodo=envio_periodo;
@@ -125,21 +129,20 @@ public class ModificarOrden extends javax.swing.JPanel {
         p_responsables.getVerticalScrollBar().setUI(new VerticalBarUI());
         p_responsables.getHorizontalScrollBar().setUI(new HorizontalBarUI());
         ruta=carpeta;
-        cargaEstatus();
-        this.cargaSiniestro();
+        this.configuracion=configuracion;
+        cargaCombos();
+        //cargaEstatus();
+        //this.cargaSiniestro();
         l_id_cliente.setVisible(false);
         im=new Imagen("imagenes/foto.png", 83, 43, 1, 25, 83, 88);
         p_foto.add(im);
         p_foto.repaint();
         menu=opcion;
-        if(menu==3)
+        if(menu==4)
         {
             p_ventanas.addTab("Levantamiento", p_levantamiento);
             p_ventanas.addTab("Valuacion", p_valuacion);
-        }
-        if(menu==4)
-        {
-            p_ventanas.addTab("Valuacion", p_valuacion);
+            p_ventanas.addTab("Estadistica", p_estadistico);
         }
         if(menu==5)
         {
@@ -147,26 +150,36 @@ public class ModificarOrden extends javax.swing.JPanel {
         }
         if(menu==6)
         {
+            p_ventanas.addTab("Pre-Factura", p_preFacura);
+        }
+        
+        if(menu==9)
+        {
+            p_ventanas.addTab("Destajo", p_destajo);
+        }
+        
+        if(menu==11)
+        {
+            p_ventanas.addTab("Valuacion", p_valuacion);
+        }
+        
+        if(menu==12)
+        {
             p_ventanas.addTab("Genera Cotización", p_genera_cotizacion);
         }
-        if(menu==7)
+        
+        
+        
+        if(menu==14)
         {
             p_ventanas.addTab("Pedidos", p_genera_pedidos);
             p_ventanas.addTab("Avance de Pedidos", p_avance_pedidos);
             p_ventanas.addTab("Compara Cotizaciones", p_compara_cotizaciones);
             p_ventanas.addTab("Conciliacion", p_conciliacion);
         }
-        if(menu==8)
-        {
-            p_ventanas.addTab("Avance de Pedidos", p_avance_pedidos);
-        }
         if(menu==15)
         {
-            p_ventanas.addTab("Pre-Factura", p_preFacura);
-        }
-        if(menu==16)
-        {
-            p_ventanas.addTab("Destajo", p_destajo);
+            p_ventanas.addTab("Avance de Pedidos", p_avance_pedidos);
         }
     }
 
@@ -189,6 +202,9 @@ public class ModificarOrden extends javax.swing.JPanel {
         p_preFacura = new javax.swing.JScrollPane();
         p_conciliacion = new javax.swing.JScrollPane();
         p_destajo = new javax.swing.JScrollPane();
+        b_fecha_interna = new javax.swing.JButton();
+        b_fecha_cliente = new javax.swing.JButton();
+        p_estadistico = new javax.swing.JScrollPane();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         t_aseguradora = new javax.swing.JTextField();
@@ -196,7 +212,6 @@ public class ModificarOrden extends javax.swing.JPanel {
         jLabel3 = new javax.swing.JLabel();
         t_siniestro = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        b_fecha_siniestro = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
         t_poliza = new javax.swing.JTextField();
         t_inciso = new javax.swing.JTextField();
@@ -266,9 +281,7 @@ public class ModificarOrden extends javax.swing.JPanel {
         jPanel4 = new javax.swing.JPanel();
         c_estatus = new javax.swing.JComboBox();
         t_fecha_estatus = new javax.swing.JTextField();
-        b_fecha_cliente = new javax.swing.JButton();
         t_fecha_cliente = new javax.swing.JTextField();
-        b_fecha_interna = new javax.swing.JButton();
         t_fecha_interna = new javax.swing.JTextField();
         t_demerito = new javax.swing.JFormattedTextField();
         jLabel30 = new javax.swing.JLabel();
@@ -287,6 +300,10 @@ public class ModificarOrden extends javax.swing.JPanel {
         t_ajustador = new javax.swing.JTextField();
         b_buscarh = new javax.swing.JButton();
         t_tecnico = new javax.swing.JTextField();
+        jLabel19 = new javax.swing.JLabel();
+        l_fecha_cliente = new javax.swing.JLabel();
+        cb_garantia = new javax.swing.JCheckBox();
+        t_garantia = new javax.swing.JTextField();
         p_responsables = new javax.swing.JScrollPane();
         p_galeria = new javax.swing.JPanel();
         p_documentos = new javax.swing.JPanel();
@@ -315,6 +332,36 @@ public class ModificarOrden extends javax.swing.JPanel {
         p_conciliacion.setAutoscrolls(true);
 
         p_destajo.setAutoscrolls(true);
+
+        b_fecha_interna.setBackground(new java.awt.Color(2, 135, 242));
+        b_fecha_interna.setForeground(new java.awt.Color(255, 255, 255));
+        b_fecha_interna.setText("F.Interna");
+        b_fecha_interna.setToolTipText("Calendario");
+        b_fecha_interna.setEnabled(false);
+        b_fecha_interna.setMaximumSize(new java.awt.Dimension(32, 8));
+        b_fecha_interna.setMinimumSize(new java.awt.Dimension(32, 8));
+        b_fecha_interna.setPreferredSize(new java.awt.Dimension(28, 24));
+        b_fecha_interna.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_fecha_internaActionPerformed(evt);
+            }
+        });
+
+        b_fecha_cliente.setBackground(new java.awt.Color(2, 135, 242));
+        b_fecha_cliente.setForeground(new java.awt.Color(255, 255, 255));
+        b_fecha_cliente.setText("F.Cliente");
+        b_fecha_cliente.setToolTipText("Calendario");
+        b_fecha_cliente.setEnabled(false);
+        b_fecha_cliente.setMaximumSize(new java.awt.Dimension(32, 8));
+        b_fecha_cliente.setMinimumSize(new java.awt.Dimension(32, 8));
+        b_fecha_cliente.setPreferredSize(new java.awt.Dimension(28, 24));
+        b_fecha_cliente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_fecha_clienteActionPerformed(evt);
+            }
+        });
+
+        p_estadistico.setAutoscrolls(true);
 
         setBackground(new java.awt.Color(255, 255, 255));
         setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(90, 66, 126), 1, true), "Actualización de Ordenes", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Arial", 1, 10))); // NOI18N
@@ -392,23 +439,8 @@ public class ModificarOrden extends javax.swing.JPanel {
         jPanel1.add(t_siniestro, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 100, 90, -1));
 
         jLabel4.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel4.setText("F.Reporte:");
-        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 130, -1, -1));
-
-        b_fecha_siniestro.setBackground(new java.awt.Color(2, 135, 242));
-        b_fecha_siniestro.setIcon(new ImageIcon("imagenes/calendario.png"));
-        b_fecha_siniestro.setToolTipText("Calendario");
-        b_fecha_siniestro.setEnabled(false);
-        b_fecha_siniestro.setMaximumSize(new java.awt.Dimension(32, 8));
-        b_fecha_siniestro.setMinimumSize(new java.awt.Dimension(32, 8));
-        b_fecha_siniestro.setNextFocusableComponent(cb_asegurado);
-        b_fecha_siniestro.setPreferredSize(new java.awt.Dimension(32, 8));
-        b_fecha_siniestro.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                b_fecha_siniestroActionPerformed(evt);
-            }
-        });
-        jPanel1.add(b_fecha_siniestro, new org.netbeans.lib.awtextra.AbsoluteConstraints(295, 126, 28, 24));
+        jLabel4.setText("Ingreso:");
+        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 130, -1, -1));
 
         jLabel5.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         jLabel5.setText("Poliza:");
@@ -438,7 +470,6 @@ public class ModificarOrden extends javax.swing.JPanel {
         t_inciso.setEditable(false);
         t_inciso.setBackground(new java.awt.Color(204, 255, 255));
         t_inciso.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_inciso.setNextFocusableComponent(b_fecha_siniestro);
         t_inciso.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 t_incisoFocusLost(evt);
@@ -493,7 +524,7 @@ public class ModificarOrden extends javax.swing.JPanel {
         t_fecha_siniestro.setBackground(new java.awt.Color(204, 255, 255));
         t_fecha_siniestro.setText("DD-MM-AAAA");
         t_fecha_siniestro.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jPanel1.add(t_fecha_siniestro, new org.netbeans.lib.awtextra.AbsoluteConstraints(218, 130, 76, -1));
+        jPanel1.add(t_fecha_siniestro, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 130, 76, -1));
 
         p_foto.setBackground(new java.awt.Color(2, 135, 242));
         p_foto.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
@@ -1231,42 +1262,14 @@ public class ModificarOrden extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        b_fecha_cliente.setBackground(new java.awt.Color(2, 135, 242));
-        b_fecha_cliente.setForeground(new java.awt.Color(255, 255, 255));
-        b_fecha_cliente.setText("F.Cliente");
-        b_fecha_cliente.setToolTipText("Calendario");
-        b_fecha_cliente.setEnabled(false);
-        b_fecha_cliente.setMaximumSize(new java.awt.Dimension(32, 8));
-        b_fecha_cliente.setMinimumSize(new java.awt.Dimension(32, 8));
-        b_fecha_cliente.setPreferredSize(new java.awt.Dimension(28, 24));
-        b_fecha_cliente.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                b_fecha_clienteActionPerformed(evt);
-            }
-        });
-
         t_fecha_cliente.setEditable(false);
         t_fecha_cliente.setBackground(new java.awt.Color(204, 255, 255));
-        t_fecha_cliente.setText("DD-MM-AAAA");
+        t_fecha_cliente.setText("DD-MM-AAAA HH:MM:SS");
         t_fecha_cliente.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-
-        b_fecha_interna.setBackground(new java.awt.Color(2, 135, 242));
-        b_fecha_interna.setForeground(new java.awt.Color(255, 255, 255));
-        b_fecha_interna.setText("F.Interna");
-        b_fecha_interna.setToolTipText("Calendario");
-        b_fecha_interna.setEnabled(false);
-        b_fecha_interna.setMaximumSize(new java.awt.Dimension(32, 8));
-        b_fecha_interna.setMinimumSize(new java.awt.Dimension(32, 8));
-        b_fecha_interna.setPreferredSize(new java.awt.Dimension(28, 24));
-        b_fecha_interna.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                b_fecha_internaActionPerformed(evt);
-            }
-        });
 
         t_fecha_interna.setEditable(false);
         t_fecha_interna.setBackground(new java.awt.Color(204, 255, 255));
-        t_fecha_interna.setText("DD-MM-AAAA");
+        t_fecha_interna.setText("DD-MM-AAAA HH:MM:SS");
         t_fecha_interna.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         t_demerito.setEditable(false);
@@ -1301,6 +1304,7 @@ public class ModificarOrden extends javax.swing.JPanel {
 
         c_siniestro.setBackground(new java.awt.Color(204, 255, 255));
         c_siniestro.setForeground(new java.awt.Color(51, 0, 255));
+        c_siniestro.setEnabled(false);
         c_siniestro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 c_siniestroActionPerformed(evt);
@@ -1445,6 +1449,23 @@ public class ModificarOrden extends javax.swing.JPanel {
         t_tecnico.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         t_tecnico.setEnabled(false);
 
+        jLabel19.setText("Fecha Taller:");
+
+        l_fecha_cliente.setText("Fecha Cliente:");
+
+        cb_garantia.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        cb_garantia.setText("Garantia");
+        cb_garantia.setOpaque(false);
+        cb_garantia.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cb_garantiaActionPerformed(evt);
+            }
+        });
+
+        t_garantia.setEditable(false);
+        t_garantia.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        t_garantia.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 204, 204)));
+
         javax.swing.GroupLayout p_unidadLayout = new javax.swing.GroupLayout(p_unidad);
         p_unidad.setLayout(p_unidadLayout);
         p_unidadLayout.setHorizontalGroup(
@@ -1452,46 +1473,58 @@ public class ModificarOrden extends javax.swing.JPanel {
             .addGroup(p_unidadLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel17, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, p_unidadLayout.createSequentialGroup()
-                        .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, p_unidadLayout.createSequentialGroup()
-                                .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(b_ajustador, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
-                                    .addComponent(b_agente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addGap(6, 6, 6)
-                                .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(t_ajustador)
-                                    .addComponent(t_agente)))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, p_unidadLayout.createSequentialGroup()
-                                .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(b_marca, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
-                                    .addComponent(b_tipo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(p_unidadLayout.createSequentialGroup()
-                                        .addComponent(t_marca, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(l_nombre_marca, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                    .addGroup(p_unidadLayout.createSequentialGroup()
-                                        .addComponent(t_tipo, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(0, 0, Short.MAX_VALUE))))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, p_unidadLayout.createSequentialGroup()
-                                .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addGroup(p_unidadLayout.createSequentialGroup()
-                                        .addComponent(b_buscarh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(t_tecnico, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jLabel25)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(id_modificado, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(l_nombre_modificado, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel17))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, p_unidadLayout.createSequentialGroup()
+                        .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(p_unidadLayout.createSequentialGroup()
+                                .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, p_unidadLayout.createSequentialGroup()
-                                        .addComponent(b_fecha_interna, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(b_ajustador, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
+                                            .addComponent(b_agente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addGap(6, 6, 6)
+                                        .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(t_ajustador)
+                                            .addComponent(t_agente)))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, p_unidadLayout.createSequentialGroup()
+                                        .addComponent(b_buscarh, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(t_fecha_interna, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(t_tecnico, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(0, 81, Short.MAX_VALUE))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, p_unidadLayout.createSequentialGroup()
+                                        .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(jLabel19)
+                                            .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                .addComponent(b_marca, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
+                                                .addComponent(b_tipo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(b_fecha_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(t_fecha_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(0, 0, Short.MAX_VALUE)))
-                        .addGap(99, 99, 99)
+                                        .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(p_unidadLayout.createSequentialGroup()
+                                                .addComponent(t_fecha_interna, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 51, Short.MAX_VALUE)
+                                                .addComponent(l_fecha_cliente)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(t_fecha_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addGroup(p_unidadLayout.createSequentialGroup()
+                                                .addComponent(t_marca, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(l_nombre_marca, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                            .addGroup(p_unidadLayout.createSequentialGroup()
+                                                .addComponent(t_tipo, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(0, 0, Short.MAX_VALUE)))))
+                                .addGap(18, 18, 18))
+                            .addGroup(p_unidadLayout.createSequentialGroup()
+                                .addComponent(cb_garantia)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(t_garantia, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                         .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(p_unidadLayout.createSequentialGroup()
                                 .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -1539,14 +1572,7 @@ public class ModificarOrden extends javax.swing.JPanel {
                                 .addGap(43, 43, 43)
                                 .addComponent(jLabel30)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(t_demerito, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(p_unidadLayout.createSequentialGroup()
-                        .addComponent(jLabel25)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(id_modificado, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(l_nombre_modificado, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                                .addComponent(t_demerito, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap())
         );
         p_unidadLayout.setVerticalGroup(
@@ -1570,13 +1596,12 @@ public class ModificarOrden extends javax.swing.JPanel {
                                     .addComponent(t_marca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(l_nombre_marca, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(b_fecha_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(b_fecha_interna, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(t_fecha_interna, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(t_fecha_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(t_fecha_interna, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(t_fecha_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel19)
+                                    .addComponent(l_fecha_cliente))
+                                .addGap(12, 12, 12)
                                 .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(b_ajustador, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(t_ajustador, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -1618,21 +1643,30 @@ public class ModificarOrden extends javax.swing.JPanel {
                     .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(c_siniestro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel32)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel29)
-                    .addComponent(jLabel30)
-                    .addComponent(t_deducible, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(t_demerito, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel25)
-                        .addComponent(id_modificado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(l_nombre_modificado, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel17)
-                .addGap(5, 5, 5))
+                    .addGroup(p_unidadLayout.createSequentialGroup()
+                        .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(p_unidadLayout.createSequentialGroup()
+                                .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel29)
+                                    .addComponent(jLabel30)
+                                    .addComponent(t_deducible, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(t_demerito, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, p_unidadLayout.createSequentialGroup()
+                                .addGap(0, 10, Short.MAX_VALUE)
+                                .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(t_garantia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(cb_garantia))
+                                .addGap(20, 20, 20)))
+                        .addGroup(p_unidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel17)
+                            .addComponent(jLabel25)
+                            .addComponent(id_modificado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(p_unidadLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(l_nombre_modificado, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(3, 3, 3))
         );
 
         p_ventanas.addTab("Unidad", p_unidad);
@@ -1657,7 +1691,7 @@ public class ModificarOrden extends javax.swing.JPanel {
         p_ventanas.addTab("Inventario", p_inventario);
 
         p_sm.setLayout(new java.awt.BorderLayout());
-        p_ventanas.addTab("SM Logistics", new javax.swing.ImageIcon(getClass().getResource("/Servicios/icono-1.png")), p_sm); // NOI18N
+        p_ventanas.addTab("S.O.S", new javax.swing.ImageIcon(getClass().getResource("/Servicios/icono-1.png")), p_sm); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -1685,36 +1719,16 @@ public class ModificarOrden extends javax.swing.JPanel {
     }//GEN-LAST:event_t_siniestroActionPerformed
 
     private void t_polizaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_polizaActionPerformed
-        t_reporte.requestFocus();
+        t_inciso.requestFocus();
     }//GEN-LAST:event_t_polizaActionPerformed
 
     private void t_incisoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_incisoActionPerformed
-        this.b_fecha_siniestro.requestFocus();
+        this.t_reporte.requestFocus();
     }//GEN-LAST:event_t_incisoActionPerformed
 
     private void t_reporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_reporteActionPerformed
-        t_inciso.requestFocus();
+        b_busca_cliente.requestFocus();
     }//GEN-LAST:event_t_reporteActionPerformed
-
-    private void b_fecha_siniestroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_fecha_siniestroActionPerformed
-        h=new Herramientas(usr, menu);
-        h.session(sessionPrograma);        
-        calendario cal =new calendario(new javax.swing.JFrame(), true);
-        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-        cal.setLocation((d.width/2)-(cal.getWidth()/2), (d.height/2)-(cal.getHeight()/2));
-        cal.setVisible(true);
-        Calendar miCalendario=cal.getReturnStatus();
-        if(miCalendario!=null)
-        {
-            String dia=Integer.toString(miCalendario.get(Calendar.DATE));;
-            String mes = Integer.toString(miCalendario.get(Calendar.MONTH)+1);
-            String anio = Integer.toString(miCalendario.get(Calendar.YEAR));
-            t_fecha_siniestro.setText(dia+"-"+mes+"-"+anio);
-            b_busca_cliente.requestFocus();
-        }
-        else
-            t_fecha_siniestro.setText("DD-MM-AAAA");
-    }//GEN-LAST:event_b_fecha_siniestroActionPerformed
 
     private void t_aseguradoraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_aseguradoraActionPerformed
             t_siniestro.requestFocus();
@@ -1781,9 +1795,6 @@ public class ModificarOrden extends javax.swing.JPanel {
                                     boolean resp=false;
                                     if(c_estatus.getSelectedItem().toString().compareToIgnoreCase("FACTURADO")==0)
                                         resp=guardaEmpleado(usr.getEmpleado(), "cierra_orden", valor);
-                                    //this.borra_cajas();
-                                    //this.t_orden.setText(dia);
-                                    //estado_campos(true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
                                     JOptionPane.showMessageDialog(null, "La orden se ha guardado");
                                     if(c_estatus.getSelectedItem().toString().compareToIgnoreCase("FACTURADO")==0)
                                     {
@@ -1888,13 +1899,93 @@ public class ModificarOrden extends javax.swing.JPanel {
                 archivo=selector.getSelectedFile();
                 try
                 {
+                    Session session = HibernateUtil.getSessionFactory().openSession();
+                    session.beginTransaction().begin();
                     if(archivo.exists())
                     {
-                        String ruta=archivo.getPath();
-                        p_foto.removeAll();
-                        p_foto.add(new Imagen(ruta, 83, 93, 1, 1, 83, 93));
-                        p_foto.repaint();
-                        entro_foto=1;
+                        Ftp miFtp=new Ftp();
+                        boolean respuesta=true;
+                        respuesta=miFtp.conectar(ruta, "compras", "04650077", 3310);
+                        if(respuesta==true)
+                        {
+                            String miNombre="";
+                            if(existe_foto.compareTo("")==0)
+                            {
+                                /*Random rng=new Random();
+                                long  dig8 = rng.nextInt(90000000)+10000000;
+                                miNombre=dig8+".jpg";*/
+                                miNombre=orden_act.getIdOrden()+".jpg";
+                            }
+                            else
+                            {
+                                miNombre=existe_foto;
+                            }
+                            if(!miFtp.cambiarDirectorio("/ordenes/"+this.orden_act.getIdOrden()))
+                                if(miFtp.crearDirectorio("/ordenes/"+this.orden_act.getIdOrden()))
+                                    miFtp.cambiarDirectorio("/ordenes/"+this.orden_act.getIdOrden());
+                            respuesta=miFtp.subirArchivo(archivo.getPath(), miNombre);
+
+                            File temp = File.createTempFile("tmp", ".jpg");
+                            String ruta=archivo.getPath();
+                            javax.swing.JPanel p=new Imagen(ruta, 385, 250, 0, 0, 385, 250);
+                            BufferedImage dibujo =new BufferedImage(385, 250, BufferedImage.TYPE_INT_RGB);
+                            Graphics g = dibujo.getGraphics();
+                            p.paint(g);
+                            ImageIO.write((RenderedImage)dibujo, "jpg", temp); // Salvar la imagen en el fichero
+
+                            if(!miFtp.cambiarDirectorio("/ordenes/"+this.orden_act.getIdOrden()+"/miniatura"))
+                            {
+                                miFtp.cambiarDirectorio(miFtp.raiz);
+                                if(miFtp.crearDirectorio("/ordenes/"+this.orden_act.getIdOrden()+"/miniatura"))
+                                    miFtp.cambiarDirectorio("/ordenes/"+this.orden_act.getIdOrden()+"/miniatura");
+                            }
+                            respuesta=miFtp.subirArchivo(temp.getPath(), miNombre);
+                            temp.delete();
+
+                            miFtp.cambiarDirectorio("/");
+
+                            orden_act = (Orden)session.get(Orden.class, orden_act.getIdOrden()); 
+                            //*******obtenemos fecha con hora******
+                            Date fecha_orden = new Date();
+                            DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");//YYYY-MM-DD HH:MM:SS
+                            String valor=dateFormat.format(fecha_orden);
+                            String [] fecha = valor.split("-");
+                            String [] hora=fecha[2].split(":");
+                            String [] aux=hora[0].split(" ");
+                            fecha[2]=aux[0];
+                            hora[0]=aux[1];
+                            Calendar calendario = Calendar.getInstance();
+                            calendario.set(
+                                Integer.parseInt(fecha[2]), 
+                                Integer.parseInt(fecha[1])-1, 
+                                Integer.parseInt(fecha[0]), 
+                                Integer.parseInt(hora[0]), 
+                                Integer.parseInt(hora[1]), 
+                                Integer.parseInt(hora[2]));
+                            Foto img=new Foto(orden_act, orden_act.getIdOrden()+".jpg", calendario.getTime());
+                            //******************************************
+                            Foto[] lista=(Foto[])orden_act.getFotos().toArray(new Foto[0]);
+                            boolean existe=false;
+                            for(int r=0; r<lista.length; r++)
+                            {
+                                if(lista[r].getDescripcion().compareToIgnoreCase(miNombre)==0)
+                                {
+                                    r=lista.length;
+                                    existe=true;
+                                }
+                            }
+                            if(existe==false)
+                            {
+                                orden_act.addFoto(img);
+                                session.saveOrUpdate(orden_act);
+                            }
+                            String rut=archivo.getPath();
+                            p_foto.removeAll();
+                            p_foto.add(new Imagen(rut, 83, 93, 1, 1, 83, 93));
+                            p_foto.repaint();
+                            javax.swing.JOptionPane.showMessageDialog(null, "Foto Actualizada");
+                        }
+                        session.getTransaction().commit();
                     }
                     else
                         javax.swing.JOptionPane.showMessageDialog(null, "No se pudo cargar la imagen");
@@ -1913,13 +2004,13 @@ public class ModificarOrden extends javax.swing.JPanel {
 
     private void t_siniestroKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_siniestroKeyTyped
         char car = evt.getKeyChar();
-        if(t_siniestro.getText().length()>=10) 
+        if(t_siniestro.getText().length()>=20) 
             evt.consume();
     }//GEN-LAST:event_t_siniestroKeyTyped
 
     private void t_polizaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_polizaKeyTyped
         char car = evt.getKeyChar();
-        if(t_poliza.getText().length()>=15) 
+        if(t_poliza.getText().length()>=20) 
             evt.consume();
     }//GEN-LAST:event_t_polizaKeyTyped
 
@@ -1931,7 +2022,7 @@ public class ModificarOrden extends javax.swing.JPanel {
 
     private void t_incisoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_incisoKeyTyped
         char car = evt.getKeyChar();
-        if(t_inciso.getText().length()>=10) 
+        if(t_inciso.getText().length()>=13) 
             evt.consume();
     }//GEN-LAST:event_t_incisoKeyTyped
 
@@ -2070,7 +2161,7 @@ public class ModificarOrden extends javax.swing.JPanel {
                 {
                     if(usr.getConsultaFormatos()==true)
                     {
-                        formatos r1=new formatos(t_orden.getText(), usr, t_aseguradora.getText(), estado, this.sessionPrograma);
+                        formatos r1=new formatos(t_orden.getText(), usr, t_aseguradora.getText(), estado, this.sessionPrograma, configuracion);
                         p_formatos.add(r1);
                         r1.setVisible(true);
                         p_formatos.repaint();
@@ -2145,9 +2236,9 @@ public class ModificarOrden extends javax.swing.JPanel {
                     {
                         Galeria r1;
                         if(cerrada==1)
-                            r1=new Galeria(t_orden.getText(), usr, "cerrada", this.sessionPrograma);
+                            r1=new Galeria(t_orden.getText(), usr, "cerrada", this.sessionPrograma, ruta);
                         else
-                            r1=new Galeria(t_orden.getText(), usr, estado, this.sessionPrograma);
+                            r1=new Galeria(t_orden.getText(), usr, estado, this.sessionPrograma,ruta);
                         p_galeria.add(r1);
                         r1.setVisible(true);
                         p_galeria.repaint();
@@ -2243,7 +2334,7 @@ public class ModificarOrden extends javax.swing.JPanel {
                         {
                             p_levantamiento.getViewport().removeAll();
                             r2=null;
-                            r2=new valuacionDirecta(t_orden.getText(), usr, estado, this.sessionPrograma);
+                            r2=new valuacionDirecta(t_orden.getText(), usr, estado, this.sessionPrograma, configuracion, ruta);
                             p_levantamiento.setViewportView(r2);
                             p_levantamiento.updateUI();
                             r1=null;
@@ -2285,17 +2376,77 @@ public class ModificarOrden extends javax.swing.JPanel {
                     {
                         if(orden_act.getRLevantamientoInicio()!=null)
                         {
-                            p_valuacion.getViewport().removeAll();
-                            r1=null;
-                            r1=new valuacion(t_orden.getText(), usr, estado, this.sessionPrograma, menu);
-                            p_valuacion.setViewportView(r1);
-                            p_valuacion.updateUI();
-                            r1=null;
+                            if(orden_act.getRLevantamientoCierre()!=null)
+                            {
+                                p_valuacion.getViewport().removeAll();
+                                r1=null;
+                                r1=new valuacion(t_orden.getText(), usr, estado, this.sessionPrograma, menu, configuracion, ruta);
+                                p_valuacion.setViewportView(r1);
+                                p_valuacion.updateUI();
+                                r1=null;
+                            }
+                            else{
+                                p_valuacion.getViewport().removeAll();
+                                p_valuacion.updateUI();
+                                JOptionPane.showMessageDialog(null, "¡Debe Terminar y Cerrar primero el Levantamiento!");
+                            }
                         }
                         else
                         {
                             p_valuacion.getViewport().removeAll();
                             p_valuacion.updateUI();
+                            JOptionPane.showMessageDialog(null, "¡Aun no esta disponible!");
+                        }
+                    }
+                    else
+                        JOptionPane.showMessageDialog(null, "¡Acceso denegado!");
+                }catch(Exception e)
+                {
+                    System.out.println(e);
+                }
+                if(session!=null)
+                    if(session.isOpen())
+                    {
+                        session.flush();
+                            session.clear();
+                        session.close();
+                    }
+            }
+            
+            if(ventana.compareTo("Estadistica")==0)
+            {
+                estado_campos(true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
+                p_estadistico.getViewport().removeAll();
+                p_estadistico.updateUI();
+                Session session = HibernateUtil.getSessionFactory().openSession();
+                try
+                {
+                    session.beginTransaction().begin();
+                    usr = (Usuario)session.get(Usuario.class, usr.getIdUsuario());
+                    orden_act=(Orden)session.get(Orden.class, orden_act.getIdOrden());
+                    if(usr.getConsultaValuacion()==true)
+                    {
+                        if(orden_act.getRLevantamientoInicio()!=null)
+                        {
+                            if(orden_act.getRLevantamientoCierre()!=null)
+                            {
+                                p_estadistico.getViewport().removeAll();
+                                r3=null;
+                                r3=new Estadistico(t_orden.getText(), usr, estado, this.sessionPrograma, configuracion, ruta);
+                                p_estadistico.setViewportView(r3);
+                                p_estadistico.updateUI();
+                                r3=null;
+                            }
+                            else{
+                                p_estadistico.getViewport().removeAll();
+                                p_estadistico.updateUI();
+                                JOptionPane.showMessageDialog(null, "¡Debe Terminar y Cerrar primero el Levantamiento!");
+                            }
+                        }
+                        else
+                        {
+                            p_estadistico.getViewport().removeAll();
+                            p_estadistico.updateUI();
                             JOptionPane.showMessageDialog(null, "¡Aun no esta disponible!");
                         }
                     }
@@ -2325,7 +2476,7 @@ public class ModificarOrden extends javax.swing.JPanel {
                     {
                         if(orden_act.getRLevantamientoInicio()!=null)
                         {
-                            Autorizacion r1=new Autorizacion(t_orden.getText(), usr, estado, this.sessionPrograma);
+                            Autorizacion r1=new Autorizacion(t_orden.getText(), usr, estado, this.sessionPrograma, ruta);
                             p_autoriza_valuacion.setViewportView(r1);
                             p_autoriza_valuacion.updateUI();
                             r1=null;
@@ -2356,7 +2507,7 @@ public class ModificarOrden extends javax.swing.JPanel {
                     {
                         if(orden_act.getRCotizaInicio()!=null)
                         {
-                            generaCotizacion r1=new generaCotizacion(t_orden.getText(), usr, estado, this.sessionPrograma);
+                            generaCotizacion r1=new generaCotizacion(t_orden.getText(), usr, estado, this.sessionPrograma, configuracion);
                             p_genera_cotizacion.setViewportView(r1);
                             p_genera_cotizacion.updateUI();
                             r1=null;
@@ -2386,10 +2537,19 @@ public class ModificarOrden extends javax.swing.JPanel {
                     {
                         if(orden_act.getInicioRefacciones()!=null)
                         {
-                            altaCompras r1=new altaCompras(t_orden.getText(), usr, estado, this.sessionPrograma);
-                            p_genera_pedidos.setViewportView(r1);
-                            p_genera_pedidos.updateUI();
-                            r1=null;
+                            if(orden_act.getMetaRefacciones()!=null)
+                            {
+                                altaCompras r1=new altaCompras(t_orden.getText(), usr, estado, this.sessionPrograma,configuracion, ruta);
+                                p_genera_pedidos.setViewportView(r1);
+                                p_genera_pedidos.updateUI();
+                                r1=null;
+                            }
+                            else
+                            {
+                                p_genera_pedidos.getViewport().removeAll();
+                                p_genera_pedidos.updateUI();
+                                JOptionPane.showMessageDialog(null, "¡Falta asignar meta de refacciones!");
+                            }
                         }
                         else
                         {
@@ -2416,10 +2576,19 @@ public class ModificarOrden extends javax.swing.JPanel {
                     {
                         if(orden_act.getInicioRefacciones()!=null)
                         {
-                            avanceSurtido r1=new avanceSurtido(t_orden.getText(), usr, this.sessionPrograma);
-                            p_avance_pedidos.setViewportView(r1);
-                            p_avance_pedidos.updateUI();
-                            r1=null;
+                            if(orden_act.getMetaRefacciones()!=null)
+                            {
+                                avanceSurtido r1=new avanceSurtido(t_orden.getText(), usr, this.sessionPrograma, configuracion);
+                                p_avance_pedidos.setViewportView(r1);
+                                p_avance_pedidos.updateUI();
+                                r1=null;
+                            }
+                            else
+                            {
+                                p_avance_pedidos.getViewport().removeAll();
+                                p_avance_pedidos.updateUI();
+                                JOptionPane.showMessageDialog(null, "¡Falta asignar meta de refacciones!");
+                            }
                         }
                         else
                         {
@@ -2446,7 +2615,7 @@ public class ModificarOrden extends javax.swing.JPanel {
                     {
                         if(orden_act.getRCotizaInicio()!=null)
                         {
-                            ComparaCotizacion r1=new ComparaCotizacion(t_orden.getText(), usr, this.sessionPrograma, this.orden_act, this.estado);
+                            ComparaCotizacion r1=new ComparaCotizacion(t_orden.getText(), usr, this.sessionPrograma, this.orden_act, this.estado, configuracion);
                             p_compara_cotizaciones.setViewportView(r1);
                             p_compara_cotizaciones.updateUI();
                             r1=null;
@@ -2472,7 +2641,7 @@ public class ModificarOrden extends javax.swing.JPanel {
                 p_preFacura.updateUI();
                 try
                 {
-                        PreFactura r1=new PreFactura(t_orden.getText(), this.usr, this.estado, this.sessionPrograma, this.menu);
+                        PreFactura r1=new PreFactura(t_orden.getText(), this.usr, this.estado, this.sessionPrograma, this.menu, configuracion);
                         p_preFacura.setViewportView(r1);
                         p_preFacura.updateUI();
                         r1=null;
@@ -2490,7 +2659,7 @@ public class ModificarOrden extends javax.swing.JPanel {
                 {
                     if(usr.getAltaMetas()==true)
                     {
-                        Destajo r1=new Destajo(t_orden.getText(), usr, estado, this.sessionPrograma);
+                        Destajo r1=new Destajo(t_orden.getText(), usr, estado, this.sessionPrograma,configuracion);
                         p_destajo.setViewportView(r1);
                         p_destajo.updateUI();
                         r1=null;
@@ -2514,7 +2683,7 @@ public class ModificarOrden extends javax.swing.JPanel {
                     {
                         if(orden_act.getInicioRefacciones()!=null)
                         {
-                            Conciliacion r1=new Conciliacion(t_orden.getText(), usr, this.sessionPrograma);
+                            Conciliacion r1=new Conciliacion(t_orden.getText(), usr, this.sessionPrograma, configuracion);
                             p_conciliacion.setViewportView(r1);
                             p_conciliacion.updateUI();
                             r1=null;
@@ -2533,7 +2702,7 @@ public class ModificarOrden extends javax.swing.JPanel {
                     System.out.println(e);
                 }
             }
-            if(ventana.compareTo("SM Logistics")==0)
+            if(ventana.compareTo("S.O.S")==0)
             {
                 estado_campos(true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
                 p_sm.removeAll();
@@ -2541,17 +2710,12 @@ public class ModificarOrden extends javax.swing.JPanel {
                 p_sm.updateUI();
                 try
                 {
-                    //if(usr.getConsultaFormatos()==true)
-                    //{
-                        SmLogistics r1=new SmLogistics(t_orden.getText(), usr, estado, this.sessionPrograma, ruta);
-                        p_sm.add(r1);
-                        r1.setVisible(true);
-                        p_sm.repaint();
-                        p_sm.updateUI();
-                        r1=null;
-                    //}
-                    //else
-                        //JOptionPane.showMessageDialog(null, "¡Acceso denegado!");
+                    SosColision r1=new SosColision(t_orden.getText(), usr, estado, this.sessionPrograma, ruta);
+                    p_sm.add(r1);
+                    r1.setVisible(true);
+                    p_sm.repaint();
+                    p_sm.updateUI();
+                    r1=null;
                 }catch(Exception e)
                 {
                     System.out.println(e);
@@ -2615,7 +2779,7 @@ public class ModificarOrden extends javax.swing.JPanel {
     private void b_busca_ordenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_busca_ordenActionPerformed
         h=new Herramientas(usr, menu);
         h.session(sessionPrograma);
-        buscaOrden obj = new buscaOrden(new javax.swing.JFrame(), true, this.usr,0);
+        buscaOrden obj = new buscaOrden(new javax.swing.JFrame(), true, this.usr,0, configuracion);
         obj.t_busca.requestFocus();
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
@@ -2918,9 +3082,9 @@ public class ModificarOrden extends javax.swing.JPanel {
 
     private void t_tipoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_tipoFocusLost
         // TODO add your handling code here:
-        if(t_tipo.getText().length()>10)
+        if(t_tipo.getText().length()>20)
         {
-            t_tipo.setText(t_tipo.getText().substring(0, 10));
+            t_tipo.setText(t_tipo.getText().substring(0, 20));
         }
         buscaTipo();
     }//GEN-LAST:event_t_tipoFocusLost
@@ -2928,7 +3092,7 @@ public class ModificarOrden extends javax.swing.JPanel {
     private void t_tipoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_tipoKeyTyped
         // TODO add your handling code here:
         char car = evt.getKeyChar();
-        if(t_tipo.getText().length()>=10)
+        if(t_tipo.getText().length()>=20)
         evt.consume();
     }//GEN-LAST:event_t_tipoKeyTyped
 
@@ -2970,7 +3134,7 @@ public class ModificarOrden extends javax.swing.JPanel {
     private void b_marcaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_marcaActionPerformed
         h=new Herramientas(usr, 0);
         h.session(sessionPrograma);
-        buscaMarca obj = new buscaMarca(new javax.swing.JFrame(), true, this.sessionPrograma, this.usr);
+        buscaMarca obj = new buscaMarca(new javax.swing.JFrame(), true, this.sessionPrograma, this.usr, false);
         obj.t_busca.requestFocus();
         obj.formatoTabla();
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
@@ -3026,7 +3190,7 @@ public class ModificarOrden extends javax.swing.JPanel {
     }//GEN-LAST:event_t_economicoActionPerformed
 
     private void t_economicoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_economicoKeyTyped
-        if(t_economico.getText().length()>=6)
+        if(t_economico.getText().length()>=15)
             evt.consume();
     }//GEN-LAST:event_t_economicoKeyTyped
 
@@ -3038,7 +3202,26 @@ public class ModificarOrden extends javax.swing.JPanel {
     }//GEN-LAST:event_c_estatusActionPerformed
 
     private void b_fecha_clienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_fecha_clienteActionPerformed
-        calendario cal =new calendario(new javax.swing.JFrame(), true);
+        calendario cal =new calendario(new javax.swing.JFrame(), true, true);
+        if(t_fecha_cliente.getText().compareToIgnoreCase("DD-MM-AAAA HH:MM:SS")!=0)
+        {
+            String [] cadena = t_fecha_cliente.getText().split(" ");
+            String [] fecha = cadena[0].split("-");
+            String [] hora = cadena[1].split(":");
+
+            Calendar calendario1 = Calendar.getInstance();
+            calendario1.set(Calendar.MONTH, Integer.parseInt(fecha[1])-1);
+            calendario1.set(Calendar.YEAR, Integer.parseInt(fecha[2]));
+            calendario1.set(Calendar.DAY_OF_MONTH, Integer.parseInt(fecha[0]));
+            calendario1.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hora[0]));
+            calendario1.set(Calendar.MINUTE, Integer.parseInt(hora[1]));
+            calendario1.set(Calendar.SECOND, Integer.parseInt(hora[2]));
+            cal.p_fecha.setCurrent(calendario1);
+            cal.p_fecha.setSelectedDate(calendario1);
+            cal.c_hora.setSelectedIndex(Integer.parseInt(hora[0]));
+            cal.c_minuto.setSelectedIndex(Integer.parseInt(hora[1]));
+            cal.c_segundo.setSelectedIndex(Integer.parseInt(hora[2]));
+        }
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         cal.setLocation((d.width/2)-(cal.getWidth()/2), (d.height/2)-(cal.getHeight()/2));
         cal.setVisible(true);
@@ -3048,21 +3231,42 @@ public class ModificarOrden extends javax.swing.JPanel {
             String dia=Integer.toString(miCalendario.get(Calendar.DATE));;
             String mes = Integer.toString(miCalendario.get(Calendar.MONTH)+1);
             String anio = Integer.toString(miCalendario.get(Calendar.YEAR));
-            t_fecha_cliente.setText(dia+"-"+mes+"-"+anio);
+            String hora = Integer.toString(miCalendario.get(Calendar.HOUR_OF_DAY));
+            String minuto = Integer.toString(miCalendario.get(Calendar.MINUTE));
+            String segundo = Integer.toString(miCalendario.get(Calendar.SECOND));
+            t_fecha_cliente.setText(dia+"-"+mes+"-"+anio+" "+hora+":"+minuto+":"+segundo);
             if(guardaFecha()==true)
             {
                 JOptionPane.showMessageDialog(null, "¡Se envió notificación al cliente!");
             }
         }
-        else
-            t_fecha_cliente.setText("DD-MM-AAAA");
         b_guardar.requestFocus();
     }//GEN-LAST:event_b_fecha_clienteActionPerformed
 
     private void b_fecha_internaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_fecha_internaActionPerformed
         h=new Herramientas(usr, 0);
         h.session(sessionPrograma);
-        calendario cal =new calendario(new javax.swing.JFrame(), true);
+        Calendar actual=Calendar.getInstance();
+        calendario cal =new calendario(new javax.swing.JFrame(), true, true);
+        if(t_fecha_interna.getText().compareToIgnoreCase("DD-MM-AAAA HH:MM:SS")!=0)
+        {
+            String [] cadena = t_fecha_interna.getText().split(" ");
+            String [] fecha = cadena[0].split("-");
+            String [] hora = cadena[1].split(":");
+
+            Calendar calendario1 = Calendar.getInstance();
+            calendario1.set(Calendar.MONTH, Integer.parseInt(fecha[1])-1);
+            calendario1.set(Calendar.YEAR, Integer.parseInt(fecha[2]));
+            calendario1.set(Calendar.DAY_OF_MONTH, Integer.parseInt(fecha[0]));
+            calendario1.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hora[0]));
+            calendario1.set(Calendar.MINUTE, Integer.parseInt(hora[1]));
+            calendario1.set(Calendar.SECOND, Integer.parseInt(hora[2]));
+            cal.p_fecha.setCurrent(calendario1);
+            cal.p_fecha.setSelectedDate(calendario1);
+            cal.c_hora.setSelectedIndex(Integer.parseInt(hora[0]));
+            cal.c_minuto.setSelectedIndex(Integer.parseInt(hora[1]));
+            cal.c_segundo.setSelectedIndex(Integer.parseInt(hora[2]));
+        }
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         cal.setLocation((d.width/2)-(cal.getWidth()/2), (d.height/2)-(cal.getHeight()/2));
         cal.setVisible(true);
@@ -3072,10 +3276,11 @@ public class ModificarOrden extends javax.swing.JPanel {
             String dia=Integer.toString(miCalendario.get(Calendar.DATE));;
             String mes = Integer.toString(miCalendario.get(Calendar.MONTH)+1);
             String anio = Integer.toString(miCalendario.get(Calendar.YEAR));
-            t_fecha_interna.setText(dia+"-"+mes+"-"+anio);
+            String hora = Integer.toString(miCalendario.get(Calendar.HOUR_OF_DAY));
+            String minuto = Integer.toString(miCalendario.get(Calendar.MINUTE));
+            String segundo = Integer.toString(miCalendario.get(Calendar.SECOND));
+            t_fecha_interna.setText(dia+"-"+mes+"-"+anio+" "+hora+":"+minuto+":"+segundo);
         }
-        else
-        t_fecha_interna.setText("DD-MM-AAAA");
         b_fecha_cliente.requestFocus();
     }//GEN-LAST:event_b_fecha_internaActionPerformed
 
@@ -3149,9 +3354,9 @@ public class ModificarOrden extends javax.swing.JPanel {
 
     private void t_economicoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_economicoFocusLost
         // TODO add your handling code here:
-        if(t_economico.getText().length()>6)
+        if(t_economico.getText().length()>15)
         {
-            t_economico.setText(t_economico.getText().substring(0, 6));
+            t_economico.setText(t_economico.getText().substring(0, 15));
         }
     }//GEN-LAST:event_t_economicoFocusLost
 
@@ -3430,6 +3635,33 @@ public class ModificarOrden extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_b_buscarhActionPerformed
 
+    private void cb_garantiaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_garantiaActionPerformed
+        // TODO add your handling code here:
+        if(cb_garantia.isSelected())
+        {
+            buscaOrden obj = new buscaOrden(new javax.swing.JFrame(), true, this.usr,0, configuracion);
+            obj.t_busca.requestFocus();
+            Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+            obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
+            obj.setVisible(true);
+            Orden orden_act=obj.getReturnStatus();
+            if (orden_act!=null)
+            {
+                t_garantia.setText(""+orden_act.getIdOrden());
+            }
+            else
+            {
+                cb_garantia.setSelected(false);
+                t_garantia.setText("");
+            }
+        }
+        else
+        {
+            t_garantia.setText("");
+        }
+        b_guardar.requestFocus();
+    }//GEN-LAST:event_cb_garantiaActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton b_agente;
@@ -3441,7 +3673,6 @@ public class ModificarOrden extends javax.swing.JPanel {
     private javax.swing.JButton b_cancelar;
     private javax.swing.JButton b_fecha_cliente;
     private javax.swing.JButton b_fecha_interna;
-    private javax.swing.JButton b_fecha_siniestro;
     private javax.swing.JButton b_guardar;
     private javax.swing.JButton b_guardar_cliente;
     private javax.swing.JButton b_marca;
@@ -3451,6 +3682,7 @@ public class ModificarOrden extends javax.swing.JPanel {
     private javax.swing.JComboBox c_estatus;
     private javax.swing.JComboBox c_siniestro;
     private javax.swing.JCheckBox cb_asegurado;
+    private javax.swing.JCheckBox cb_garantia;
     private javax.swing.JCheckBox cb_particular;
     private javax.swing.JCheckBox cb_tercero;
     private javax.swing.JCheckBox cb_tercero_asegurado;
@@ -3465,6 +3697,7 @@ public class ModificarOrden extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
@@ -3489,6 +3722,7 @@ public class ModificarOrden extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JLabel l_fecha_cliente;
     private javax.swing.JLabel l_id_cliente;
     private javax.swing.JLabel l_nombre_aseguradora;
     private javax.swing.JLabel l_nombre_marca;
@@ -3500,6 +3734,7 @@ public class ModificarOrden extends javax.swing.JPanel {
     private javax.swing.JScrollPane p_conciliacion;
     private javax.swing.JScrollPane p_destajo;
     private javax.swing.JPanel p_documentos;
+    private javax.swing.JScrollPane p_estadistico;
     private javax.swing.JPanel p_formatos;
     private javax.swing.JPanel p_foto;
     private javax.swing.JPanel p_galeria;
@@ -3530,6 +3765,7 @@ public class ModificarOrden extends javax.swing.JPanel {
     private javax.swing.JTextField t_fecha_estatus;
     private javax.swing.JTextField t_fecha_interna;
     private javax.swing.JTextField t_fecha_siniestro;
+    private javax.swing.JTextField t_garantia;
     private javax.swing.JTextField t_inciso;
     private javax.swing.JTextField t_km;
     private javax.swing.JTextField t_marca;
@@ -3558,55 +3794,39 @@ public class ModificarOrden extends javax.swing.JPanel {
         {
             session.beginTransaction().begin();
             registro = (Orden)session.get(Orden.class, Integer.parseInt(t_orden.getText()));
-            if(t_fecha_cliente.getText().compareTo("DD-MM-AAAA")!=0)
+            if(t_fecha_cliente.getText().compareTo("DD-MM-AAAA HH:MM:SS")!=0)
             {
-                String [] campos = t_fecha_cliente.getText().split("-");
+                String [] cadena = t_fecha_cliente.getText().split(" ");
+                String [] fecha = cadena[0].split("-");
+                String [] hora = cadena[1].split(":");
 
                 Calendar calendario2 = Calendar.getInstance();
-                calendario2.set(Calendar.MONTH, Integer.parseInt(campos[1])-1);
-                calendario2.set(Calendar.YEAR, Integer.parseInt(campos[2]));
-                calendario2.set(Calendar.DAY_OF_MONTH, Integer.parseInt(campos[0]));
-
-                registro.setFechaCliente(calendario2.getTime());
+                calendario2.set(Calendar.MONTH, Integer.parseInt(fecha[1])-1);
+                calendario2.set(Calendar.YEAR, Integer.parseInt(fecha[2]));
+                calendario2.set(Calendar.DAY_OF_MONTH, Integer.parseInt(fecha[0]));
+                calendario2.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hora[0]));
+                calendario2.set(Calendar.MINUTE, Integer.parseInt(hora[1]));
+                calendario2.set(Calendar.SECOND, Integer.parseInt(hora[2]));
+                
+                if(registro.getFechaCliente()==null || registro.getFechaCliente().compareTo(calendario2.getTime())!=0)
+                {
+                    registro.setFechaCliente(calendario2.getTime());
+                    //if(fecha_taller!=null && fecha_taller.compareTo(calendario2.getTime())!=0)
+                    //{
+                        HistorialFecha his=new HistorialFecha();
+                        his.setFecha(calendario2.getTime());
+                        his.setAtributo("cli");
+                        his.setFechaModificacion(new Date());
+                        his.setOrden(registro);
+                        his.setUsuario(usr);
+                        session.save(his);
+                    //}
+                }
             }
             else
                 registro.setFechaCliente(null);
             session.update(registro);
-            //*********Enviar la notificación***********
-            orden_act=(Orden)session.get(Orden.class, orden_act.getIdOrden());
-            ArrayList<Acceso> accesos=new ArrayList();
-            Acceso [] aux1 = (Acceso[])orden_act.getClientes().getAccesos().toArray(new Acceso[0]);
-            accesos.addAll(Arrays.asList(aux1));
-            aux1 = (Acceso[])orden_act.getCompania().getAccesos().toArray(new Acceso[0]);
-            accesos.addAll(Arrays.asList(aux1));
-            aux1 = (Acceso[])orden_act.getAgente().getAccesos().toArray(new Acceso[0]);
-            accesos.addAll(Arrays.asList(aux1));
-            
-            String notificaciones="{\"NOTIFICACIONES\":[";
-            for(int a=0; a<accesos.size(); a++)
-            {
-                Notificacion nueva=new Notificacion();
-                nueva.setMensaje("OT:"+orden_act.getIdOrden()+" Fecha Promesa");
-                nueva.setExtra("");
-                nueva.setIntentos(0);
-                nueva.setVisto(false);
-                nueva.setAcceso(accesos.get(a));
-                Integer id = (Integer)session.save(nueva);
-                nueva=(Notificacion)session.get(Notificacion.class, id);
-                nueva.setExtra("{\"VENTANA\":\"Solicitudes_des\",\"ID_ORDEN\":\""+orden_act.getIdOrden()+"\",\"ID_NOTIFICACION\":\""+id+"\",\"ID_USUARIO\":\""+accesos.get(a).getIdAcceso()+"\"}");
-                session.update(nueva);
-                notificaciones+="{\"ID\":\""+id+"\"}";
-                if(a+1 < accesos.size())
-                    notificaciones+=",";
-            }
-            notificaciones+="]}";
             session.beginTransaction().commit();
-            
-            PeticionPost service=new PeticionPost("http://tracto.ddns.net:8085/integral/service/api.php");
-            service.add("METODO", "NOTIFICACION.MENSAJE");
-            service.add("NOTIFICACIONES", notificaciones);
-            System.out.println(service.getRespueta());
-            //******************************************
             ID=true;
         }catch (Exception he) 
         {
@@ -3626,6 +3846,7 @@ public class ModificarOrden extends javax.swing.JPanel {
     
     private boolean guardarOrden()
     {
+        h=new Herramientas(usr, menu);
         Session session = HibernateUtil.getSessionFactory().openSession();
         boolean ID = false;
         try 
@@ -3714,30 +3935,67 @@ public class ModificarOrden extends javax.swing.JPanel {
                 registro.setClientes(cliente);
             }
 
-            if(t_fecha_interna.getText().compareTo("DD-MM-AAAA")!=0)
+            if(t_fecha_interna.getText().compareTo("DD-MM-AAAA HH:MM:SS")!=0)
             {
-                String [] campos = t_fecha_interna.getText().split("-");
+                String [] cadena = t_fecha_interna.getText().split(" ");
+                String [] fecha = cadena[0].split("-");
+                String [] hora = cadena[1].split(":");
 
                 Calendar calendario1 = Calendar.getInstance();
-                calendario1.set(Calendar.MONTH, Integer.parseInt(campos[1])-1);
-                calendario1.set(Calendar.YEAR, Integer.parseInt(campos[2]));
-                calendario1.set(Calendar.DAY_OF_MONTH, Integer.parseInt(campos[0]));
+                calendario1.set(Calendar.MONTH, Integer.parseInt(fecha[1])-1);
+                calendario1.set(Calendar.YEAR, Integer.parseInt(fecha[2]));
+                calendario1.set(Calendar.DAY_OF_MONTH, Integer.parseInt(fecha[0]));
+                calendario1.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hora[0]));
+                calendario1.set(Calendar.MINUTE, Integer.parseInt(hora[1]));
+                calendario1.set(Calendar.SECOND, Integer.parseInt(hora[2]));
 
-                registro.setFechaTaller(calendario1.getTime());
+                if(registro.getFechaTaller()==null || registro.getFechaTaller().compareTo(calendario1.getTime())!=0)
+                {
+                    registro.setFechaTaller(calendario1.getTime());
+                    if(fecha_taller!=null && fecha_taller.compareTo(calendario1.getTime())!=0)
+                    {
+                        HistorialFecha his=new HistorialFecha();
+                        his.setFecha(calendario1.getTime());
+                        his.setAtributo("tal");
+                        his.setFechaModificacion(new Date());
+                        his.setOrden(registro);
+                        his.setUsuario(usr);
+                        session.update(registro);
+                        session.saveOrUpdate(his);
+                    }
+                }
             }
             else
                 registro.setFechaTaller(null);
 
-            if(t_fecha_cliente.getText().compareTo("DD-MM-AAAA")!=0)
+            if(t_fecha_cliente.getText().compareTo("DD-MM-AAAA HH:MM:SS")!=0)
             {
-                String [] campos = t_fecha_cliente.getText().split("-");
+                String [] cadena = t_fecha_cliente.getText().split(" ");
+                String [] fecha = cadena[0].split("-");
+                String [] hora = cadena[1].split(":");
 
                 Calendar calendario2 = Calendar.getInstance();
-                calendario2.set(Calendar.MONTH, Integer.parseInt(campos[1])-1);
-                calendario2.set(Calendar.YEAR, Integer.parseInt(campos[2]));
-                calendario2.set(Calendar.DAY_OF_MONTH, Integer.parseInt(campos[0]));
-
-                registro.setFechaCliente(calendario2.getTime());
+                calendario2.set(Calendar.MONTH, Integer.parseInt(fecha[1])-1);
+                calendario2.set(Calendar.YEAR, Integer.parseInt(fecha[2]));
+                calendario2.set(Calendar.DAY_OF_MONTH, Integer.parseInt(fecha[0]));
+                calendario2.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hora[0]));
+                calendario2.set(Calendar.MINUTE, Integer.parseInt(hora[1]));
+                calendario2.set(Calendar.SECOND, Integer.parseInt(hora[2]));
+                
+                if(registro.getFechaCliente()==null || registro.getFechaCliente().compareTo(calendario2.getTime())!=0)
+                {
+                    registro.setFechaCliente(calendario2.getTime());
+                    if(fecha_taller!=null && fecha_taller.compareTo(calendario2.getTime())!=0)
+                    {
+                        HistorialFecha his=new HistorialFecha();
+                        his.setFecha(calendario2.getTime());
+                        his.setAtributo("cli");
+                        his.setFechaModificacion(new Date());
+                        his.setOrden(registro);
+                        his.setUsuario(usr);
+                        session.save(his);
+                    }
+                }
             }
             else
                 registro.setFechaCliente(null);
@@ -3793,9 +4051,7 @@ public class ModificarOrden extends javax.swing.JPanel {
                 registro.setEmpleadoByRTecnico(emp);
             }
             else
-            {
                 registro.setEmpleadoByRTecnico(null);
-            }
             
             if(id_agente.compareTo("")!=0)
             {
@@ -3804,9 +4060,7 @@ public class ModificarOrden extends javax.swing.JPanel {
                 registro.setAgente(age);
             }
             else
-            {
                 registro.setAgente(null);
-            }
             
             if(id_ajustador.compareTo("")!=0)
             {
@@ -3815,9 +4069,9 @@ public class ModificarOrden extends javax.swing.JPanel {
                 registro.setAjustador(aju);
             }
             else
-            {
                 registro.setAjustador(null);
-            }
+            registro.setGarantia(t_garantia.getText());
+            
             //registro.setCiclo(new Ciclo(Integer.parseInt(periodo)));
             //************Guardamos el usuario que modifica*****************
             registro.setUsuarioByIdModificado(usr);
@@ -3832,12 +4086,43 @@ public class ModificarOrden extends javax.swing.JPanel {
                         Foto img=new Foto(registro, ""+registro.getIdOrden()+".jpg", fecha_orden);
                         registro.addFoto(img);
                     }
+                    
                     if(c_siniestro.getSelectedIndex()!=-1)
                     {
                         if(this.c_siniestro.getItemCount()>0)
                         {
-                            Reparacion re = (Reparacion)session.createCriteria(Reparacion.class).add(Restrictions.eq("nombre", this.c_siniestro.getSelectedItem().toString())).setMaxResults(1).uniqueResult();
-                            registro.setReparacion(re);
+                            String opcion=c_siniestro.getSelectedItem().toString();
+                            if(opcion.compareToIgnoreCase("EXPRESS")!=0 && opcion.compareToIgnoreCase("CHICO")!=0 && opcion.compareToIgnoreCase("MEDIANO")!=0 && opcion.compareToIgnoreCase("GRANDE")!=0)
+                            {
+                                Reparacion re = (Reparacion)session.createCriteria(Reparacion.class).add(Restrictions.eq("nombre", this.c_siniestro.getSelectedItem().toString())).setMaxResults(1).uniqueResult();
+                                registro.setReparacion(re);
+                            }
+                            else
+                            {
+                                int num_partidas=0;
+                                if(registro.getPartidasForIdOrden()!=null)
+                                    num_partidas=registro.getPartidasForIdOrden().size();
+                                if(num_partidas<=10){//EXPRESS
+                                    Reparacion re = (Reparacion)session.createCriteria(Reparacion.class).add(Restrictions.eq("nombre", "EXPRESS")).setMaxResults(1).uniqueResult();
+                                    registro.setReparacion(re);
+                                }
+                                else{
+                                    if(num_partidas<=40){//CHICO
+                                        Reparacion re = (Reparacion)session.createCriteria(Reparacion.class).add(Restrictions.eq("nombre", "CHICO")).setMaxResults(1).uniqueResult();
+                                        registro.setReparacion(re);
+                                    }
+                                    else{
+                                        if(num_partidas<=110){//MEDIANO
+                                            Reparacion re = (Reparacion)session.createCriteria(Reparacion.class).add(Restrictions.eq("nombre", "MEDIANO")).setMaxResults(1).uniqueResult();
+                                            registro.setReparacion(re);
+                                        }
+                                        else{//GRANDE
+                                            Reparacion re = (Reparacion)session.createCriteria(Reparacion.class).add(Restrictions.eq("nombre", "GRANDE")).setMaxResults(1).uniqueResult();
+                                            registro.setReparacion(re);
+                                        }
+                                    }
+                                }
+                            }
                         }
                         else
                             registro.setReparacion(null);
@@ -3849,15 +4134,15 @@ public class ModificarOrden extends javax.swing.JPanel {
                     session.getTransaction().commit();
                     int valor= orden_act.getIdOrden();
                     orden_act=null;
-                    Orden aux=(Orden)session.get(Orden.class, ID);
+                    Orden aux=(Orden)session.get(Orden.class, valor);
                     Empleado emp1=aux.getEmpleadoByRTecnico();
                     if(emp1!=null)
                     {
                         emp1=(Empleado)session.get(Empleado.class, emp1.getIdEmpleado());
                         if(emp1.getEmail()!=null)
                         {
-                            String mensaje="<p>Asignaci&oacute;n de Orden De Taller <strong>"+valor+"</strong></p><p>Saludos. </p>";
-                            enviaCorreo("Asignaci&oacute;n OT("+valor+")", mensaje, emp1.getEmail()); 
+                            String mensaje="<p>Asignaci&oacute;n de Orden De Taller <strong>"+valor+"</strong></p><p>Saludos. </p>"; 
+                            h.enviaCorreo("Asignaci&oacute;n OT("+ID+")", mensaje, emp1.getEmail()); 
                         }
                     }
                     ID=true;
@@ -3888,7 +4173,7 @@ public class ModificarOrden extends javax.swing.JPanel {
                     if(emp1.getEmail()!=null)
                     {
                         String mensaje="<p>Asignaci&oacute;n de Orden De Taller <strong>"+valor+"</strong></p><p>Saludos. </p>";
-                        enviaCorreo("Asignaci&oacute;n OT("+valor+")", mensaje, emp1.getEmail()); 
+                        h.enviaCorreo("Asignaci&oacute;n OT("+valor+")", mensaje, emp1.getEmail()); 
                     }
                 }
                 ID=true;
@@ -4088,7 +4373,7 @@ public class ModificarOrden extends javax.swing.JPanel {
                 l_nombre_marca.setText("Seleccione una marca");
     }
 
-    public void cargaEstatus()
+    public void cargaCombos()
     {
         Session session = HibernateUtil.getSessionFactory().openSession();
         try
@@ -4102,6 +4387,18 @@ public class ModificarOrden extends javax.swing.JPanel {
                 {
                     Estatus actor = (Estatus) o;
                     c_estatus.addItem(actor.getEstatusNombre());
+                }
+            }
+            
+            q = session.createQuery("from Reparacion es");
+            resultList = q.list();
+            if(resultList.size()>0)
+            {
+                this.c_siniestro.removeAllItems();
+                for (Object o : resultList)
+                {
+                    Reparacion actor = (Reparacion) o;
+                    this.c_siniestro.addItem(actor.getNombre());
                 }
             }
         }catch(Exception e)
@@ -4121,7 +4418,7 @@ public class ModificarOrden extends javax.swing.JPanel {
     }
 
 
-    public void cargaSiniestro()
+    /*public void cargaSiniestro()
     {
         Session session = HibernateUtil.getSessionFactory().openSession();
         try
@@ -4151,7 +4448,7 @@ public class ModificarOrden extends javax.swing.JPanel {
                     session.close();
                 }
         }
-    }
+    }*/
 
     public boolean consultaCliente(String nombre)
     {
@@ -4206,8 +4503,9 @@ public class ModificarOrden extends javax.swing.JPanel {
 
     private void borra_cajas()
     {
-        this.cargaSiniestro();
-        this.cargaEstatus();
+        //this.cargaSiniestro();
+        //this.cargaEstatus();
+        this.cargaCombos();
         t_aseguradora.setText("");
         t_siniestro.setText("");
         t_poliza.setText("");
@@ -4241,8 +4539,8 @@ public class ModificarOrden extends javax.swing.JPanel {
         t_demerito.setValue(null);
         t_demerito.setText("");
         c_estatus.setSelectedItem(0);
-        t_fecha_interna.setText("DD-MM-AAAA");
-        t_fecha_cliente.setText("DD-MM-AAAA");
+        t_fecha_interna.setText("DD-MM-AAAA HH:MM:SS");
+        t_fecha_cliente.setText("DD-MM-AAAA HH:MM:SS");
         cb_asegurado.setSelected(false);
         cb_tercero.setSelected(false);
         cb_tercero_asegurado.setSelected(false);
@@ -4266,6 +4564,8 @@ public class ModificarOrden extends javax.swing.JPanel {
 
         entro_foto=0;
         existe_foto="";
+        cb_garantia.setSelected(false);
+        t_garantia.setText("");
 
         l_nombre_aseguradora.setText("Seleccione una aseguradora");
 
@@ -4282,7 +4582,8 @@ public class ModificarOrden extends javax.swing.JPanel {
         //h=new Herramientas(usr, 0);
         if(t_orden.getText().compareTo("")!=0)
         {
-            cargaEstatus();
+            //cargaEstatus();
+            this.cargaCombos();
             borra_cajas();
             h= new Herramientas(usr, menu);
             h.session(sessionPrograma);
@@ -4304,7 +4605,7 @@ public class ModificarOrden extends javax.swing.JPanel {
                 DateFormat dateFormat;
                 try
                 {
-                    fecha=orden_act.getFechaSiniestro();
+                    fecha=orden_act.getFecha();
                     dateFormat = new SimpleDateFormat("dd-MM-yyyy");//YYYY-MM-DD HH:MM:SS
                     this.t_fecha_siniestro.setText(dateFormat.format(fecha));
                 }catch(Exception E){}
@@ -4335,17 +4636,23 @@ public class ModificarOrden extends javax.swing.JPanel {
                 this.t_motor.setText(orden_act.getNoMotor());
                 try
                 {
+                    fecha_taller=orden_act.getFechaTaller();
                     fecha=orden_act.getFechaTaller();
-                    dateFormat = new SimpleDateFormat("dd-MM-yyyy");//YYYY-MM-DD HH:MM:SS
+                    dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");//YYYY-MM-DD HH:MM:SS
                     this.t_fecha_interna.setText(dateFormat.format(fecha));
-                }catch(Exception E){}
+                }catch(Exception e){
+                    fecha_taller=null;
+                }
 
                 try
                 {
+                    fecha_cliente=orden_act.getFechaCliente();
                     fecha=orden_act.getFechaCliente();
-                    dateFormat = new SimpleDateFormat("dd-MM-yyyy");//YYYY-MM-DD HH:MM:SS
+                    dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");//YYYY-MM-DD HH:MM:SS
                     this.t_fecha_cliente.setText(dateFormat.format(fecha));
-                }catch(Exception E){}
+                }catch(Exception e){
+                    fecha_cliente=null;
+                }
 
                 try
                 {
@@ -4396,6 +4703,7 @@ public class ModificarOrden extends javax.swing.JPanel {
                 this.c_estado_cliente.setSelectedItem(orden_act.getClientes().getEstado());
                 this.t_telefono_cliente.setText(orden_act.getClientes().getTelefono());
                 this.t_email_cliente.setText(orden_act.getClientes().getEmail());
+                this.t_contacto_cliente.setText(orden_act.getClientes().getContacto());
 
                 String tipo_cliente=orden_act.getTipoCliente();
                 if(tipo_cliente!=null)
@@ -4428,8 +4736,7 @@ public class ModificarOrden extends javax.swing.JPanel {
                 {
                     existe_foto=foto.toString();
                     p_foto.removeAll();
-                    im=new Imagen(ruta+"ordenes/"+orden_act.getIdOrden()+"/miniatura/"+existe_foto, 81, 91, 1, 1, 83, 93 );
-                    p_foto.add(im);
+                    miHilo=new Hilo(existe_foto, ""+orden_act.getIdOrden());
                     p_foto.repaint();
                 }
                 else
@@ -4451,6 +4758,11 @@ public class ModificarOrden extends javax.swing.JPanel {
                 {
                     this.l_nombre_modificado.setText(orden_act.getUsuarioByIdModificado().getEmpleado().getNombre());
                 }catch(Exception e){}
+                
+                if(orden_act.getGarantia() != null && orden_act.getGarantia().compareTo("")!=0 ){
+                    t_garantia.setText(orden_act.getGarantia());
+                    cb_garantia.setSelected(true);
+                }
                 //**************************************************************
 
                 //******consultamos los permosos
@@ -4463,11 +4775,13 @@ public class ModificarOrden extends javax.swing.JPanel {
                     {
                         this.t_fecha_cliente.setVisible(false);
                         this.b_fecha_cliente.setVisible(false);
+                        this.l_fecha_cliente.setVisible(false);
                     }
                     else
                     {
                         this.t_fecha_cliente.setVisible(true);
                         this.b_fecha_cliente.setVisible(true);
+                        this.l_fecha_cliente.setVisible(true);
                     }
                     if(resp.compareTo("")==0 || resp.compareTo("*bloqueada ok*")==0)
                     {
@@ -4553,7 +4867,6 @@ public class ModificarOrden extends javax.swing.JPanel {
         this.t_poliza.setEditable(poliza);
         this.t_reporte.setEditable(reporte);
         this.t_inciso.setEditable(inciso);
-        this.b_fecha_siniestro.setEnabled(fecha_siniestro);
         this.t_nombre_cliente.setEditable(nombre_cliente);
         this.t_direccion_cliente.setEditable(direccion_cleinte);
         this.t_colonia_cliente.setEditable(clonia_cliente);
@@ -4650,102 +4963,46 @@ public class ModificarOrden extends javax.swing.JPanel {
             }
         }
     }
-
     
-    public void enviaCorreo(String asunto, String mensaje, String from)
+    public class Hilo implements Runnable
     {
-        String smtp="";
-        boolean ttl=false;
-        String puerto="";
-        String envia="";
-        String clave="";
-        //String from="";
-        String cc="";
-        String texto = null;
-        
-        try
+        Thread t;
+        String foto, ot;
+        public Hilo(String foto, String ot) 
         {
-            FileReader f = new FileReader("correo.ml");
-            BufferedReader b = new BufferedReader(f);
-            int renglon=0;
-            while((texto = b.readLine())!=null)
-            {
-                switch(renglon)
-                {
-                    case 1://smtp
-                        smtp=texto.trim();
-                        break;
-                    case 2://ttl
-                        if(texto.compareToIgnoreCase("true")==0)
-                            ttl=true;
-                        else
-                            ttl=false;
-                        break;
-                    case 3://puerto
-                        puerto=texto.trim();
-                        break;
-                    case 4://cuenta
-                        envia=texto.trim();
-                        break;
-                    case 5://contraseña
-                        clave=texto.trim();
-                        break;
-                }
-                renglon+=1;
-            }
-            b.close();
-        }catch(Exception e){e.printStackTrace();}
-        
-        try
-        {
-            // se obtiene el objeto Session.
-            Properties props = new Properties();
-            props.put("mail.smtp.host", smtp);
-            props.setProperty("mail.smtp.starttls.enable", ""+ttl);
-            props.setProperty("mail.smtp.port", puerto);
-            props.setProperty("mail.smtp.user", envia);
-            props.setProperty("mail.smtp.auth", "true");
-
-            javax.mail.Session session = javax.mail.Session.getDefaultInstance(props, null);
-            // session.setDebug(true);
-
-            // Se compone la parte del texto
-            BodyPart texto_mensaje = new MimeBodyPart();
-            texto_mensaje.setContent(mensaje, "text/html");
-
-            // Una MultiParte para agrupar texto e imagen.
-            MimeMultipart multiParte = new MimeMultipart();
-            multiParte.addBodyPart(texto_mensaje);
-
-            // Se compone el correo, dando to, from, subject y el contenido.
-            MimeMessage message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(envia));
-
-            String [] direcciones=from.split(";");
-            for(int x=0; x<direcciones.length; x++)
-            {
-                if(direcciones[x].compareTo("")!=0)
-                    message.addRecipient(Message.RecipientType.TO, new InternetAddress(direcciones[x].replace(" ","")));
-            }
-
-            String [] dirCC=cc.split(";");
-            for(int y=0; y<dirCC.length; y++)
-            {
-                if(dirCC[y].compareTo("")!=0)
-                    message.addRecipient(Message.RecipientType.CC, new InternetAddress(dirCC[y].replace(" ","")));
-            }
-
-            message.setSubject(asunto);
-            message.setContent(multiParte);
-
-            Transport t = session.getTransport("smtp");
-            t.connect(envia, clave);
-            t.sendMessage(message, message.getAllRecipients());
-            t.close();
+            this.foto=foto;
+            this.ot=ot;
+            t=new Thread(this,"Foto");
+            t.start();
         }
-        catch (Exception e)
-        {
-            JOptionPane.showMessageDialog(null, "¡No se pudo enviar el correo error de red!"); 
+        @Override
+        public void run() {
+            String temporal="";
+            p_foto.removeAll();
+            Ftp miFtp=new Ftp();
+            boolean respuesta=true;
+            respuesta=miFtp.conectar(ruta, "compras", "04650077", 3310);
+            if(respuesta==true)
+            {
+                System.out.println("Actual: "+miFtp.DirectorioActual());
+                if(miFtp.cambiarDirectorio("/ordenes/"+ot+"/miniatura")==true)
+                {
+                    System.out.println("La foto"+foto);
+                    temporal=miFtp.descargaTemporal(foto);
+                    miFtp.desconectar();
+                }
+                else{
+                    System.out.println("Error al cambiar de directorio FTP [/ordenes/"+orden_act.getIdOrden()+"/miniatura]");
+                }
+            }
+            else{
+                System.out.println("Error al conectar FTP"+respuesta);
+            }
+
+            im=new Imagen(temporal, 81, 91, 1, 1, 83, 93 );
+            p_foto.add(im);
+            p_foto.repaint();
+            t.interrupt();
         }
     }
 }

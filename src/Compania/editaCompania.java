@@ -9,6 +9,7 @@ package Compania;
 import Hibernate.Util.HibernateUtil;
 import Hibernate.entidades.Compania;
 import Hibernate.entidades.Documentos;
+import Hibernate.entidades.UsoCfdi;
 import Hibernate.entidades.Usuario;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -28,6 +29,8 @@ import org.hibernate.Session;
 import Integral.ExtensionFileFilter;
 import Integral.Herramientas;
 import Integral.Imagen;
+import org.hibernate.criterion.Restrictions;
+import sat.buscaUsoCfdi;
 
 /**
  *
@@ -241,6 +244,9 @@ public class editaCompania extends javax.swing.JPanel {
         jPanel4 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         t_comentarios = new javax.swing.JTextArea();
+        jButton1 = new javax.swing.JButton();
+        t_descripcion_cfdi = new javax.swing.JTextField();
+        t_id_cfdi = new javax.swing.JTextField();
         b_cancelar = new javax.swing.JButton();
         b_guardar = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
@@ -738,20 +744,46 @@ public class editaCompania extends javax.swing.JPanel {
         });
         jScrollPane2.setViewportView(t_comentarios);
 
+        jButton1.setText("C");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        t_descripcion_cfdi.setBackground(new java.awt.Color(204, 255, 255));
+        t_descripcion_cfdi.setEnabled(false);
+
+        t_id_cfdi.setBackground(new java.awt.Color(204, 255, 255));
+        t_id_cfdi.setEnabled(false);
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+            .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 412, Short.MAX_VALUE)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jButton1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(t_id_cfdi, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(t_descripcion_cfdi)))
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 30, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(t_id_cfdi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(t_descripcion_cfdi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButton1))
+                .addGap(0, 13, Short.MAX_VALUE))
         );
 
         b_cancelar.setBackground(new java.awt.Color(2, 135, 242));
@@ -939,7 +971,7 @@ public class editaCompania extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(p_foto, javax.swing.GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE))))
+                            .addComponent(p_foto, javax.swing.GroupLayout.DEFAULT_SIZE, 159, Short.MAX_VALUE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -1045,6 +1077,12 @@ public class editaCompania extends javax.swing.JPanel {
                        registro.setComentarios(t_comentarios.getText());
                    else
                        registro.setComentarios(null);
+                   
+                   if(t_id_cfdi.getText().compareTo("")!=0)
+                   {
+                        UsoCfdi uso=(UsoCfdi) session.createCriteria(UsoCfdi.class).add(Restrictions.eq("idUsoCfdi", t_id_cfdi.getText())).setMaxResults(1).uniqueResult();
+                        registro.setUsoCfdi(uso);
+                   }
                    doc=null;
                    if(entro_foto==1)
                    {
@@ -1423,6 +1461,28 @@ public class editaCompania extends javax.swing.JPanel {
             evt.consume();
     }//GEN-LAST:event_t_socialKeyTyped
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        buscaUsoCfdi obj = new buscaUsoCfdi(new javax.swing.JFrame(), true, this.sessionPrograma, this.usr);
+        obj.t_busca.requestFocus();
+        obj.formatoTabla();
+        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+        obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
+        obj.setVisible(true);
+
+        UsoCfdi actor=obj.getReturnStatus();
+        if(actor!=null)
+        {
+            t_id_cfdi.setText(actor.getIdUsoCfdi());
+            t_descripcion_cfdi.setText(actor.getDescripcion());
+        }
+        else
+        {
+            t_id_cfdi.setText("");
+            t_descripcion_cfdi.setText("");
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton b_banco;
@@ -1435,6 +1495,7 @@ public class editaCompania extends javax.swing.JPanel {
     private javax.swing.JComboBox c_pago;
     private javax.swing.JComboBox c_programa;
     private javax.swing.JLabel i_colonia;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
@@ -1469,11 +1530,13 @@ public class editaCompania extends javax.swing.JPanel {
     private javax.swing.JTextArea t_comentarios;
     public javax.swing.JTextField t_compania;
     private javax.swing.JTextField t_cp;
+    private javax.swing.JTextField t_descripcion_cfdi;
     private javax.swing.JTextField t_direccion;
     private javax.swing.JTable t_documentos;
     private javax.swing.JTextField t_ejecutivo;
     private javax.swing.JTextField t_email;
     private javax.swing.JTextField t_fax;
+    private javax.swing.JTextField t_id_cfdi;
     private javax.swing.JTextField t_importe_hora;
     private javax.swing.JTextField t_importe_maximo;
     private javax.swing.JTextField t_nombre;
@@ -1508,6 +1571,8 @@ public class editaCompania extends javax.swing.JPanel {
         this.t_ejecutivo.setText(ejecutivo);
         this.t_documentos.removeAll();
         this.t_comentarios.setText(comentario);
+        this.t_id_cfdi.setText(comentario);
+        this.t_descripcion_cfdi.setText(comentario);
     }
     
     public void estado(boolean nombre, boolean direccion, boolean colonia, boolean poblacion, boolean telefono, boolean fax, boolean cp, boolean email, boolean estado, boolean representante1, boolean representante2, boolean puesto1, boolean puesto2, boolean hora, boolean maximo, boolean plazo, boolean ejecutivo, boolean pago, boolean programa, boolean comentario, boolean documento, boolean mas, boolean menos, boolean cancelar, boolean guardar)
@@ -1535,6 +1600,8 @@ public class editaCompania extends javax.swing.JPanel {
         this.b_menos.setEnabled(menos);
         this.t_documentos.setEnabled(documento);
         this.t_comentarios.setEnabled(comentario);
+        this.t_id_cfdi.setEnabled(comentario);
+        this.t_descripcion_cfdi.setEnabled(comentario);
         this.b_cancelar.setEnabled(cancelar);
         this.b_guardar.setEnabled(guardar);
         entro_foto=0;
@@ -1611,6 +1678,17 @@ public class editaCompania extends javax.swing.JPanel {
                 t_plazo.setText(""+registro.getPlazo());
             else
                 t_plazo.setText("");
+            
+            if(registro.getUsoCfdi()!=null)
+            {
+                t_id_cfdi.setText(registro.getUsoCfdi().getIdUsoCfdi());
+                t_descripcion_cfdi.setText(registro.getUsoCfdi().getDescripcion());
+            }
+            else
+            {
+                t_id_cfdi.setText("");
+                t_descripcion_cfdi.setText("");
+            }
             c_programa.setSelectedItem(registro.getProgramaReporte());
             t_ejecutivo.setText(registro.getGrupoEjecutivo());
             t_comentarios.setText(registro.getComentarios());            

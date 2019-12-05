@@ -11,7 +11,10 @@ import Hibernate.entidades.Empleado;
 import Hibernate.entidades.Orden;
 import Hibernate.entidades.Usuario;
 import Empleados.buscaEmpleado;
+import Hibernate.entidades.Acceso;
 import Hibernate.entidades.Correo;
+import Hibernate.entidades.HistorialFecha;
+import Hibernate.entidades.Notificacion;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.sql.Connection;
@@ -26,6 +29,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import Integral.Herramientas;
+import Integral.PeticionPost;
 import Integral.calendario;
 import java.io.BufferedReader;
 import java.io.File;
@@ -34,6 +38,8 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Properties;
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
@@ -99,6 +105,9 @@ public class Responsables extends javax.swing.JPanel {
         jLabel6 = new javax.swing.JLabel();
         t_meta_reparacion = new javax.swing.JTextField();
         b_meta_reparacion = new javax.swing.JButton();
+        jLabel9 = new javax.swing.JLabel();
+        t_meta_cliente = new javax.swing.JTextField();
+        b_meta_cliente = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
@@ -127,22 +136,14 @@ public class Responsables extends javax.swing.JPanel {
         t_cierre_levantamiento = new javax.swing.JTextField();
         t_inicio_cotizar = new javax.swing.JTextField();
         l_autorizo_cotizar = new javax.swing.JLabel();
-        jLabel19 = new javax.swing.JLabel();
         t_cotizar = new javax.swing.JTextField();
         b_buscar_cotizar = new javax.swing.JButton();
         b_borrar_cotizar = new javax.swing.JButton();
         l_cotizar = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
-        jLabel20 = new javax.swing.JLabel();
         t_cierre_cotizar = new javax.swing.JTextField();
         jLabel21 = new javax.swing.JLabel();
-        cb_autoriza_cliente = new javax.swing.JCheckBox();
-        t_inicio_autoriza_cliente = new javax.swing.JTextField();
-        l_autorizo_cliente = new javax.swing.JLabel();
         jLabel26 = new javax.swing.JLabel();
-        jLabel27 = new javax.swing.JLabel();
-        cb_autoriza_interna = new javax.swing.JCheckBox();
-        jLabel28 = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
         t_valuacion = new javax.swing.JTextField();
         b_buscar_valuacion = new javax.swing.JButton();
@@ -178,13 +179,11 @@ public class Responsables extends javax.swing.JPanel {
         jLabel40 = new javax.swing.JLabel();
         jLabel41 = new javax.swing.JLabel();
         t_inicio_reparacion = new javax.swing.JTextField();
-        l_autorizo_reparacion = new javax.swing.JLabel();
         jLabel42 = new javax.swing.JLabel();
         t_cierre_reparacion = new javax.swing.JTextField();
         cb_autoriza_valuacion = new javax.swing.JCheckBox();
         cb_entrega_unidad = new javax.swing.JCheckBox();
         jLabel43 = new javax.swing.JLabel();
-        jLabel44 = new javax.swing.JLabel();
         jLabel45 = new javax.swing.JLabel();
         jLabel46 = new javax.swing.JLabel();
         t_inicio_factura = new javax.swing.JTextField();
@@ -193,13 +192,18 @@ public class Responsables extends javax.swing.JPanel {
         t_factura = new javax.swing.JTextField();
         t_inicio_entrega_unidad = new javax.swing.JTextField();
         l_autorizo_entregar = new javax.swing.JLabel();
-        l_autorizar_interna = new javax.swing.JLabel();
-        t_autorizar_interna = new javax.swing.JTextField();
         jLabel48 = new javax.swing.JLabel();
         cb_cierre_unidad = new javax.swing.JCheckBox();
         jLabel49 = new javax.swing.JLabel();
         t_cierre_unidad = new javax.swing.JTextField();
         l_autorizar_cierre = new javax.swing.JLabel();
+        jLabel50 = new javax.swing.JLabel();
+        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 32767));
+        t_prefactura = new javax.swing.JTextField();
+        l_prefactura = new javax.swing.JLabel();
+        jLabel44 = new javax.swing.JLabel();
+        jLabel51 = new javax.swing.JLabel();
+        cb_cierra_reparacion = new javax.swing.JCheckBox();
 
         p_caja.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
         p_caja.add(jCheckBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 50, -1, -1));
@@ -225,11 +229,11 @@ public class Responsables extends javax.swing.JPanel {
         p_metas.setBackground(new java.awt.Color(255, 255, 255));
         p_metas.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(90, 66, 126), 1, true), "Metas", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Arial", 0, 12))); // NOI18N
 
-        t_meta_valuacion.setText("DD/MM/AAAA");
+        t_meta_valuacion.setText("DD-MM-AAAA HH:MM:SS");
         t_meta_valuacion.setToolTipText("Fecha para valuación");
         t_meta_valuacion.setEnabled(false);
 
-        jLabel2.setText("Meta Valuación:");
+        jLabel2.setText("Valuación:");
 
         b_meta_valuacion.setBackground(new java.awt.Color(2, 135, 242));
         b_meta_valuacion.setIcon(new ImageIcon("imagenes/calendario.png"));
@@ -244,9 +248,9 @@ public class Responsables extends javax.swing.JPanel {
             }
         });
 
-        jLabel4.setText("Meta Refacciones:");
+        jLabel4.setText("Refacciones:");
 
-        t_meta_refacciones.setText("DD/MM/AAAA");
+        t_meta_refacciones.setText("DD-MM-AAAA HH:MM:SS");
         t_meta_refacciones.setToolTipText("fecha para refacciones");
         t_meta_refacciones.setEnabled(false);
 
@@ -263,9 +267,9 @@ public class Responsables extends javax.swing.JPanel {
             }
         });
 
-        jLabel6.setText("Meta Reparación:");
+        jLabel6.setText("Taller:");
 
-        t_meta_reparacion.setText("DD/MM/AAAA");
+        t_meta_reparacion.setText("DD-MM-AAAA HH:MM:SS");
         t_meta_reparacion.setToolTipText("fecha para reparación");
         t_meta_reparacion.setEnabled(false);
 
@@ -282,6 +286,25 @@ public class Responsables extends javax.swing.JPanel {
             }
         });
 
+        jLabel9.setText("Cliente:");
+
+        t_meta_cliente.setText("DD-MM-AAAA HH:MM:SS");
+        t_meta_cliente.setToolTipText("fecha para reparación");
+        t_meta_cliente.setEnabled(false);
+
+        b_meta_cliente.setBackground(new java.awt.Color(2, 135, 242));
+        b_meta_cliente.setIcon(new ImageIcon("imagenes/calendario.png"));
+        b_meta_cliente.setToolTipText("Calendario");
+        b_meta_cliente.setEnabled(false);
+        b_meta_cliente.setMaximumSize(new java.awt.Dimension(32, 8));
+        b_meta_cliente.setMinimumSize(new java.awt.Dimension(32, 8));
+        b_meta_cliente.setPreferredSize(new java.awt.Dimension(32, 8));
+        b_meta_cliente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_meta_clienteActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout p_metasLayout = new javax.swing.GroupLayout(p_metas);
         p_metas.setLayout(p_metasLayout);
         p_metasLayout.setHorizontalGroup(
@@ -290,28 +313,38 @@ public class Responsables extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(t_meta_valuacion, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(t_meta_valuacion, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(b_meta_valuacion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(71, 71, 71)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(t_meta_refacciones, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(t_meta_refacciones, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(b_meta_refacciones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 136, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(t_meta_reparacion, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(t_meta_reparacion, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(b_meta_reparacion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(22, 22, 22))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel9)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(t_meta_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(b_meta_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         p_metasLayout.setVerticalGroup(
             p_metasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(p_metasLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(p_metasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(p_metasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(t_meta_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel9))
+                    .addComponent(b_meta_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(p_metasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(t_meta_reparacion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel6))
@@ -327,14 +360,14 @@ public class Responsables extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        add(p_metas, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 520, 910, 70));
+        add(p_metas, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 520, 990, 70));
 
-        jLabel1.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         jLabel1.setText("1.-  Apertura:");
         jLabel1.setMaximumSize(new java.awt.Dimension(210, 15));
         jLabel1.setMinimumSize(new java.awt.Dimension(210, 15));
         jLabel1.setPreferredSize(new java.awt.Dimension(210, 15));
-        add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 30, 70, -1));
+        add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 30, 100, -1));
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(0, 51, 255));
@@ -378,7 +411,7 @@ public class Responsables extends javax.swing.JPanel {
         l_autorizo_apertura.setPreferredSize(new java.awt.Dimension(300, 15));
         add(l_autorizo_apertura, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 30, 190, -1));
 
-        jLabel3.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         jLabel3.setText("2.-  Expediente:");
         jLabel3.setMaximumSize(new java.awt.Dimension(210, 15));
         jLabel3.setMinimumSize(new java.awt.Dimension(210, 15));
@@ -441,7 +474,7 @@ public class Responsables extends javax.swing.JPanel {
         jLabel10.setMaximumSize(new java.awt.Dimension(210, 15));
         jLabel10.setMinimumSize(new java.awt.Dimension(210, 15));
         jLabel10.setPreferredSize(new java.awt.Dimension(210, 15));
-        add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 92, 550, -1));
+        add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 88, 550, -1));
 
         t_levantamiento.setBackground(new java.awt.Color(204, 255, 255));
         t_levantamiento.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -482,7 +515,7 @@ public class Responsables extends javax.swing.JPanel {
         t_inicio_levantamiento.setMinimumSize(new java.awt.Dimension(250, 19));
         t_inicio_levantamiento.setName(""); // NOI18N
         t_inicio_levantamiento.setPreferredSize(new java.awt.Dimension(250, 19));
-        add(t_inicio_levantamiento, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 90, 163, -1));
+        add(t_inicio_levantamiento, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 84, 163, -1));
 
         l_autorizo_levantamiento.setText("<Usuario que asigno operación>");
         l_autorizo_levantamiento.setMaximumSize(new java.awt.Dimension(300, 15));
@@ -490,7 +523,7 @@ public class Responsables extends javax.swing.JPanel {
         l_autorizo_levantamiento.setPreferredSize(new java.awt.Dimension(300, 15));
         add(l_autorizo_levantamiento, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 70, 200, -1));
 
-        jLabel17.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        jLabel17.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         jLabel17.setText("3.-  Levantamiento:");
         jLabel17.setMaximumSize(new java.awt.Dimension(210, 15));
         jLabel17.setMinimumSize(new java.awt.Dimension(210, 15));
@@ -501,39 +534,32 @@ public class Responsables extends javax.swing.JPanel {
         jLabel18.setMaximumSize(new java.awt.Dimension(210, 15));
         jLabel18.setMinimumSize(new java.awt.Dimension(210, 15));
         jLabel18.setPreferredSize(new java.awt.Dimension(210, 15));
-        add(jLabel18, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 113, 550, -1));
+        add(jLabel18, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 105, 550, -1));
 
         t_cierre_levantamiento.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         t_cierre_levantamiento.setEnabled(false);
         t_cierre_levantamiento.setMinimumSize(new java.awt.Dimension(250, 19));
         t_cierre_levantamiento.setName(""); // NOI18N
         t_cierre_levantamiento.setPreferredSize(new java.awt.Dimension(250, 19));
-        add(t_cierre_levantamiento, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 110, 163, -1));
+        add(t_cierre_levantamiento, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 104, 163, -1));
 
         t_inicio_cotizar.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         t_inicio_cotizar.setEnabled(false);
         t_inicio_cotizar.setMinimumSize(new java.awt.Dimension(250, 19));
         t_inicio_cotizar.setName(""); // NOI18N
         t_inicio_cotizar.setPreferredSize(new java.awt.Dimension(250, 19));
-        add(t_inicio_cotizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 150, 163, -1));
+        add(t_inicio_cotizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 145, 163, -1));
 
         l_autorizo_cotizar.setText("<Usuario que asigno operación>");
         l_autorizo_cotizar.setMaximumSize(new java.awt.Dimension(300, 15));
         l_autorizo_cotizar.setMinimumSize(new java.awt.Dimension(300, 15));
         l_autorizo_cotizar.setPreferredSize(new java.awt.Dimension(300, 15));
-        add(l_autorizo_cotizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 132, 200, -1));
-
-        jLabel19.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel19.setText("5.- Autorizacion del Cliente:");
-        jLabel19.setMaximumSize(new java.awt.Dimension(210, 15));
-        jLabel19.setMinimumSize(new java.awt.Dimension(210, 15));
-        jLabel19.setPreferredSize(new java.awt.Dimension(210, 15));
-        add(jLabel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 193, 160, -1));
+        add(l_autorizo_cotizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 128, 200, -1));
 
         t_cotizar.setBackground(new java.awt.Color(204, 255, 255));
         t_cotizar.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         t_cotizar.setEnabled(false);
-        add(t_cotizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 132, 62, -1));
+        add(t_cotizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 130, 62, -1));
 
         b_buscar_cotizar.setBackground(new java.awt.Color(2, 135, 242));
         b_buscar_cotizar.setIcon(new ImageIcon("imagenes/buscar.png"));
@@ -546,7 +572,7 @@ public class Responsables extends javax.swing.JPanel {
                 b_buscar_cotizarActionPerformed(evt);
             }
         });
-        add(b_buscar_cotizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(242, 130, 28, 24));
+        add(b_buscar_cotizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(242, 125, 28, 24));
 
         b_borrar_cotizar.setBackground(new java.awt.Color(2, 135, 242));
         b_borrar_cotizar.setIcon(new ImageIcon("imagenes/eliminar.png"));
@@ -559,10 +585,10 @@ public class Responsables extends javax.swing.JPanel {
                 b_borrar_cotizarActionPerformed(evt);
             }
         });
-        add(b_borrar_cotizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(271, 130, 28, 24));
+        add(b_borrar_cotizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(271, 125, 28, 24));
 
         l_cotizar.setText("<Nombre del Responsable>");
-        add(l_cotizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 132, 310, -1));
+        add(l_cotizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 130, 310, -1));
 
         jLabel12.setText("Inicio ________________________________________________________________________");
         jLabel12.setMaximumSize(new java.awt.Dimension(210, 15));
@@ -570,45 +596,19 @@ public class Responsables extends javax.swing.JPanel {
         jLabel12.setPreferredSize(new java.awt.Dimension(210, 15));
         add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 150, 550, -1));
 
-        jLabel20.setText("____________________________________________________________");
-        jLabel20.setMaximumSize(new java.awt.Dimension(210, 15));
-        jLabel20.setMinimumSize(new java.awt.Dimension(210, 15));
-        jLabel20.setPreferredSize(new java.awt.Dimension(210, 15));
-        add(jLabel20, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 193, 430, -1));
-
         t_cierre_cotizar.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         t_cierre_cotizar.setEnabled(false);
         t_cierre_cotizar.setMinimumSize(new java.awt.Dimension(250, 19));
         t_cierre_cotizar.setName(""); // NOI18N
         t_cierre_cotizar.setPreferredSize(new java.awt.Dimension(250, 19));
-        add(t_cierre_cotizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 170, 163, -1));
+        add(t_cierre_cotizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 165, 163, -1));
 
-        jLabel21.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        jLabel21.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         jLabel21.setText("4.- Cotizar:");
         jLabel21.setMaximumSize(new java.awt.Dimension(210, 15));
         jLabel21.setMinimumSize(new java.awt.Dimension(210, 15));
         jLabel21.setPreferredSize(new java.awt.Dimension(210, 15));
-        add(jLabel21, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 132, 70, -1));
-
-        cb_autoriza_cliente.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cb_autoriza_clienteActionPerformed(evt);
-            }
-        });
-        add(cb_autoriza_cliente, new org.netbeans.lib.awtextra.AbsoluteConstraints(168, 190, -1, -1));
-
-        t_inicio_autoriza_cliente.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        t_inicio_autoriza_cliente.setEnabled(false);
-        t_inicio_autoriza_cliente.setMinimumSize(new java.awt.Dimension(250, 19));
-        t_inicio_autoriza_cliente.setName(""); // NOI18N
-        t_inicio_autoriza_cliente.setPreferredSize(new java.awt.Dimension(250, 19));
-        add(t_inicio_autoriza_cliente, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 190, 163, -1));
-
-        l_autorizo_cliente.setText("<Usuario que asigno operación>");
-        l_autorizo_cliente.setMaximumSize(new java.awt.Dimension(300, 15));
-        l_autorizo_cliente.setMinimumSize(new java.awt.Dimension(300, 15));
-        l_autorizo_cliente.setPreferredSize(new java.awt.Dimension(300, 15));
-        add(l_autorizo_cliente, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 190, 200, -1));
+        add(jLabel21, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 130, 70, -1));
 
         jLabel26.setText("Cierre _______________________________________________________________________");
         jLabel26.setMaximumSize(new java.awt.Dimension(210, 15));
@@ -616,37 +616,17 @@ public class Responsables extends javax.swing.JPanel {
         jLabel26.setPreferredSize(new java.awt.Dimension(210, 15));
         add(jLabel26, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 170, 550, -1));
 
-        jLabel27.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel27.setText("6.- Autorizacion Interna:");
-        jLabel27.setMaximumSize(new java.awt.Dimension(210, 15));
-        jLabel27.setMinimumSize(new java.awt.Dimension(210, 15));
-        jLabel27.setPreferredSize(new java.awt.Dimension(210, 15));
-        add(jLabel27, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 214, 160, -1));
-
-        cb_autoriza_interna.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cb_autoriza_internaActionPerformed(evt);
-            }
-        });
-        add(cb_autoriza_interna, new org.netbeans.lib.awtextra.AbsoluteConstraints(168, 210, -1, -1));
-
-        jLabel28.setText("____________________________________________________________");
-        jLabel28.setMaximumSize(new java.awt.Dimension(210, 15));
-        jLabel28.setMinimumSize(new java.awt.Dimension(210, 15));
-        jLabel28.setPreferredSize(new java.awt.Dimension(210, 15));
-        add(jLabel28, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 214, 430, -1));
-
-        jLabel16.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel16.setText("7.- Valuación:");
+        jLabel16.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        jLabel16.setText("5.- Valuación:");
         jLabel16.setMaximumSize(new java.awt.Dimension(210, 15));
         jLabel16.setMinimumSize(new java.awt.Dimension(210, 15));
         jLabel16.setPreferredSize(new java.awt.Dimension(210, 15));
-        add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 234, 160, -1));
+        add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 195, 160, -1));
 
         t_valuacion.setBackground(new java.awt.Color(204, 255, 255));
         t_valuacion.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         t_valuacion.setEnabled(false);
-        add(t_valuacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 232, 62, -1));
+        add(t_valuacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 195, 62, -1));
 
         b_buscar_valuacion.setBackground(new java.awt.Color(2, 135, 242));
         b_buscar_valuacion.setIcon(new ImageIcon("imagenes/buscar.png"));
@@ -659,7 +639,7 @@ public class Responsables extends javax.swing.JPanel {
                 b_buscar_valuacionActionPerformed(evt);
             }
         });
-        add(b_buscar_valuacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(242, 230, 28, 24));
+        add(b_buscar_valuacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(244, 190, 28, 24));
 
         b_borrar_valuacion.setBackground(new java.awt.Color(2, 135, 242));
         b_borrar_valuacion.setIcon(new ImageIcon("imagenes/eliminar.png"));
@@ -672,134 +652,134 @@ public class Responsables extends javax.swing.JPanel {
                 b_borrar_valuacionActionPerformed(evt);
             }
         });
-        add(b_borrar_valuacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(271, 230, 28, 24));
+        add(b_borrar_valuacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(273, 190, 28, 24));
 
         l_valuacion.setText("<Nombre del Responsable>");
-        add(l_valuacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(308, 234, 310, -1));
+        add(l_valuacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 195, 310, -1));
 
         l_autorizo_valuacion.setText("<Usuario que asigno operación>");
         l_autorizo_valuacion.setMaximumSize(new java.awt.Dimension(300, 15));
         l_autorizo_valuacion.setMinimumSize(new java.awt.Dimension(300, 15));
         l_autorizo_valuacion.setPreferredSize(new java.awt.Dimension(300, 15));
-        add(l_autorizo_valuacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 230, 200, -1));
+        add(l_autorizo_valuacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 192, 200, -1));
 
         t_inicio_valuacion.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         t_inicio_valuacion.setEnabled(false);
         t_inicio_valuacion.setMinimumSize(new java.awt.Dimension(250, 19));
         t_inicio_valuacion.setName(""); // NOI18N
         t_inicio_valuacion.setPreferredSize(new java.awt.Dimension(250, 19));
-        add(t_inicio_valuacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 230, 163, -1));
+        add(t_inicio_valuacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 192, 163, -1));
 
-        jLabel30.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel30.setText("8.- Envio a Compañia:");
+        jLabel30.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        jLabel30.setText("6.- Envio Compañia/Cliente:");
         jLabel30.setMaximumSize(new java.awt.Dimension(210, 15));
         jLabel30.setMinimumSize(new java.awt.Dimension(210, 15));
         jLabel30.setPreferredSize(new java.awt.Dimension(210, 15));
-        add(jLabel30, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 256, 160, -1));
+        add(jLabel30, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 225, 160, -1));
 
         cb_envio_compania.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cb_envio_companiaActionPerformed(evt);
             }
         });
-        add(cb_envio_compania, new org.netbeans.lib.awtextra.AbsoluteConstraints(168, 250, -1, -1));
+        add(cb_envio_compania, new org.netbeans.lib.awtextra.AbsoluteConstraints(178, 221, -1, -1));
 
-        jLabel31.setText("____________________________________________________________");
+        jLabel31.setText("__________________________________________________________");
         jLabel31.setMaximumSize(new java.awt.Dimension(210, 15));
         jLabel31.setMinimumSize(new java.awt.Dimension(210, 15));
         jLabel31.setPreferredSize(new java.awt.Dimension(210, 15));
-        add(jLabel31, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 256, 430, -1));
+        add(jLabel31, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 225, 400, -1));
 
         t_inicio_envio_compania.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         t_inicio_envio_compania.setEnabled(false);
         t_inicio_envio_compania.setMinimumSize(new java.awt.Dimension(250, 19));
         t_inicio_envio_compania.setName(""); // NOI18N
         t_inicio_envio_compania.setPreferredSize(new java.awt.Dimension(250, 19));
-        add(t_inicio_envio_compania, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 250, 163, -1));
+        add(t_inicio_envio_compania, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 220, 163, -1));
 
         l_autorizo_envio_compania.setText("<Usuario que asigno operación>");
         l_autorizo_envio_compania.setMaximumSize(new java.awt.Dimension(300, 15));
         l_autorizo_envio_compania.setMinimumSize(new java.awt.Dimension(300, 15));
         l_autorizo_envio_compania.setPreferredSize(new java.awt.Dimension(300, 15));
-        add(l_autorizo_envio_compania, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 250, 200, -1));
+        add(l_autorizo_envio_compania, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 222, 200, -1));
 
-        jLabel33.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel33.setText("9.- Autoriza a Compañia:");
+        jLabel33.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        jLabel33.setText("7.- Autoriza Compañia/Cliente:");
         jLabel33.setMaximumSize(new java.awt.Dimension(210, 15));
         jLabel33.setMinimumSize(new java.awt.Dimension(210, 15));
         jLabel33.setPreferredSize(new java.awt.Dimension(210, 15));
-        add(jLabel33, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 274, 160, -1));
+        add(jLabel33, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 245, 170, -1));
 
         cb_autoriza_compania.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cb_autoriza_companiaActionPerformed(evt);
             }
         });
-        add(cb_autoriza_compania, new org.netbeans.lib.awtextra.AbsoluteConstraints(168, 270, -1, -1));
+        add(cb_autoriza_compania, new org.netbeans.lib.awtextra.AbsoluteConstraints(178, 241, -1, -1));
 
-        jLabel35.setText("____________________________________________________________");
+        jLabel35.setText("__________________________________________________________");
         jLabel35.setMaximumSize(new java.awt.Dimension(210, 15));
         jLabel35.setMinimumSize(new java.awt.Dimension(210, 15));
         jLabel35.setPreferredSize(new java.awt.Dimension(210, 15));
-        add(jLabel35, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 274, 430, -1));
+        add(jLabel35, new org.netbeans.lib.awtextra.AbsoluteConstraints(202, 245, 410, -1));
 
         t_inicio_autoriza_compania.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         t_inicio_autoriza_compania.setEnabled(false);
         t_inicio_autoriza_compania.setMinimumSize(new java.awt.Dimension(250, 19));
         t_inicio_autoriza_compania.setName(""); // NOI18N
         t_inicio_autoriza_compania.setPreferredSize(new java.awt.Dimension(250, 19));
-        add(t_inicio_autoriza_compania, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 270, 163, -1));
+        add(t_inicio_autoriza_compania, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 241, 163, -1));
 
         l_autorizo_autoriza_compania.setText("<Usuario que asigno operación>");
         l_autorizo_autoriza_compania.setMaximumSize(new java.awt.Dimension(300, 15));
         l_autorizo_autoriza_compania.setMinimumSize(new java.awt.Dimension(300, 15));
         l_autorizo_autoriza_compania.setPreferredSize(new java.awt.Dimension(300, 15));
-        add(l_autorizo_autoriza_compania, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 270, 200, -1));
+        add(l_autorizo_autoriza_compania, new org.netbeans.lib.awtextra.AbsoluteConstraints(793, 243, 200, -1));
 
-        jLabel36.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel36.setText("10.- Autoriza Valuación:");
+        jLabel36.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        jLabel36.setText("8.- Autoriza Valuación:");
         jLabel36.setMaximumSize(new java.awt.Dimension(210, 15));
         jLabel36.setMinimumSize(new java.awt.Dimension(210, 15));
         jLabel36.setPreferredSize(new java.awt.Dimension(210, 15));
-        add(jLabel36, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 294, 160, -1));
+        add(jLabel36, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 275, 160, -1));
 
         cb_autoriza_reparacion.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cb_autoriza_reparacionActionPerformed(evt);
             }
         });
-        add(cb_autoriza_reparacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(168, 372, -1, -1));
+        add(cb_autoriza_reparacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 380, -1, -1));
 
-        jLabel37.setText("____________________________________________________________");
+        jLabel37.setText("__________________________________________________________");
         jLabel37.setMaximumSize(new java.awt.Dimension(210, 15));
         jLabel37.setMinimumSize(new java.awt.Dimension(210, 15));
         jLabel37.setPreferredSize(new java.awt.Dimension(210, 15));
-        add(jLabel37, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 294, 430, -1));
+        add(jLabel37, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 274, 370, -1));
 
         t_cierre_valuacion.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         t_cierre_valuacion.setEnabled(false);
         t_cierre_valuacion.setMinimumSize(new java.awt.Dimension(250, 19));
         t_cierre_valuacion.setName(""); // NOI18N
         t_cierre_valuacion.setPreferredSize(new java.awt.Dimension(250, 19));
-        add(t_cierre_valuacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 290, 163, -1));
+        add(t_cierre_valuacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 270, 163, -1));
 
         l_autorizo_cierre_valuacion.setText("<Usuario que asigno operación>");
         l_autorizo_cierre_valuacion.setMaximumSize(new java.awt.Dimension(300, 15));
         l_autorizo_cierre_valuacion.setMinimumSize(new java.awt.Dimension(300, 15));
         l_autorizo_cierre_valuacion.setPreferredSize(new java.awt.Dimension(300, 15));
-        add(l_autorizo_cierre_valuacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 290, 200, -1));
+        add(l_autorizo_cierre_valuacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 270, 200, -1));
 
-        jLabel23.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel23.setText("11.- Refacciones:");
+        jLabel23.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        jLabel23.setText("9.- Refacciones:");
         jLabel23.setMaximumSize(new java.awt.Dimension(210, 15));
         jLabel23.setMinimumSize(new java.awt.Dimension(210, 15));
         jLabel23.setPreferredSize(new java.awt.Dimension(210, 15));
-        add(jLabel23, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 314, 160, -1));
+        add(jLabel23, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 300, 160, -1));
 
         t_refacciones.setBackground(new java.awt.Color(204, 255, 255));
         t_refacciones.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         t_refacciones.setEnabled(false);
-        add(t_refacciones, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 312, 62, -1));
+        add(t_refacciones, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 300, 62, -1));
 
         b_buscar_refacciones.setBackground(new java.awt.Color(2, 135, 242));
         b_buscar_refacciones.setIcon(new ImageIcon("imagenes/buscar.png"));
@@ -812,7 +792,7 @@ public class Responsables extends javax.swing.JPanel {
                 b_buscar_refaccionesActionPerformed(evt);
             }
         });
-        add(b_buscar_refacciones, new org.netbeans.lib.awtextra.AbsoluteConstraints(242, 310, 28, 24));
+        add(b_buscar_refacciones, new org.netbeans.lib.awtextra.AbsoluteConstraints(245, 295, 28, 24));
 
         b_borrar_refacciones.setBackground(new java.awt.Color(2, 135, 242));
         b_borrar_refacciones.setIcon(new ImageIcon("imagenes/eliminar.png"));
@@ -825,144 +805,133 @@ public class Responsables extends javax.swing.JPanel {
                 b_borrar_refaccionesActionPerformed(evt);
             }
         });
-        add(b_borrar_refacciones, new org.netbeans.lib.awtextra.AbsoluteConstraints(271, 310, 28, 24));
+        add(b_borrar_refacciones, new org.netbeans.lib.awtextra.AbsoluteConstraints(274, 295, 28, 24));
 
         l_refacciones.setText("<Nombre del Responsable>");
-        add(l_refacciones, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 314, 310, -1));
+        add(l_refacciones, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 300, 300, -1));
 
         t_inicio_refacciones.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         t_inicio_refacciones.setEnabled(false);
         t_inicio_refacciones.setMinimumSize(new java.awt.Dimension(250, 19));
         t_inicio_refacciones.setName(""); // NOI18N
         t_inicio_refacciones.setPreferredSize(new java.awt.Dimension(250, 19));
-        add(t_inicio_refacciones, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 330, 163, -1));
+        add(t_inicio_refacciones, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 316, 163, -1));
 
         l_autorizo_refacciones.setText("<Usuario que asigno operación>");
         l_autorizo_refacciones.setMaximumSize(new java.awt.Dimension(300, 15));
         l_autorizo_refacciones.setMinimumSize(new java.awt.Dimension(300, 15));
         l_autorizo_refacciones.setPreferredSize(new java.awt.Dimension(300, 15));
-        add(l_autorizo_refacciones, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 310, 200, -1));
+        add(l_autorizo_refacciones, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 300, 200, -1));
 
         jLabel38.setText("Inicio_________________________________________________________________________");
         jLabel38.setMaximumSize(new java.awt.Dimension(210, 15));
         jLabel38.setMinimumSize(new java.awt.Dimension(210, 15));
         jLabel38.setPreferredSize(new java.awt.Dimension(210, 15));
-        add(jLabel38, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 335, 550, -1));
+        add(jLabel38, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 322, 550, -1));
 
         jLabel39.setText("Cierre________________________________________________________________________");
         jLabel39.setMaximumSize(new java.awt.Dimension(210, 15));
         jLabel39.setMinimumSize(new java.awt.Dimension(210, 15));
         jLabel39.setPreferredSize(new java.awt.Dimension(210, 15));
-        add(jLabel39, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 355, 550, -1));
+        add(jLabel39, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 342, 550, -1));
 
         t_cierre_refacciones.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         t_cierre_refacciones.setEnabled(false);
         t_cierre_refacciones.setMinimumSize(new java.awt.Dimension(250, 19));
         t_cierre_refacciones.setName(""); // NOI18N
         t_cierre_refacciones.setPreferredSize(new java.awt.Dimension(250, 19));
-        add(t_cierre_refacciones, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 350, 163, -1));
+        add(t_cierre_refacciones, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 337, 163, -1));
 
-        jLabel40.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel40.setText("12.- Autoriza Reparación:");
+        jLabel40.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        jLabel40.setText("10.- Autoriza Reparación:");
         jLabel40.setMaximumSize(new java.awt.Dimension(210, 15));
         jLabel40.setMinimumSize(new java.awt.Dimension(210, 15));
         jLabel40.setPreferredSize(new java.awt.Dimension(210, 15));
-        add(jLabel40, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 377, 140, -1));
+        add(jLabel40, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 365, 150, -1));
 
-        jLabel41.setText("Inicio_________________________________________________________________________");
+        jLabel41.setText("Inicio");
         jLabel41.setMaximumSize(new java.awt.Dimension(210, 15));
         jLabel41.setMinimumSize(new java.awt.Dimension(210, 15));
         jLabel41.setPreferredSize(new java.awt.Dimension(210, 15));
-        add(jLabel41, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 395, 550, -1));
+        add(jLabel41, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 383, 30, -1));
 
         t_inicio_reparacion.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         t_inicio_reparacion.setEnabled(false);
         t_inicio_reparacion.setMinimumSize(new java.awt.Dimension(250, 19));
         t_inicio_reparacion.setName(""); // NOI18N
         t_inicio_reparacion.setPreferredSize(new java.awt.Dimension(250, 19));
-        add(t_inicio_reparacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 390, 163, -1));
+        add(t_inicio_reparacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 375, 163, -1));
 
-        l_autorizo_reparacion.setText("<Usuario que asigno operación>");
-        l_autorizo_reparacion.setMaximumSize(new java.awt.Dimension(300, 15));
-        l_autorizo_reparacion.setMinimumSize(new java.awt.Dimension(300, 15));
-        l_autorizo_reparacion.setPreferredSize(new java.awt.Dimension(300, 15));
-        add(l_autorizo_reparacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 370, 200, -1));
-
-        jLabel42.setText("Cierre ________________________________________________________________________");
+        jLabel42.setText("Cierre");
         jLabel42.setMaximumSize(new java.awt.Dimension(210, 15));
         jLabel42.setMinimumSize(new java.awt.Dimension(210, 15));
         jLabel42.setPreferredSize(new java.awt.Dimension(210, 15));
-        add(jLabel42, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 416, 550, -1));
+        add(jLabel42, new org.netbeans.lib.awtextra.AbsoluteConstraints(68, 400, 40, -1));
 
         t_cierre_reparacion.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         t_cierre_reparacion.setEnabled(false);
         t_cierre_reparacion.setMinimumSize(new java.awt.Dimension(250, 19));
         t_cierre_reparacion.setName(""); // NOI18N
         t_cierre_reparacion.setPreferredSize(new java.awt.Dimension(250, 19));
-        add(t_cierre_reparacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 410, 163, -1));
+        add(t_cierre_reparacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 396, 163, -1));
 
         cb_autoriza_valuacion.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cb_autoriza_valuacionActionPerformed(evt);
             }
         });
-        add(cb_autoriza_valuacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(168, 290, -1, -1));
+        add(cb_autoriza_valuacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(177, 270, -1, -1));
 
         cb_entrega_unidad.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cb_entrega_unidadActionPerformed(evt);
             }
         });
-        add(cb_entrega_unidad, new org.netbeans.lib.awtextra.AbsoluteConstraints(168, 430, -1, -1));
+        add(cb_entrega_unidad, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 470, -1, -1));
 
-        jLabel43.setText("No:");
+        jLabel43.setText("Factura No:");
         jLabel43.setMaximumSize(new java.awt.Dimension(210, 15));
         jLabel43.setMinimumSize(new java.awt.Dimension(210, 15));
         jLabel43.setPreferredSize(new java.awt.Dimension(210, 15));
-        add(jLabel43, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 476, 30, -1));
+        add(jLabel43, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 440, 70, -1));
 
-        jLabel44.setText("_______________________________________________________________");
-        jLabel44.setMaximumSize(new java.awt.Dimension(210, 15));
-        jLabel44.setMinimumSize(new java.awt.Dimension(210, 15));
-        jLabel44.setPreferredSize(new java.awt.Dimension(210, 15));
-        add(jLabel44, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 476, 450, -1));
-
-        jLabel45.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel45.setText("13.- Entrega de la Unidad:");
+        jLabel45.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        jLabel45.setText("12.- Entrega de la Unidad:");
         jLabel45.setMaximumSize(new java.awt.Dimension(210, 15));
         jLabel45.setMinimumSize(new java.awt.Dimension(210, 15));
         jLabel45.setPreferredSize(new java.awt.Dimension(210, 15));
-        add(jLabel45, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 436, 160, -1));
+        add(jLabel45, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 473, 160, -1));
 
-        jLabel46.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel46.setText("14.- Facturación:");
+        jLabel46.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        jLabel46.setText("11.- Facturación:");
         jLabel46.setMaximumSize(new java.awt.Dimension(210, 15));
         jLabel46.setMinimumSize(new java.awt.Dimension(210, 15));
         jLabel46.setPreferredSize(new java.awt.Dimension(210, 15));
-        add(jLabel46, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 460, 140, -1));
+        add(jLabel46, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 422, 100, -1));
 
         t_inicio_factura.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         t_inicio_factura.setEnabled(false);
         t_inicio_factura.setMinimumSize(new java.awt.Dimension(250, 19));
         t_inicio_factura.setName(""); // NOI18N
         t_inicio_factura.setPreferredSize(new java.awt.Dimension(250, 19));
-        add(t_inicio_factura, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 470, 163, -1));
+        add(t_inicio_factura, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 438, 163, -1));
 
         l_inicio_factura.setText("<Usuario que asigno operación>");
         l_inicio_factura.setMaximumSize(new java.awt.Dimension(300, 15));
         l_inicio_factura.setMinimumSize(new java.awt.Dimension(300, 15));
         l_inicio_factura.setPreferredSize(new java.awt.Dimension(300, 15));
-        add(l_inicio_factura, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 470, 200, -1));
+        add(l_inicio_factura, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 440, 200, -1));
 
         jLabel47.setText("____________________________________________________________");
         jLabel47.setMaximumSize(new java.awt.Dimension(210, 15));
         jLabel47.setMinimumSize(new java.awt.Dimension(210, 15));
         jLabel47.setPreferredSize(new java.awt.Dimension(210, 15));
-        add(jLabel47, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 436, 430, -1));
+        add(jLabel47, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 476, 430, -1));
 
         t_factura.setBackground(new java.awt.Color(204, 255, 255));
         t_factura.setToolTipText("Agregar numero de factura");
         t_factura.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        t_factura.setMinimumSize(new java.awt.Dimension(2, 19));
         t_factura.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 t_facturaActionPerformed(evt);
@@ -973,35 +942,22 @@ public class Responsables extends javax.swing.JPanel {
                 t_facturaKeyTyped(evt);
             }
         });
-        add(t_factura, new org.netbeans.lib.awtextra.AbsoluteConstraints(95, 474, 67, -1));
+        add(t_factura, new org.netbeans.lib.awtextra.AbsoluteConstraints(542, 438, 67, 20));
 
         t_inicio_entrega_unidad.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         t_inicio_entrega_unidad.setEnabled(false);
         t_inicio_entrega_unidad.setMinimumSize(new java.awt.Dimension(250, 19));
         t_inicio_entrega_unidad.setName(""); // NOI18N
         t_inicio_entrega_unidad.setPreferredSize(new java.awt.Dimension(250, 19));
-        add(t_inicio_entrega_unidad, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 430, 163, -1));
+        add(t_inicio_entrega_unidad, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 470, 163, -1));
 
         l_autorizo_entregar.setText("<Usuario que asigno operación>");
         l_autorizo_entregar.setMaximumSize(new java.awt.Dimension(300, 15));
         l_autorizo_entregar.setMinimumSize(new java.awt.Dimension(300, 15));
         l_autorizo_entregar.setPreferredSize(new java.awt.Dimension(300, 15));
-        add(l_autorizo_entregar, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 430, 200, -1));
+        add(l_autorizo_entregar, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 470, 200, -1));
 
-        l_autorizar_interna.setText("<Usuario que asigno operación>");
-        l_autorizar_interna.setMaximumSize(new java.awt.Dimension(300, 15));
-        l_autorizar_interna.setMinimumSize(new java.awt.Dimension(300, 15));
-        l_autorizar_interna.setPreferredSize(new java.awt.Dimension(300, 15));
-        add(l_autorizar_interna, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 210, 200, -1));
-
-        t_autorizar_interna.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        t_autorizar_interna.setEnabled(false);
-        t_autorizar_interna.setMinimumSize(new java.awt.Dimension(250, 19));
-        t_autorizar_interna.setName(""); // NOI18N
-        t_autorizar_interna.setPreferredSize(new java.awt.Dimension(250, 19));
-        add(t_autorizar_interna, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 210, 163, -1));
-
-        jLabel48.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        jLabel48.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         jLabel48.setText("13.- Cierre de orden:");
         jLabel48.setMaximumSize(new java.awt.Dimension(210, 15));
         jLabel48.setMinimumSize(new java.awt.Dimension(210, 15));
@@ -1026,13 +982,53 @@ public class Responsables extends javax.swing.JPanel {
         t_cierre_unidad.setMinimumSize(new java.awt.Dimension(250, 19));
         t_cierre_unidad.setName(""); // NOI18N
         t_cierre_unidad.setPreferredSize(new java.awt.Dimension(250, 19));
-        add(t_cierre_unidad, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 490, 163, -1));
+        add(t_cierre_unidad, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 492, 163, -1));
 
         l_autorizar_cierre.setText("<Usuario que asigno operación>");
         l_autorizar_cierre.setMaximumSize(new java.awt.Dimension(300, 15));
         l_autorizar_cierre.setMinimumSize(new java.awt.Dimension(300, 15));
         l_autorizar_cierre.setPreferredSize(new java.awt.Dimension(300, 15));
         add(l_autorizar_cierre, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 490, 200, -1));
+
+        jLabel50.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        jLabel50.setText("Pre-Factura:");
+        jLabel50.setMaximumSize(new java.awt.Dimension(210, 15));
+        jLabel50.setMinimumSize(new java.awt.Dimension(210, 15));
+        jLabel50.setPreferredSize(new java.awt.Dimension(210, 15));
+        add(jLabel50, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 440, 80, -1));
+        add(filler1, new org.netbeans.lib.awtextra.AbsoluteConstraints(890, 240, -1, -1));
+
+        t_prefactura.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        t_prefactura.setEnabled(false);
+        t_prefactura.setMinimumSize(new java.awt.Dimension(250, 19));
+        t_prefactura.setName(""); // NOI18N
+        t_prefactura.setPreferredSize(new java.awt.Dimension(250, 19));
+        add(t_prefactura, new org.netbeans.lib.awtextra.AbsoluteConstraints(114, 438, 163, -1));
+
+        l_prefactura.setText("<Usuario que asigno operación>");
+        l_prefactura.setMaximumSize(new java.awt.Dimension(300, 15));
+        l_prefactura.setMinimumSize(new java.awt.Dimension(300, 15));
+        l_prefactura.setPreferredSize(new java.awt.Dimension(300, 15));
+        add(l_prefactura, new org.netbeans.lib.awtextra.AbsoluteConstraints(287, 440, 200, -1));
+
+        jLabel44.setText("_____________________________________________________________________");
+        jLabel44.setMaximumSize(new java.awt.Dimension(210, 15));
+        jLabel44.setMinimumSize(new java.awt.Dimension(210, 15));
+        jLabel44.setPreferredSize(new java.awt.Dimension(210, 15));
+        add(jLabel44, new org.netbeans.lib.awtextra.AbsoluteConstraints(121, 382, 480, -1));
+
+        jLabel51.setText("_____________________________________________________________________");
+        jLabel51.setMaximumSize(new java.awt.Dimension(210, 15));
+        jLabel51.setMinimumSize(new java.awt.Dimension(210, 15));
+        jLabel51.setPreferredSize(new java.awt.Dimension(210, 15));
+        add(jLabel51, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 400, 480, -1));
+
+        cb_cierra_reparacion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cb_cierra_reparacionActionPerformed(evt);
+            }
+        });
+        add(cb_cierra_reparacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 400, -1, -1));
     }// </editor-fold>//GEN-END:initComponents
 
     private void t_expedienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_expedienteActionPerformed
@@ -1041,71 +1037,210 @@ public class Responsables extends javax.swing.JPanel {
 
     private void b_meta_valuacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_meta_valuacionActionPerformed
         // TODO add your handling code here:
-        h=new Herramientas(usr, 0);
-        h.session(sessionPrograma);
-        
-        calendario cal =new calendario(new javax.swing.JFrame(), true);
-        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-        cal.setLocation((d.width/2)-(cal.getWidth()/2), (d.height/2)-(cal.getHeight()/2));
-        cal.setVisible(true);
-
-        Calendar miCalendario=cal.getReturnStatus();
-        if(miCalendario!=null)
+        if(t_meta_reparacion.getText().compareTo("DD-MM-AAAA HH:MM:SS")!=0)
         {
-            String dia=Integer.toString(miCalendario.get(Calendar.DATE));;
-            String mes = Integer.toString(miCalendario.get(Calendar.MONTH)+1);
-            String anio = Integer.toString(miCalendario.get(Calendar.YEAR));
-            
-            DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");//YYYY-MM-DD HH:MM:SS
-            String valor=dia+"-"+mes+"-"+anio+" 00:00:00";
-            
-            boolean resp=guardaEmpleado(null, "meta_valuacion", valor);//empleadoByRExpediente
-            if(resp=true)
-                t_meta_valuacion.setText(dia+"-"+mes+"-"+anio);
-            else
+            h=new Herramientas(usr, 0);
+            h.session(sessionPrograma);
+
+            calendario cal =new calendario(new javax.swing.JFrame(), true, true);
+            if(t_meta_valuacion.getText().compareToIgnoreCase("DD-MM-AAAA HH:MM:SS")!=0)
             {
-                t_meta_valuacion.setText("DD/MM/AAAA");
-                JOptionPane.showMessageDialog(null, "¡Error al actualizar el campo!");
+                String [] cadena = t_meta_valuacion.getText().split(" ");
+                String [] fecha = cadena[0].split("-");
+                String [] hora = cadena[1].split(":");
+
+                Calendar calendario1 = Calendar.getInstance();
+                calendario1.set(Calendar.MONTH, Integer.parseInt(fecha[1])-1);
+                calendario1.set(Calendar.YEAR, Integer.parseInt(fecha[2]));
+                calendario1.set(Calendar.DAY_OF_MONTH, Integer.parseInt(fecha[0]));
+                calendario1.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hora[0]));
+                calendario1.set(Calendar.MINUTE, Integer.parseInt(hora[1]));
+                calendario1.set(Calendar.SECOND, Integer.parseInt(hora[2]));
+                cal.p_fecha.setCurrent(calendario1);
+                cal.p_fecha.setSelectedDate(calendario1);
+                cal.c_hora.setSelectedIndex(Integer.parseInt(hora[0]));
+                cal.c_minuto.setSelectedIndex(Integer.parseInt(hora[1]));
+                cal.c_segundo.setSelectedIndex(Integer.parseInt(hora[2]));
             }
-            
+            Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+            cal.setLocation((d.width/2)-(cal.getWidth()/2), (d.height/2)-(cal.getHeight()/2));
+            cal.setVisible(true);
+
+            Calendar miCalendario=cal.getReturnStatus();
+            if(miCalendario!=null)
+            {
+                String permiso="";
+                if(t_meta_reparacion.getText().compareToIgnoreCase("DD-MM-AAAA HH:MM:SS")!=0)
+                {
+                    String [] cadena_rep = t_meta_reparacion.getText().split(" ");
+                    String [] fecha_rep = cadena_rep[0].split("-");
+                    String [] hora_rep = cadena_rep[1].split(":");
+
+                    Calendar calendario_rep = Calendar.getInstance();
+                    calendario_rep.set(Calendar.MONTH, Integer.parseInt(fecha_rep[1])-1);
+                    calendario_rep.set(Calendar.YEAR, Integer.parseInt(fecha_rep[2]));
+                    calendario_rep.set(Calendar.DAY_OF_MONTH, Integer.parseInt(fecha_rep[0]));
+                    calendario_rep.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hora_rep[0]));
+                    calendario_rep.set(Calendar.MINUTE, Integer.parseInt(hora_rep[1]));
+                    calendario_rep.set(Calendar.SECOND, Integer.parseInt(hora_rep[2]));
+                    if(miCalendario.after(calendario_rep))
+                        permiso="¡No se puede establecer una fecha posterior a la de Taller!";
+                }
+                if(t_meta_refacciones.getText().compareToIgnoreCase("DD-MM-AAAA HH:MM:SS")!=0)
+                {
+                    String [] cadena_ref = t_meta_refacciones.getText().split(" ");
+                    String [] fecha_ref = cadena_ref[0].split("-");
+                    String [] hora_ref = cadena_ref[1].split(":");
+
+                    Calendar calendario_ref = Calendar.getInstance();
+                    calendario_ref.set(Calendar.MONTH, Integer.parseInt(fecha_ref[1])-1);
+                    calendario_ref.set(Calendar.YEAR, Integer.parseInt(fecha_ref[2]));
+                    calendario_ref.set(Calendar.DAY_OF_MONTH, Integer.parseInt(fecha_ref[0]));
+                    calendario_ref.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hora_ref[0]));
+                    calendario_ref.set(Calendar.MINUTE, Integer.parseInt(hora_ref[1]));
+                    calendario_ref.set(Calendar.SECOND, Integer.parseInt(hora_ref[2]));
+                    if(miCalendario.after(calendario_ref))
+                        permiso="¡No se puede establecer una fecha posterior a la de Refacciones!";
+                }
+
+                if(permiso.compareTo("")==0)
+                {
+                     String dia=Integer.toString(miCalendario.get(Calendar.DATE));;
+                     String mes = Integer.toString(miCalendario.get(Calendar.MONTH)+1);
+                     String anio = Integer.toString(miCalendario.get(Calendar.YEAR));
+                     String hora = Integer.toString(miCalendario.get(Calendar.HOUR_OF_DAY));
+                     String minuto = Integer.toString(miCalendario.get(Calendar.MINUTE));
+                     String segundo = Integer.toString(miCalendario.get(Calendar.SECOND));
+
+                     DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");//YYYY-MM-DD HH:MM:SS
+                     String valor=dia+"-"+mes+"-"+anio+" "+hora+":"+minuto+":"+segundo;
+
+                     boolean resp=guardaEmpleado(null, "meta_valuacion", valor);//empleadoByRExpediente
+                     if(resp=true)
+                     {
+                         Date date = miCalendario.getTime();
+                         String date1 = dateFormat.format(date);     
+                         t_meta_valuacion.setText(date1);
+                         if(usr.getEditaMetas()==false)
+                             b_meta_valuacion.setEnabled(false);
+                     }
+                     else
+                     {
+                         t_meta_valuacion.setText("DD-MM-AAAA HH:MM:SS");
+                         JOptionPane.showMessageDialog(null, "¡Error al actualizar el campo!");
+                     }
+                }
+                else
+                    JOptionPane.showMessageDialog(null, permiso);
+            }
+        //b_meta_valuacion.requestFocus();
         }
         else
-        t_meta_valuacion.setText("DD/MM/AAAA");
-        //b_meta_valuacion.requestFocus();
+            JOptionPane.showMessageDialog(null, "Se debe establecer primero la meta del taller");
     }//GEN-LAST:event_b_meta_valuacionActionPerformed
 
     private void b_meta_refaccionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_meta_refaccionesActionPerformed
         // TODO add your handling code here:
-        h=new Herramientas(usr, 0);
-        h.session(sessionPrograma);
-        
-        calendario cal =new calendario(new javax.swing.JFrame(), true);
-        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-        cal.setLocation((d.width/2)-(cal.getWidth()/2), (d.height/2)-(cal.getHeight()/2));
-        cal.setVisible(true);
-
-        Calendar miCalendario=cal.getReturnStatus();
-        if(miCalendario!=null)
+        if(t_meta_reparacion.getText().compareTo("DD-MM-AAAA HH:MM:SS")!=0)
         {
-            String dia=Integer.toString(miCalendario.get(Calendar.DATE));;
-            String mes = Integer.toString(miCalendario.get(Calendar.MONTH)+1);
-            String anio = Integer.toString(miCalendario.get(Calendar.YEAR));
-            
-            DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");//YYYY-MM-DD HH:MM:SS
-            String valor=dia+"-"+mes+"-"+anio+" 00:00:00";
-            
-            boolean resp=guardaEmpleado(null, "meta_refacciones", valor);//empleadoByRExpediente
-            if(resp=true)
-                t_meta_refacciones.setText(dia+"-"+mes+"-"+anio);
-            else
+            h=new Herramientas(usr, 0);
+            h.session(sessionPrograma);
+
+            calendario cal =new calendario(new javax.swing.JFrame(), true, true);
+            if(t_meta_refacciones.getText().compareToIgnoreCase("DD-MM-AAAA HH:MM:SS")!=0)
             {
-                t_meta_refacciones.setText("DD/MM/AAAA");
-                JOptionPane.showMessageDialog(null, "¡Error al actualizar el campo!");
+                String [] cadena = t_meta_refacciones.getText().split(" ");
+                String [] fecha = cadena[0].split("-");
+                String [] hora = cadena[1].split(":");
+
+                Calendar calendario1 = Calendar.getInstance();
+                calendario1.set(Calendar.MONTH, Integer.parseInt(fecha[1])-1);
+                calendario1.set(Calendar.YEAR, Integer.parseInt(fecha[2]));
+                calendario1.set(Calendar.DAY_OF_MONTH, Integer.parseInt(fecha[0]));
+                calendario1.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hora[0]));
+                calendario1.set(Calendar.MINUTE, Integer.parseInt(hora[1]));
+                calendario1.set(Calendar.SECOND, Integer.parseInt(hora[2]));
+                cal.p_fecha.setCurrent(calendario1);
+                cal.p_fecha.setSelectedDate(calendario1);
+                cal.c_hora.setSelectedIndex(Integer.parseInt(hora[0]));
+                cal.c_minuto.setSelectedIndex(Integer.parseInt(hora[1]));
+                cal.c_segundo.setSelectedIndex(Integer.parseInt(hora[2]));
             }
+            Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+            cal.setLocation((d.width/2)-(cal.getWidth()/2), (d.height/2)-(cal.getHeight()/2));
+            cal.setVisible(true);
+
+            Calendar miCalendario=cal.getReturnStatus();
+            if(miCalendario!=null)
+            {
+                String permiso="";
+                if(t_meta_valuacion.getText().compareToIgnoreCase("DD-MM-AAAA HH:MM:SS")!=0)
+                {
+                    String [] cadena_val = t_meta_valuacion.getText().split(" ");
+                    String [] fecha_val = cadena_val[0].split("-");
+                    String [] hora_val = cadena_val[1].split(":");
+
+                    Calendar calendario_val = Calendar.getInstance();
+                    calendario_val.set(Calendar.MONTH, Integer.parseInt(fecha_val[1])-1);
+                    calendario_val.set(Calendar.YEAR, Integer.parseInt(fecha_val[2]));
+                    calendario_val.set(Calendar.DAY_OF_MONTH, Integer.parseInt(fecha_val[0]));
+                    calendario_val.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hora_val[0]));
+                    calendario_val.set(Calendar.MINUTE, Integer.parseInt(hora_val[1]));
+                    calendario_val.set(Calendar.SECOND, Integer.parseInt(hora_val[2]));
+                    if(miCalendario.before(calendario_val))
+                        permiso="¡No se puede establecer una fecha anterior a la establecida en valuacion!";
+                }
+                if(t_meta_reparacion.getText().compareToIgnoreCase("DD-MM-AAAA HH:MM:SS")!=0)
+                {
+                    String [] cadena_rep = t_meta_reparacion.getText().split(" ");
+                    String [] fecha_rep = cadena_rep[0].split("-");
+                    String [] hora_rep = cadena_rep[1].split(":");
+
+                    Calendar calendario_rep = Calendar.getInstance();
+                    calendario_rep.set(Calendar.MONTH, Integer.parseInt(fecha_rep[1])-1);
+                    calendario_rep.set(Calendar.YEAR, Integer.parseInt(fecha_rep[2]));
+                    calendario_rep.set(Calendar.DAY_OF_MONTH, Integer.parseInt(fecha_rep[0]));
+                    calendario_rep.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hora_rep[0]));
+                    calendario_rep.set(Calendar.MINUTE, Integer.parseInt(hora_rep[1]));
+                    calendario_rep.set(Calendar.SECOND, Integer.parseInt(hora_rep[2]));
+                    if(miCalendario.after(calendario_rep))
+                        permiso="¡No se puede establecer una fecha posterior a la establecida en Taller!";
+                }
+                if(permiso.compareTo("")==0)
+                {
+                    String dia=Integer.toString(miCalendario.get(Calendar.DAY_OF_MONTH));
+                    String mes = Integer.toString(miCalendario.get(Calendar.MONTH)+1);
+                    String anio = Integer.toString(miCalendario.get(Calendar.YEAR));
+                    String hora = Integer.toString(miCalendario.get(Calendar.HOUR_OF_DAY));
+                    String minuto = Integer.toString(miCalendario.get(Calendar.MINUTE));
+                    String segundo = Integer.toString(miCalendario.get(Calendar.SECOND));
+
+                    DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");//YYYY-MM-DD HH:MM:SS
+                    String valor=dia+"-"+mes+"-"+anio+" "+hora+":"+minuto+":"+segundo;
+                    System.out.println(valor);
+                    boolean resp=guardaEmpleado(null, "meta_refacciones", valor);//empleadoByRExpediente
+                    if(resp=true)
+                    {
+                        Date date = miCalendario.getTime();
+                        String date1 = dateFormat.format(date);     
+                        t_meta_refacciones.setText(date1);
+                        if(usr.getEditaMetas()==false)
+                             b_meta_refacciones.setEnabled(false);
+                    }
+                    else
+                    {
+                        t_meta_refacciones.setText("DD-MM-AAAA HH:MM:SS");
+                        JOptionPane.showMessageDialog(null, "¡Error al actualizar el campo!");
+                    }
+                }
+                else
+                    JOptionPane.showMessageDialog(null, permiso);
+
+            }
+            //b_meta_valuacion.requestFocus();
         }
         else
-        t_meta_refacciones.setText("DD/MM/AAAA");
-        //b_meta_valuacion.requestFocus();
+            JOptionPane.showMessageDialog(null, "Se debe establecer primero la meta del taller");
     }//GEN-LAST:event_b_meta_refaccionesActionPerformed
 
     private void b_meta_reparacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_meta_reparacionActionPerformed
@@ -1113,7 +1248,26 @@ public class Responsables extends javax.swing.JPanel {
         h=new Herramientas(usr, 0);
         h.session(sessionPrograma);
         
-        calendario cal =new calendario(new javax.swing.JFrame(), true);
+        calendario cal =new calendario(new javax.swing.JFrame(), true, true);
+        if(t_meta_reparacion.getText().compareToIgnoreCase("DD-MM-AAAA HH:MM:SS")!=0)
+        {
+            String [] cadena = t_meta_reparacion.getText().split(" ");
+            String [] fecha = cadena[0].split("-");
+            String [] hora = cadena[1].split(":");
+
+            Calendar calendario1 = Calendar.getInstance();
+            calendario1.set(Calendar.MONTH, Integer.parseInt(fecha[1])-1);
+            calendario1.set(Calendar.YEAR, Integer.parseInt(fecha[2]));
+            calendario1.set(Calendar.DAY_OF_MONTH, Integer.parseInt(fecha[0]));
+            calendario1.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hora[0]));
+            calendario1.set(Calendar.MINUTE, Integer.parseInt(hora[1]));
+            calendario1.set(Calendar.SECOND, Integer.parseInt(hora[2]));
+            cal.p_fecha.setCurrent(calendario1);
+            cal.p_fecha.setSelectedDate(calendario1);
+            cal.c_hora.setSelectedIndex(Integer.parseInt(hora[0]));
+            cal.c_minuto.setSelectedIndex(Integer.parseInt(hora[1]));
+            cal.c_segundo.setSelectedIndex(Integer.parseInt(hora[2]));
+        }
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         cal.setLocation((d.width/2)-(cal.getWidth()/2), (d.height/2)-(cal.getHeight()/2));
         cal.setVisible(true);
@@ -1121,25 +1275,70 @@ public class Responsables extends javax.swing.JPanel {
         Calendar miCalendario=cal.getReturnStatus();
         if(miCalendario!=null)
         {
-            String dia=Integer.toString(miCalendario.get(Calendar.DATE));;
-            String mes = Integer.toString(miCalendario.get(Calendar.MONTH)+1);
-            String anio = Integer.toString(miCalendario.get(Calendar.YEAR));
-            
-            DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");//YYYY-MM-DD HH:MM:SS
-            String valor=dia+"-"+mes+"-"+anio+" 00:00:00";
-            
-            boolean resp=guardaEmpleado(null, "meta_reparacion", valor);//empleadoByRExpediente
-            if(resp=true)
-                t_meta_reparacion.setText(dia+"-"+mes+"-"+anio);
-            else
+            String permiso="";
+            if(t_meta_valuacion.getText().compareToIgnoreCase("DD-MM-AAAA HH:MM:SS")!=0)
             {
-                t_meta_reparacion.setText("DD/MM/AAAA");
-                JOptionPane.showMessageDialog(null, "¡Error al actualizar el campo!");
+                String [] cadena_val = t_meta_valuacion.getText().split(" ");
+                String [] fecha_val = cadena_val[0].split("-");
+                String [] hora_val = cadena_val[1].split(":");
+
+                Calendar calendario_val = Calendar.getInstance();
+                calendario_val.set(Calendar.MONTH, Integer.parseInt(fecha_val[1])-1);
+                calendario_val.set(Calendar.YEAR, Integer.parseInt(fecha_val[2]));
+                calendario_val.set(Calendar.DAY_OF_MONTH, Integer.parseInt(fecha_val[0]));
+                calendario_val.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hora_val[0]));
+                calendario_val.set(Calendar.MINUTE, Integer.parseInt(hora_val[1]));
+                calendario_val.set(Calendar.SECOND, Integer.parseInt(hora_val[2]));
+                if(miCalendario.before(calendario_val))
+                    permiso="¡No se puede establecer una fecha anterior a la establecida en valuacion!";
+            }
+            if(t_meta_refacciones.getText().compareToIgnoreCase("DD-MM-AAAA HH:MM:SS")!=0)
+            {
+                String [] cadena_ref = t_meta_refacciones.getText().split(" ");
+                String [] fecha_ref = cadena_ref[0].split("-");
+                String [] hora_ref = cadena_ref[1].split(":");
+
+                Calendar calendario_ref = Calendar.getInstance();
+                calendario_ref.set(Calendar.MONTH, Integer.parseInt(fecha_ref[1])-1);
+                calendario_ref.set(Calendar.YEAR, Integer.parseInt(fecha_ref[2]));
+                calendario_ref.set(Calendar.DAY_OF_MONTH, Integer.parseInt(fecha_ref[0]));
+                calendario_ref.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hora_ref[0]));
+                calendario_ref.set(Calendar.MINUTE, Integer.parseInt(hora_ref[1]));
+                calendario_ref.set(Calendar.SECOND, Integer.parseInt(hora_ref[2]));
+                if(miCalendario.before(calendario_ref))
+                    permiso="¡No se puede establecer una fecha anterior a la establecida en refacciones!";
             }
             
+            if(permiso.compareTo("")==0)
+            {
+                String dia=Integer.toString(miCalendario.get(Calendar.DATE));
+                String mes = Integer.toString(miCalendario.get(Calendar.MONTH)+1);
+                String anio = Integer.toString(miCalendario.get(Calendar.YEAR));
+                String hora = Integer.toString(miCalendario.get(Calendar.HOUR_OF_DAY));
+                String minuto = Integer.toString(miCalendario.get(Calendar.MINUTE));
+                String segundo = Integer.toString(miCalendario.get(Calendar.SECOND));
+
+                DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");//YYYY-MM-DD HH:MM:SS
+                String valor=dia+"-"+mes+"-"+anio+" "+hora+":"+minuto+":"+segundo;
+
+                boolean resp=guardaEmpleado(null, "meta_taller", valor);//empleadoByRExpediente
+                if(resp=true)
+                {
+                    Date date = miCalendario.getTime();
+                    String date1 = dateFormat.format(date);     
+                    t_meta_reparacion.setText(date1);
+                    if(usr.getEditaMetas()==false)
+                         b_meta_reparacion.setEnabled(false);
+                }
+                else
+                {
+                    t_meta_reparacion.setText("DD-MM-AAAA HH:MM:SS");
+                    JOptionPane.showMessageDialog(null, "¡Error al actualizar el campo!");
+                }
+            }
+            else
+                JOptionPane.showMessageDialog(null, permiso);
         }
-        else
-        t_meta_reparacion.setText("DD/MM/AAAA");
         //b_meta_valuacion.requestFocus();
     }//GEN-LAST:event_b_meta_reparacionActionPerformed
 
@@ -1356,34 +1555,6 @@ public class Responsables extends javax.swing.JPanel {
             }
     }//GEN-LAST:event_b_borrar_cotizarActionPerformed
 
-    private void cb_autoriza_clienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_autoriza_clienteActionPerformed
-        // TODO add your handling code here:
-        Date fecha = new Date();
-        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");//YYYY-MM-DD HH:MM:SS
-        String valor=dateFormat.format(fecha);
-        boolean resp=false;
-        if(cb_autoriza_cliente.isSelected())
-            resp=guardaEmpleado(usr.getEmpleado(), "autoriza_cliente", valor);
-        else
-            resp=quitaEmpleado("autoriza_cliente", valor);
-        if(resp==false)
-            JOptionPane.showMessageDialog(null, "¡Error al actualizar el campo!");
-    }//GEN-LAST:event_cb_autoriza_clienteActionPerformed
-
-    private void cb_autoriza_internaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_autoriza_internaActionPerformed
-        // TODO add your handling code here:
-        Date fecha = new Date();
-        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");//YYYY-MM-DD HH:MM:SS
-        String valor=dateFormat.format(fecha);
-        boolean resp=false;
-        if(cb_autoriza_interna.isSelected())
-            resp=guardaEmpleado(usr.getEmpleado(), "autoriza_interna", valor);
-        else
-            resp=quitaEmpleado("autoriza_interna", valor);
-        if(resp==false)
-            JOptionPane.showMessageDialog(null, "¡Error al actualizar el campo!");
-    }//GEN-LAST:event_cb_autoriza_internaActionPerformed
-
     private void cb_envio_companiaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_envio_companiaActionPerformed
         // TODO add your handling code here:
         Date fecha = new Date();
@@ -1447,7 +1618,10 @@ public class Responsables extends javax.swing.JPanel {
         String valor=dateFormat.format(fecha);
         boolean resp=false;
         if(cb_entrega_unidad.isSelected())
+        {
             resp=guardaEmpleado(usr.getEmpleado(), "entrega_unidad", valor);
+            resp=guardaEmpleado(usr.getEmpleado(), "cierra_orden", valor);
+        }
         else
             resp=quitaEmpleado("entrega_unidad", valor);
         if(resp==false)
@@ -1482,6 +1656,105 @@ public class Responsables extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(null, "¡Error al actualizar el campo!");
     }//GEN-LAST:event_t_facturaActionPerformed
 
+    private void cb_cierra_reparacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_cierra_reparacionActionPerformed
+        // TODO add your handling code here:
+        Date fecha = new Date();
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");//YYYY-MM-DD HH:MM:SS
+        String valor=dateFormat.format(fecha);
+        boolean resp=false;
+        if(cb_cierra_reparacion.isSelected())
+            resp=guardaEmpleado(usr.getEmpleado(), "cierra_reparacion", valor);
+        else
+            resp=quitaEmpleado("cierra_reparacion", valor);
+        if(resp==false)
+            JOptionPane.showMessageDialog(null, "¡Error al actualizar el campo!");
+    }//GEN-LAST:event_cb_cierra_reparacionActionPerformed
+
+    private void b_meta_clienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_meta_clienteActionPerformed
+        // TODO add your handling code here:
+        if(t_meta_reparacion.getText().compareTo("DD-MM-AAAA HH:MM:SS")!=0)
+        {
+            h=new Herramientas(usr, 0);
+            h.session(sessionPrograma);
+
+            calendario cal =new calendario(new javax.swing.JFrame(), true, true);
+            if(t_meta_cliente.getText().compareToIgnoreCase("DD-MM-AAAA HH:MM:SS")!=0)
+            {
+                String [] cadena = t_meta_cliente.getText().split(" ");
+                String [] fecha = cadena[0].split("-");
+                String [] hora = cadena[1].split(":");
+
+                Calendar calendario1 = Calendar.getInstance();
+                calendario1.set(Calendar.MONTH, Integer.parseInt(fecha[1])-1);
+                calendario1.set(Calendar.YEAR, Integer.parseInt(fecha[2]));
+                calendario1.set(Calendar.DAY_OF_MONTH, Integer.parseInt(fecha[0]));
+                calendario1.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hora[0]));
+                calendario1.set(Calendar.MINUTE, Integer.parseInt(hora[1]));
+                calendario1.set(Calendar.SECOND, Integer.parseInt(hora[2]));
+                cal.p_fecha.setCurrent(calendario1);
+                cal.p_fecha.setSelectedDate(calendario1);
+                cal.c_hora.setSelectedIndex(Integer.parseInt(hora[0]));
+                cal.c_minuto.setSelectedIndex(Integer.parseInt(hora[1]));
+                cal.c_segundo.setSelectedIndex(Integer.parseInt(hora[2]));
+            }
+            Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+            cal.setLocation((d.width/2)-(cal.getWidth()/2), (d.height/2)-(cal.getHeight()/2));
+            cal.setVisible(true);
+
+            Calendar miCalendario=cal.getReturnStatus();
+            if(miCalendario!=null)
+            {
+                String permiso="";
+                
+                String [] cadena_rep = t_meta_reparacion.getText().split(" ");
+                String [] fecha_rep = cadena_rep[0].split("-");
+                String [] hora_rep = cadena_rep[1].split(":");
+
+                Calendar calendario_rep = Calendar.getInstance();
+                calendario_rep.set(Calendar.MONTH, Integer.parseInt(fecha_rep[1])-1);
+                calendario_rep.set(Calendar.YEAR, Integer.parseInt(fecha_rep[2]));
+                calendario_rep.set(Calendar.DAY_OF_MONTH, Integer.parseInt(fecha_rep[0]));
+                calendario_rep.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hora_rep[0]));
+                calendario_rep.set(Calendar.MINUTE, Integer.parseInt(hora_rep[1]));
+                calendario_rep.set(Calendar.SECOND, Integer.parseInt(hora_rep[2]));
+                if(miCalendario.before(calendario_rep))
+                    permiso="¡No se puede establecer una fecha anterior a la establecida en taller!";
+                
+                if(permiso.compareTo("")==0)
+                {
+                    String dia=Integer.toString(miCalendario.get(Calendar.DATE));;
+                    String mes = Integer.toString(miCalendario.get(Calendar.MONTH)+1);
+                    String anio = Integer.toString(miCalendario.get(Calendar.YEAR));
+                    String hora = Integer.toString(miCalendario.get(Calendar.HOUR_OF_DAY));
+                    String minuto = Integer.toString(miCalendario.get(Calendar.MINUTE));
+                    String segundo = Integer.toString(miCalendario.get(Calendar.SECOND));
+
+                    DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");//YYYY-MM-DD HH:MM:SS
+                    String valor=dia+"-"+mes+"-"+anio+" "+hora+":"+minuto+":"+segundo;
+
+                    boolean resp=guardaEmpleado(null, "meta_cliente", valor);//empleadoByRExpediente
+                    if(resp=true)
+                    {
+                        Date date = miCalendario.getTime();
+                        String date1 = dateFormat.format(date);     
+                        t_meta_cliente.setText(date1);
+                        if(usr.getEditaMetas()==false)
+                            b_meta_cliente.setEnabled(false);
+                    }
+                    else
+                    {
+                        t_meta_cliente.setText("DD-MM-AAAA HH:MM:SS");
+                        JOptionPane.showMessageDialog(null, "¡Error al actualizar el campo!");
+                    }
+                }
+                else
+                    JOptionPane.showMessageDialog(null, permiso);
+            }
+        }
+        else
+            JOptionPane.showMessageDialog(null, "¡No se puede establecer una meta al cliente sin haber ingresado la del taller!");
+    }//GEN-LAST:event_b_meta_clienteActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton b_borrar_cotizar;
@@ -1494,17 +1767,18 @@ public class Responsables extends javax.swing.JPanel {
     private javax.swing.JButton b_buscar_levantamento;
     private javax.swing.JButton b_buscar_refacciones;
     private javax.swing.JButton b_buscar_valuacion;
+    private javax.swing.JButton b_meta_cliente;
     private javax.swing.JButton b_meta_refacciones;
     private javax.swing.JButton b_meta_reparacion;
     private javax.swing.JButton b_meta_valuacion;
-    private javax.swing.JCheckBox cb_autoriza_cliente;
     private javax.swing.JCheckBox cb_autoriza_compania;
-    private javax.swing.JCheckBox cb_autoriza_interna;
     private javax.swing.JCheckBox cb_autoriza_reparacion;
     private javax.swing.JCheckBox cb_autoriza_valuacion;
+    private javax.swing.JCheckBox cb_cierra_reparacion;
     private javax.swing.JCheckBox cb_cierre_unidad;
     private javax.swing.JCheckBox cb_entrega_unidad;
     private javax.swing.JCheckBox cb_envio_compania;
+    private javax.swing.Box.Filler filler1;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jCheckBox2;
     private javax.swing.JLabel jLabel1;
@@ -1515,14 +1789,10 @@ public class Responsables extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
-    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel26;
-    private javax.swing.JLabel jLabel27;
-    private javax.swing.JLabel jLabel28;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel30;
     private javax.swing.JLabel jLabel31;
@@ -1544,36 +1814,36 @@ public class Responsables extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel48;
     private javax.swing.JLabel jLabel49;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel50;
+    private javax.swing.JLabel jLabel51;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JLabel l_apertura;
     private javax.swing.JLabel l_autorizar_cierre;
-    private javax.swing.JLabel l_autorizar_interna;
     private javax.swing.JLabel l_autorizo_apertura;
     private javax.swing.JLabel l_autorizo_autoriza_compania;
     private javax.swing.JLabel l_autorizo_cierre_valuacion;
-    private javax.swing.JLabel l_autorizo_cliente;
     private javax.swing.JLabel l_autorizo_cotizar;
     private javax.swing.JLabel l_autorizo_entregar;
     private javax.swing.JLabel l_autorizo_envio_compania;
     private javax.swing.JLabel l_autorizo_expediente;
     private javax.swing.JLabel l_autorizo_levantamiento;
     private javax.swing.JLabel l_autorizo_refacciones;
-    private javax.swing.JLabel l_autorizo_reparacion;
     private javax.swing.JLabel l_autorizo_valuacion;
     private javax.swing.JLabel l_cotizar;
     private javax.swing.JLabel l_expediente;
     private javax.swing.JLabel l_inicio_factura;
     private javax.swing.JLabel l_levantamiento;
+    private javax.swing.JLabel l_prefactura;
     private javax.swing.JLabel l_refacciones;
     private javax.swing.JLabel l_valuacion;
     private javax.swing.JPanel p_caja;
     private javax.swing.JPanel p_metas;
     private javax.swing.JPanel p_tracto;
     private javax.swing.JTextField t_apertura;
-    private javax.swing.JTextField t_autorizar_interna;
     private javax.swing.JTextField t_cierre_cotizar;
     private javax.swing.JTextField t_cierre_levantamiento;
     private javax.swing.JTextField t_cierre_refacciones;
@@ -1584,7 +1854,6 @@ public class Responsables extends javax.swing.JPanel {
     private javax.swing.JTextField t_expediente;
     private javax.swing.JTextField t_factura;
     private javax.swing.JTextField t_inicio_apertura;
-    private javax.swing.JTextField t_inicio_autoriza_cliente;
     private javax.swing.JTextField t_inicio_autoriza_compania;
     private javax.swing.JTextField t_inicio_cotizar;
     private javax.swing.JTextField t_inicio_entrega_unidad;
@@ -1596,9 +1865,11 @@ public class Responsables extends javax.swing.JPanel {
     private javax.swing.JTextField t_inicio_reparacion;
     private javax.swing.JTextField t_inicio_valuacion;
     private javax.swing.JTextField t_levantamiento;
+    private javax.swing.JTextField t_meta_cliente;
     private javax.swing.JTextField t_meta_refacciones;
     private javax.swing.JTextField t_meta_reparacion;
     private javax.swing.JTextField t_meta_valuacion;
+    private javax.swing.JTextField t_prefactura;
     private javax.swing.JTextField t_refacciones;
     private javax.swing.JTextField t_valuacion;
     // End of variables declaration//GEN-END:variables
@@ -1676,11 +1947,6 @@ public class Responsables extends javax.swing.JPanel {
             this.b_buscar_cotizar.setEnabled(cotizar);
             this.b_borrar_cotizar.setEnabled(cotizar);
 
-            this.cb_autoriza_cliente.setEnabled(autorizacion_cliente);
-
-            //if(objeto.getAutorizaCliente()==null)
-            //    autoriza_interna=false;
-            this.cb_autoriza_interna.setEnabled(autoriza_interna);
             //if(objeto.getRAutorizacionInterna()==null)
             //    valuacion=false;
             this.b_buscar_valuacion.setEnabled(valuacion);
@@ -1706,6 +1972,7 @@ public class Responsables extends javax.swing.JPanel {
             //if(objeto.getInicioRefacciones()==null)
             //    autoriza_reparacion=false;
             this.cb_autoriza_reparacion.setEnabled(autoriza_reparacion);
+            this.cb_cierra_reparacion.setEnabled(autoriza_reparacion);
 
             this.cb_entrega_unidad.setEnabled(entrega_unidad);
 
@@ -1715,15 +1982,48 @@ public class Responsables extends javax.swing.JPanel {
 
             if(usr.getAltaMetas())
             {
-                this.b_meta_refacciones.setEnabled(meta_refacciones);
-                this.b_meta_reparacion.setEnabled(meta_raparacion);
-                this.b_meta_valuacion.setEnabled(meta_valuacion);
+                if(t_meta_refacciones.getText().compareToIgnoreCase("DD-MM-AAAA HH:MM:SS")==0 || usr.getEditaMetas())
+                    this.b_meta_refacciones.setEnabled(meta_refacciones);
+                else
+                    this.b_meta_refacciones.setEnabled(false);
+                
+                if(t_meta_valuacion.getText().compareToIgnoreCase("DD-MM-AAAA HH:MM:SS")==0 || usr.getEditaMetas())
+                    this.b_meta_valuacion.setEnabled(meta_valuacion);
+                else
+                    this.b_meta_valuacion.setEnabled(false);
             }
             else
             {
-                this.b_meta_refacciones.setEnabled(false);
-                this.b_meta_reparacion.setEnabled(false);
                 this.b_meta_valuacion.setEnabled(false);
+                this.b_meta_refacciones.setEnabled(false);
+            }
+            
+            if(usr.getAltaMetas())//if(usr.getMetaCliente())
+            {
+                if(t_meta_reparacion.getText().compareToIgnoreCase("DD-MM-AAAA HH:MM:SS")==0 || usr.getEditaMetas())
+                    this.b_meta_reparacion.setEnabled(meta_raparacion);
+                else
+                    this.b_meta_reparacion.setEnabled(false);
+                
+                if(t_meta_cliente.getText().compareToIgnoreCase("DD-MM-AAAA HH:MM:SS")==0 || usr.getEditaMetas())
+                    this.b_meta_cliente.setEnabled(meta_raparacion);
+                else
+                    this.b_meta_cliente.setEnabled(false);
+            }
+            else
+            {
+                this.b_meta_reparacion.setEnabled(false);
+                this.b_meta_cliente.setEnabled(false);
+            }
+            if(usr.getVerFechaCliente()==false)
+            {
+                this.t_meta_cliente.setVisible(false);
+                this.b_meta_cliente.setVisible(false);
+            }
+            else
+            {
+                this.t_meta_cliente.setVisible(true);
+                this.b_meta_cliente.setVisible(true);
             }
         }catch(Exception e)
         {
@@ -1827,32 +2127,6 @@ public class Responsables extends javax.swing.JPanel {
                     }catch(Exception E){}
                     //**************************************************************
 
-                    //******Autorizacion cliente************************************
-                    try{
-                    fecha = actor.getAutorizaCliente();
-                    dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");//YYYY-MM-DD HH:MM:SS
-                    valor=dateFormat.format(fecha);
-                    t_inicio_autoriza_cliente.setText(valor);
-                    cb_autoriza_cliente.setSelected(true);
-                    }catch(Exception E){}
-                    try{
-                    l_autorizo_cliente.setText(actor.getUsuarioByAutorizaClienteAsigno().getIdUsuario());
-                    }catch(Exception E){}
-                    //**************************************************************
-
-                    //******Autorizacion interna************************************
-                    try{//inicio de cotizar
-                    fecha = actor.getRAutorizacionInterna();
-                    dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");//YYYY-MM-DD HH:MM:SS
-                    valor=dateFormat.format(fecha);
-                    t_autorizar_interna.setText(valor);
-                    cb_autoriza_interna.setSelected(true);
-                    }catch(Exception E){}
-                    try{
-                    l_autorizar_interna.setText(actor.getUsuarioByRAutorizacionInternaAsigno().getIdUsuario());
-                    }catch(Exception E){}
-                    //**************************************************************
-
                     //****Usuario Valuacion*****************************************
                     try{
                     t_valuacion.setText(""+actor.getEmpleadoByRValuacion().getIdEmpleado());
@@ -1943,14 +2217,16 @@ public class Responsables extends javax.swing.JPanel {
                     cb_autoriza_reparacion.setSelected(true);
                     }catch(Exception E){}
                     try{
-                        l_autorizo_reparacion.setText(actor.getUsuarioByRReparacionInicioAsigno().getIdUsuario());
+                        //l_autorizo_reparacion.setText(actor.getUsuarioByRReparacionInicioAsigno().getIdUsuario());
                     }catch(Exception E){}
                     try{//Cierre Reparacion
                     fecha = actor.getRReparacionCierre();
                     dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");//YYYY-MM-DD HH:MM:SS
                     valor=dateFormat.format(fecha);
                     t_cierre_reparacion.setText(valor);
-                    }catch(Exception E){}
+                    cb_cierra_reparacion.setSelected(true);
+                    }catch(Exception E){
+                    }
                     //**************************************************************
 
                     //**********Entrega unidad********************************
@@ -1987,6 +2263,25 @@ public class Responsables extends javax.swing.JPanel {
                     }catch(Exception e){}
                     //**************************************************************
 
+                    //****Usuario PreFactura******************************************
+                    try{
+                        if(actor.getAutorizadoFacturar()!=null)
+                        {
+                            if(actor.getRPrefactura()!=null)
+                            {
+                                dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");//YYYY-MM-DD HH:MM:SS
+                                valor=dateFormat.format(actor.getRPrefactura());
+                                t_prefactura.setText(valor);
+                            }
+                            else
+                                t_prefactura.setText("");
+                            if(actor.getUsuarioByRPrefacturaAsigno()!=null)
+                                l_prefactura.setText(actor.getUsuarioByRPrefacturaAsigno().getIdUsuario());
+                            else
+                                l_prefactura.setText("<Usuario que asigno operación>");
+                        }
+                    }catch(Exception E){}
+                    //**************************************************************
                     //**********Cierre unidad********************************
                     try{
                     fecha = actor.getFechaCierre();
@@ -2004,34 +2299,43 @@ public class Responsables extends javax.swing.JPanel {
                     try//meta valuacion
                     {
                         fecha=actor.getMetaValuacion();
-                        dateFormat = new SimpleDateFormat("dd-MM-yyyy");//YYYY-MM-DD HH:MM:SS
+                        dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");//YYYY-MM-DD HH:MM:SS
                         System.out.println(dateFormat.format(fecha));
                         this.t_meta_valuacion.setText(dateFormat.format(fecha));
                     }catch(Exception e)
                     {
-                        this.t_meta_valuacion.setText("DD/MM/AAAA");
+                        this.t_meta_valuacion.setText("DD-MM-AAAA HH:MM:SS");
                     }
 
                     try//meta refacciones
                     {
                         fecha=actor.getMetaRefacciones();
-                        dateFormat = new SimpleDateFormat("dd-MM-yyyy");//YYYY-MM-DD HH:MM:SS
+                        dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");//YYYY-MM-DD HH:MM:SS
                         System.out.println(dateFormat.format(fecha));
                         this.t_meta_refacciones.setText(dateFormat.format(fecha));
                     }catch(Exception e)
                     {
-                        this.t_meta_refacciones.setText("DD/MM/AAAA");
+                        this.t_meta_refacciones.setText("DD-MM-AAAA HH:MM:SS");
                     }
 
                     try//reparacion
                     {
-                        fecha=actor.getMetaReparacion();
-                        dateFormat = new SimpleDateFormat("dd-MM-yyyy");//YYYY-MM-DD HH:MM:SS
+                        fecha=actor.getFechaTaller();
+                        dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");//YYYY-MM-DD HH:MM:SS
                         System.out.println(dateFormat.format(fecha));
                         this.t_meta_reparacion.setText(dateFormat.format(fecha));
                     }catch(Exception e)
                     {
-                        this.t_meta_reparacion.setText("DD/MM/AAAA");
+                        this.t_meta_reparacion.setText("DD-MM-AAAA HH:MM:SS");
+                    }
+                    try//reparacion
+                    {
+                        fecha=actor.getFechaCliente();
+                        dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");//YYYY-MM-DD HH:MM:SS
+                        this.t_meta_cliente.setText(dateFormat.format(fecha));
+                    }catch(Exception e)
+                    {
+                        this.t_meta_cliente.setText("DD-MM-AAAA HH:MM:SS");
                     }
                     //**************************************************************
                     permisos(true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true);
@@ -2063,6 +2367,8 @@ public class Responsables extends javax.swing.JPanel {
             String [] aux ;
             int op=0;
             Calendar calendario3;
+            HistorialFecha his;
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//YYYY-MM-DD HH:MM:SS
             switch(campo)
             {
                 case "expediente":
@@ -2162,56 +2468,6 @@ public class Responsables extends javax.swing.JPanel {
                         t_inicio_cotizar.setText(valor);
                     //t_cierre_cotizar.setText("");
                     l_autorizo_cotizar.setText(usr.getIdUsuario());
-                    permisos(true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true);
-                    JOptionPane.showMessageDialog(null, "¡Asignación actualizada!");
-                    return true;
-                                
-               case "autoriza_cliente":
-                   //dd-MM-yyyy HH:mm:mm
-                    fecha = valor.split("-");
-                    hora=fecha[2].split(":");
-                    aux=hora[0].split(" ");
-                    fecha[2]=aux[0];
-                    hora[0]=aux[1];
-                    calendario3 = Calendar.getInstance();
-                    calendario3.set(
-                            Integer.parseInt(fecha[2]), 
-                            Integer.parseInt(fecha[1])-1, 
-                            Integer.parseInt(fecha[0]), 
-                            Integer.parseInt(hora[0]), 
-                            Integer.parseInt(hora[1]), 
-                            Integer.parseInt(hora[2]));
-                    objeto.setAutorizaCliente(calendario3.getTime());
-                    objeto.setUsuarioByAutorizaClienteAsigno(usr);
-                    session.getTransaction().commit();
-                    cb_autoriza_cliente.setSelected(true);
-                    t_inicio_autoriza_cliente.setText(valor);
-                    l_autorizo_cliente.setText(usr.getIdUsuario());
-                    permisos(true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true);
-                    JOptionPane.showMessageDialog(null, "¡Asignación actualizada!");
-                    return true;
-                   
-              case "autoriza_interna":
-                    //dd-MM-yyyy HH:mm:mm
-                    fecha = valor.split("-");
-                    hora=fecha[2].split(":");
-                    aux=hora[0].split(" ");
-                    fecha[2]=aux[0];
-                    hora[0]=aux[1];
-                    calendario3 = Calendar.getInstance();
-                    calendario3.set(
-                            Integer.parseInt(fecha[2]), 
-                            Integer.parseInt(fecha[1])-1, 
-                            Integer.parseInt(fecha[0]), 
-                            Integer.parseInt(hora[0]), 
-                            Integer.parseInt(hora[1]), 
-                            Integer.parseInt(hora[2]));
-                    objeto.setRAutorizacionInterna(calendario3.getTime());
-                    objeto.setUsuarioByRAutorizacionInternaAsigno(usr);
-                    session.getTransaction().commit();
-                    cb_autoriza_interna.setSelected(true);
-                    t_autorizar_interna.setText(valor);
-                    l_autorizar_interna.setText(usr.getIdUsuario());
                     permisos(true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true);
                     JOptionPane.showMessageDialog(null, "¡Asignación actualizada!");
                     return true;
@@ -2387,7 +2643,31 @@ public class Responsables extends javax.swing.JPanel {
                     session.getTransaction().commit();
                     cb_autoriza_reparacion.setSelected(true);
                     t_inicio_reparacion.setText(valor);
-                    l_autorizo_reparacion.setText(usr.getIdUsuario());
+                    //l_autorizo_reparacion.setText(usr.getIdUsuario());
+                    permisos(true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true);
+                    JOptionPane.showMessageDialog(null, "¡Asignación actualizada!");
+                    return true;
+                    
+                case "cierra_reparacion":
+                    //dd-MM-yyyy HH:mm:mm
+                    fecha = valor.split("-");
+                    hora=fecha[2].split(":");
+                    aux=hora[0].split(" ");
+                    fecha[2]=aux[0];
+                    hora[0]=aux[1];
+
+                    calendario3 = Calendar.getInstance();
+                    calendario3.set(
+                            Integer.parseInt(fecha[2]), 
+                            Integer.parseInt(fecha[1])-1, 
+                            Integer.parseInt(fecha[0]), 
+                            Integer.parseInt(hora[0]), 
+                            Integer.parseInt(hora[1]), 
+                            Integer.parseInt(hora[2]));
+                    objeto.setRReparacionCierre(calendario3.getTime());
+                    session.update(objeto);
+                    session.getTransaction().commit();
+                    cb_cierra_reparacion.setSelected(true);
                     permisos(true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true);
                     JOptionPane.showMessageDialog(null, "¡Asignación actualizada!");
                     return true;
@@ -2409,13 +2689,13 @@ public class Responsables extends javax.swing.JPanel {
                             Integer.parseInt(hora[1]), 
                             Integer.parseInt(hora[2]));
                     objeto.setREntregarFecha(calendario3.getTime());
+                    objeto.setUsuarioByREntregarAsigno(usr);
                     session.update(objeto);
                     session.getTransaction().commit();
                     cb_entrega_unidad.setSelected(true);
                     t_inicio_entrega_unidad.setText(valor);
                     l_autorizo_entregar.setText(usr.getIdUsuario());
                     permisos(true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true);
-                    JOptionPane.showMessageDialog(null, "¡Asignación actualizada!");
                     return true;
 
                 case "cierra_orden":
@@ -2474,11 +2754,10 @@ public class Responsables extends javax.swing.JPanel {
                     
                 case "meta_valuacion":
                     //dd-MM-yyyy HH:mm:mm
-                    fecha = valor.split("-");
-                    hora=fecha[2].split(":");
-                    aux=hora[0].split(" ");
-                    fecha[2]=aux[0];
-                    hora[0]=aux[1];
+                    System.out.println("Fecha enviada:"+valor);
+                    aux=valor.split(" ");
+                    fecha = aux[0].split("-");
+                    hora=aux[1].split(":");
 
                     calendario3 = Calendar.getInstance();
                     calendario3.set(
@@ -2488,19 +2767,19 @@ public class Responsables extends javax.swing.JPanel {
                             Integer.parseInt(hora[0]), 
                             Integer.parseInt(hora[1]), 
                             Integer.parseInt(hora[2]));
-                    objeto.setMetaValuacion(calendario3.getTime());
-                    session.update(objeto);
+                    System.out.println("Fecha enviada:"+valor);
+                    System.out.println("Fecha a Guardar:"+calendario3.getTime());
+                    Query query3 =session.createSQLQuery("update orden set meta_valuacion='"+dateFormat.format(calendario3.getTime())+"' where id_orden="+objeto.getIdOrden());
+                    query3.executeUpdate();
                     session.getTransaction().commit();
                     JOptionPane.showMessageDialog(null, "¡Asignación actualizada!");
                     return true;
 
                 case "meta_refacciones":
                     //dd-MM-yyyy HH:mm:mm
-                    fecha = valor.split("-");
-                    hora=fecha[2].split(":");
-                    aux=hora[0].split(" ");
-                    fecha[2]=aux[0];
-                    hora[0]=aux[1];
+                    aux=valor.split(" ");
+                    fecha = aux[0].split("-");
+                    hora=aux[1].split(":");
 
                     calendario3 = Calendar.getInstance();
                     calendario3.set(
@@ -2510,20 +2789,51 @@ public class Responsables extends javax.swing.JPanel {
                             Integer.parseInt(hora[0]), 
                             Integer.parseInt(hora[1]), 
                             Integer.parseInt(hora[2]));
-                    objeto.setMetaRefacciones(calendario3.getTime());
+                    
+                    Query query =session.createSQLQuery("update orden set meta_refacciones='"+dateFormat.format(calendario3.getTime())+"' where id_orden="+objeto.getIdOrden());
+                    query.executeUpdate();
+
+                    session.beginTransaction().commit();
+                    JOptionPane.showMessageDialog(null, "¡Asignación actualizada!");
+                    return true;
+
+                case "meta_taller":
+                    //dd-MM-yyyy HH:mm:mm
+                    aux=valor.split(" ");
+                    fecha = aux[0].split("-");
+                    hora=aux[1].split(":");
+
+                    
+                    calendario3 = Calendar.getInstance();
+                    calendario3.set(
+                            Integer.parseInt(fecha[2]), 
+                            Integer.parseInt(fecha[1])-1, 
+                            Integer.parseInt(fecha[0]), 
+                            Integer.parseInt(hora[0]), 
+                            Integer.parseInt(hora[1]), 
+                            Integer.parseInt(hora[2]));
+                    Query query1 =session.createSQLQuery("update orden set fecha_taller='"+dateFormat.format(calendario3.getTime())+"' where id_orden="+objeto.getIdOrden());
+                    query1.executeUpdate();
+                    
+                    his=new HistorialFecha();
+                    his.setFecha(calendario3.getTime());
+                    his.setAtributo("tal");
+                    his.setFechaModificacion(new Date());
+                    his.setOrden(objeto);
+                    his.setUsuario(usr);
+                    session.saveOrUpdate(his);
                     session.update(objeto);
                     session.getTransaction().commit();
                     JOptionPane.showMessageDialog(null, "¡Asignación actualizada!");
                     return true;
+                    
+                    
+                case "meta_cliente":
+                    aux=valor.split(" ");
+                    fecha = aux[0].split("-");
+                    hora=aux[1].split(":");
 
-                case "meta_reparacion":
-                    //dd-MM-yyyy HH:mm:mm
-                    fecha = valor.split("-");
-                    hora=fecha[2].split(":");
-                    aux=hora[0].split(" ");
-                    fecha[2]=aux[0];
-                    hora[0]=aux[1];
-
+                    
                     calendario3 = Calendar.getInstance();
                     calendario3.set(
                             Integer.parseInt(fecha[2]), 
@@ -2532,9 +2842,53 @@ public class Responsables extends javax.swing.JPanel {
                             Integer.parseInt(hora[0]), 
                             Integer.parseInt(hora[1]), 
                             Integer.parseInt(hora[2]));
-                    objeto.setMetaReparacion(calendario3.getTime());
-                    session.update(objeto);
+                    Query query4 =session.createSQLQuery("update orden set fecha_cliente='"+dateFormat.format(calendario3.getTime())+"' where id_orden="+objeto.getIdOrden());
+                    query4.executeUpdate();
+                    
+                    his=new HistorialFecha();
+                    his.setFecha(calendario3.getTime());
+                    his.setAtributo("cli");
+                    his.setFechaModificacion(new Date());
+                    his.setOrden(objeto);
+                    his.setUsuario(usr);
+                    session.saveOrUpdate(his);
+                    
+                    //*********Enviar la notificación***********
+                    ArrayList<Acceso> accesos=new ArrayList();
+                    Acceso [] aux1 = (Acceso[])objeto.getClientes().getAccesos().toArray(new Acceso[0]);
+                    accesos.addAll(Arrays.asList(aux1));
+                    aux1 = (Acceso[])objeto.getCompania().getAccesos().toArray(new Acceso[0]);
+                    accesos.addAll(Arrays.asList(aux1));
+                    if(objeto.getAgente()!=null)
+                        aux1 = (Acceso[])objeto.getAgente().getAccesos().toArray(new Acceso[0]);
+                    accesos.addAll(Arrays.asList(aux1));
+
+                    String notificaciones="{\"NOTIFICACIONES\":[";
+                    for(int a=0; a<accesos.size(); a++)
+                    {
+                        Notificacion nueva=new Notificacion();
+                        nueva.setMensaje("OT:"+objeto.getIdOrden()+" Fecha Promesa");
+                        nueva.setExtra("");
+                        nueva.setIntentos(0);
+                        nueva.setVisto(false);
+                        nueva.setAcceso(accesos.get(a));
+                        Integer id = (Integer)session.save(nueva);
+                        nueva=(Notificacion)session.get(Notificacion.class, id);
+                        nueva.setExtra("{\"VENTANA\":\"Solicitudes_des\",\"ID_ORDEN\":\""+objeto.getIdOrden()+"\",\"ID_NOTIFICACION\":\""+id+"\",\"ID_USUARIO\":\""+accesos.get(a).getIdAcceso()+"\"}");
+                        session.update(nueva);
+                        notificaciones+="{\"ID\":\""+id+"\"}";
+                        if(a+1 < accesos.size())
+                            notificaciones+=",";
+                    }
+                    notificaciones+="]}";
                     session.getTransaction().commit();
+                    try{
+                    PeticionPost service=new PeticionPost("http://tracto.ddns.net:8085/integral/service/api.php");
+                    service.add("METODO", "NOTIFICACION.MENSAJE");
+                    service.add("NOTIFICACIONES", notificaciones);
+                    System.out.println(service.getRespueta());
+                    }catch(Exception e){}
+                    //******************************************
                     JOptionPane.showMessageDialog(null, "¡Asignación actualizada!");
                     return true;
             }
@@ -2624,44 +2978,6 @@ public class Responsables extends javax.swing.JPanel {
                         JOptionPane.showMessageDialog(null, "¡No se puede eliminar ya que el procedimiento siguente ya esta abierto!");
                    return true;
 
-               case "autoriza_cliente":
-                   if(objeto.getRAutorizacionInterna()==null)
-                   {
-                        objeto.setAutorizaCliente(null);
-                        objeto.setUsuarioByAutorizaClienteAsigno(usr);
-                        session.getTransaction().commit();
-                        t_inicio_autoriza_cliente.setText("");
-                        l_autorizo_cliente.setText(usr.getIdUsuario());
-                        cb_autoriza_cliente.setSelected(false);
-                        permisos(true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true);
-                        JOptionPane.showMessageDialog(null, "¡La asignación fue eliminada!");
-                    }
-                   else
-                   {
-                       this.cb_autoriza_cliente.setSelected(true);
-                        JOptionPane.showMessageDialog(null, "¡No se puede eliminar ya que el procedimiento siguente ya esta abierto!");
-                   }
-                   return true;
-                   
-               case "autoriza_interna":
-                   if(objeto.getRValuacionInicio()==null)
-                   {
-                        objeto.setRAutorizacionInterna(null);
-                        objeto.setUsuarioByRAutorizacionInternaAsigno(usr);
-                        session.getTransaction().commit();
-                        cb_autoriza_interna.setSelected(false);
-                        t_autorizar_interna.setText("");
-                        l_autorizar_interna.setText(usr.getIdUsuario());
-                        permisos(true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true);
-                        JOptionPane.showMessageDialog(null, "¡La asignación fue eliminada!");
-                   }
-                   else
-                   {
-                       this.cb_autoriza_interna.setSelected(true);
-                        JOptionPane.showMessageDialog(null, "¡No se puede eliminar ya que el procedimiento siguente ya esta abierto!");
-                   }
-                   return true;
-                   
                case "valuacion":
                    if(objeto.getEnvioCompania()==null)
                    {
@@ -2683,7 +2999,6 @@ public class Responsables extends javax.swing.JPanel {
                     }
                    else
                    {
-                       this.cb_autoriza_interna.setSelected(true);
                         JOptionPane.showMessageDialog(null, "¡No se puede eliminar ya que el procedimiento siguente ya esta abierto!");
                    }
                     return true;
@@ -2777,7 +3092,7 @@ public class Responsables extends javax.swing.JPanel {
                         session.getTransaction().commit();
                         this.cb_autoriza_reparacion.setSelected(false);
                         t_inicio_reparacion.setText("");
-                        l_autorizo_reparacion.setText(usr.getIdUsuario());
+                        //l_autorizo_reparacion.setText(usr.getIdUsuario());
                         permisos(true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true);
                         JOptionPane.showMessageDialog(null, "¡La asignación fue eliminada!");
                     }
@@ -2836,12 +3151,6 @@ public class Responsables extends javax.swing.JPanel {
         {
             System.out.println(he);//he.printStackTrace();
             session.getTransaction().rollback();
-            switch(campo)
-            {
-                case "autoriza_cliente":
-                    cb_autoriza_cliente.setSelected(true);
-                    break;
-            }
             permisos(true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true);
             return false;
         }

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 21/08/2015 05:39:12 PM by Hibernate Tools 3.6.0 -->
+<!-- Generated 21/12/2017 08:34:32 AM by Hibernate Tools 3.6.0 -->
 <hibernate-mapping>
     <class name="Hibernate.entidades.Nota" table="nota" >
         <id name="idNota" type="java.lang.Integer">
@@ -12,6 +12,9 @@
             <column name="id_orden">
                 <comment>numero de orden si existe</comment>
             </column>
+        </many-to-one>
+        <many-to-one name="usoCfdi" class="Hibernate.entidades.UsoCfdi" fetch="select">
+            <column name="id_uso_cfdi" length="6" />
         </many-to-one>
         <many-to-one name="usuarioByAutorizo" class="Hibernate.entidades.Usuario" fetch="select">
             <column name="autorizo" length="10" />
@@ -28,7 +31,7 @@
             </column>
         </property>
         <property name="rfcEmisor" type="string">
-            <column name="rfc_emisor" length="13">
+            <column name="rfc_emisor" length="14">
                 <comment>rfc del emisor</comment>
             </column>
         </property>
@@ -73,7 +76,7 @@
             </column>
         </property>
         <property name="rfcReceptor" type="string">
-            <column name="rfc_receptor" length="13">
+            <column name="rfc_receptor" length="14">
                 <comment>rfc del receptor</comment>
             </column>
         </property>
@@ -124,7 +127,7 @@
         </property>
         <property name="estadoFactura" type="string">
             <column name="estado_factura" length="15">
-                <comment>estado de la factura</comment>
+                <comment>estado de la factura Pendiente Facturado Cancelado</comment>
             </column>
         </property>
         <property name="FFiscal" type="string">
@@ -216,7 +219,7 @@
             <column name="proveedor" length="20" />
         </property>
         <property name="condicionesPago" type="string">
-            <column name="condiciones_pago" length="20" />
+            <column name="condiciones_pago" length="35" />
         </property>
         <property name="tipoFacturacion" type="string">
             <column name="tipo_facturacion" length="15" />
@@ -250,14 +253,14 @@
         </property>
         <property name="texto" type="string">
             <column name="texto" length="200" />
-        </property> 
-        <property name="serieExterno" type="string">
-            <column name="serie_externo" length="3" />
         </property>
         <property name="folioExterno" type="java.lang.Integer">
             <column name="folio_externo" />
         </property>
-        <property name="Pac" type="string">
+        <property name="serieExterno" type="string">
+            <column name="serie_externo" length="3" />
+        </property>
+        <property name="pac" type="string">
             <column name="PAC" length="1" />
         </property>
         <property name="selloSat" type="string">
@@ -272,11 +275,32 @@
         <property name="certificadoEmisor" type="string">
             <column name="certificado_emisor" length="25" />
         </property>
-        <set name="conceptos" table="concepto" inverse="true" lazy="true" fetch="select" cascade="all">
+        <property name="descDeducible" type="java.lang.Double">
+            <column name="desc_deducible" precision="22" scale="0" />
+        </property>
+        <property name="tipoRelacion" type="string">
+            <column name="tipo_relacion" length="3" />
+        </property>
+        <property name="version" type="java.lang.Double">
+            <column name="version" precision="22" scale="0" />
+        </property>
+        <set name="relacionsForRelacionNota" table="relacion" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="relacion_nota" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Relacion" />
+        </set>
+        <set name="conceptos" table="concepto" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="id_nota" />
             </key>
             <one-to-many class="Hibernate.entidades.Concepto" />
+        </set>
+        <set name="relacionsForIdNota" table="relacion" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_nota" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Relacion" />
         </set>
     </class>
 </hibernate-mapping>

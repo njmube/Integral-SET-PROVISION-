@@ -28,6 +28,7 @@ public class Almacen  implements java.io.Serializable {
      private String autorizo;
      private String tipoDocumento;
      private String especialidad;
+     private String almacen;
      private Set movimientos = new HashSet(0);
 
     public Almacen() {
@@ -42,7 +43,7 @@ public class Almacen  implements java.io.Serializable {
         this.operacion = operacion;
     }
     //public Almacen(Usuario usuario, Pedido pedido, String entrego, Date fecha, int tipoMovimiento, int operacion, String documento, String notas, String autorizo, String tipoDocumento, Orden orden, Set movimientos) {
-    public Almacen(Usuario usuario, Destajo destajo, Pedido pedido, TrabajoExtra trabajoExtra, Orden orden, Empleado empleado, String entrego, Date fecha, int tipoMovimiento, int operacion, String documento, String notas, String autorizo, String tipoDocumento, String especialidad, Set movimientos) {
+    public Almacen(Usuario usuario, Destajo destajo, Pedido pedido, TrabajoExtra trabajoExtra, Orden orden, Empleado empleado, String entrego, Date fecha, int tipoMovimiento, int operacion, String documento, String notas, String autorizo, String tipoDocumento, String especialidad, String almacen, Set movimientos) {
        this.usuario = usuario;
        this.destajo = destajo;
        this.pedido = pedido;
@@ -58,6 +59,7 @@ public class Almacen  implements java.io.Serializable {
        this.empleado = empleado;
        this.tipoDocumento = tipoDocumento;
        this.especialidad = especialidad;
+       this.almacen = almacen;
        this.movimientos = movimientos;
     }
    
@@ -176,6 +178,13 @@ public class Almacen  implements java.io.Serializable {
     
     public void setEspecialidad(String especialidad) {
         this.especialidad = especialidad;
+    }
+    public String getAlmacen() {
+        return this.almacen;
+    }
+    
+    public void setAlmacen(String almacen) {
+        this.almacen = almacen;
     }
     public Set getMovimientos() {
         return this.movimientos;

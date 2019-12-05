@@ -5,11 +5,13 @@
  */
 
 package Servicios;
+import Integral.Ftp;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
+import org.apache.commons.net.ftp.FTPFile;
 
 /**
  *
@@ -20,14 +22,14 @@ public class Carpeta extends javax.swing.JDialog implements MouseListener{
     /**
      * Creates new form Carpeta
      */
-    private String carpeta="", local="";
+    private String carpeta="", local="", rutaFTP="";
     Hilo miHilo;
     int x=0;
     File[] ficheros;
     
-    public Carpeta(java.awt.Frame parent, boolean modal, String carpeta) {
+    public Carpeta(java.awt.Frame parent, boolean modal, String ruta, String carpeta) {
         super(parent, modal);
-        carpeta=carpeta.replace("/", "\\");
+        this.rutaFTP=ruta;
         this.carpeta=carpeta;
         this.local=carpeta;
         initComponents();
@@ -131,11 +133,11 @@ public class Carpeta extends javax.swing.JDialog implements MouseListener{
         // TODO add your handling code here:
         String texto=t_ruta.getText();
         if(texto.compareTo(local)!=0){
-            File f=new File(texto);
-            miHilo.t.stop();
-            x=ficheros.length;
-            String r=f.getParent().replace("/", "\\");
-            miHilo = new Hilo(r+"\\");
+            texto=texto.substring(0, texto.length()-1);
+            int pos=texto.lastIndexOf("/");
+            texto=texto.substring(0, pos+1);
+            t_ruta.setText(texto);
+            miHilo = new Hilo(texto);
         }
     }//GEN-LAST:event_b_atrasActionPerformed
 
@@ -165,32 +167,36 @@ public class Carpeta extends javax.swing.JDialog implements MouseListener{
             panel.updateUI();
             panel.repaint();
             t_ruta.setText(directorio);
-            File f = new File(directorio);
-            if(f.exists())
+            
+            Ftp miFtp=new Ftp();
+            String temporal="";
+            boolean respuesta=true;
+            respuesta=miFtp.conectar(rutaFTP, "compras", "04650077", 3310);
+            if(respuesta==true)
             {
-                ficheros = f.listFiles();
-                int cantidad=ficheros.length;
+                miFtp.cambiarDirectorio(directorio);
+                FTPFile[] lista = miFtp.listarArchivos();
+                int cantidad=lista.length;
                 int valor=cantidad/4;
                 panel.setSize(660, valor*120);
                 panel.setPreferredSize(new Dimension(660, valor*120));
-                for(x=0;x<cantidad;x++)
+                
+                for(int x=0; x<lista.length; x++)
                 {
-                    if((ficheros[x].isDirectory()==true && ficheros[x].getName().contains("miniatura")!=true) || ficheros[x].getName().contains(".jpg")==true || ficheros[x].getName().contains(".JPG")==true || ficheros[x].getName().contains(".jpeg")==true || ficheros[x].getName().contains(".JPEG")==true)
-                    {
-                        vista elemento= new vista(ficheros[x].getName(), directorio);
-                        elemento.addMouseListener(this);
-                        panel.add(elemento);
-                        elemento=null;
-                    }
+                    vista elemento= new vista(lista[x].getName(), rutaFTP, directorio, lista[x].isDirectory());
+                    elemento.addMouseListener(this);
+                    panel.add(elemento);
+                    elemento=null;
                 }
+                miFtp.desconectar();
             }
+            
             panel.updateUI();
             panel.repaint();
            sp.updateUI();
            sp.revalidate();
            barra.setIndeterminate(false);
            barra.setString("Listo");
-           f=null;
         }catch(Exception o){}
     }
 
@@ -200,17 +206,19 @@ public class Carpeta extends javax.swing.JDialog implements MouseListener{
         if(e.getClickCount()==2){
             try{
             vista comando = (vista)e.getSource();
-            File f=new File(comando.ruta+comando.nombre);
-            if(f.isDirectory()==true){
-                miHilo = new Hilo(comando.ruta+comando.nombre+"\\");
+            if(comando.tipo==true){
+                miHilo = new Hilo(comando.carpeta+comando.nombre+"/");
             }
             else
             {
-                ver aux=new ver(null, true, comando.ruta+comando.nombre);
-                Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-                aux.setLocation((d.width/2)-(aux.getWidth()/2), (d.height/2)-(aux.getHeight()/2));
-                aux.setVisible(true);
-                aux=null;
+                Ftp miFtp=new Ftp();
+                boolean respuesta=true;
+                respuesta=miFtp.conectar(rutaFTP, "compras", "04650077", 3310);
+                if(respuesta==true)
+                {
+                    miFtp.cambiarDirectorio(comando.carpeta);
+                    miFtp.AbrirArchivo(comando.nombre);
+                }
             }
             }catch(Exception ex){
                 ex.printStackTrace();

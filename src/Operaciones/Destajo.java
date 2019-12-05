@@ -7,7 +7,6 @@
 package Operaciones;
 
 import Hibernate.Util.HibernateUtil;
-import Hibernate.entidades.Almacen;
 import Hibernate.entidades.Configuracion;
 import Hibernate.entidades.Empleado;
 import Hibernate.entidades.Foto;
@@ -43,6 +42,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
@@ -77,19 +77,19 @@ public class Destajo extends javax.swing.JPanel {
     String[] columnas2 = new String [] {"#Parte", "Descripción", "Cant.", "Costo"};
     String[] columnas3 = new String [] {"Id", "F. Avance", "% de avance", "Imp. Pagado", "Nota"};
     String[] columnas4 = new String [] {"No. Parte", "Descripción", "Cantidad", "Costo"};
+    int configuracion=1;
     /**
      * Creates new form destajo
      */
-    public Destajo(String ord, Usuario usr, String estado, String sessionPrograma) {
+    public Destajo(String ord, Usuario usr, String estado, String sessionPrograma, int configuracion) {
         initComponents();
         this.ord=ord;
+        this.configuracion=configuracion;
         this.usr=usr;
         this.estado=estado;
         this.sessionPrograma=sessionPrograma;
         t_datos.setModel(ModeloTablaReporte(0, columnas));
         t_adicionales.setModel(ModeloTablaReporte1(0, columnas1));
-        lista.setModel(ModeloTablaReporte2(0, columnas2));
-        lista1.setModel(ModeloTablaReporte4(0, columnas4));
         t_datos1.setModel(ModeloTablaReporte3(0, columnas3));
         //jButton6.setIcon(new ImageIcon("imagenes/busca.png"));
         b_pdf1.setIcon(new ImageIcon("imagenes/pdf.png"));
@@ -891,13 +891,6 @@ public class Destajo extends javax.swing.JPanel {
         jLabel10 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
         t_orden = new javax.swing.JTextField();
-        ListaConsumible = new javax.swing.JDialog();
-        jPanel6 = new javax.swing.JPanel();
-        jLabel11 = new javax.swing.JLabel();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        lista = new javax.swing.JTable();
-        total_consumido = new javax.swing.JFormattedTextField();
-        jLabel14 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         pago_adicional = new javax.swing.JDialog();
@@ -935,13 +928,6 @@ public class Destajo extends javax.swing.JPanel {
         t_importe_pago2 = new javax.swing.JFormattedTextField();
         t_notas_pago2 = new javax.swing.JTextField();
         jLabel19 = new javax.swing.JLabel();
-        ListaConsumible1 = new javax.swing.JDialog();
-        jPanel10 = new javax.swing.JPanel();
-        jLabel20 = new javax.swing.JLabel();
-        jScrollPane6 = new javax.swing.JScrollPane();
-        lista1 = new javax.swing.JTable();
-        total_consumido1 = new javax.swing.JFormattedTextField();
-        jLabel21 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         b_mecanica = new javax.swing.JRadioButton();
         b_hojalateria = new javax.swing.JRadioButton();
@@ -1343,100 +1329,6 @@ public class Destajo extends javax.swing.JPanel {
             .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
-        ListaConsumible.setTitle("Lista de Consumibles");
-        ListaConsumible.setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
-
-        jPanel6.setBackground(new java.awt.Color(255, 255, 255));
-
-        jLabel11.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel11.setText("Lista de Material Consumido");
-
-        lista.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Orden", "Descripción", "Cantidad", "Costo"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.Double.class, java.lang.Double.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        jScrollPane4.setViewportView(lista);
-        if (lista.getColumnModel().getColumnCount() > 0) {
-            lista.getColumnModel().getColumn(0).setPreferredWidth(95);
-            lista.getColumnModel().getColumn(1).setPreferredWidth(230);
-            lista.getColumnModel().getColumn(2).setPreferredWidth(90);
-            lista.getColumnModel().getColumn(3).setPreferredWidth(90);
-        }
-
-        total_consumido.setEditable(false);
-        total_consumido.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.00"))));
-        total_consumido.setValue(0.0d);
-        total_consumido.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                total_consumidoActionPerformed(evt);
-            }
-        });
-
-        jLabel14.setText("Total: $");
-
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addGap(95, 95, 95)
-                .addComponent(jLabel11)
-                .addContainerGap(112, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jLabel14)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(total_consumido, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
-        );
-        jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel11)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(total_consumido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel14))
-                .addContainerGap(14, Short.MAX_VALUE))
-        );
-
-        javax.swing.GroupLayout ListaConsumibleLayout = new javax.swing.GroupLayout(ListaConsumible.getContentPane());
-        ListaConsumible.getContentPane().setLayout(ListaConsumibleLayout);
-        ListaConsumibleLayout.setHorizontalGroup(
-            ListaConsumibleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        ListaConsumibleLayout.setVerticalGroup(
-            ListaConsumibleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -1802,101 +1694,6 @@ public class Destajo extends javax.swing.JPanel {
             .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
-        ListaConsumible1.setTitle("Lista de Consumibles Trabajos Adicionales");
-        ListaConsumible1.setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
-
-        jPanel10.setBackground(new java.awt.Color(255, 255, 255));
-
-        jLabel20.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel20.setText("Lista de Material Consumido");
-
-        lista1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Orden", "Descripción", "Cantidad", "Costo", "Fecha"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.Double.class, java.lang.Double.class, java.lang.Object.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, true
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        jScrollPane6.setViewportView(lista1);
-        if (lista1.getColumnModel().getColumnCount() > 0) {
-            lista1.getColumnModel().getColumn(0).setPreferredWidth(95);
-            lista1.getColumnModel().getColumn(1).setPreferredWidth(230);
-            lista1.getColumnModel().getColumn(2).setPreferredWidth(90);
-            lista1.getColumnModel().getColumn(3).setPreferredWidth(90);
-            lista1.getColumnModel().getColumn(4).setPreferredWidth(120);
-        }
-
-        total_consumido1.setEditable(false);
-        total_consumido1.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.00"))));
-        total_consumido1.setValue(0.0d);
-        total_consumido1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                total_consumido1ActionPerformed(evt);
-            }
-        });
-
-        jLabel21.setText("Total: $");
-
-        javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
-        jPanel10.setLayout(jPanel10Layout);
-        jPanel10Layout.setHorizontalGroup(
-            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel10Layout.createSequentialGroup()
-                .addGap(95, 95, 95)
-                .addComponent(jLabel20)
-                .addContainerGap(112, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addGroup(jPanel10Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jLabel21)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(total_consumido1, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
-        );
-        jPanel10Layout.setVerticalGroup(
-            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel10Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel20)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(total_consumido1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel21))
-                .addContainerGap(14, Short.MAX_VALUE))
-        );
-
-        javax.swing.GroupLayout ListaConsumible1Layout = new javax.swing.GroupLayout(ListaConsumible1.getContentPane());
-        ListaConsumible1.getContentPane().setLayout(ListaConsumible1Layout);
-        ListaConsumible1Layout.setHorizontalGroup(
-            ListaConsumible1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        ListaConsumible1Layout.setVerticalGroup(
-            ListaConsumible1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-
         setBackground(new java.awt.Color(255, 255, 255));
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
@@ -2121,7 +1918,7 @@ public class Destajo extends javax.swing.JPanel {
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Double.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.Double.class, java.lang.Double.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
                 false, false, true, false, true
@@ -2250,13 +2047,13 @@ public class Destajo extends javax.swing.JPanel {
                         .addComponent(b_menos, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(b_mas, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(b_adicionales)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jButton5)
                             .addComponent(b_general)
                             .addComponent(t_fecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(b_fecha_siniestro, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(b_adicionales)))
+                        .addComponent(b_fecha_siniestro, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -2364,60 +2161,65 @@ public class Destajo extends javax.swing.JPanel {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        try
-        {
-            session.beginTransaction().begin();
-            BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.WINANSI, BaseFont.NOT_EMBEDDED);
-            //Orden ord=buscaApertura();
-            PDF reporte = new PDF();
-            Date fecha = new Date();
-            DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
-            String valor=dateFormat.format(fecha);
-            File folder = new File("reportes/"+ord);
-            folder.mkdirs();
-            reporte.Abrir(PageSize.LETTER.rotate(), "Valuación", "reportes/"+ord+"/"+valor+"-destajo.pdf");
-            Font font = new Font(Font.FontFamily.HELVETICA, 8, Font.BOLD);
-            BaseColor contenido=BaseColor.WHITE;
-            int centro=Element.ALIGN_CENTER;
-            int izquierda=Element.ALIGN_LEFT;
-            int derecha=Element.ALIGN_RIGHT;
-            float tam[]=new float[]{150,50,100,300};
-            PdfPTable tabla=reporte.crearTabla(4, tam, 100, Element.ALIGN_LEFT);
+       h=new Herramientas(usr, 0);
+       h.session(sessionPrograma);
+       Session session = HibernateUtil.getSessionFactory().openSession();
+       try
+       {
+           session.beginTransaction().begin();
+           BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.WINANSI, BaseFont.NOT_EMBEDDED);
+           
+           PDF reporte = new PDF();
+           Date fecha = new Date();
+           DecimalFormat formatoPorcentaje = new DecimalFormat("#,##0.00");
+           formatoPorcentaje.setMinimumFractionDigits(2);
+           
+           DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
+           String valor=dateFormat.format(fecha);
+           File folder = new File("reportes/"+ord);
+           folder.mkdirs();
+           reporte.Abrir(PageSize.LETTER.rotate(), "Destajos", "reportes/"+ord+"/"+valor+"-detalle-destajo.pdf");
+           Font font = new Font(Font.FontFamily.HELVETICA, 6, Font.BOLD);
+           BaseColor contenido=BaseColor.WHITE;
+           int centro=Element.ALIGN_CENTER;
+           int izquierda=Element.ALIGN_LEFT;
+           int derecha=Element.ALIGN_RIGHT;
+           float tam[]=new float[]{150,80,90,70,250};
+           PdfPTable tabla=reporte.crearTabla(5, tam, 100, Element.ALIGN_LEFT);
+           
+           cabecera2(reporte, bf, tabla);
+           Double sum=0.0d, avance=0.0d;
+           for(int x=0; x<t_datos.getRowCount(); x++)
+           {
+               tabla.addCell(reporte.celda(t_datos.getValueAt(x, 1).toString(), font, contenido, centro, 0,1,Rectangle.RECTANGLE));
+               tabla.addCell(reporte.celda(formatoPorcentaje.format(Double.parseDouble(t_datos.getValueAt(x, 2).toString()))+"%", font, contenido, centro, 0,1,Rectangle.RECTANGLE));
+               tabla.addCell(reporte.celda("$"+formatoPorcentaje.format(Double.parseDouble(t_datos.getValueAt(x, 3).toString())), font, contenido, derecha, 2,1,Rectangle.RECTANGLE));
+               tabla.addCell(reporte.celda(t_datos.getValueAt(x, 4).toString(), font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
+               sum =sum+Double.parseDouble(t_datos.getValueAt(x, 3).toString());
+               avance = avance+Double.parseDouble(t_datos.getValueAt(x, 2).toString());
+           }
+           tabla.addCell(reporte.celda("Avance General:", font, contenido, derecha, 0,1,Rectangle.NO_BORDER));
+           tabla.addCell(reporte.celda(""+formatoPorcentaje.format(avance)+"%", font, contenido, centro, 0,1,Rectangle.RECTANGLE));
+           tabla.addCell(reporte.celda("Importe Pagado al día de Hoy:", font, contenido, derecha, 0,1,Rectangle.NO_BORDER));
+           tabla.addCell(reporte.celda("$"+formatoPorcentaje.format(sum), font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
+           tabla.addCell(reporte.celda("", font, contenido, izquierda, 0,1,Rectangle.NO_BORDER));
+           
+           Double rest=Double.parseDouble(t_importe.getValue().toString())-sum;
+           tabla.addCell(reporte.celda("", font, contenido, derecha, 2,1,Rectangle.NO_BORDER));
+           tabla.addCell(reporte.celda("Importe Restante por Pagar:", font, contenido, derecha, 0,1,Rectangle.NO_BORDER));
+           tabla.addCell(reporte.celda("$"+formatoPorcentaje.format(rest), font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
+           tabla.addCell(reporte.celda("", font, contenido, izquierda, 0,1,Rectangle.NO_BORDER));
             
-            DecimalFormat formatoPorcentaje = new DecimalFormat("#,##0.00");
-            formatoPorcentaje.setMinimumFractionDigits(2);   
-            
-            cabecera(reporte, bf, tabla);
-            
-                session.beginTransaction().begin();
-                Orden dato = (Orden)session.get(Orden.class, Integer.parseInt(this.ord));
-                List cuentas=null;
-                for(int x=0; x<t_datos.getRowCount(); x++)
-                {
-                    tabla.addCell(reporte.celda(t_datos.getValueAt(x, 1).toString(), font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
-                    tabla.addCell(reporte.celda(formatoPorcentaje.format((Double)t_datos.getValueAt(x, 2)), font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
-                    tabla.addCell(reporte.celda(formatoPorcentaje.format((Double)t_datos.getValueAt(x, 3)), font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
-                    if(t_datos.getValueAt(x, 4)!=null){
-                        tabla.addCell(reporte.celda(t_datos.getValueAt(x, 4).toString(), font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
-                    }else{
-                        tabla.addCell(reporte.celda(" ", font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
-                    }
-                }
-                session.beginTransaction().rollback();
-            
-            tabla.setHeaderRows(1);
-            reporte.agregaObjeto(tabla);
-            reporte.cerrar();
-            reporte.visualizar("reportes/"+ord+"/"+valor+"-destajo.pdf");
-            
-        }catch(Exception e)
-        {
-            System.out.println(e);
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "No se pudo realizar el reporte si el archivo esta abierto.");
-        }
-        if(session!=null)
+           tabla.setHeaderRows(1);
+           reporte.agregaObjeto(tabla);
+           reporte.cerrar();
+           reporte.visualizar("reportes/"+ord+"/"+valor+"-detalle-destajo.pdf");
+           
+       }catch(Exception e){
+           e.printStackTrace();
+           JOptionPane.showMessageDialog(this, "No se pudo realizar el reporte si el archivo esta abierto.");
+       }
+       if(session!=null)
             if(session.isOpen())
             {
                 session.flush();
@@ -2642,7 +2444,7 @@ public class Destajo extends javax.swing.JPanel {
 
     private void b_calendario_pagoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_calendario_pagoActionPerformed
         // TODO add your handling code here:
-        calendario cal =new calendario(new javax.swing.JFrame(), true);
+        calendario cal =new calendario(new javax.swing.JFrame(), true, false);
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         cal.setLocation((d.width/2)-(cal.getWidth()/2), (d.height/2)-(cal.getHeight()/2));
         cal.setVisible(true);
@@ -2779,10 +2581,22 @@ public class Destajo extends javax.swing.JPanel {
                     for (Object o : resultList) 
                     {
                         java.util.HashMap respuesta=(java.util.HashMap)o;
+                        
                         tabla.addCell(reporte.celda(respuesta.get("id_orden").toString(), font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
                         tabla.addCell(reporte.celda(respuesta.get("especialidad").toString(), font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
                         tabla.addCell(reporte.celda(respuesta.get("fecha_destajo").toString(), font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
-                        tabla.addCell(reporte.celda(formatoPorcentaje.format((Double)respuesta.get("avance")), font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
+                        
+                        //% avance general
+                        String [] campos2 = t_fecha.getText().split("-");
+                        String aux2="";
+                        aux2+=campos2[2]+"-"+campos2[1]+"-"+campos2[0];//Calendar.MONTH, Integer.parseInt(campos[1])-1);
+                        
+                        Query query = session.createSQLQuery("select sum(avance) as avance from destajo where id_orden="+respuesta.get("id_orden")+" and especialidad='"+global+"' and fecha_destajo<='"+aux2+"'");
+                        query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+                        ArrayList avance=(ArrayList)query.list();
+                        java.util.HashMap map=(java.util.HashMap)avance.get(0);
+                        
+                        tabla.addCell(reporte.celda(formatoPorcentaje.format(Double.parseDouble(map.get("avance").toString())), font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
                         suma +=(Double)respuesta.get("importe");
                         tabla.addCell(reporte.celda(formatoPorcentaje.format((Double)respuesta.get("importe")), font, contenido, derecha, 0,1,Rectangle.RECTANGLE));
                         tabla.addCell(reporte.celda(respuesta.get("notas").toString(), font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
@@ -2836,7 +2650,7 @@ public class Destajo extends javax.swing.JPanel {
     }//GEN-LAST:event_b_generalActionPerformed
 
     private void b_fecha_siniestroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_fecha_siniestroActionPerformed
-        calendario cal =new calendario(new javax.swing.JFrame(), true);
+        calendario cal =new calendario(new javax.swing.JFrame(), true, false);
         cal.setTitle("Fecha");
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         cal.setLocation((d.width/2)-(cal.getWidth()/2), (d.height/2)-(cal.getHeight()/2));
@@ -3053,7 +2867,7 @@ public class Destajo extends javax.swing.JPanel {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-         buscaOrden obj = new buscaOrden(new javax.swing.JFrame(), true, this.usr,0);
+         buscaOrden obj = new buscaOrden(new javax.swing.JFrame(), true, this.usr,0, configuracion);
         obj.t_busca.requestFocus();
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
@@ -3068,10 +2882,6 @@ public class Destajo extends javax.swing.JPanel {
             t_orden.setText("");
         }
     }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void total_consumidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_total_consumidoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_total_consumidoActionPerformed
 
     private void t_adicionalesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_t_adicionalesMouseClicked
         // TODO add your handling code here:+
@@ -3152,7 +2962,7 @@ public class Destajo extends javax.swing.JPanel {
 
     private void b_calendario_pago1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_calendario_pago1ActionPerformed
         // TODO add your handling code here:
-        calendario cal =new calendario(new javax.swing.JFrame(), true);
+        calendario cal =new calendario(new javax.swing.JFrame(), true, false);
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         cal.setLocation((d.width/2)-(cal.getWidth()/2), (d.height/2)-(cal.getHeight()/2));
         cal.setVisible(true);
@@ -3285,70 +3095,6 @@ public class Destajo extends javax.swing.JPanel {
         }catch(Exception e){}
         t_notas_pago2.requestFocus();
     }//GEN-LAST:event_t_porcentaje_pago1ActionPerformed
-
-    public void lista_consumido_adicional(String especialidad){
-        DecimalFormat formatoPorcentaje = new DecimalFormat("#,##0.00");
-        formatoPorcentaje.setMinimumFractionDigits(2);   
-        double total = 0.0d, iva=0.0d;
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Orden orden = (Orden)session.get(Orden.class, Integer.parseInt(ord));
-        Configuracion config=(Configuracion)session.get(Configuracion.class, 1);
-        iva = config.getIva();
-        try{
-            Query query = session.createSQLQuery("select distinct movimiento.id_Parte as id, movimiento.valor,ejemplar.id_catalogo,\n" +
-            "(select (select if(sum(cantidad) is null, 0, sum(cantidad)) \n" +
-            "from movimiento left join almacen on movimiento.id_almacen=almacen.id_almacen \n" +
-            "left join orden on almacen.id_orden=orden.id_orden where orden.id_orden="+t_orden_trabajo.getText()+" \n" +
-            "and almacen.operacion=8 and almacen.tipo_movimiento=2 and movimiento.id_Parte=id and almacen.especialidad='"+especialidad+"' \n" +
-            "and almacen.id_trabajo="+t_trabajo.getText()+") \n" +
-            "-\n" +
-            "(select if(sum(cantidad) is null, 0, sum(cantidad)) \n" +
-            "from movimiento left join almacen on movimiento.id_almacen=almacen.id_almacen \n" +
-            "left join orden on almacen.id_orden=orden.id_orden where orden.id_orden="+t_orden_trabajo.getText()+" \n" +
-            "and almacen.operacion=8 and almacen.tipo_movimiento=1 and movimiento.id_Parte=id and almacen.especialidad='"+especialidad+"' \n" +
-            "and almacen.id_trabajo="+t_trabajo.getText()+"))as monto_consumible \n" +
-            "from almacen\n" +
-            "right join movimiento on almacen.id_almacen= movimiento.id_almacen\n" +
-            "inner join ejemplar on movimiento.id_Parte = ejemplar.id_Parte\n"+
-            "where almacen.id_orden="+t_orden_trabajo.getText()+" and almacen.id_trabajo="+t_trabajo.getText()+" and almacen.tipo_movimiento=2 and almacen.especialidad='"+especialidad+"'\n" +
-            "and almacen.operacion=8;");
-            query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
-            ArrayList consumido = (ArrayList)query.list();
-            if(consumido.size()>0){
-                for(int i =0; i<consumido.size(); i++){
-                    java.util.HashMap map=(java.util.HashMap)consumido.get(i);
-                    Object[] obj = new Object[4];
-                    if(Double.parseDouble(map.get("monto_consumible").toString())>0){
-                        obj[0] = map.get("id");
-                        obj[1] = map.get("id_catalogo");
-                        Double niva = Double.parseDouble(map.get("valor").toString())*iva/100;
-                        obj[2] = Double.parseDouble(map.get("monto_consumible").toString());
-                        obj[3] = Double.parseDouble(map.get("valor").toString())+niva;
-
-                        model4.addRow(obj);
-
-                        total += Double.parseDouble(map.get("monto_consumible").toString())* (Double.parseDouble(map.get("valor").toString())+niva);
-                    }
-                }
-
-                total_consumido1.setText(""+formatoPorcentaje.format(total));
-                total_consumido1.setValue(total);
-            }else{
-                total_consumido1.setText("");
-                total_consumido1.setValue(0.0d);
-            }
-        }catch(Exception e)
-        {
-            e.printStackTrace();
-        }
-        if(session!=null)
-            if(session.isOpen())
-            {
-                session.flush();
-                session.clear();
-                session.close();
-            }
-    }
     
     private void b_mas3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_mas3ActionPerformed
         // TODO add your handling code here:
@@ -3428,10 +3174,6 @@ public class Destajo extends javax.swing.JPanel {
             }
     }//GEN-LAST:event_b_menos3ActionPerformed
 
-    private void total_consumido1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_total_consumido1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_total_consumido1ActionPerformed
-
     private void b_pdf1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_pdf1ActionPerformed
         // TODO add your handling code here:
         Session session = HibernateUtil.getSessionFactory().openSession();
@@ -3505,27 +3247,165 @@ public class Destajo extends javax.swing.JPanel {
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
         // TODO add your handling code here:
-        lista.setModel(ModeloTablaReporte2(0, columnas2));
-        formatoTabla3();
-        lista_consumido(global);
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-        ListaConsumible.setLocation((d.width/2)-(420/2), (d.height/2)-(320/2));
-        ListaConsumible.setSize(420, 320);
-        ListaConsumible.setVisible(true);
+        Material material = new Material(new JFrame(), true, this.ord, global, null, t_responsable.getText());
+        material.setLocation((d.width/2)-(739/2), (d.height/2)-(345/2));
+        material.setSize(739, 345);
+        material.setVisible(true);
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
         // TODO add your handling code here:
         if(t_orden_trabajo.getText().compareTo("")!=0){
-            lista1.setModel(ModeloTablaReporte4(0, columnas4));
-            formatoTabla4();
-            lista_consumido_adicional("A");
             Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-            ListaConsumible1.setLocation((d.width/2)-(420/2), (d.height/2)-(320/2));
-            ListaConsumible1.setSize(420, 320);
-            ListaConsumible1.setVisible(true);
+            Material material = new Material(new JFrame(), true, t_orden_trabajo.getText(), "A", t_trabajo.getText(), t_responsable2.getText());
+            material.setLocation((d.width/2)-(739/2), (d.height/2)-(345/2));
+            material.setSize(739, 345);
+            material.setVisible(true);
         }
     }//GEN-LAST:event_jButton8ActionPerformed
+    
+    public void cabecera2(PDF reporte, BaseFont bf, PdfPTable tabla)
+    {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try
+        {
+            reporte.contenido.setLineWidth(0.5f);
+            reporte.contenido.setColorStroke(new GrayColor(0.2f));
+            reporte.contenido.setColorFill(new GrayColor(0.9f));
+            reporte.contenido.roundRectangle(35, 515, 340, 45, 5);
+            reporte.contenido.roundRectangle(380, 515, 375, 45, 5);
+            reporte.contenido.roundRectangle(35, 480, 720, 30, 5);
+
+
+            reporte.inicioTexto();
+            reporte.contenido.setFontAndSize(bf, 14);
+            reporte.contenido.setColorFill(BaseColor.BLACK);
+            //Configuracion con= (Configuracion)session.get(Configuracion.class, 1);
+            //reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, con.getEmpresa(), 160, 580, 0);
+            reporte.contenido.setFontAndSize(bf, 8);
+            reporte.contenido.setColorFill(BaseColor.BLACK);
+            reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "HOJA DE AVANCE", 35, 570, 0);
+            reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "Fecha:"+new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()), 760, 580, 0);
+
+                    Orden dato = (Orden)session.get(Orden.class, Integer.parseInt(ord)); 
+                    /*Foto foto = (Foto)session.createCriteria(Foto.class).add(Restrictions.eq("orden.idOrden", Integer.parseInt(ord))).addOrder(Order.desc("fecha")).setMaxResults(1).uniqueResult();
+                    if(foto!=null)
+                    {
+                        reporte.agregaObjeto(reporte.crearImagen("ordenes/"+dato.getIdOrden()+"/"+foto.getDescripcion(), 0, -60, 120, 80, 0));
+                    }*/
+                    //************************datos de la orden****************************
+                    reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Orden:"+dato.getIdOrden(), 45, 550, 0);
+
+                    if(dato.getFecha()!=null)
+                        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Apertura:"+dato.getFecha(), 265, 550, 0);
+                    else
+                        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Apertura:", 265, 550, 0);
+
+                    reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Compañia:"+dato.getCompania().getIdCompania()+" "+dato.getCompania().getNombre(), 45, 540, 0);
+
+                    if(dato.getSiniestro()!=null)
+                        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Siniestro:"+dato.getSiniestro(), 45, 530, 0);
+                    else
+                        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Siniestro:", 45, 530, 0);
+
+                    if(dato.getFechaSiniestro()!=null)
+                        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "F. Siniestro:"+dato.getFechaSiniestro(), 265, 530, 0);
+                    else
+                        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "F.Siniestro:", 265, 530, 0);
+
+                    if(dato.getPoliza()!=null)
+                        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Poliza:"+dato.getPoliza(), 45, 520, 0);
+                    else
+                        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Poliza:", 45, 520, 0);
+
+                    if(dato.getInciso()!=null)
+                        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Inciso:"+dato.getInciso(), 265, 520, 0);
+                    else
+                        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Inciso:", 265, 520, 0);
+
+                    //************datos de la unidad
+                    reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Unidad:"+dato.getTipo().getTipoNombre(), 385, 550, 0);
+                    reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "Modelo:"+dato.getModelo(), 664, 550, 0);
+
+                    reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Marca:"+dato.getMarca().getMarcaNombre(), 385, 540, 0);
+                    if(dato.getNoEconomico()!=null)
+                        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "Economico:"+dato.getNoEconomico(), 673, 540, 0);
+                    else
+                        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_RIGHT, "Economico:", 673, 540, 0);
+
+                    if(dato.getNoMotor()!=null)
+                        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "N° Motor:"+dato.getNoMotor(), 385, 530, 0);
+                    else
+                        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "N° Motor:", 385, 530, 0);
+
+                    if(dato.getNoSerie()!=null)
+                        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "N° Serie:"+dato.getNoSerie(), 385, 520, 0);
+                    else
+                        reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "N° Serie:", 385, 520, 0);
+                    //*************************************************************
+
+                    switch(this.global)
+                    {
+                        case "h":
+                            reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Especialidad: Hojalateria", 45, 495, 0);
+                            break;
+                        case "m":
+                            reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Especialidad: Mecanica", 45, 495, 0);
+                            break;
+                        case "s":
+                            reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Especialidad: Suspension", 45, 495, 0);
+                            break;
+                        case "e":
+                            reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Especialidad: electrico", 45, 495, 0);
+                            break;
+                        case "p":
+                            reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Especialidad: Pintura", 45, 495, 0);
+                            break;
+                    }
+                    reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Empleado:"+t_responsable.getText(), 165, 495, 0);
+                    reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Fecha Asignación:"+t_asignacion.getText(), 430, 495, 0);
+                    reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Fecha Limite:"+t_limite.getText(), 600, 495, 0);
+                    
+                    reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Monto x Hora: $"+t_monto.getText(), 45, 485, 0);
+                    reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Horas Totales: "+t_horas.getText(), 165, 485, 0);
+                    reporte.contenido.showTextAligned(PdfContentByte.ALIGN_LEFT, "Importe a Pagar: $"+t_importe.getText(), 600, 485, 0);
+                    
+
+                reporte.finTexto();
+                //agregamos renglones vacios para dejar un espacio
+                reporte.agregaObjeto(new Paragraph(" "));
+                reporte.agregaObjeto(new Paragraph(" "));
+                reporte.agregaObjeto(new Paragraph(" "));
+                reporte.agregaObjeto(new Paragraph(" "));
+                reporte.agregaObjeto(new Paragraph(" "));
+                reporte.agregaObjeto(new Paragraph(" "));
+
+                Font font = new Font(Font.FontFamily.HELVETICA, 8, Font.BOLD);
+
+                BaseColor cabecera=BaseColor.GRAY;
+                //BaseColor contenido=BaseColor.WHITE;
+                int centro=Element.ALIGN_CENTER;
+                //int izquierda=Element.ALIGN_LEFT;
+                //int derecha=Element.ALIGN_RIGHT;
+
+                tabla.addCell(reporte.celda("Fecha Avance", font, cabecera, centro, 0, 1, Rectangle.RECTANGLE));
+                tabla.addCell(reporte.celda("% de Avance", font, cabecera, centro, 0, 1,Rectangle.RECTANGLE));
+                tabla.addCell(reporte.celda("Importe Pagado a Fecha Avance", font, cabecera, centro, 2,1, Rectangle.RECTANGLE));
+                tabla.addCell(reporte.celda("Notas", font, cabecera, centro, 0,1, Rectangle.RECTANGLE));
+        }catch(Exception e)
+        {
+            System.out.println(e);
+        }
+        if(session!=null)
+            if(session.isOpen())
+            {
+                session.flush();
+                session.clear();
+                session.close();
+            }
+    }
+    
     public void busca_pago_adicional(String id){
        
         if(emp!=null)
@@ -3604,146 +3484,9 @@ public class Destajo extends javax.swing.JPanel {
                 }
         }
     }    
-    public void lista_consumido(String especialidad){
-        DecimalFormat formatoPorcentaje = new DecimalFormat("#,##0.00");
-        formatoPorcentaje.setMinimumFractionDigits(2);   
-        double total = 0.0d, iva=0.0d;
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Orden orden = (Orden)session.get(Orden.class, Integer.parseInt(ord));
-        Configuracion config=(Configuracion)session.get(Configuracion.class, 1);
-        iva = config.getIva();
-        try{
-            Query query = session.createSQLQuery("select distinct movimiento.id_Parte as id, ejemplar.id_catalogo,movimiento.valor,\n" +
-            "(select (select if(sum(cantidad) is null, 0, sum(cantidad)) \n" +
-            "from movimiento left join almacen on movimiento.id_almacen=almacen.id_almacen \n" +
-            "left join orden on almacen.id_orden=orden.id_orden \n" +
-            "where orden.id_orden="+orden.getIdOrden()+" and almacen.operacion=8 and movimiento.id_Parte=id\n" +
-            "and almacen.tipo_movimiento=2 and almacen.especialidad='"+especialidad+"' \n" +
-            "and almacen.id_trabajo is null ) \n" +
-            "- \n" +
-            "(select if(sum(cantidad) is null, 0, sum(cantidad)) \n" +
-            "from movimiento left join almacen on movimiento.id_almacen=almacen.id_almacen \n" +
-            "left join orden on almacen.id_orden=orden.id_orden where orden.id_orden="+orden.getIdOrden()+" \n" +
-            "and almacen.operacion=8 and almacen.tipo_movimiento=1 and movimiento.id_Parte=id and almacen.especialidad='"+especialidad+"' \n" +
-            "and almacen.id_trabajo is null ))as monto_consumible\n" +
-            "from almacen \n" +
-            "right join movimiento on almacen.id_almacen=movimiento.id_almacen\n" +
-            "inner join ejemplar on movimiento.id_Parte = ejemplar.id_Parte\n"+
-            "where almacen.id_orden="+orden.getIdOrden()+" and almacen.especialidad='"+especialidad+"' and almacen.tipo_movimiento=2\n" +
-            "and almacen.operacion=8 and almacen.id_trabajo is null ;");
-            query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
-            ArrayList consumido = (ArrayList)query.list();
-            if(consumido.size()>0){
-                for(int i =0; i<consumido.size(); i++){
-                    java.util.HashMap map=(java.util.HashMap)consumido.get(i);
-                    Object[] obj = new Object[4];
-                    if(Double.parseDouble(map.get("monto_consumible").toString())>0){
-                        obj[0] = map.get("id");
-                        obj[1] = map.get("id_catalogo");
-                        Double niva = Double.parseDouble(map.get("valor").toString())*iva/100;
-                        obj[2] = Double.parseDouble(map.get("monto_consumible").toString());
-                        obj[3] = Double.parseDouble(map.get("valor").toString())+niva;
-                        
-                        model2.addRow(obj);
-
-                        total += Double.parseDouble(map.get("monto_consumible").toString())* (Double.parseDouble(map.get("valor").toString())+niva);
-                    }
-                }
-                
-                total_consumido.setText(""+formatoPorcentaje.format(total));
-                total_consumido.setValue(total);
-            }else{
-                total_consumido.setText("");
-                total_consumido.setValue(0.0d);
-            }
-            
-        }catch(Exception e)
-        {
-            e.printStackTrace();
-        }
-        if(session!=null)
-            if(session.isOpen())
-            {
-                session.flush();
-                session.clear();
-                session.close();
-            }
-    }
-    public void formatoTabla3()
-    {
-        Color c1 = new java.awt.Color(2, 135, 242);
-        for(int x=0; x<lista.getColumnModel().getColumnCount(); x++)
-            lista.getColumnModel().getColumn(x).setHeaderRenderer(new Render1(c1));
-        tabla_tamaños3();
-        lista.setShowVerticalLines(true);
-        lista.setShowHorizontalLines(true);
-    }
-    public void formatoTabla4()
-    {
-        Color c1 = new java.awt.Color(2, 135, 242);
-        for(int x=0; x<lista1.getColumnModel().getColumnCount(); x++)
-            lista1.getColumnModel().getColumn(x).setHeaderRenderer(new Render1(c1));
-        tabla_tamaños4();
-        lista1.setShowVerticalLines(true);
-        lista1.setShowHorizontalLines(true);
-    }
-    public void tabla_tamaños3()
-    {
-        TableColumnModel col_model = lista.getColumnModel();
-
-        for (int i=0; i<lista.getColumnCount(); i++)
-        {
-  	      TableColumn column = col_model.getColumn(i);
-              switch(i)
-              {
-                  case 0:
-                      column.setPreferredWidth(115);
-                      break;
-                  case 1:
-                      column.setPreferredWidth(250);
-                      break;
-                  case 2:
-                      column.setPreferredWidth(50);
-                      break;    
-                  case 3:
-                      column.setPreferredWidth(90);
-                      break;
-              }
-        }
-        JTableHeader header = lista.getTableHeader();
-        header.setForeground(Color.white);
-    }
-
-    public void tabla_tamaños4()
-    {
-        TableColumnModel col_model = lista1.getColumnModel();
-
-        for (int i=0; i<lista1.getColumnCount(); i++)
-        {
-  	      TableColumn column = col_model.getColumn(i);
-              switch(i)
-              {
-                  case 0:
-                      column.setPreferredWidth(115);
-                      break;
-                  case 1:
-                      column.setPreferredWidth(250);
-                      break;
-                  case 2:
-                      column.setPreferredWidth(50);
-                      break;    
-                  case 3:
-                      column.setPreferredWidth(90);
-                      break;
-              }
-        }
-        JTableHeader header = lista1.getTableHeader();
-        header.setForeground(Color.white);
-    }
+    
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JDialog ListaConsumible;
-    private javax.swing.JDialog ListaConsumible1;
     private javax.swing.JButton b_adicionales;
     private javax.swing.JButton b_calendario_pago;
     private javax.swing.JButton b_calendario_pago1;
@@ -3781,18 +3524,14 @@ public class Destajo extends javax.swing.JPanel {
     private javax.swing.JButton jButton8;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel20;
-    private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
@@ -3804,21 +3543,17 @@ public class Destajo extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JTable jTable1;
     private javax.swing.JLabel l_importe_pago;
     private javax.swing.JLabel l_importe_pago1;
@@ -3827,8 +3562,6 @@ public class Destajo extends javax.swing.JPanel {
     private javax.swing.JLabel l_nota_pago1;
     private javax.swing.JLabel l_porcentaje_pago;
     private javax.swing.JLabel l_porcentaje_pago1;
-    private javax.swing.JTable lista;
-    private javax.swing.JTable lista1;
     private javax.swing.JDialog pago_adicional;
     private javax.swing.JTable t_adicionales;
     private javax.swing.JTextField t_asignacion;
@@ -3860,8 +3593,6 @@ public class Destajo extends javax.swing.JPanel {
     private javax.swing.JTextField t_responsable2;
     private javax.swing.JTextField t_trabajo;
     private javax.swing.JTextField t_trabajo1;
-    private javax.swing.JFormattedTextField total_consumido;
-    private javax.swing.JFormattedTextField total_consumido1;
     // End of variables declaration//GEN-END:variables
 
 

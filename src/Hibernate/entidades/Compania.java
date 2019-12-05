@@ -39,6 +39,8 @@ public class Compania  implements java.io.Serializable {
      private String pais;
      private String numeroExterior;
      private String formatoPago;
+     private boolean redondeo;
+     private UsoCfdi usoCfdi;
      private Set ordenExternas = new HashSet(0);
      private Set cuentas = new HashSet(0);
      private Set documentoses = new HashSet(0);
@@ -52,7 +54,7 @@ public class Compania  implements java.io.Serializable {
     public Compania(String nombre) {
         this.nombre = nombre;
     }
-    public Compania(String nombre, String direccion, String colonia, String poblacion, String estado, String cp, String telefono, String fax, String email, String representante1, String r1Puesto, String representante2, String r2Puesto, Float importeHora, Float importeMax, String tipoPago, Integer plazo, String programaReporte, String comentarios, String grupoEjecutivo, String foto, String rfc, String municipio, String pais, String numeroExterior, String social, String formatoPago, Set ordenExternas, Set cuentas, Set documentoses, Set ordens, Set accesos) {
+    public Compania(String nombre, String direccion, String colonia, String poblacion, String estado, String cp, String telefono, String fax, String email, String representante1, String r1Puesto, String representante2, String r2Puesto, Float importeHora, Float importeMax, String tipoPago, Integer plazo, String programaReporte, String comentarios, String grupoEjecutivo, String foto, String rfc, String municipio, String pais, String numeroExterior, String social, String formatoPago, boolean redondeo, UsoCfdi usoCfdi, Set ordenExternas, Set cuentas, Set documentoses, Set ordens, Set accesos) {
        this.nombre = nombre;
        this.social = social;
        this.direccion = direccion;
@@ -80,11 +82,13 @@ public class Compania  implements java.io.Serializable {
        this.pais = pais;
        this.numeroExterior = numeroExterior;
        this.formatoPago = formatoPago;
+       this.usoCfdi = usoCfdi;
        this.ordenExternas = ordenExternas;
        this.cuentas = cuentas;
        this.documentoses = documentoses;
        this.ordens = ordens;
        this.accesos = accesos;
+       this.redondeo = redondeo;
     }
    
     public Integer getIdCompania() {
@@ -290,6 +294,13 @@ public class Compania  implements java.io.Serializable {
     public Set getOrdenExternas() {
         return this.ordenExternas;
     }
+    public UsoCfdi getUsoCfdi() {
+        return this.usoCfdi;
+    }
+    
+    public void setUsoCfdi(UsoCfdi usoCfdi) {
+        this.usoCfdi = usoCfdi;
+    }
     
     public void setOrdenExternas(Set ordenExternas) {
         this.ordenExternas = ordenExternas;
@@ -340,6 +351,12 @@ public class Compania  implements java.io.Serializable {
         this.documentoses.add(doc);
     }
 
+    public void setRedondeo(boolean redondeo) {
+        this.redondeo = redondeo;
+    }
+    public boolean isRedondeo() {
+        return this.redondeo;
+    }
 
 
 }

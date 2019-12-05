@@ -31,5 +31,23 @@
     <many-to-one class="Hibernate.entidades.Usuario" fetch="select" name="usuario">
       <column name="id_autorizado"/>
     </many-to-one>
+    <set name="almacens" table="almacen" inverse="true" lazy="true" fetch="select">
+        <key>
+            <column name="id_trabajo" />
+        </key>
+        <one-to-many class="Hibernate.entidades.Almacen" />
+    </set>
+    <set name="consumibles" table="consumible" inverse="true" lazy="true" fetch="select">
+        <key>
+            <column name="id_trabajo" />
+        </key>
+        <one-to-many class="Hibernate.entidades.Consumible" />
+    </set>
+    <set name="pagoAdicionals" table="pago_adicional" inverse="true" lazy="true" fetch="select">
+        <key>
+            <column name="id_trabajo_extra" />
+        </key>
+        <one-to-many class="Hibernate.entidades.PagoAdicional" />
+    </set>
   </class>
 </hibernate-mapping>

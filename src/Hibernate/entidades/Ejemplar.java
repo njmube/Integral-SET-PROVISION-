@@ -12,18 +12,21 @@ public class Ejemplar  implements java.io.Serializable {
 
 
      private String idParte;
+     private Grupo grupo;
      private Marca marca;
-     private Tipo tipo;
-     private String catalogo;
-     private Integer modelo;
+     private Catalogo catalogo;
      private String comentario;
      private String imagen;
      private Integer inventario;
      private String medida;
      private Double existencias;
+     private Double existencias2;
      private Double precio;
      private Double maximo;
      private Double minimo;
+     private Boolean moneda;
+     private String ubicacion;
+     private String tipoEjemplar;
      private Set partidas = new HashSet(0);
      private Set partidasExternas= new HashSet(0);
      private Set movimientos= new HashSet(0);
@@ -35,20 +38,22 @@ public class Ejemplar  implements java.io.Serializable {
     public Ejemplar(String idParte) {
         this.idParte = idParte;
     }
-    public Ejemplar(String idParte, Marca marca, Tipo tipo, String catalogo, Integer modelo, String comentario, String imagen, Integer inventario, String medida, Double existencias, Double precio, Double maximo, Double minimo, Set partidas, Set partidasExternas, Set movimientos) {
+    public Ejemplar(String idParte, Grupo grupo, Marca marca, Catalogo catalogo, String comentario, String imagen, Integer inventario, String medida, Double existencias, Double existencias2, Double precio, Double maximo, Double minimo, String ubicacion, String tipoEjemplar, Set partidas, Set partidasExternas, Set movimientos) {
        this.idParte = idParte;
+       this.grupo = grupo;
        this.marca = marca;
-       this.tipo = tipo;
        this.catalogo = catalogo;
-       this.modelo = modelo;
        this.comentario = comentario;
        this.imagen = imagen;
        this.inventario=inventario;
        this.medida=medida;
        this.existencias=existencias;
+       this.existencias=existencias2;
        this.precio = precio;
        this.maximo = maximo;
        this.minimo = minimo;
+       this.ubicacion=ubicacion;
+       this.tipoEjemplar=tipoEjemplar;
        this.partidas = partidas;
        this.partidasExternas=partidasExternas;
        this.movimientos=movimientos;
@@ -61,6 +66,13 @@ public class Ejemplar  implements java.io.Serializable {
     public void setIdParte(String idParte) {
         this.idParte = idParte;
     }
+    public Grupo getGrupo() {
+        return this.grupo;
+    }
+    
+    public void setGrupo(Grupo grupo) {
+        this.grupo = grupo;
+    }
     public Marca getMarca() {
         return this.marca;
     }
@@ -68,18 +80,11 @@ public class Ejemplar  implements java.io.Serializable {
     public void setMarca(Marca marca) {
         this.marca = marca;
     }
-    public Tipo getTipo() {
-        return this.tipo;
-    }
-    
-    public void setTipo(Tipo tipo) {
-        this.tipo = tipo;
-    }
-    public String getCatalogo() {
+    public Catalogo getCatalogo() {
         return this.catalogo;
     }
     
-    public void setCatalogo(String catalogo) {
+    public void setCatalogo(Catalogo catalogo) {
         this.catalogo = catalogo;
     }
     public Double getExistencias() {
@@ -88,6 +93,13 @@ public class Ejemplar  implements java.io.Serializable {
     
     public void setExistencias(Double existencias) {
         this.existencias = existencias;
+    }
+    public Double getExistencias2() {
+        return this.existencias2;
+    }
+    
+    public void setExistencias2(Double existencias2) {
+        this.existencias2 = existencias2;
     }
     public Double getPrecio() {
         return this.precio;
@@ -104,6 +116,13 @@ public class Ejemplar  implements java.io.Serializable {
     public void setMaximo(Double maximo) {
         this.maximo = maximo;
     }
+    public Boolean getMoneda() {
+        return this.moneda;
+    }
+    
+    public void setMoneda(Boolean moneda) {
+        this.moneda = moneda;
+    }
     public Double getMinimo() {
         return this.minimo;
     }
@@ -119,13 +138,6 @@ public class Ejemplar  implements java.io.Serializable {
         this.medida = medida;
     }
     
-    public Integer getModelo() {
-        return this.modelo;
-    }
-    
-    public void setModelo(Integer modelo) {
-        this.modelo = modelo;
-    }
     public Integer getInventario() {
         return this.inventario;
     }
@@ -149,7 +161,20 @@ public class Ejemplar  implements java.io.Serializable {
     public void setImagen(String imagen) {
         this.imagen = imagen;
     }
+    public String getUbicacion() {
+        return this.ubicacion;
+    }
     
+    public void setUbicacion(String ubicacion) {
+        this.ubicacion = ubicacion;
+    }
+    public String getTipoEjemplar() {
+        return this.tipoEjemplar;
+    }
+    
+    public void setTipoEjemplar(String tipoEjemplar) {
+        this.tipoEjemplar=tipoEjemplar;
+    }
     public Set getPartidas() {
         return this.partidas;
     }

@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 29/11/2017 10:51:31 AM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.ClaveUnidad" table="clave_unidad" >
+        <id name="idClaveUnidad" type="string">
+            <column name="id_clave_unidad" length="4" />
+            <generator class="assigned" />
+        </id>
+        <property name="nombre" type="string">
+            <column name="nombre" length="200" />
+        </property>
+        <property name="fechaInicioVigencia" type="date">
+            <column name="fecha_inicio_vigencia" length="10" />
+        </property>
+        <property name="fechaFinVigencia" type="date">
+            <column name="fecha_fin_vigencia" length="10" />
+        </property>
+        <property name="simbolo" type="string">
+            <column name="simbolo" length="20" />
+        </property>
+    </class>
+</hibernate-mapping>

@@ -11,6 +11,7 @@ import java.awt.Component;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JTable;
@@ -52,7 +53,6 @@ public class FormatoTabla implements TableCellRenderer{
         });
         //cb.setOpaque(false);
         
-        
         if(value instanceof JLabel)
         {
             b=(JLabel)value;
@@ -72,6 +72,12 @@ public class FormatoTabla implements TableCellRenderer{
         {
             campoTexto.setText(value+"");
             campoTexto.setHorizontalAlignment(SwingConstants.CENTER);
+        }
+        
+        if(value instanceof JButton)
+        {
+            JButton btn = (JButton) value;
+            return btn;
         }
         
         if(value instanceof Double)
@@ -110,7 +116,7 @@ public class FormatoTabla implements TableCellRenderer{
             cb.setBackground(new java.awt.Color(255,255,255));
             cb.setOpaque(true);
             
-            if(table.getColumnCount()==9 || table.getColumnCount()==11) 
+            if(table.getColumnCount()==9 || table.getColumnCount()==10 || table.getColumnCount()==11) 
             {
                 if(String.valueOf(table.getValueAt(row,8)).compareToIgnoreCase("CANCELADO")==0)
                 {
@@ -121,8 +127,8 @@ public class FormatoTabla implements TableCellRenderer{
                 else  
                     campoTexto.setBackground(new java.awt.Color(255,255,255));
             }
-            if(table.getColumnCount()==30){
-                if(String.valueOf(table.getValueAt(row,26)).compareToIgnoreCase("")!=0)
+            if(table.getColumnCount()==31){
+                if(String.valueOf(table.getValueAt(row,27)).compareToIgnoreCase("")!=0)
                 {
                     campoTexto.setBackground(new java.awt.Color(12,191,10));
                     campoTexto.setForeground(new java.awt.Color(0,0,0));
@@ -131,10 +137,11 @@ public class FormatoTabla implements TableCellRenderer{
                 else
                     campoTexto.setBackground(new java.awt.Color(255,255,255));
             }
-            if(table.getColumnCount()==24){
-                if(Double.parseDouble(String.valueOf(table.getValueAt(row,21)))==0.0d)
+            if(table.getColumnCount()==25){
+                try{
+                if(Double.parseDouble(String.valueOf(table.getValueAt(row,22)))==0.0d)
                 {
-                    if(Double.parseDouble(String.valueOf(table.getValueAt(row,20)))!=Double.parseDouble(String.valueOf(table.getValueAt(row,19))))
+                    if(Double.parseDouble(String.valueOf(table.getValueAt(row,21)))!=Double.parseDouble(String.valueOf(table.getValueAt(row,20))))
                         campoTexto.setBackground(new java.awt.Color(255,255,0));
                     else
                     {
@@ -145,12 +152,17 @@ public class FormatoTabla implements TableCellRenderer{
                 }
                 else
                 {
-                    if(Double.parseDouble(String.valueOf(table.getValueAt(row,20)))!=Double.parseDouble(String.valueOf(table.getValueAt(row,19))))
+                    if(Double.parseDouble(String.valueOf(table.getValueAt(row,21)))!=Double.parseDouble(String.valueOf(table.getValueAt(row,20))))
                         campoTexto.setBackground(new java.awt.Color(255,255,0));
                     else
                         campoTexto.setBackground(new java.awt.Color(255,255,255));
                 }
+                }catch(Exception e){}
             }
+            if(row>-1)
+                if(table.getValueAt(row, 0)!=null)
+                    if(table.getValueAt(row, 0).toString().contains("-")==true) 
+                        campoTexto.setBackground(new Color(0xFE899B)); 
         }
         
         if(hasFocus){
@@ -162,7 +174,7 @@ public class FormatoTabla implements TableCellRenderer{
                 Double actual = (Double)table.getValueAt(row, column);
                 if(actual==0.0)
                 {
-                    Double valor = (Double)table.getValueAt(row, 16);
+                    Double valor = (Double)table.getValueAt(row, 15);
                     BigDecimal big = new BigDecimal(valor+"");
                     big = big.setScale(2, RoundingMode.HALF_UP);
                     campoTexto.setValue(big.doubleValue());

@@ -13,7 +13,6 @@ package Integral;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.ImageIcon;
 import javax.swing.InputMap;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
@@ -23,12 +22,16 @@ import org.hibernate.Session;
 import Hibernate.entidades.Usuario;
 import Hibernate.entidades.Ciclo;
 import Hibernate.Util.HibernateUtil;
+import Hibernate.entidades.Configuracion;
 import java.awt.HeadlessException;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Formatter;
-import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
 
 /**
  *
@@ -40,21 +43,21 @@ public class acceso extends javax.swing.JDialog {
     Hilo miHilo;
     InputMap map = new InputMap();
     private List returnStatus = RET_CANCEL;
-    public String ruta="";
+    public String ruta="", rutaFTP;
+    int configuracion=2;
     
     /** Creates new form acceso */
-    public acceso(java.awt.Frame parent, boolean modal) {
+    public acceso(java.awt.Frame parent, boolean modal, int configuracion) {
         super(parent, modal);
         map.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, false), "pressed");
         map.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, true), "released");   
         initComponents();
-        this.c_periodo.setEnabled(false);
+        this.configuracion=configuracion;
         this.t_usuario.setEnabled(false);
         this.t_clave.setEnabled(false);
         this.bentrar.setEnabled(false);
         b_conexion.setVisible(false);
-        progreso.setIndeterminate(true);
-        progreso.setString("INICIANDO SERVICIO");
+        l_titulo.setText("INICIANDO SERVICIO");
         bentrar.setInputMap(0, map);
         t_usuario.requestFocus();
         miHilo=null;
@@ -65,7 +68,7 @@ public class acceso extends javax.swing.JDialog {
     private void doClose(Usuario actor) {
         returnStatus=new ArrayList();
         returnStatus.add(actor);
-        returnStatus.add(c_periodo.getSelectedItem().toString());
+        returnStatus.add(l_periodo.getText());
         miHilo=null;
         map = null;
         dispose();
@@ -83,73 +86,76 @@ public class acceso extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        bentrar = new javax.swing.JButton();
-        bsalir = new javax.swing.JButton();
-        t_clave = new javax.swing.JPasswordField();
-        t_usuario = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        c_periodo = new javax.swing.JComboBox();
         l_periodo = new javax.swing.JLabel();
-        progreso = new javax.swing.JProgressBar();
+        p_general = new javax.swing.JPanel();
+        l_icono = new javax.swing.JLabel();
+        p_barra = new javax.swing.JPanel();
+        l_x = new javax.swing.JLabel();
+        l_titulo = new javax.swing.JLabel();
+        l_usuario = new javax.swing.JLabel();
+        t_usuario = new javax.swing.JTextField();
+        l_clave = new javax.swing.JLabel();
+        t_clave = new javax.swing.JPasswordField();
+        bentrar = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
         b_conexion = new javax.swing.JButton();
-        jLabel3 = new javax.swing.JLabel();
+
+        l_periodo.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        l_periodo.setForeground(new java.awt.Color(204, 204, 0));
+        l_periodo.setText("-");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Acceso");
+        setUndecorated(true);
         setResizable(false);
-        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(204, 204, 0), 1, true), "Ingrese sus Datos", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Tahoma", 1, 12), new java.awt.Color(204, 204, 0))); // NOI18N
-        jPanel1.setForeground(new java.awt.Color(204, 204, 0));
-        jPanel1.setOpaque(false);
+        p_general.setBackground(new java.awt.Color(255, 255, 255));
+        p_general.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
 
-        bentrar.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        bentrar.setForeground(new java.awt.Color(0, 51, 153));
-        bentrar.setIcon(new ImageIcon("imagenes/luck.png"));
-        bentrar.setText("Entrar");
-        bentrar.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        bentrar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        bentrar.setRolloverIcon(new ImageIcon("imagenes/unluk.png"));
-        bentrar.setSelectedIcon(new ImageIcon("imagenes/unluk.png"));
-        bentrar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bentrarActionPerformed(evt);
+        l_icono.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/gearsan.gif"))); // NOI18N
+
+        p_barra.setBackground(new java.awt.Color(51, 51, 51));
+
+        l_x.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        l_x.setForeground(new java.awt.Color(255, 255, 255));
+        l_x.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        l_x.setText("x");
+        l_x.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                l_xMouseClicked(evt);
             }
         });
 
-        bsalir.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        bsalir.setForeground(new java.awt.Color(0, 51, 153));
-        bsalir.setIcon(new ImageIcon("imagenes/close.png"));
-        bsalir.setText("Salir");
-        bsalir.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        bsalir.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        bsalir.setRolloverIcon(new ImageIcon("imagenes/open.png"));
-        bsalir.setSelectedIcon(new ImageIcon("imagenes/open.png"));
-        bsalir.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bsalirActionPerformed(evt);
-            }
-        });
+        l_titulo.setForeground(new java.awt.Color(255, 255, 255));
+        l_titulo.setText("Integral");
 
-        t_clave.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                t_claveFocusGained(evt);
-            }
-        });
-        t_clave.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                t_claveActionPerformed(evt);
-            }
-        });
-        t_clave.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                t_claveKeyTyped(evt);
-            }
-        });
+        javax.swing.GroupLayout p_barraLayout = new javax.swing.GroupLayout(p_barra);
+        p_barra.setLayout(p_barraLayout);
+        p_barraLayout.setHorizontalGroup(
+            p_barraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, p_barraLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(l_titulo)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(l_x, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        p_barraLayout.setVerticalGroup(
+            p_barraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(p_barraLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(p_barraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(l_x)
+                    .addComponent(l_titulo))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
+        l_usuario.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        l_usuario.setForeground(new java.awt.Color(204, 204, 255));
+        l_usuario.setText("Ingresa tu Usuario");
+
+        t_usuario.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        t_usuario.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 153, 153)));
         t_usuario.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 t_usuarioFocusGained(evt);
@@ -166,25 +172,45 @@ public class acceso extends javax.swing.JDialog {
             }
         });
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(204, 204, 0));
-        jLabel1.setText("USUARIO:");
+        l_clave.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        l_clave.setForeground(new java.awt.Color(204, 204, 255));
+        l_clave.setText("Ingresa tu password");
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(204, 204, 0));
-        jLabel2.setText("CONTRASEÑA:");
+        t_clave.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        t_clave.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 153, 153)));
+        t_clave.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                t_claveFocusGained(evt);
+            }
+        });
+        t_clave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                t_claveActionPerformed(evt);
+            }
+        });
+        t_clave.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                t_claveKeyTyped(evt);
+            }
+        });
 
-        jLabel5.setIcon(new ImageIcon("imagenes/procesos.png"));
+        bentrar.setBackground(new java.awt.Color(0, 51, 204));
+        bentrar.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        bentrar.setForeground(new java.awt.Color(255, 255, 255));
+        bentrar.setText("Entrar");
+        bentrar.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        bentrar.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        bentrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bentrarActionPerformed(evt);
+            }
+        });
 
-        c_periodo.setForeground(new java.awt.Color(51, 0, 255));
+        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel1.setText("Desarrollado por Truck Body Shop S.A de C.V ");
 
-        l_periodo.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        l_periodo.setForeground(new java.awt.Color(204, 204, 0));
-        l_periodo.setText("PERIODO:");
-
-        progreso.setString("");
-        progreso.setStringPainted(true);
-
+        b_conexion.setBackground(new java.awt.Color(0, 51, 204));
+        b_conexion.setForeground(new java.awt.Color(255, 255, 255));
         b_conexion.setText("Reintentar");
         b_conexion.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -192,83 +218,72 @@ public class acceso extends javax.swing.JDialog {
             }
         });
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(l_periodo))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING))))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(t_usuario, javax.swing.GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE)
-                                .addComponent(t_clave))
-                            .addComponent(c_periodo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(79, 79, 79)
-                                .addComponent(b_conexion))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(38, 38, 38)
-                                .addComponent(progreso, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(bentrar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(bsalir)))
+        javax.swing.GroupLayout p_generalLayout = new javax.swing.GroupLayout(p_general);
+        p_general.setLayout(p_generalLayout);
+        p_generalLayout.setHorizontalGroup(
+            p_generalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(p_barra, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(p_generalLayout.createSequentialGroup()
+                .addGroup(p_generalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(p_generalLayout.createSequentialGroup()
+                        .addGap(120, 120, 120)
+                        .addComponent(bentrar))
+                    .addGroup(p_generalLayout.createSequentialGroup()
+                        .addGap(58, 58, 58)
+                        .addComponent(jLabel1)))
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, p_generalLayout.createSequentialGroup()
+                .addContainerGap(34, Short.MAX_VALUE)
+                .addGroup(p_generalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, p_generalLayout.createSequentialGroup()
+                        .addGroup(p_generalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(t_usuario, javax.swing.GroupLayout.PREFERRED_SIZE, 279, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(l_usuario)
+                            .addComponent(l_clave)
+                            .addComponent(t_clave, javax.swing.GroupLayout.PREFERRED_SIZE, 279, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(27, 27, 27))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, p_generalLayout.createSequentialGroup()
+                        .addComponent(l_icono)
+                        .addGap(97, 97, 97))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, p_generalLayout.createSequentialGroup()
+                        .addComponent(b_conexion)
+                        .addGap(126, 126, 126))))
+        );
+        p_generalLayout.setVerticalGroup(
+            p_generalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(p_generalLayout.createSequentialGroup()
+                .addComponent(p_barra, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(l_icono)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(b_conexion)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(l_usuario)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(t_usuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(l_clave)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(t_clave, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(32, 32, 32)
+                .addComponent(bentrar)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel1)
                 .addContainerGap())
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(c_periodo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(l_periodo))
-                        .addGap(26, 26, 26)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(t_usuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel1))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(t_clave, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(36, 36, 36)
-                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(23, 23, 23)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(bsalir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(bentrar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(48, 48, 48))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(progreso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(b_conexion)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(p_general, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
-
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 600, 250));
-
-        jLabel3.setIcon(new ImageIcon("imagenes/VOLVOf.jpg"));
-        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(p_general, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -328,10 +343,6 @@ public class acceso extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_bentrarActionPerformed
 
-    private void bsalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bsalirActionPerformed
-        System.exit(0);
-    }//GEN-LAST:event_bsalirActionPerformed
-
     private void t_usuarioKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_usuarioKeyTyped
         evt.setKeyChar(Character.toUpperCase(evt.getKeyChar()));
         if(t_usuario.getText().length()>=10)
@@ -345,13 +356,13 @@ public class acceso extends javax.swing.JDialog {
     }//GEN-LAST:event_t_claveKeyTyped
 
     private void b_conexionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_conexionActionPerformed
-        this.c_periodo.setEnabled(false);
         this.t_usuario.setEnabled(false);
         this.t_clave.setEnabled(false);
         this.bentrar.setEnabled(false);
         b_conexion.setVisible(false);
-        progreso.setIndeterminate(true);
-        progreso.setString("INICIANDO SERVICIO");
+        l_icono.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/error.jpg")));
+        l_icono.repaint();
+        l_titulo.setText("INICIANDO SERVICIO");
         t_usuario.requestFocus();
         miHilo=null;
         miHilo = new Hilo();
@@ -367,18 +378,23 @@ public class acceso extends javax.swing.JDialog {
         t_clave.setSelectionEnd(t_clave.getText().length()); 
     }//GEN-LAST:event_t_claveFocusGained
 
+    private void l_xMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_l_xMouseClicked
+        // TODO add your handling code here:
+        this.dispose();
+    }//GEN-LAST:event_l_xMouseClicked
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton b_conexion;
     private javax.swing.JButton bentrar;
-    private javax.swing.JButton bsalir;
-    private javax.swing.JComboBox c_periodo;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel l_clave;
+    private javax.swing.JLabel l_icono;
     private javax.swing.JLabel l_periodo;
-    public javax.swing.JProgressBar progreso;
+    private javax.swing.JLabel l_titulo;
+    private javax.swing.JLabel l_usuario;
+    private javax.swing.JLabel l_x;
+    private javax.swing.JPanel p_barra;
+    private javax.swing.JPanel p_general;
     private javax.swing.JPasswordField t_clave;
     private javax.swing.JTextField t_usuario;
     // End of variables declaration//GEN-END:variables
@@ -387,81 +403,77 @@ public class acceso extends javax.swing.JDialog {
     {
         try
         {
-            progreso.setString("CARGANDO ARCHIVOS");
+            l_titulo.setText("CARGANDO ARCHIVOS");
             FileReader fil = new FileReader("config.txt");
             BufferedReader b = new BufferedReader(fil);
             if((ruta = b.readLine())==null)
                 ruta="";
             b.close();
             fil.close();
+            
+            fil = new FileReader("ftp.txt");
+            b = new BufferedReader(fil);
+            if((rutaFTP = b.readLine())==null)
+                rutaFTP="";
+            b.close();
+            fil.close();
             fil=null;
             b=null;
             
-            progreso.setString("CONECTANDO");
+            l_titulo.setText("CONECTANDO");
             Session session = HibernateUtil.getSessionFactory().openSession();
             try
             {
-                progreso.setString("INICIANDO SERVICIOS");
+                l_titulo.setText("INICIANDO SERVICIOS");
                 session.beginTransaction().begin();
-                Query qr=session.createSQLQuery("select id_ciclo from ciclo order by id_ciclo desc;");
-                qr.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
-                List resultList=(ArrayList)qr.list();
-                qr=null;
-                if(resultList==null)
+                Ciclo ciclo = (Ciclo)session.createCriteria(Ciclo.class).addOrder(Order.desc("idCiclo")).setMaxResults(1).uniqueResult();
+                if(ciclo!=null)
                 {
-                    this.c_periodo.setEnabled(false);
-                    this.t_usuario.setEnabled(false);
-                    this.t_clave.setEnabled(false);
-                    this.bentrar.setEnabled(false);
-                    b_conexion.setVisible(true);
-                    progreso.setIndeterminate(false);
-                    progreso.setString("ERROR AL OBTENER DATOS");
-                    JOptionPane.showMessageDialog(null, "NO ESTA CONFIGURADO EL PROGRAMA CONTACTAR AL ADMINISTRADOR");
-                    System.exit(0);
+                    Configuracion config=(Configuracion)session.get(Configuracion.class, configuracion);
+                    Date fecha_hoy = new Date();
+                    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    String fecha = dateFormat.format(fecha_hoy);
+                    if((config.getFechaCambio()==null || fecha.compareTo(config.getFechaCambio().toString())!=0)){
+                        ObtenTipoCambio tipoCambio = new ObtenTipoCambio();
+                        double valor = tipoCambio.obtentipo();
+                        if(valor>0){
+                            config.setTipoCambio(valor);
+                            config.setFechaCambio(fecha_hoy);
+                            session.update(config);
+                            session.beginTransaction().commit();
+                        }
+                    }
+                    l_periodo.setText("s");                    
+                        l_periodo.setText(""+ciclo.getIdCiclo());
+                    ciclo=null;
+                    if(session.isOpen())
+                        session.close();
+                    session=null;
+                    this.t_usuario.setEnabled(true);
+                    this.t_clave.setEnabled(true);
+                    this.bentrar.setEnabled(true);
+                    b_conexion.setVisible(false);
+                    l_icono.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/login.jpg")));
+                    l_icono.repaint();
+                    l_titulo.setText("LISTO");
+                    this.t_usuario.requestFocus();
                 }
                 else
                 {
-                    if(resultList.size()>0)
-                    {
-                        c_periodo.removeAllItems();
-                        int cuenta= resultList.size();
-                        for (int a=0; a<cuenta; a++)
-                        {
-                            java.util.HashMap ciclo=(java.util.HashMap)resultList.get(a);
-                            c_periodo.addItem(ciclo.get("id_ciclo"));
-                            ciclo=null;
-                        }
-                        if(session.isOpen())
-                            session.close();
-                        session=null;
-                        resultList=null;
-                        this.c_periodo.setEnabled(true);
-                        this.t_usuario.setEnabled(true);
-                        this.t_clave.setEnabled(true);
-                        this.bentrar.setEnabled(true);
-                        b_conexion.setVisible(false);
-                        progreso.setIndeterminate(false);
-                        progreso.setString("LISTO");
-                        this.t_usuario.requestFocus();
-                    }
-                    else
-                    {
-                        Formatter fmt = new Formatter();
-                        Calendar cal = Calendar.getInstance();
-                        fmt = new Formatter();
-                        fmt.format("%ty", cal);
-                        int f= Integer.parseInt(fmt.toString());
-                        Ciclo nuevo= new Ciclo(f);
-                        session.save(nuevo);
-                        session.beginTransaction().commit();
-                        if(session.isOpen())
-                            session.close();
-                        session=null;
-                        cargaPeriodo();
-                        this.t_usuario.requestFocus();
-                    }
+                    Formatter fmt = new Formatter();
+                    Calendar cal = Calendar.getInstance();
+                    fmt = new Formatter();
+                    fmt.format("%ty", cal);
+                    int f= Integer.parseInt(fmt.toString());
+                    Ciclo nuevo= new Ciclo(f);
+                    session.save(nuevo);
+                    session.beginTransaction().commit();
+                    if(session.isOpen())
+                        session.close();
+                    session=null;
+                    cargaPeriodo();
+                    this.t_usuario.requestFocus();
                 }
-                resultList=null;
                 this.setVisible(true);
             }catch(HibernateException | HeadlessException | NumberFormatException e)
             {
@@ -473,13 +485,14 @@ public class acceso extends javax.swing.JDialog {
             }
         }catch(Exception e)
         {
-            this.c_periodo.setEnabled(false);
+            e.printStackTrace();
             this.t_usuario.setEnabled(false);
             this.t_clave.setEnabled(false);
             this.bentrar.setEnabled(false);
             b_conexion.setVisible(true);
-            progreso.setIndeterminate(false);
-            progreso.setString("ERROR DE CONEXION");
+            l_icono.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/error.jpg")));
+            l_icono.repaint();
+            l_titulo.setText("ERROR DE CONEXION");
         }
     }
     

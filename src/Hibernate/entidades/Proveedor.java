@@ -41,6 +41,7 @@ public class Proveedor  implements java.io.Serializable {
      private String notas;
      private String usuario;
      private String clave;
+     private UsoCfdi usoCfdi;
      private Set cotizacions = new HashSet(0);
      private Set pedidosForIdProveedor = new HashSet(0);
      private Set pedidosForIdEmpresa = new HashSet(0);
@@ -63,7 +64,7 @@ public class Proveedor  implements java.io.Serializable {
         this.espSuspension = espSuspension;
         this.espElectricidad = espElectricidad;
     }
-    public Proveedor(Cuentas cuentasByCtaProv, Cuentas cuentasByCtaGasto, String nombre, String direccion, String colonia, String cp, String poblacion, String estado, String rfc, String tel1, String tel2, String fax, String email, String representante, String cta, Float credLimite, int credPlazo, float credDescuento, int tiempoEntrega, float impCompras, String giro, int tipo, boolean espHojalateria, boolean espMecanica, boolean espSuspension, boolean espElectricidad, String notas, String usuario, String clave, Set cotizacions, Set pedidosForIdProveedor, Set pedidosForIdEmpresa, Set partidas) {
+    public Proveedor(Cuentas cuentasByCtaProv, Cuentas cuentasByCtaGasto, String nombre, String direccion, String colonia, String cp, String poblacion, String estado, String rfc, String tel1, String tel2, String fax, String email, String representante, String cta, Float credLimite, int credPlazo, float credDescuento, int tiempoEntrega, float impCompras, String giro, int tipo, boolean espHojalateria, boolean espMecanica, boolean espSuspension, boolean espElectricidad, String notas, String usuario, String clave, UsoCfdi usoCfdi, Set cotizacions, Set pedidosForIdProveedor, Set pedidosForIdEmpresa, Set partidas) {
        this.nombre = nombre;
        this.cuentasByCtaProv = cuentasByCtaProv;
        this.cuentasByCtaGasto = cuentasByCtaGasto;
@@ -93,6 +94,7 @@ public class Proveedor  implements java.io.Serializable {
        this.notas = notas;
        this.usuario = usuario;
        this.clave = clave;
+       this.usoCfdi = usoCfdi;
        this.cotizacions = cotizacions;
        this.pedidosForIdProveedor = pedidosForIdProveedor;
        this.pedidosForIdEmpresa = pedidosForIdEmpresa;
@@ -313,6 +315,14 @@ public class Proveedor  implements java.io.Serializable {
         this.cuentasByCtaGasto = cuentasByCtaGasto;
     }
     
+    public UsoCfdi getUsoCfdi() {
+        return this.usoCfdi;
+    }
+    
+    public void setUsoCfdi(UsoCfdi usoCfdi) {
+        this.usoCfdi = usoCfdi;
+    }
+    
     public Set getCotizacions() {
         return this.cotizacions;
     }
@@ -342,8 +352,7 @@ public class Proveedor  implements java.io.Serializable {
         this.partidas = partidas;
     }
 
-
-
+    
 
 }
 

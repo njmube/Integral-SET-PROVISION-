@@ -6,6 +6,7 @@
 package Compras;
 
 import Compania.buscaCompania;
+import Ejemplar.altaEjemplar;
 import Ejemplar.buscaEjemplar;
 import Hibernate.Util.HibernateUtil;
 import Hibernate.entidades.Compania;
@@ -25,7 +26,11 @@ import Proveedor.buscaProveedor;
 import Servicios.buscaOrden;
 import Tipo.buscaTipo;
 import Empleados.buscaEmpleado;
+import Hibernate.entidades.Catalogo;
 import Hibernate.entidades.Ejemplar;
+import Hibernate.entidades.Item;
+import Integral.EnviaCorreo;
+import Integral.ExtensionFileFilter;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -52,12 +57,25 @@ import java.util.HashSet;
 import java.util.List;
 import Integral.FormatoEditor;
 import Integral.FormatoEditorTexto;
+import Integral.Ftp;
 import Integral.HorizontalBarUI;
 import Integral.Render1;
 import Integral.VerticalBarUI;
+import java.awt.Desktop;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.Properties;
 import javax.mail.BodyPart;
 import javax.mail.Message;
@@ -67,12 +85,16 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.swing.DefaultCellEditor;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import org.apache.commons.net.ftp.FTPFile;
 /***
  * @author ESPECIALIZADO TOLUCA
  */
 public class nuevoPedido extends javax.swing.JPanel {
     private Usuario usrAut, usrAut1, usrAut2; 
     private Usuario usrA=null;   
+    private Usuario usrM=null;   
     private String orden;  
     Usuario usr;
     int entro=0, x=0;
@@ -85,16 +107,23 @@ public class nuevoPedido extends javax.swing.JPanel {
     String sessionPrograma="";
     Herramientas h;
     int menu;
-    String[] columnas = new String [] {"#","R. Valua","N° Parte","Folio","Descripción","Medida","Plazo","Cantidad","Costo c/u","Total"};
+    File archivo=null;
+    int configuracion=1;
+    JFileChooser selector;
+    String ruta;
+    EnviaCorreo miCorreo;
+    String[] columnas = new String [] {"#","R. Valua","N° Parte","Folio","Descripción","Medida","Plazo","Cantidad","Costo c/u", "Tipo", "Total"};
     //false, false, false, false, false, false, true, true, true, false
     /**
     * Creates new form nuevoPedido
     */
-    public nuevoPedido(String ord, Usuario usuario, String ses, int op){
+    public nuevoPedido(String ord, Usuario usuario, String ses, int op, int configuracion, String carpeta){
         initComponents();
         p_centro.getVerticalScrollBar().setUI(new VerticalBarUI());
+        ruta=carpeta;
         p_centro.getHorizontalScrollBar().setUI(new HorizontalBarUI());
         menu=op;
+        this.configuracion=configuracion;
         orden=ord;
         usr=usuario;
         sessionPrograma=ses;
@@ -103,6 +132,35 @@ public class nuevoPedido extends javax.swing.JPanel {
         t_datos.setModel(model);
         t_datos.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         formatoTabla();
+        obtenTipo();
+        agregaArchivo("Agregar Soporte", b_archivo);
+        
+        selector=new JFileChooser();
+        selector.setFileFilter(new ExtensionFileFilter("Documentos(PDF)", new String[] { "PDF" }));
+        selector.setAcceptAllFileFilterUsed(false);
+        selector.setMultiSelectionEnabled(false);
+    }
+   
+    public void obtenTipo(){
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try{
+            //configuracion tipo de cambio
+            DecimalFormat df = new DecimalFormat("#.0000");
+            Configuracion config = (Configuracion)session.get(Configuracion.class, configuracion);
+            if(config.getTipoCambio()>0.0){
+                t_cambio.setEditable(false);
+                t_cambio.setText(""+df.format(config.getTipoCambio()));
+            }else
+                t_cambio.setEditable(true);
+        }catch(Exception e)
+            {
+                e.printStackTrace();
+            }
+            finally
+            {
+                if(session.isOpen()==true)
+                    session.close();
+            }
     }
     public void formatoTabla()
     {
@@ -173,16 +231,26 @@ public class nuevoPedido extends javax.swing.JPanel {
         t_id_aseguradora = new javax.swing.JTextField();
         t_clave = new javax.swing.JTextField();
         t_proveedor = new javax.swing.JTextField();
+        autorizar4 = new javax.swing.JDialog();
+        jPanel13 = new javax.swing.JPanel();
+        jLabel21 = new javax.swing.JLabel();
+        t_user4 = new javax.swing.JTextField();
+        jLabel25 = new javax.swing.JLabel();
+        t_clave4 = new javax.swing.JPasswordField();
+        b5 = new javax.swing.JButton();
+        jLabel26 = new javax.swing.JLabel();
+        tipo = new javax.swing.JComboBox();
+        centro = new javax.swing.JPanel();
         p_centro = new javax.swing.JScrollPane();
         t_datos = new javax.swing.JTable();
-        p_abajo = new javax.swing.JPanel();
-        l_busca = new javax.swing.JLabel();
-        b_busca = new javax.swing.JButton();
+        jPanel9 = new javax.swing.JPanel();
         t_busca = new javax.swing.JTextField();
-        b_menos = new javax.swing.JButton();
-        b_mas = new javax.swing.JButton();
+        b_busca = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
+        t_cambio = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        p_abajo = new javax.swing.JPanel();
         b_guardar = new javax.swing.JButton();
-        b_ocompra = new javax.swing.JButton();
         b_pedido = new javax.swing.JButton();
         b_nuevo_pedido = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
@@ -195,6 +263,11 @@ public class nuevoPedido extends javax.swing.JPanel {
         l_notas = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         t_notas = new javax.swing.JTextArea();
+        l_busca1 = new javax.swing.JLabel();
+        cb_pago = new javax.swing.JComboBox();
+        b_menos = new javax.swing.JButton();
+        b_mas = new javax.swing.JButton();
+        b_archivo = new javax.swing.JButton();
         p_arriba = new javax.swing.JPanel();
         p_interno_centro = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
@@ -328,13 +401,14 @@ public class nuevoPedido extends javax.swing.JPanel {
         );
         autorizarCostoLayout.setVerticalGroup(
             autorizarCostoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)
+            .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         medida.setFont(new java.awt.Font("Dialog", 0, 9)); // NOI18N
         medida.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "PZAS", "GAL", "LTS", "MTS", "CMS", "MMS", "GRS", "MLS", "KGS", "HRS", "MIN", "KIT", "FT", "LB", "JGO", "NA" }));
 
         numeros.setFont(new java.awt.Font("Dialog", 0, 9)); // NOI18N
+        numeros.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Cancelar", "Eliminar", "Buscar", "Nuevo" }));
         numeros.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 numerosFocusLost(evt);
@@ -600,9 +674,92 @@ public class nuevoPedido extends javax.swing.JPanel {
         t_proveedor.setDisabledTextColor(new java.awt.Color(2, 38, 253));
         t_proveedor.setEnabled(false);
 
+        autorizar4.setTitle("Autorización");
+        autorizar4.setModalExclusionType(null);
+        autorizar4.setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
+
+        jPanel13.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jLabel21.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        jLabel21.setText("Usuario:");
+
+        t_user4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                t_user4ActionPerformed(evt);
+            }
+        });
+
+        jLabel25.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        jLabel25.setText("contraseña:");
+
+        t_clave4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                t_clave4ActionPerformed(evt);
+            }
+        });
+
+        b5.setBackground(new java.awt.Color(2, 135, 242));
+        b5.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        b5.setForeground(new java.awt.Color(254, 254, 254));
+        b5.setText("Autorizar");
+        b5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b5ActionPerformed(evt);
+            }
+        });
+
+        jLabel26.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        jLabel26.setText("Autorizar Compras Fuera de Tiempo");
+
+        javax.swing.GroupLayout jPanel13Layout = new javax.swing.GroupLayout(jPanel13);
+        jPanel13.setLayout(jPanel13Layout);
+        jPanel13Layout.setHorizontalGroup(
+            jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel13Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(b5)
+                    .addGroup(jPanel13Layout.createSequentialGroup()
+                        .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel25)
+                            .addComponent(jLabel21))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(t_user4)
+                            .addComponent(t_clave4, javax.swing.GroupLayout.DEFAULT_SIZE, 173, Short.MAX_VALUE)))
+                    .addGroup(jPanel13Layout.createSequentialGroup()
+                        .addComponent(jLabel26)
+                        .addGap(23, 23, 23)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel13Layout.setVerticalGroup(
+            jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel13Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel26)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
+                .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel21)
+                    .addComponent(t_user4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel25)
+                    .addComponent(t_clave4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(b5)
+                .addContainerGap())
+        );
+
+        autorizar4.getContentPane().add(jPanel13, java.awt.BorderLayout.CENTER);
+
+        tipo.setFont(new java.awt.Font("Dialog", 0, 9)); // NOI18N
+        tipo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "-", "ori", "nal", "des" }));
+
         setBackground(new java.awt.Color(255, 255, 255));
         setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "Nuevo Pedido", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Arial", 1, 12))); // NOI18N
         setLayout(new java.awt.BorderLayout());
+
+        centro.setLayout(new java.awt.BorderLayout());
 
         p_centro.setBackground(new java.awt.Color(255, 255, 255));
         p_centro.setBorder(null);
@@ -612,9 +769,10 @@ public class nuevoPedido extends javax.swing.JPanel {
 
             },
             new String [] {
-                "#", "R. Valua", "N° Parte", "Folio", "Descripción", "Medida", "Plazo", "Cantidad", "Costo c/u", "Total"
+                "#", "R. Valua", "N° Parte", "Folio", "Descripción", "Medida", "Plazo", "Cantidad", "Costo c/u", "Tipo", "Total"
             }
         ));
+        t_datos.setColumnSelectionAllowed(true);
         t_datos.setFillsViewportHeight(true);
         t_datos.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         t_datos.getTableHeader().setReorderingAllowed(false);
@@ -626,23 +784,9 @@ public class nuevoPedido extends javax.swing.JPanel {
         p_centro.setViewportView(t_datos);
         t_datos.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
 
-        add(p_centro, java.awt.BorderLayout.CENTER);
+        centro.add(p_centro, java.awt.BorderLayout.CENTER);
 
-        p_abajo.setBackground(new java.awt.Color(2, 135, 242));
-
-        l_busca.setBackground(new java.awt.Color(255, 255, 255));
-        l_busca.setFont(new java.awt.Font("Arial", 0, 10)); // NOI18N
-        l_busca.setForeground(new java.awt.Color(255, 255, 255));
-        l_busca.setText("Buscar:");
-
-        b_busca.setBackground(new java.awt.Color(2, 135, 242));
-        b_busca.setIcon(new ImageIcon("imagenes/buscar.png"));
-        b_busca.setToolTipText("Busca un pedido");
-        b_busca.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                b_buscaActionPerformed(evt);
-            }
-        });
+        jPanel9.setBackground(new java.awt.Color(2, 135, 242));
 
         t_busca.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         t_busca.addActionListener(new java.awt.event.ActionListener() {
@@ -656,36 +800,76 @@ public class nuevoPedido extends javax.swing.JPanel {
             }
         });
 
-        b_menos.setIcon(new ImageIcon("imagenes/boton_menos.png"));
-        b_menos.setMnemonic('2');
-        b_menos.setToolTipText("Elimina la partida seleccionada (ALT+2)");
-        b_menos.addActionListener(new java.awt.event.ActionListener() {
+        b_busca.setBackground(new java.awt.Color(2, 135, 242));
+        b_busca.setToolTipText("Busca un pedido");
+        b_busca.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                b_menosActionPerformed(evt);
+                b_buscaActionPerformed(evt);
             }
         });
 
-        b_mas.setIcon(new ImageIcon("imagenes/boton_mas.png"));
-        b_mas.setMnemonic('1');
-        b_mas.setToolTipText("Agrega una partida (ALT+1)");
-        b_mas.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                b_masActionPerformed(evt);
+        jLabel5.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel5.setText("Tipo Cambio:");
+
+        t_cambio.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        t_cambio.setText("0.0");
+        t_cambio.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
+        t_cambio.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                t_cambioFocusLost(evt);
             }
         });
+        t_cambio.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                t_cambioKeyTyped(evt);
+            }
+        });
+
+        jLabel6.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel6.setText("Buscar:");
+
+        javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
+        jPanel9.setLayout(jPanel9Layout);
+        jPanel9Layout.setHorizontalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(t_busca, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(b_busca, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 681, Short.MAX_VALUE)
+                .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(t_cambio, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel9Layout.setVerticalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addGap(7, 7, 7)
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel5)
+                        .addComponent(t_cambio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(b_busca, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(t_busca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel6)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        centro.add(jPanel9, java.awt.BorderLayout.NORTH);
+
+        add(centro, java.awt.BorderLayout.CENTER);
+
+        p_abajo.setBackground(new java.awt.Color(2, 135, 242));
 
         b_guardar.setText("Guardar");
         b_guardar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 b_guardarActionPerformed(evt);
-            }
-        });
-
-        b_ocompra.setText("Ord. de Compra");
-        b_ocompra.setEnabled(false);
-        b_ocompra.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                b_ocompraActionPerformed(evt);
             }
         });
 
@@ -763,59 +947,90 @@ public class nuevoPedido extends javax.swing.JPanel {
         t_notas.setRows(3);
         jScrollPane2.setViewportView(t_notas);
 
+        l_busca1.setBackground(new java.awt.Color(255, 255, 255));
+        l_busca1.setFont(new java.awt.Font("Arial", 0, 10)); // NOI18N
+        l_busca1.setForeground(new java.awt.Color(255, 255, 255));
+        l_busca1.setText("Tipo de Pago:");
+
+        cb_pago.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "SELECCIONAR", "CREDITO", "CONTADO", "EFECTIVO", "CHEQUE" }));
+
+        b_menos.setIcon(new ImageIcon("imagenes/boton_menos.png"));
+        b_menos.setMnemonic('2');
+        b_menos.setToolTipText("Elimina la partida seleccionada (ALT+2)");
+        b_menos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_menosActionPerformed(evt);
+            }
+        });
+
+        b_mas.setIcon(new ImageIcon("imagenes/boton_mas.png"));
+        b_mas.setMnemonic('1');
+        b_mas.setToolTipText("Agrega una partida (ALT+1)");
+        b_mas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_masActionPerformed(evt);
+            }
+        });
+
+        b_archivo.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        b_archivo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_archivoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout p_abajoLayout = new javax.swing.GroupLayout(p_abajo);
         p_abajo.setLayout(p_abajoLayout);
         p_abajoLayout.setHorizontalGroup(
             p_abajoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(p_abajoLayout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(p_abajoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(p_abajoLayout.createSequentialGroup()
-                        .addComponent(b_mas, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(b_menos, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(10, 10, 10)
-                        .addComponent(l_busca)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(t_busca, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(b_busca, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(p_abajoLayout.createSequentialGroup()
-                        .addContainerGap()
                         .addComponent(b_guardar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(b_nuevo_pedido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(b_pedido)
+                        .addComponent(b_pedido))
+                    .addGroup(p_abajoLayout.createSequentialGroup()
+                        .addComponent(b_mas, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(b_menos, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(b_ocompra)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 269, Short.MAX_VALUE)
+                        .addComponent(l_busca1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cb_pago, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 168, Short.MAX_VALUE)
+                .addComponent(b_archivo, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(l_notas)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 305, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         p_abajoLayout.setVerticalGroup(
             p_abajoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+            .addGroup(p_abajoLayout.createSequentialGroup()
+                .addGroup(p_abajoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(p_abajoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(l_busca1)
+                        .addComponent(cb_pago, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(p_abajoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(b_mas, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(b_menos, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(p_abajoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(b_guardar)
+                    .addComponent(b_nuevo_pedido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(b_pedido))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(p_abajoLayout.createSequentialGroup()
                 .addGroup(p_abajoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(p_abajoLayout.createSequentialGroup()
-                        .addGroup(p_abajoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(b_mas, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(b_menos, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(p_abajoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(b_busca, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGroup(p_abajoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(t_busca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(l_busca))))
-                        .addGap(7, 7, 7)
-                        .addGroup(p_abajoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(b_guardar)
-                            .addComponent(b_nuevo_pedido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(b_pedido)
-                            .addComponent(b_ocompra)))
+                    .addGroup(p_abajoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(b_archivo, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(l_notas))
                 .addGap(0, 0, Short.MAX_VALUE))
         );
@@ -1395,18 +1610,58 @@ public class nuevoPedido extends javax.swing.JPanel {
                                     catch(Exception e){}
                                     double cantidad = 0.0d;
                                     double costo = 0.0d;
-                                    if(part_act[x].getCantPcp()!=null)
-                                        cantidad=part_act[x].getCantPcp();
-                                    if(part_act[x].getPcp()!=null)
-                                        costo=part_act[x].getPcp();
                                     Partida parid=part_act[x];
                                     parid = (Partida)session.get(Partida.class, parid.getIdPartida());
+                                    
+                                    if(part_act[x].getCantPcp()!=null && part_act[x].getCantPcp()!= 0)
+                                        cantidad=part_act[x].getCantPcp();
+                                    else
+                                    {
+                                        cantidad=part_act[x].getCantidadAut();
+                                        parid.setCantPcp(cantidad);
+                                    }
+                                    if(part_act[x].getPcp()!=null && part_act[x].getPcp()!=0)
+                                        costo=part_act[x].getPcp();
+                                    else
+                                    {
+                                        costo=part_act[x].getCU();
+                                        parid.setPcp(costo);
+                                    }
+                                    session.update(parid);
+                                    session.beginTransaction().commit();
+                                    
+                                    //*****buscar que se este comprando en el orden deseado******
+                                    boolean acceso=true;
+                                    int prioridad = parid.getPrioridad();
+                                    if(prioridad==4 || prioridad==3)
+                                    {
+                                        Partida[] cuentas = (Partida[])session.createCriteria(Partida.class).add(Restrictions.eq("ordenByIdOrden.idOrden", parid.getOrdenByIdOrden().getIdOrden())).add(Restrictions.in("prioridad", new Object[]{1,2})).add(Restrictions.isNull("pedido")).add(Restrictions.eq("refComp", true)).add(Restrictions.eq("autorizadoValuacion", true)).add(Restrictions.eq("autorizado", true)).list().toArray(new Partida[0]);
+                                        if(cuentas.length>0)
+                                            acceso=false;
+                                    }
+                                    if(acceso==true)
+                                    {
+                                    //********
                                     String anotacion="";
                                     if(part_act[x].getInstruccion()!=null)
                                         anotacion=part_act[x].getInstruccion();
-                                    Object[] vector=new Object[]{""+part_act[x].getIdEvaluacion()/*#*/,""+part_act[x].getSubPartida()/*R_valua*/,codigo/*codigo*/,""+parid.getCatalogo().getIdCatalogo()/*folio*/,""+parid.getCatalogo().getNombre()+" "+anotacion/*descripción*/,""+part_act[x].getMed()/*medida*/,plazo/*plazo*/,cantidad/*cantidad*/,costo/*costo c/u*/,cantidad*costo/*total*/};
+                                    
+                                    String tipo_pieza="";
+                                    if(part_act[x].getTipoPieza()!=null){
+                                        tipo_pieza = part_act[x].getTipoPieza().toString().toLowerCase();
+                                    }else
+                                        tipo_pieza="-";
+                                        
+                                    Object[] vector=new Object[]{""+part_act[x].getIdEvaluacion()/*#*/,""+part_act[x].getSubPartida()/*R_valua*/,codigo/*codigo*/,""+parid.getCatalogo().getIdCatalogo()/*folio*/,""+parid.getCatalogo().getNombre()+" "+anotacion/*descripción*/,""+part_act[x].getMed()/*medida*/,plazo/*plazo*/,cantidad/*cantidad*/,costo/*costo c/u*/,""+tipo_pieza /*tipo pieza*/,cantidad*costo/*total*/};
                                     this.model.addRow(vector);
                                     model.setCeldaEditable(t_datos.getRowCount()-1, 2, true);
+                                    model.setCeldaEditable(t_datos.getRowCount()-1, 9, true);
+                                    //***********
+                                    }
+                                    else
+                                    {
+                                        JOptionPane.showMessageDialog(null, "¡Recuerda que debes comprar primero las partidas de prioridad 1,2 y 3!");
+                                    }
                                 }
                             }
                             sumaTotales();
@@ -1434,11 +1689,11 @@ public class nuevoPedido extends javax.swing.JPanel {
             if(this.c_tipo.getSelectedItem().toString().compareTo("Externo")==0)
             {
                 int pos=t_datos.getRowCount()+1;
-                Object[] vector=new Object[]{""/*#*/,""/*R_valua*/,""/*codigo*/,""+"s/f"/*folio*/,""/*descripción*/,""+""/*medida*/,""/*plazo*/,1.0/*cantidad*/,0.0/*costo c/u*/,0.0/*total*/};
+                Object[] vector=new Object[]{""/*#*/,""/*R_valua*/,""/*codigo*/,""+"s/f"/*folio*/,""/*descripción*/,""+""/*medida*/,""/*plazo*/,1.0/*cantidad*/,0.0/*costo c/u*/, "" /*tipo*/,0.0/*total*/};
                 model.addRow(vector);
                 for(int x=0; x<t_datos.getColumnCount(); x++)
                 {
-                    if(x==0 || x==1|| x==3 || x==6 || x==9)
+                    if(x==0 || x==1|| x==3 || x==6 || x==9 || x==10)
                         model.setCeldaEditable(t_datos.getRowCount()-1, x, false);
                     else
                         model.setCeldaEditable(t_datos.getRowCount()-1, x, true);
@@ -1461,7 +1716,7 @@ public class nuevoPedido extends javax.swing.JPanel {
                 if (eje!=null)
                 {
                     int pos=t_datos.getRowCount()+1;
-                    Object[] vector=new Object[]{""/*#*/,""/*R_valua*/,eje.getIdParte()/*codigo*/,""+"s/f"/*folio*/,eje.getCatalogo()/*descripción*/,""+eje.getMedida()/*medida*/,""/*plazo*/,1.0/*cantidad*/,0.0/*costo c/u*/,0.0/*total*/};
+                    Object[] vector=new Object[]{""/*#*/,""/*R_valua*/,eje.getIdParte()/*codigo*/,""+"s/f"/*folio*/,eje.getComentario()/*descripción*/,""+eje.getMedida()/*medida*/,""/*plazo*/,1.0/*cantidad*/,0.0/*costo c/u*/, "" /*tipo pieza*/,0.0/*total*/};
                     model.addRow(vector);
                     for(int x=0; x<t_datos.getColumnCount(); x++)
                     {
@@ -1481,11 +1736,11 @@ public class nuevoPedido extends javax.swing.JPanel {
             if(this.c_tipo.getSelectedItem().toString().compareTo("Adicional")==0)
             {
                 int pos=t_datos.getRowCount()+1;
-                Object[] vector=new Object[]{""/*#*/,""/*R_valua*/,""/*codigo*/,""+"s/f"/*folio*/,""/*descripción*/,""+""/*medida*/,""/*plazo*/,1.0/*cantidad*/,0.0/*costo c/u*/,0.0/*total*/};
+                Object[] vector=new Object[]{""/*#*/,""/*R_valua*/,""/*codigo*/,""+"s/f"/*folio*/,""/*descripción*/,""+""/*medida*/,""/*plazo*/,1.0/*cantidad*/,0.0/*costo c/u*/, "" /*tipo pieza*/,0.0/*total*/};
                 model.addRow(vector);
                 for(int x=0; x<t_datos.getColumnCount(); x++)
                 {
-                    if(x==0 || x==1|| x==3 || x==6 || x==9)
+                    if(x==0 || x==1|| x==3 || x==6 || x==9 || x==10)
                         model.setCeldaEditable(t_datos.getRowCount()-1, x, false);
                     else
                         model.setCeldaEditable(t_datos.getRowCount()-1, x, true);
@@ -1618,20 +1873,315 @@ public class nuevoPedido extends javax.swing.JPanel {
         char car = evt.getKeyChar();
         evt.setKeyChar(Character.toUpperCase(evt.getKeyChar()));
     }//GEN-LAST:event_t_buscaKeyTyped
-
+    public boolean validaTipos(){
+        boolean entro=true;
+        for(int i=0; i<t_datos.getRowCount(); i++){
+            if(t_datos.getValueAt(i, 9).toString().compareTo("-")==0)
+                entro=false;
+        }
+        return entro;
+    }
     private void b_guardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_guardarActionPerformed
         BigDecimal compra=new BigDecimal("0.00");
         if(t_clave.getText().compareTo("")!=0)
         {
             if(t_proveedor.getText().compareTo("")!=0)
             {
-                if(c_tipo.getSelectedItem().toString().compareTo("Interno")==0)
+                if(cb_pago.getSelectedIndex()>0)
                 {
-                    if(t_id_comprador.getText().compareTo("")!=0)
-                    {
-                        if(t_orden.getText().compareTo("")!=0)
+                   if(Double.parseDouble(t_cambio.getText())>0.0)
+                   {    
+                        if(c_tipo.getSelectedItem().toString().compareTo("Interno")==0)
                         {
-                            if(t_datos.getRowCount()!=0)
+                            if(t_id_comprador.getText().compareTo("")!=0)
+                            {
+                                if(t_orden.getText().compareTo("")!=0)
+                                {
+                                    if(t_datos.getRowCount()!=0)
+                                    {
+                                        boolean resp = validaTipos();
+                                        if(resp==true)
+                                        {
+                                            //validamos que las compras sean menor al 70% del valor en vales
+                                            Session session1 = HibernateUtil.getSessionFactory().openSession();
+                                            session1.beginTransaction().begin();
+                                            this.orden_act=(Orden)session1.get(Orden.class, orden_act.getIdOrden());
+                                            if(orden_act!=null)
+                                            {
+                                                Partida[] partidas=(Partida[])orden_act.getPartidasForIdOrden().toArray(new Partida[0]);
+                                                double suma=0d;
+                                                for(int p=0; p<partidas.length; p++)
+                                                {
+                                                    if(partidas[p].getPedido()!=null)
+                                                    {
+                                                        BigDecimal bigSuma=new BigDecimal(partidas[p].getCantPcp()*partidas[p].getPcp());
+                                                        suma+=bigSuma.setScale(2, BigDecimal.ROUND_HALF_UP).floatValue();
+                                                    }
+                                                }
+                                                if(orden_act.getPedidos().size()>0)
+                                                {
+                                                    Pedido [] adicionales=(Pedido[])orden_act.getPedidos().toArray(new Pedido[0]);
+                                                    if(adicionales.length>0)
+                                                    {
+                                                        for(int a=0; a<adicionales.length; a++)
+                                                        {
+                                                            PartidaExterna[] pe = (PartidaExterna[])adicionales[a].getPartidaExternas().toArray(new PartidaExterna[0]);
+                                                            for(int b=0; b<pe.length; b++)
+                                                            {
+                                                                BigDecimal bigSuma=new BigDecimal(pe[b].getCantidad()*pe[b].getCosto());
+                                                                suma+=bigSuma.setScale(2, BigDecimal.ROUND_HALF_UP).floatValue();
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                compra=new BigDecimal(suma);
+                                            }
+
+                                            if(orden_act!=null)
+                                            {
+                                                Double misVales=orden_act.getVales();
+                                                Double compras=compra.doubleValue();
+                                                boolean permiso=true;
+                                                if(misVales>0.0d)
+                                                {
+                                                    Double setenta = misVales*0.7;
+                                                    Double total=((Number)t_subtotal.getValue()).doubleValue();
+                                                    Double totalNeto=(total+compras);
+                                                    System.out.println("en vales:"+misVales+"neto:"+totalNeto);
+                                                    if(setenta <= totalNeto)
+                                                    {
+                                                        if(misVales >= totalNeto)
+                                                        {
+                                                            /*usrAut1=null;
+                                                            Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+                                                            autorizar1.setSize(284, 177);
+                                                            autorizar1.setLocation((d.width/2)-(autorizar1.getWidth()/2), (d.height/2)-(autorizar1.getHeight()/2));
+                                                            t_user1.setText("");
+                                                            t_clave1.setText("");
+                                                            autorizar1.setVisible(true);
+                                                            if(usrAut1==null)
+                                                                permiso=false;//no se autoriza*/
+                                                            Usuario[] autoriza = (Usuario[])session1.createCriteria(Usuario.class).add(Restrictions.eq("autorizarPedidos", true)).list().toArray(new Usuario[0]);
+                                                            usr = (Usuario) session1.get(Usuario.class, usr.getIdUsuario());
+                                                            if(autoriza!=null)
+                                                            {
+                                                                String correos="";
+                                                                for(int y=0; y<autoriza.length; y++)
+                                                                {
+                                                                    correos+=autoriza[y].getEmpleado().getEmail()+";";
+                                                                }
+                                                                String suc="Toluca";
+                                                                if(ruta.compareToIgnoreCase("tbstultitlan.ddns.net")==0)
+                                                                    suc="Tultitlan";
+                                                                else{
+                                                                    if(ruta.compareToIgnoreCase("set-toluca.ddns.net")==0)
+                                                                        suc="Merida";
+                                                                }
+                                                                miCorreo= new EnviaCorreo("La OT"+orden_act.getIdOrden()+" arriba del 70%", "Hola buen dia, se te comunica que la OT "+orden_act.getIdOrden()+" ha sobre pasado el 70% del presupuesto asignado", correos, usr.getEmpleado().getEmail());
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            if(session1!=null)
+                                                                if(session1.isOpen())
+                                                                    session1.close();
+                                                            usrAut2=null;
+                                                            Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+                                                            autorizar2.setSize(284, 177);
+                                                            autorizar2.setLocation((d.width/2)-(autorizar2.getWidth()/2), (d.height/2)-(autorizar2.getHeight()/2));
+                                                            t_user2.setText("");
+                                                            t_clave2.setText("");
+                                                            autorizar2.setVisible(true);
+                                                            if(usrAut2==null)
+                                                                permiso=false;//no se autoriza
+                                                        }
+                                                    }
+                                                }
+                                                if(permiso==true)
+                                                {
+                                                    Pedido pedido = new Pedido();
+                                                    pedido.setFormaPago(cb_pago.getSelectedIndex());
+                                                    if(t_clave.getText().compareTo("")!=0)
+                                                        pedido.setProveedorByIdEmpresa(provf_act);
+                                                    if(t_proveedor.getText().compareTo("")!=0)
+                                                        pedido.setProveedorByIdProveedor(prov_act);
+                                                    pedido.setUsuarioByIdUsuario(usr);
+                                                    Date fecha_pedido = new Date();
+                                                    DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+                                                    String valor=dateFormat.format(fecha_pedido);
+                                                    String [] fecha = valor.split("-");
+                                                    String [] hora=fecha[2].split(":");
+                                                    String [] aux=hora[0].split(" ");
+                                                    fecha[2]=aux[0];
+                                                    hora[0]=aux[1];
+                                                    Calendar calendario = Calendar.getInstance();
+                                                    calendario.set(
+                                                            Integer.parseInt(fecha[2]), 
+                                                            Integer.parseInt(fecha[1])-1, 
+                                                            Integer.parseInt(fecha[0]), 
+                                                            Integer.parseInt(hora[0]), 
+                                                            Integer.parseInt(hora[1]), 
+                                                            Integer.parseInt(hora[2]));
+                                                    pedido.setFechaPedido(calendario.getTime());
+                                                    if(t_notas.getText().compareTo("")!=0)
+                                                        pedido.setNotas(t_notas.getText());
+                                                    pedido.setTipoPedido(c_tipo.getSelectedItem().toString());
+                                                    Integer respuesta=guardarPedido(pedido);
+                                                    if(respuesta!=null)
+                                                    {
+                                                        t_pedido.setText(""+respuesta);
+                                                        if(archivo!=null)
+                                                            if(subeArchivo(""+respuesta)==true)
+                                                                envia(""+respuesta);
+                                                            estadoBotones();
+                                                        JOptionPane.showMessageDialog(null, "Pedido almacenado con la clave:  " +respuesta);
+                                                    }
+                                                    else
+                                                        b_guardar.requestFocus();
+                                                }
+                                            }
+                                            if(session1!=null)
+                                                if(session1.isOpen())
+                                                    session1.close();
+                                        }else
+                                            JOptionPane.showMessageDialog(null, "Existen partidas sin Tipo de pieza.");
+                                    }
+                                    else
+                                        JOptionPane.showMessageDialog(null, "Selecciona algunos pedidos");
+                                }
+                                else
+                                    JOptionPane.showMessageDialog(null, "Selecciona una orden de taller");
+                            }
+                            else
+                                JOptionPane.showMessageDialog(null, "Selecciona el nombre del comprador");
+                        }
+                        if(c_tipo.getSelectedItem().toString().compareTo("Externo")==0)
+                        {
+                            if(t_id_comprador.getText().compareTo("")!=0)
+                            {
+                                for(int ren=0; ren<t_datos.getRowCount(); ren++)
+                                {
+                                    if(t_datos.getValueAt(ren, 4).toString().compareTo("")==0)
+                                    {
+                                        DefaultTableModel model = (DefaultTableModel) t_datos.getModel();
+                                        model.removeRow(ren);
+                                        ren--;
+                                    }
+                                }
+                                if(t_datos.getRowCount()!=0)
+                                {
+                                    Pedido pedido = new Pedido();
+                                    pedido.setFormaPago(cb_pago.getSelectedIndex());
+                                    if(t_clave.getText().compareTo("")!=0)
+                                        pedido.setProveedorByIdEmpresa(provf_act);
+                                    if(t_proveedor.getText().compareTo("")!=0)
+                                        pedido.setProveedorByIdProveedor(prov_act);
+                                    pedido.setUsuarioByIdUsuario(usr);
+                                    Date fecha_pedido = new Date();
+                                    DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+                                    String valor=dateFormat.format(fecha_pedido);
+                                    String [] fecha = valor.split("-");
+                                    String [] hora=fecha[2].split(":");
+                                    String [] aux=hora[0].split(" ");
+                                    fecha[2]=aux[0];
+                                    hora[0]=aux[1];
+                                    Calendar calendario = Calendar.getInstance();
+                                    calendario.set(
+                                            Integer.parseInt(fecha[2]), 
+                                            Integer.parseInt(fecha[1])-1, 
+                                            Integer.parseInt(fecha[0]), 
+                                            Integer.parseInt(hora[0]), 
+                                            Integer.parseInt(hora[1]), 
+                                            Integer.parseInt(hora[2]));
+                                    pedido.setFechaPedido(calendario.getTime());
+                                    if(this.t_folio_externo.getText().compareTo("")!=0)
+                                        pedido.setIdExterno(this.t_folio_externo.getText());
+                                    if(t_notas.getText().compareTo("")!=0)
+                                        pedido.setNotas(t_notas.getText());
+                                    pedido.setTipoPedido(c_tipo.getSelectedItem().toString());
+                                    Integer respuesta=guardarPedido(pedido);
+                                    if(respuesta!=null)
+                                    {
+                                        t_pedido.setText(""+respuesta);
+                                        if(archivo!=null)
+                                            if(subeArchivo(""+respuesta)==true)
+                                                envia(""+respuesta);
+                                            estadoBotones();
+                                        JOptionPane.showMessageDialog(null, "Pedido almacenado con la clave:  " +respuesta);
+                                    }
+                                    else
+                                        b_guardar.requestFocus();
+                                }
+                                else
+                                    JOptionPane.showMessageDialog(null, "Selecciona algunos pedidos");
+                            }
+                            else
+                                JOptionPane.showMessageDialog(null, "Selecciona el nombre del comprador");
+                        }
+                        if(c_tipo.getSelectedItem().toString().compareTo("Inventario")==0)
+                        {
+                            if(t_id_comprador.getText().compareTo("")!=0)
+                            {
+                                if(t_datos.getRowCount()!=0)
+                                {
+                                    Pedido pedido = new Pedido();
+                                    pedido.setFormaPago(cb_pago.getSelectedIndex());
+                                    if(t_clave.getText().compareTo("")!=0)
+                                        pedido.setProveedorByIdEmpresa(provf_act);
+                                    if(t_proveedor.getText().compareTo("")!=0)
+                                        pedido.setProveedorByIdProveedor(prov_act);
+                                    pedido.setUsuarioByIdUsuario(usr);
+                                    Date fecha_pedido = new Date();
+                                    DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+                                    String valor=dateFormat.format(fecha_pedido);
+                                    String [] fecha = valor.split("-");
+                                    String [] hora=fecha[2].split(":");
+                                    String [] aux=hora[0].split(" ");
+                                    fecha[2]=aux[0];
+                                    hora[0]=aux[1];
+                                    Calendar calendario = Calendar.getInstance();
+                                    calendario.set(
+                                            Integer.parseInt(fecha[2]), 
+                                            Integer.parseInt(fecha[1])-1, 
+                                            Integer.parseInt(fecha[0]), 
+                                            Integer.parseInt(hora[0]), 
+                                            Integer.parseInt(hora[1]), 
+                                            Integer.parseInt(hora[2]));
+                                    pedido.setFechaPedido(calendario.getTime());
+                                    if(this.t_folio_externo.getText().compareTo("")!=0)
+                                        pedido.setIdExterno(this.t_folio_externo.getText());
+                                    if(t_notas.getText().compareTo("")!=0)
+                                        pedido.setNotas(t_notas.getText());
+                                    pedido.setTipoPedido(c_tipo.getSelectedItem().toString());
+                                    Integer respuesta=guardarPedido(pedido);
+                                    if(respuesta!=null)
+                                    {
+                                        t_pedido.setText(""+respuesta);
+                                        if(archivo!=null)
+                                            if(subeArchivo(""+respuesta)==true)
+                                                envia(""+respuesta);
+                                            estadoBotones();
+                                        JOptionPane.showMessageDialog(null, "Pedido almacenado con la clave:  " +respuesta);
+                                    }
+                                    else
+                                        b_guardar.requestFocus();
+                                }
+                                else
+                                    JOptionPane.showMessageDialog(null, "Selecciona algunos pedidos");
+                            }
+                            else
+                                JOptionPane.showMessageDialog(null, "Selecciona el nombre del comprador");
+                        }
+                        if(c_tipo.getSelectedItem().toString().compareTo("Adicional")==0)
+                        {
+                            usrA=null;
+                            Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+                            autorizar3.setSize(284, 177);
+                            autorizar3.setLocation((d.width/2)-(autorizar3.getWidth()/2), (d.height/3)-(autorizar3.getHeight()/3));
+                            t_user3.setText("");
+                            t_clave3.setText("");
+                            autorizar3.setVisible(true);
+                            if(usrA!=null)
                             {
                                 //validamos que las compras sean menor al 70% del valor en vales
                                 Session session1 = HibernateUtil.getSessionFactory().openSession();
@@ -1645,7 +2195,8 @@ public class nuevoPedido extends javax.swing.JPanel {
                                     {
                                         if(partidas[p].getPedido()!=null)
                                         {
-                                            suma+=Math.round(partidas[p].getCantPcp()*partidas[p].getPcp());
+                                            BigDecimal bigSuma=new BigDecimal(partidas[p].getCantPcp()*partidas[p].getPcp());
+                                            suma+=bigSuma.setScale(2, BigDecimal.ROUND_HALF_UP).floatValue();
                                         }
                                     }
                                     if(orden_act.getPedidos().size()>0)
@@ -1658,7 +2209,8 @@ public class nuevoPedido extends javax.swing.JPanel {
                                                 PartidaExterna[] pe = (PartidaExterna[])adicionales[a].getPartidaExternas().toArray(new PartidaExterna[0]);
                                                 for(int b=0; b<pe.length; b++)
                                                 {
-                                                    suma+=Math.round(pe[b].getCantidad()*pe[b].getCosto());
+                                                    BigDecimal bigSuma=new BigDecimal(pe[b].getCantidad()*pe[b].getCosto());
+                                                    suma+=bigSuma.setScale(2, BigDecimal.ROUND_HALF_UP).floatValue();
                                                 }
                                             }
                                         }
@@ -1666,9 +2218,9 @@ public class nuevoPedido extends javax.swing.JPanel {
                                     compra=new BigDecimal(suma);
                                 }
 
-                                if(session1!=null)
+                                /*if(session1!=null)
                                     if(session1.isOpen())
-                                        session1.close();
+                                        session1.close();*/
                                 if(orden_act!=null)
                                 {
                                     Double misVales=orden_act.getVales();
@@ -1679,24 +2231,46 @@ public class nuevoPedido extends javax.swing.JPanel {
                                         Double setenta = misVales*0.7;
                                         Double total=((Number)t_subtotal.getValue()).doubleValue();
                                         Double totalNeto=(total+compras);
+                                        System.out.println("en vales:"+misVales+"total:"+total+" compras:"+compras);
                                         if(setenta <= totalNeto)
                                         {
                                             if(misVales >= totalNeto)
                                             {
-                                                usrAut1=null;
-                                                Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+                                                /*usrAut1=null;
+                                                d = Toolkit.getDefaultToolkit().getScreenSize();
                                                 autorizar1.setSize(284, 177);
                                                 autorizar1.setLocation((d.width/2)-(autorizar1.getWidth()/2), (d.height/2)-(autorizar1.getHeight()/2));
                                                 t_user1.setText("");
                                                 t_clave1.setText("");
                                                 autorizar1.setVisible(true);
                                                 if(usrAut1==null)
-                                                    permiso=false;//no se autoriza
+                                                    permiso=false;//no se autoriza*/
+                                                Usuario[] autoriza = (Usuario[])session1.createCriteria(Usuario.class).add(Restrictions.eq("autorizarPedidos", true)).list().toArray(new Usuario[0]);
+                                                usr = (Usuario) session1.get(Usuario.class, usr.getIdUsuario());
+                                                if(autoriza!=null)
+                                                {
+                                                    String correos="";
+                                                    for(int y=0; y<autoriza.length; y++)
+                                                    {
+                                                        correos+=autoriza[y].getEmpleado().getEmail()+";";
+                                                    }
+                                                    String suc="Toluca";
+                                                    if(ruta.compareToIgnoreCase("tbstultitlan.ddns.net")==0)
+                                                        suc="Tultitlan";
+                                                    else{
+                                                        if(ruta.compareToIgnoreCase("set-toluca.ddns.net")==0)
+                                                            suc="Merida";
+                                                    }
+                                                    miCorreo= new EnviaCorreo("La OT"+orden_act.getIdOrden()+" arriba del 70%", "Hola buen dia, se te comunica que la OT "+orden_act.getIdOrden()+" ha sobre pasado el 70% del presupuesto asignado", correos, usr.getEmpleado().getEmail());
+                                                }
                                             }
                                             else
                                             {
+                                                if(session1!=null)
+                                                    if(session1.isOpen())
+                                                        session1.close();
                                                 usrAut2=null;
-                                                Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+                                                d = Toolkit.getDefaultToolkit().getScreenSize();
                                                 autorizar2.setSize(284, 177);
                                                 autorizar2.setLocation((d.width/2)-(autorizar2.getWidth()/2), (d.height/2)-(autorizar2.getHeight()/2));
                                                 t_user2.setText("");
@@ -1709,312 +2283,75 @@ public class nuevoPedido extends javax.swing.JPanel {
                                     }
                                     if(permiso==true)
                                     {
-                                        Pedido pedido = new Pedido();
-                                        if(t_clave.getText().compareTo("")!=0)
-                                            pedido.setProveedorByIdEmpresa(provf_act);
-                                        if(t_proveedor.getText().compareTo("")!=0)
-                                            pedido.setProveedorByIdProveedor(prov_act);
-                                        pedido.setUsuarioByIdUsuario(usr);
-                                        Date fecha_pedido = new Date();
-                                        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-                                        String valor=dateFormat.format(fecha_pedido);
-                                        String [] fecha = valor.split("-");
-                                        String [] hora=fecha[2].split(":");
-                                        String [] aux=hora[0].split(" ");
-                                        fecha[2]=aux[0];
-                                        hora[0]=aux[1];
-                                        Calendar calendario = Calendar.getInstance();
-                                        calendario.set(
-                                                Integer.parseInt(fecha[2]), 
-                                                Integer.parseInt(fecha[1])-1, 
-                                                Integer.parseInt(fecha[0]), 
-                                                Integer.parseInt(hora[0]), 
-                                                Integer.parseInt(hora[1]), 
-                                                Integer.parseInt(hora[2]));
-                                        pedido.setFechaPedido(calendario.getTime());
-                                        if(t_notas.getText().compareTo("")!=0)
-                                            pedido.setNotas(t_notas.getText());
-                                        pedido.setTipoPedido(c_tipo.getSelectedItem().toString());
-                                        Integer respuesta=guardarPedido(pedido);
-                                        if(respuesta!=null)
+                                        if(t_id_comprador.getText().compareTo("")!=0)
                                         {
-                                            t_pedido.setText(""+respuesta);
-                                            envia(""+respuesta);
-                                            JOptionPane.showMessageDialog(null, "Pedido almacenado con la clave:  " +respuesta);
-                                            estadoBotones();
+                                            for(int ren=0; ren<t_datos.getRowCount(); ren++)
+                                            {
+                                                if(t_datos.getValueAt(ren, 4).toString().compareTo("")==0 )
+                                                {
+                                                    DefaultTableModel model = (DefaultTableModel) t_datos.getModel();
+                                                    model.removeRow(ren);
+                                                    ren--;
+                                                }
+                                            }
+                                            if(t_datos.getRowCount()!=0)
+                                            {
+                                                Pedido pedido = new Pedido();
+                                                pedido.setFormaPago(cb_pago.getSelectedIndex());
+                                                if(t_clave.getText().compareTo("")!=0)
+                                                    pedido.setProveedorByIdEmpresa(provf_act);
+                                                if(t_proveedor.getText().compareTo("")!=0)
+                                                    pedido.setProveedorByIdProveedor(prov_act);
+                                                pedido.setUsuarioByIdUsuario(usr);
+                                                Date fecha_pedido = new Date();
+                                                DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+                                                String valor=dateFormat.format(fecha_pedido);
+                                                String [] fecha = valor.split("-");
+                                                String [] hora=fecha[2].split(":");
+                                                String [] aux=hora[0].split(" ");
+                                                fecha[2]=aux[0];
+                                                hora[0]=aux[1];
+                                                Calendar calendario = Calendar.getInstance();
+                                                calendario.set(
+                                                        Integer.parseInt(fecha[2]), 
+                                                        Integer.parseInt(fecha[1])-1, 
+                                                        Integer.parseInt(fecha[0]), 
+                                                        Integer.parseInt(hora[0]), 
+                                                        Integer.parseInt(hora[1]), 
+                                                        Integer.parseInt(hora[2]));
+                                                pedido.setFechaPedido(calendario.getTime());
+                                                if(this.t_folio_externo.getText().compareTo("")!=0)
+                                                    pedido.setIdExterno(this.t_folio_externo.getText());
+                                                if(t_notas.getText().compareTo("")!=0)
+                                                    pedido.setNotas(t_notas.getText());
+                                                pedido.setTipoPedido(c_tipo.getSelectedItem().toString());
+                                                Integer respuesta=guardarPedido(pedido);
+                                                if(respuesta!=null)
+                                                {
+                                                    t_pedido.setText(""+respuesta);
+                                                    if(archivo!=null)
+                                                        if(subeArchivo(""+respuesta)==true)
+                                                            envia(""+respuesta);
+                                                        estadoBotones();
+                                                    JOptionPane.showMessageDialog(null, "Pedido almacenado con la clave:  " +respuesta);
+                                                }
+                                                else
+                                                    b_guardar.requestFocus();
+                                            }
+                                            else
+                                                JOptionPane.showMessageDialog(null, "Selecciona algunos pedidos");
                                         }
                                         else
-                                            b_guardar.requestFocus();
+                                            JOptionPane.showMessageDialog(null, "Selecciona el nombre del comprador");
                                     }
                                 }
                             }
-                            else
-                                JOptionPane.showMessageDialog(null, "Selecciona algunos pedidos");
                         }
-                        else
-                            JOptionPane.showMessageDialog(null, "Selecciona una orden de taller");
-                    }
-                    else
-                        JOptionPane.showMessageDialog(null, "Selecciona el nombre del comprador");
+                   }else
+                       JOptionPane.showMessageDialog(null, "Ingrese un tipo de cambio.");
                 }
-                if(c_tipo.getSelectedItem().toString().compareTo("Externo")==0)
-                {
-                    if(t_id_comprador.getText().compareTo("")!=0)
-                    {
-                        for(int ren=0; ren<t_datos.getRowCount(); ren++)
-                        {
-                            if(t_datos.getValueAt(ren, 4).toString().compareTo("")==0)
-                            {
-                                DefaultTableModel model = (DefaultTableModel) t_datos.getModel();
-                                model.removeRow(ren);
-                                ren--;
-                            }
-                        }
-                        if(t_datos.getRowCount()!=0)
-                        {
-                            Pedido pedido = new Pedido();
-                            if(t_clave.getText().compareTo("")!=0)
-                                pedido.setProveedorByIdEmpresa(provf_act);
-                            if(t_proveedor.getText().compareTo("")!=0)
-                                pedido.setProveedorByIdProveedor(prov_act);
-                            pedido.setUsuarioByIdUsuario(usr);
-                            Date fecha_pedido = new Date();
-                            DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-                            String valor=dateFormat.format(fecha_pedido);
-                            String [] fecha = valor.split("-");
-                            String [] hora=fecha[2].split(":");
-                            String [] aux=hora[0].split(" ");
-                            fecha[2]=aux[0];
-                            hora[0]=aux[1];
-                            Calendar calendario = Calendar.getInstance();
-                            calendario.set(
-                                    Integer.parseInt(fecha[2]), 
-                                    Integer.parseInt(fecha[1])-1, 
-                                    Integer.parseInt(fecha[0]), 
-                                    Integer.parseInt(hora[0]), 
-                                    Integer.parseInt(hora[1]), 
-                                    Integer.parseInt(hora[2]));
-                            pedido.setFechaPedido(calendario.getTime());
-                            if(this.t_folio_externo.getText().compareTo("")!=0)
-                                pedido.setIdExterno(this.t_folio_externo.getText());
-                            if(t_notas.getText().compareTo("")!=0)
-                                pedido.setNotas(t_notas.getText());
-                            pedido.setTipoPedido(c_tipo.getSelectedItem().toString());
-                            
-                            Integer respuesta=guardarPedido(pedido);
-                            if(respuesta!=null)
-                            {
-                                t_pedido.setText(""+respuesta);
-                                JOptionPane.showMessageDialog(null, "Pedido almacenado con la clave:  " +respuesta);
-                                estadoBotones();
-                            }
-                            else
-                                b_guardar.requestFocus();
-                        }
-                        else
-                            JOptionPane.showMessageDialog(null, "Selecciona algunos pedidos");
-                    }
-                    else
-                        JOptionPane.showMessageDialog(null, "Selecciona el nombre del comprador");
-                }
-                if(c_tipo.getSelectedItem().toString().compareTo("Inventario")==0)
-                {
-                    if(t_id_comprador.getText().compareTo("")!=0)
-                    {
-                        if(t_datos.getRowCount()!=0)
-                        {
-                            Pedido pedido = new Pedido();
-                            if(t_clave.getText().compareTo("")!=0)
-                                pedido.setProveedorByIdEmpresa(provf_act);
-                            if(t_proveedor.getText().compareTo("")!=0)
-                                pedido.setProveedorByIdProveedor(prov_act);
-                            pedido.setUsuarioByIdUsuario(usr);
-                            Date fecha_pedido = new Date();
-                            DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-                            String valor=dateFormat.format(fecha_pedido);
-                            String [] fecha = valor.split("-");
-                            String [] hora=fecha[2].split(":");
-                            String [] aux=hora[0].split(" ");
-                            fecha[2]=aux[0];
-                            hora[0]=aux[1];
-                            Calendar calendario = Calendar.getInstance();
-                            calendario.set(
-                                    Integer.parseInt(fecha[2]), 
-                                    Integer.parseInt(fecha[1])-1, 
-                                    Integer.parseInt(fecha[0]), 
-                                    Integer.parseInt(hora[0]), 
-                                    Integer.parseInt(hora[1]), 
-                                    Integer.parseInt(hora[2]));
-                            pedido.setFechaPedido(calendario.getTime());
-                            if(this.t_folio_externo.getText().compareTo("")!=0)
-                                pedido.setIdExterno(this.t_folio_externo.getText());
-                            if(t_notas.getText().compareTo("")!=0)
-                                pedido.setNotas(t_notas.getText());
-                            pedido.setTipoPedido(c_tipo.getSelectedItem().toString());
-                            
-                            Integer respuesta=guardarPedido(pedido);
-                            if(respuesta!=null)
-                            {
-                                t_pedido.setText(""+respuesta);
-                                JOptionPane.showMessageDialog(null, "Pedido almacenado con la clave:  " +respuesta);
-                                estadoBotones();
-                            }
-                            else
-                                b_guardar.requestFocus();
-                        }
-                        else
-                            JOptionPane.showMessageDialog(null, "Selecciona algunos pedidos");
-                    }
-                    else
-                        JOptionPane.showMessageDialog(null, "Selecciona el nombre del comprador");
-                }
-                if(c_tipo.getSelectedItem().toString().compareTo("Adicional")==0)
-                {
-                    usrA=null;
-                    Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-                    autorizar3.setSize(284, 177);
-                    autorizar3.setLocation((d.width/2)-(autorizar3.getWidth()/2), (d.height/3)-(autorizar3.getHeight()/3));
-                    t_user3.setText("");
-                    t_clave3.setText("");
-                    autorizar3.setVisible(true);
-                    if(usrA!=null)
-                    {
-                        //validamos que las compras sean menor al 70% del valor en vales
-                        Session session1 = HibernateUtil.getSessionFactory().openSession();
-                        session1.beginTransaction().begin();
-                        this.orden_act=(Orden)session1.get(Orden.class, orden_act.getIdOrden());
-                        if(orden_act!=null)
-                        {
-                            Partida[] partidas=(Partida[])orden_act.getPartidasForIdOrden().toArray(new Partida[0]);
-                            double suma=0d;
-                            for(int p=0; p<partidas.length; p++)
-                            {
-                                if(partidas[p].getPedido()!=null)
-                                {
-                                    suma+=Math.round(partidas[p].getCantPcp()*partidas[p].getPcp());
-                                }
-                            }
-                            if(orden_act.getPedidos().size()>0)
-                            {
-                                Pedido [] adicionales=(Pedido[])orden_act.getPedidos().toArray(new Pedido[0]);
-                                if(adicionales.length>0)
-                                {
-                                    for(int a=0; a<adicionales.length; a++)
-                                    {
-                                        PartidaExterna[] pe = (PartidaExterna[])adicionales[a].getPartidaExternas().toArray(new PartidaExterna[0]);
-                                        for(int b=0; b<pe.length; b++)
-                                        {
-                                            suma+=Math.round(pe[b].getCantidad()*pe[b].getCosto());
-                                        }
-                                    }
-                                }
-                            }
-                            compra=new BigDecimal(suma);
-                        }
-
-                        if(session1!=null)
-                            if(session1.isOpen())
-                                session1.close();
-                        if(orden_act!=null)
-                        {
-                            Double misVales=orden_act.getVales();
-                            Double compras=compra.doubleValue();
-                            boolean permiso=true;
-                            if(misVales>0.0d)
-                            {
-                                Double setenta = misVales*0.7;
-                                Double total=((Number)t_subtotal.getValue()).doubleValue();
-                                Double totalNeto=(total+compras);
-                                if(setenta <= totalNeto)
-                                {
-                                    if(misVales >= totalNeto)
-                                    {
-                                        usrAut1=null;
-                                        d = Toolkit.getDefaultToolkit().getScreenSize();
-                                        autorizar1.setSize(284, 177);
-                                        autorizar1.setLocation((d.width/2)-(autorizar1.getWidth()/2), (d.height/2)-(autorizar1.getHeight()/2));
-                                        t_user1.setText("");
-                                        t_clave1.setText("");
-                                        autorizar1.setVisible(true);
-                                        if(usrAut1==null)
-                                            permiso=false;//no se autoriza
-                                    }
-                                    else
-                                    {
-                                        usrAut2=null;
-                                        d = Toolkit.getDefaultToolkit().getScreenSize();
-                                        autorizar2.setSize(284, 177);
-                                        autorizar2.setLocation((d.width/2)-(autorizar2.getWidth()/2), (d.height/2)-(autorizar2.getHeight()/2));
-                                        t_user2.setText("");
-                                        t_clave2.setText("");
-                                        autorizar2.setVisible(true);
-                                        if(usrAut2==null)
-                                            permiso=false;//no se autoriza
-                                    }
-                                }
-                            }
-                            if(permiso==true)
-                            {
-                                if(t_id_comprador.getText().compareTo("")!=0)
-                                {
-                                    for(int ren=0; ren<t_datos.getRowCount(); ren++)
-                                    {
-                                        if(t_datos.getValueAt(ren, 4).toString().compareTo("")==0 )
-                                        {
-                                            DefaultTableModel model = (DefaultTableModel) t_datos.getModel();
-                                            model.removeRow(ren);
-                                            ren--;
-                                        }
-                                    }
-                                    if(t_datos.getRowCount()!=0)
-                                    {
-                                        Pedido pedido = new Pedido();
-                                        if(t_clave.getText().compareTo("")!=0)
-                                            pedido.setProveedorByIdEmpresa(provf_act);
-                                        if(t_proveedor.getText().compareTo("")!=0)
-                                            pedido.setProveedorByIdProveedor(prov_act);
-                                        pedido.setUsuarioByIdUsuario(usr);
-                                        Date fecha_pedido = new Date();
-                                        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-                                        String valor=dateFormat.format(fecha_pedido);
-                                        String [] fecha = valor.split("-");
-                                        String [] hora=fecha[2].split(":");
-                                        String [] aux=hora[0].split(" ");
-                                        fecha[2]=aux[0];
-                                        hora[0]=aux[1];
-                                        Calendar calendario = Calendar.getInstance();
-                                        calendario.set(
-                                                Integer.parseInt(fecha[2]), 
-                                                Integer.parseInt(fecha[1])-1, 
-                                                Integer.parseInt(fecha[0]), 
-                                                Integer.parseInt(hora[0]), 
-                                                Integer.parseInt(hora[1]), 
-                                                Integer.parseInt(hora[2]));
-                                        pedido.setFechaPedido(calendario.getTime());
-                                        if(this.t_folio_externo.getText().compareTo("")!=0)
-                                            pedido.setIdExterno(this.t_folio_externo.getText());
-                                        if(t_notas.getText().compareTo("")!=0)
-                                            pedido.setNotas(t_notas.getText());
-                                        pedido.setTipoPedido(c_tipo.getSelectedItem().toString());
-                                        Integer respuesta=guardarPedido(pedido);
-                                        if(respuesta!=null)
-                                        {
-                                            t_pedido.setText(""+respuesta);
-                                            JOptionPane.showMessageDialog(null, "Pedido almacenado con la clave:  " +respuesta);
-                                            estadoBotones();
-                                        }
-                                        else
-                                            b_guardar.requestFocus();
-                                    }
-                                    else
-                                        JOptionPane.showMessageDialog(null, "Selecciona algunos pedidos");
-                                }
-                                else
-                                    JOptionPane.showMessageDialog(null, "Selecciona el nombre del comprador");
-                            }
-                        }
-                    }
-                }
+                else
+                    JOptionPane.showMessageDialog(null, "Selecciona el tipo de pago");
             }
             else
                 JOptionPane.showMessageDialog(null, "Selecciona un proveedor");
@@ -2023,29 +2360,12 @@ public class nuevoPedido extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(null, "Selecciona una empresa a la que se va a facturar");
     }//GEN-LAST:event_b_guardarActionPerformed
 
-    private void b_ocompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_ocompraActionPerformed
-        Formatos f1;
-        if(this.c_tipo.getSelectedItem().toString().compareTo("Interno")==0)
-        {
-            f1=new Formatos(this.usr, this.sessionPrograma, this.orden_act, t_pedido.getText());
-            f1.ordenCompra();
-        }
-        else
-        {
-            if(this.c_tipo.getSelectedItem().toString().compareTo("Externo")==0)
-                f1=new Formatos(this.usr, this.sessionPrograma, null, t_pedido.getText());
-            else
-                f1=new Formatos(this.usr, this.sessionPrograma, this.orden_act, t_pedido.getText());
-            f1.ordenCompraExternos(Integer.parseInt(this.t_pedido.getText()));
-        }    
-    }//GEN-LAST:event_b_ocompraActionPerformed
-
     private void b_pedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_pedidoActionPerformed
         Formatos f1;
         if(this.c_tipo.getSelectedItem().toString().compareTo("Externo")==0 || this.c_tipo.getSelectedItem().toString().compareTo("Inventario")==0)
-            f1=new Formatos(this.usr, this.sessionPrograma, null, t_pedido.getText());
+            f1=new Formatos(this.usr, this.sessionPrograma, null, t_pedido.getText(),configuracion);
         else
-            f1=new Formatos(this.usr, this.sessionPrograma, this.orden_act, t_pedido.getText());
+            f1=new Formatos(this.usr, this.sessionPrograma, this.orden_act, t_pedido.getText(),configuracion);
             
         if(this.c_tipo.getSelectedItem().toString().compareTo("Interno")==0)
             f1.pedidos();
@@ -2083,28 +2403,33 @@ public class nuevoPedido extends javax.swing.JPanel {
         t_notas.setEditable(true);
         t_datos.setEnabled(true);
         b_pedido.setEnabled(false);
-        b_ocompra.setEnabled(false);
+        b_archivo.setEnabled(true);
+        agregaArchivo("Agregar Soporte", b_archivo);
         this.c_tipo.setEnabled(true);
+        cb_pago.setSelectedIndex(0);
         sumaTotales();
         this.orden_act=null;
     }//GEN-LAST:event_b_nuevo_pedidoActionPerformed
 
     private void t_datosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_t_datosMouseClicked
-        /*h=new Herramientas(usr, 0);
-        h.session(sessionPrograma);
+        //h=new Herramientas(usr, 0);
+        //h.session(sessionPrograma);
         if(t_datos.getSelectedRow()>=0)
         {
-            if(t_datos.getSelectedColumn()==2 && c_tipo.getSelectedItem().toString().compareTo("Interno")==0)
+            /*if(t_datos.getSelectedColumn()==2 && c_tipo.getSelectedItem().toString().compareTo("Interno")==0)
             {
                 numeros.removeAllItems();
-                numeros.addItem("S/C");
-                numeros.setSelectedItem("S/C");
+                numeros.addItem("Cancelar");
+                numeros.addItem("Eliminar");
+                numeros.addItem("Buscar");
+                numeros.addItem("Nuevo");
+                numeros.setSelectedItem("Cancelar");
                 Session session = HibernateUtil.getSessionFactory().openSession();
                 try
                 {
                     session.beginTransaction().begin();
-                    Partida partida=(Partida) session.createCriteria(Partida.class).add(Restrictions.eq("ordenByIdOrden.idOrden", Integer.parseInt(t_orden.getText()))).add(Restrictions.eq("idEvaluacion", Integer.parseInt(t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString()))).add(Restrictions.eq("subPartida", Integer.parseInt(t_datos.getValueAt(t_datos.getSelectedRow(), 1).toString()))).setMaxResults(1).uniqueResult();
-                    Ejemplar[] codigos = (Ejemplar[]) partida.getCatalogo().getEjemplars().toArray(new Ejemplar[0]);
+                    Catalogo cat=(Catalogo) session.get(Catalogo.class, Integer.parseInt(t_datos.getValueAt(t_datos.getSelectedRow(), 3).toString()));
+                    Ejemplar[] codigos = (Ejemplar[]) cat.getEjemplars().toArray(new Ejemplar[0]);
                     Ejemplar codigoAux= new Ejemplar();
                     for(int k=0;k<codigos.length;k++) 
                     {
@@ -2141,7 +2466,7 @@ public class nuevoPedido extends javax.swing.JPanel {
                 {
                     if(c_tipo.getSelectedItem().toString().compareTo("Interno")==0)
                     {
-                        calendario cal =new calendario(new javax.swing.JFrame(), true);
+                        calendario cal =new calendario(new javax.swing.JFrame(), true, false);
                         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
                         cal.setLocation((d.width/2)-(cal.getWidth()/2), (d.height/2)-(cal.getHeight()/2));
                         cal.setVisible(true);
@@ -2188,7 +2513,7 @@ public class nuevoPedido extends javax.swing.JPanel {
                     }
                     else
                     {
-                        calendario cal =new calendario(new javax.swing.JFrame(), true);
+                        calendario cal =new calendario(new javax.swing.JFrame(), true, false);
                         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
                         cal.setLocation((d.width/2)-(cal.getWidth()/2), (d.height/2)-(cal.getHeight()/2));
                         cal.setVisible(true);
@@ -2203,7 +2528,7 @@ public class nuevoPedido extends javax.swing.JPanel {
                     }
                 }
             }
-        //}
+        }
     }//GEN-LAST:event_t_datosMouseClicked
 
     private void t_userActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_userActionPerformed
@@ -2310,7 +2635,7 @@ public class nuevoPedido extends javax.swing.JPanel {
         h=new Herramientas(usr, 0);
         h.session(sessionPrograma);
 
-        buscaMarca obj = new buscaMarca(new javax.swing.JFrame(), true, this.sessionPrograma, this.usr);
+        buscaMarca obj = new buscaMarca(new javax.swing.JFrame(), true, this.sessionPrograma, this.usr, false);
         obj.t_busca.requestFocus();
         obj.formatoTabla();
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
@@ -2454,7 +2779,7 @@ public class nuevoPedido extends javax.swing.JPanel {
     private void b_proveedorfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_proveedorfActionPerformed
         h=new Herramientas(usr, 0);
         h.session(sessionPrograma);
-        buscaProveedor obj = new buscaProveedor(new javax.swing.JFrame(), true, this.usr, this.sessionPrograma);
+        buscaProveedor obj = new buscaProveedor(new javax.swing.JFrame(), true, this.usr, this.sessionPrograma, 1);
         obj.t_busca.requestFocus();
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
@@ -2477,7 +2802,7 @@ public class nuevoPedido extends javax.swing.JPanel {
     private void b_calendarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_calendarioActionPerformed
         h=new Herramientas(usr, 0);
         h.session(sessionPrograma);
-        calendario cal =new calendario(new javax.swing.JFrame(), true);
+        calendario cal =new calendario(new javax.swing.JFrame(), true, false);
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         cal.setLocation((d.width/2)-(cal.getWidth()/2), (d.height/2)-(cal.getHeight()/2));
         cal.setVisible(true);
@@ -2543,7 +2868,7 @@ public class nuevoPedido extends javax.swing.JPanel {
     private void b_ordenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_ordenActionPerformed
         h=new Herramientas(usr, menu);
         h.session(sessionPrograma);
-        buscaOrden obj = new buscaOrden(new javax.swing.JFrame(), true, this.usr, 0);
+        buscaOrden obj = new buscaOrden(new javax.swing.JFrame(), true, this.usr, 0, configuracion);
         obj.t_busca.requestFocus();
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
@@ -2555,64 +2880,115 @@ public class nuevoPedido extends javax.swing.JPanel {
                 model=new MyModel(0, columnas);
                 t_datos.setModel(model);
                 formatoTabla();
-                    if(orden_act.getFechaCierre()==null && orden_act.getCierreRefacciones()==null)
+                boolean permiso_nuevo=true;
+                if(orden_act.getMetaRefacciones()==null)
+                {
+                    usrM=null;
+                    autorizar4.setSize(284, 177);
+                    autorizar4.setLocation((d.width/2)-(autorizar4.getWidth()/2), (d.height/2)-(autorizar4.getHeight()/2));
+                    t_user4.setText("");
+                    t_clave4.setText("");
+                    autorizar4.setVisible(true);
+                    if(usrM==null)
+                        permiso_nuevo=false;//no se autoriza
+                }
+                if(permiso_nuevo==true)
+                {
+                    Session session = HibernateUtil.getSessionFactory().openSession();
+                    if(orden_act.getFechaCierre()==null)
                     {
-                        h= new Herramientas(usr, menu);
-                        h.desbloqueaOrden();
-                        String resp=h.estadoOrden(orden_act);
-                        if(resp.compareTo("")==0 || resp.compareTo("*bloqueada ok*")==0)
+                        Date hoy=new Date();
+                        int dias=0;
+                        if(orden_act.getMetaRefacciones()!=null)
+                            dias=(int) ((orden_act.getMetaRefacciones().getTime()-hoy.getTime())/86400000);
+                        boolean permiso=true;
+                        if(dias<0 || orden_act.getCierreRefacciones()!=null)
                         {
-                            t_orden.setText(""+orden_act.getIdOrden());
-                            if(t_orden.getText().compareTo("")!=0)
+                            usrM=null;
+                            autorizar4.setSize(284, 177);
+                            autorizar4.setLocation((d.width/2)-(autorizar4.getWidth()/2), (d.height/2)-(autorizar4.getHeight()/2));
+                            t_user4.setText("");
+                            t_clave4.setText("");
+                            autorizar4.setVisible(true);
+                            if(usrM==null)
+                                permiso=false;//no se autoriza
+                        }
+                        if(permiso==true)
+                        {
+                        
+                            h= new Herramientas(usr, menu);
+                            h.desbloqueaOrden();
+                            String resp=h.estadoOrden(orden_act);
+                            if(resp.compareTo("")==0 || resp.compareTo("*bloqueada ok*")==0)
                             {
-                                datos_unidad("", "", "", "", "", "","", "","");
-                                if (orden_act!=null)
+                                if(orden_act.getVales()!=null && orden_act.getVales()>0)
                                 {
-                                    Session session = HibernateUtil.getSessionFactory().openSession();
-                                    try
+                                    t_orden.setText(""+orden_act.getIdOrden());
+                                    if(t_orden.getText().compareTo("")!=0)
                                     {
-                                        session.beginTransaction().begin();
-                                        orden_act = (Orden)session.get(Orden.class, Integer.parseInt(t_orden.getText()));
-                                        session.getTransaction().commit();
+                                        datos_unidad("", "", "", "", "", "","", "","");
+                                        try
+                                        {
+                                            session.beginTransaction().begin();
+                                            orden_act = (Orden)session.get(Orden.class, Integer.parseInt(t_orden.getText()));
+                                            session.getTransaction().commit();
 
-                                        t_tipo.setText(orden_act.getTipo().getTipoNombre());
-                                        t_modelo.setText(Integer.toString(orden_act.getModelo()));
-                                        t_id_aseguradora.setText(""+orden_act.getCompania().getIdCompania());
-                                        t_aseguradora.setText(orden_act.getCompania().getNombre());
-                                        t_asegurado.setText(orden_act.getClientes().getNombre());
+                                            t_tipo.setText(orden_act.getTipo().getTipoNombre());
+                                            t_modelo.setText(Integer.toString(orden_act.getModelo()));
+                                            t_id_aseguradora.setText(""+orden_act.getCompania().getIdCompania());
+                                            t_aseguradora.setText(orden_act.getCompania().getNombre());
+                                            t_asegurado.setText(orden_act.getClientes().getNombre());
+                                        }
+                                        catch (HibernateException he)
+                                        {
+                                            he.printStackTrace();
+                                            session.getTransaction().rollback();
+                                            orden_act=null;
+                                            t_tipo.setText("");
+                                            t_modelo.setText("");
+                                            t_id_aseguradora.setText("");
+                                            t_asegurado.setText("");
+                                        }
+                                        finally
+                                        {
+                                            session.close();
+                                        }
                                     }
-                                    catch (HibernateException he)
+                                    else
                                     {
-                                        he.printStackTrace();
-                                        session.getTransaction().rollback();
                                         orden_act=null;
-                                        t_tipo.setText("");
-                                        t_modelo.setText("");
-                                        t_id_aseguradora.setText("");
-                                        t_asegurado.setText("");
+                                        datos_unidad("", "", "", "", "", "","","", "");
+                                        t_orden.setEnabled(false);
+                                        orden_act=null;
                                     }
-                                    finally
-                                    {
-                                        session.close();
-                                    }
+                                    model=new MyModel(0, columnas);
+                                    t_datos.setModel(model);
+                                    formatoTabla();
                                 }
+                                else
+                                    JOptionPane.showMessageDialog(null, "Aun no se ha asignado presupuesto para surtimiento!");
                             }
                             else
+                            JOptionPane.showMessageDialog(null, "¡Orden Bloqueada por:"+orden_act.getUsuarioByBloqueada().getIdUsuario());
+                        }else
+                        {
+                            if(orden_act.getCierreRefacciones()==null)
                             {
-                                orden_act=null;
-                                datos_unidad("", "", "", "", "", "","","", "");
-                                t_orden.setEnabled(false);
-                                orden_act=null;
+                                session.beginTransaction().begin();
+                                orden_act = (Orden)session.get(Orden.class, orden_act.getIdOrden());
+                                orden_act.setCierreRefacciones(hoy);
+                                session.getTransaction().commit();
+                                session.close();
                             }
-                            model=new MyModel(0, columnas);
-                            t_datos.setModel(model);
-                            formatoTabla();
+                            JOptionPane.showMessageDialog(null, "¡El tiempo para surtir la orden ha terminado, comunicate con tus superiores!");
+
                         }
-                        else
-                        JOptionPane.showMessageDialog(null, "¡Orden Bloqueada por:"+orden_act.getUsuarioByBloqueada().getIdUsuario());
                     }
                     else
-                    JOptionPane.showMessageDialog(null, "¡Orden cerrada!");
+                        JOptionPane.showMessageDialog(null, "¡Orden cerrada!");
+                }
+                else
+                    JOptionPane.showMessageDialog(null, "¡Falta asignar meta de refacciones!");
             }
             else
             {
@@ -2627,13 +3003,13 @@ public class nuevoPedido extends javax.swing.JPanel {
                 t_orden.setEnabled(false);
                 t_orden.requestFocus();
             }
-        }catch(Exception e){}
+        }catch(Exception e){e.printStackTrace();}
     }//GEN-LAST:event_b_ordenActionPerformed
 
     private void b_proveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_proveedorActionPerformed
         h=new Herramientas(usr, 0);
         h.session(sessionPrograma);
-        buscaProveedor obj = new buscaProveedor(new javax.swing.JFrame(), true, this.usr, this.sessionPrograma);
+        buscaProveedor obj = new buscaProveedor(new javax.swing.JFrame(), true, this.usr, this.sessionPrograma, 0);
         obj.t_busca.requestFocus();
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
@@ -2795,7 +3171,7 @@ public class nuevoPedido extends javax.swing.JPanel {
                     Usuario autoriza = (Usuario)session.createCriteria(Usuario.class).add(Restrictions.eq("idUsuario", t_user3.getText())).add(Restrictions.eq("clave", t_clave3.getText())).setMaxResults(1).uniqueResult();
                     if(autoriza!=null)
                     {
-                        if(autoriza.getAutorizarSobrecosto()==true)
+                        if(autoriza.getAutorizaAdicional()==true)
                         {
                             usrA=autoriza;
                             autorizar3.dispose();
@@ -2827,14 +3203,137 @@ public class nuevoPedido extends javax.swing.JPanel {
         JOptionPane.showMessageDialog(this, "¡Ingrese el Usuario!");
     }//GEN-LAST:event_b4ActionPerformed
 
+    private void t_user4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_user4ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_t_user4ActionPerformed
+
+    private void t_clave4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_clave4ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_t_clave4ActionPerformed
+
+    private void b5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b5ActionPerformed
+        // TODO add your handling code here:
+         if(t_user4.getText().compareTo("")!=0)
+        {
+            if(t_clave4.getPassword().toString().compareTo("")!=0)
+            {
+                Session session = HibernateUtil.getSessionFactory().openSession();
+                try
+                {
+                    session.beginTransaction().begin();
+                    Usuario autoriza = (Usuario)session.createCriteria(Usuario.class).add(Restrictions.eq("idUsuario", t_user4.getText())).add(Restrictions.eq("clave", t_clave4.getText())).setMaxResults(1).uniqueResult();
+                    if(autoriza!=null)
+                    {
+                        if(autoriza.getAutorizarSobrecosto()==true)
+                        {
+                            usrM=autoriza;
+                            autorizar4.dispose();
+                        }
+                        else
+                        JOptionPane.showMessageDialog(this, "¡el usuario no tiene permiso de autorizar!");
+                    }
+                    else
+                    {
+                        session.beginTransaction().rollback();
+                        JOptionPane.showMessageDialog(this, "¡Datos Incorrectos!");
+                    }
+                }catch(Exception e)
+                {
+                    session.beginTransaction().rollback();
+                    JOptionPane.showMessageDialog(this, "¡Error al consultar los datos!");
+                    e.printStackTrace();
+                }
+                finally
+                {
+                    if(session.isOpen()==true)
+                    session.close();
+                }
+            }
+            else
+            JOptionPane.showMessageDialog(this, "¡Ingrese la contraseña!");
+        }
+        else
+        JOptionPane.showMessageDialog(this, "¡Ingrese el Usuario!");
+    }//GEN-LAST:event_b5ActionPerformed
+
+    private void t_cambioFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_t_cambioFocusLost
+        // TODO add your handling code here:
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try
+        {
+            session.beginTransaction().begin();
+            Configuracion config=(Configuracion)session.get(Configuracion.class, configuracion);
+            Date fecha_hoy = new Date();
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String fecha = dateFormat.format(fecha_hoy);
+            DecimalFormat df = new DecimalFormat("#.0000");
+            
+            double valor = Double.parseDouble(t_cambio.getText());
+            if(valor > 0.0){
+                config.setTipoCambio(valor);
+                config.setFechaCambio(fecha_hoy);
+                session.update(config);
+                session.beginTransaction().commit();
+                
+                t_cambio.setText(""+df.format(valor));
+                t_cambio.setEditable(false);
+            }else{
+                t_cambio.setText("0.0");
+                t_cambio.setEditable(true);
+            }
+            
+        }catch(Exception e)
+        {
+            session.beginTransaction().rollback();
+            e.printStackTrace();
+            //JOptionPane.showMessageDialog(null, "Error al consultar la base de datos");
+        }
+        finally
+        {
+            if(session!=null)
+                if(session.isOpen())
+                    session.close();
+        }
+    }//GEN-LAST:event_t_cambioFocusLost
+
+    private void t_cambioKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_cambioKeyTyped
+        // TODO add your handling code here:
+        char caracter = evt.getKeyChar();
+        // Verificar si la tecla pulsada no es un digito
+        if(((caracter < '0') ||
+            (caracter > '9')) &&
+            (caracter != '\b' /*corresponde a BACK_SPACE*/) && caracter!='.')
+         {
+            evt.consume();  // ignorar el evento de teclado
+         }
+    }//GEN-LAST:event_t_cambioKeyTyped
+
+    private void b_archivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_archivoActionPerformed
+        // TODO add your handling code here:
+        int estado=selector.showOpenDialog(null);
+        if(estado==0)
+        {
+            archivo = selector.getSelectedFile();
+            if(archivo.exists())
+                agregaArchivo(archivo.getName(), b_archivo);
+        }
+        else{
+            archivo=null;
+            agregaArchivo("Agregar Soporte", b_archivo);
+        }
+    }//GEN-LAST:event_b_archivoActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDialog autorizar1;
     private javax.swing.JDialog autorizar2;
     private javax.swing.JDialog autorizar3;
+    private javax.swing.JDialog autorizar4;
     private javax.swing.JDialog autorizarCosto;
     private javax.swing.JButton b2;
     private javax.swing.JButton b3;
     private javax.swing.JButton b4;
+    private javax.swing.JButton b5;
+    private javax.swing.JButton b_archivo;
     private javax.swing.JButton b_aseguradora;
     private javax.swing.JButton b_autorizar;
     private javax.swing.JButton b_busca;
@@ -2845,13 +3344,14 @@ public class nuevoPedido extends javax.swing.JPanel {
     private javax.swing.JButton b_mas;
     private javax.swing.JButton b_menos;
     private javax.swing.JButton b_nuevo_pedido;
-    private javax.swing.JButton b_ocompra;
     private javax.swing.JButton b_orden;
     private javax.swing.JButton b_pedido;
     private javax.swing.JButton b_proveedor;
     private javax.swing.JButton b_proveedorf;
     private javax.swing.JButton b_tipo;
     private javax.swing.JComboBox c_tipo;
+    private javax.swing.JComboBox cb_pago;
+    private javax.swing.JPanel centro;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
@@ -2861,15 +3361,21 @@ public class nuevoPedido extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
+    private javax.swing.JLabel jLabel25;
+    private javax.swing.JLabel jLabel26;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
+    private javax.swing.JPanel jPanel13;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -2877,9 +3383,10 @@ public class nuevoPedido extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
+    private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel l_asegurado;
-    private javax.swing.JLabel l_busca;
+    private javax.swing.JLabel l_busca1;
     private javax.swing.JLabel l_colonia;
     private javax.swing.JLabel l_cp;
     private javax.swing.JLabel l_direccion;
@@ -2905,10 +3412,12 @@ public class nuevoPedido extends javax.swing.JPanel {
     private javax.swing.JTextField t_asegurado;
     private javax.swing.JTextField t_aseguradora;
     private javax.swing.JTextField t_busca;
+    private javax.swing.JTextField t_cambio;
     private javax.swing.JTextField t_clave;
     private javax.swing.JPasswordField t_clave1;
     private javax.swing.JPasswordField t_clave2;
     private javax.swing.JPasswordField t_clave3;
+    private javax.swing.JPasswordField t_clave4;
     private javax.swing.JTextField t_colonia;
     private javax.swing.JPasswordField t_contra;
     private javax.swing.JTextField t_cp;
@@ -2937,6 +3446,8 @@ public class nuevoPedido extends javax.swing.JPanel {
     private javax.swing.JTextField t_user1;
     private javax.swing.JTextField t_user2;
     private javax.swing.JTextField t_user3;
+    private javax.swing.JTextField t_user4;
+    private javax.swing.JComboBox tipo;
     // End of variables declaration//GEN-END:variables
 
     
@@ -2991,14 +3502,14 @@ public class nuevoPedido extends javax.swing.JPanel {
         for(int ren=0; ren<t_datos.getRowCount(); ren++)
         {
             double multi= Double.parseDouble(String.valueOf(t_datos.getValueAt(ren,7)))*Double.parseDouble(String.valueOf(t_datos.getValueAt(ren,8)));
-            t_datos.setValueAt(multi,ren,9);
-            double subtotal1= Double.parseDouble(String.valueOf(t_datos.getValueAt(ren,9)));
+            t_datos.setValueAt(multi,ren,10);
+            double subtotal1= Double.parseDouble(String.valueOf(t_datos.getValueAt(ren,10)));
             subtotal+=subtotal1;
         }
         t_subtotal.setValue(subtotal);
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction().begin();
-        Configuracion con = (Configuracion)session.get(Configuracion.class, 1);
+        Configuracion con = (Configuracion)session.get(Configuracion.class, configuracion);
         if(session.isOpen())
             session.close();
         t_IVA.setValue(iva=subtotal*con.getIva()/100);
@@ -3021,6 +3532,12 @@ public class nuevoPedido extends javax.swing.JPanel {
                     break;
                 case 2://no parte
                     column.setPreferredWidth(100);
+                    if(c_tipo.getSelectedItem().toString().compareTo("Interno")==0)
+                    {
+                        DefaultCellEditor miEditor = new DefaultCellEditor(numeros);
+                        miEditor.setClickCountToStart(2);
+                        column.setCellEditor(miEditor); 
+                    }
                     break;
                 case 3:
                     column.setPreferredWidth(20);
@@ -3044,6 +3561,12 @@ public class nuevoPedido extends javax.swing.JPanel {
                     column.setPreferredWidth(20);
                     break;
                 case 9:               
+                    column.setPreferredWidth(10);
+                    DefaultCellEditor editor2 = new DefaultCellEditor(tipo);
+                    column.setCellEditor(editor2); 
+                    editor2.setClickCountToStart(0);
+                    break;
+                case 10:
                     column.setPreferredWidth(20);
                     break;
                 default:
@@ -3093,6 +3616,7 @@ public class nuevoPedido extends javax.swing.JPanel {
             if(emp!=null)
             {
                 obj.setEmpleado(emp);
+                obj.setTipoCambio(Double.parseDouble(t_cambio.getText()));
                 IdPedido=(Integer) session.save(obj);
                 obj = (Pedido)session.get(Pedido.class, IdPedido);
                 if(this.c_tipo.getSelectedItem().toString().compareTo("Interno")==0)
@@ -3101,6 +3625,34 @@ public class nuevoPedido extends javax.swing.JPanel {
                     {
                         Partida part=(Partida)session.createCriteria(Partida.class).add(Restrictions.eq("ordenByIdOrden.idOrden", Integer.parseInt(t_orden.getText()))).add(Restrictions.eq("idEvaluacion", Integer.parseInt(t_datos.getValueAt(ren, 0).toString()))).add(Restrictions.eq("subPartida", Integer.parseInt(t_datos.getValueAt(ren, 1).toString()))).setMaxResults(1).uniqueResult();
                         part.setPedido(obj);
+                        
+                        if(orden_act.getServicio()!=null)
+                        {
+                            Item reparacion = (Item)session.createCriteria(Item.class).add(Restrictions.eq("catalogo.idCatalogo", part.getCatalogo().getIdCatalogo())).add(Restrictions.eq("servicio.idServicio", orden_act.getServicio().getIdServicio())).setMaxResults(1).uniqueResult();
+                            //Item reparacion = (Item)session.get(Item.class, part.getReparacion().getIdReparacion());
+                            if(reparacion!=null)
+                            {
+                                String tipo = part.getTipoPieza().toString().toLowerCase();
+                                switch(tipo){
+                                    case "ori":
+                                        //original
+                                        if(part.getPcp()>reparacion.getCostoOri())
+                                            reparacion.setCostoOri((double)part.getPcp());
+                                        break;
+                                    case "nal":
+                                        //nacional
+                                        if(part.getPcp()>reparacion.getCostoNal())
+                                            reparacion.setCostoNal((double)part.getPcp());
+                                        break;
+                                    case "des":
+                                        //desmontado
+                                        if(part.getPcp()>reparacion.getCostoDesm())
+                                            reparacion.setCostoDesm((double)part.getPcp());
+                                        break;
+                                }
+                                session.update(reparacion);
+                            }
+                        }
                         session.update(part);
                     }
                     t_fecha.setText(obj.getFechaPedido().toLocaleString());
@@ -3285,6 +3837,7 @@ public class nuevoPedido extends javax.swing.JPanel {
                 java.lang.Integer.class/*Plazo*/,
                 java.lang.Double.class/*Cantidad*/,
                 java.lang.Double.class/*Costo c/u*/,
+                java.lang.String.class/*Tipo*/,
                 java.lang.Double.class/*Total*/
         };
         int ren=0;
@@ -3345,31 +3898,111 @@ public class nuevoPedido extends javax.swing.JPanel {
                                     Partida part=(Partida) session.createCriteria(Partida.class).add(Restrictions.eq("ordenByIdOrden.idOrden", Integer.parseInt(t_orden.getText()))).add(Restrictions.eq("idEvaluacion", Integer.parseInt(t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString()))).add(Restrictions.eq("subPartida", Integer.parseInt(t_datos.getValueAt(t_datos.getSelectedRow(), 1).toString()))).setMaxResults(1).uniqueResult();
                                     if(part!=null)
                                     {
-                                        if(value.toString().compareTo("")!=0)
+                                        if(c_tipo.getSelectedItem().toString().compareTo("Interno")==0)
                                         {
-                                            Ejemplar ejem = (Ejemplar)session.get(Ejemplar.class, value.toString());
-                                            if(ejem!=null)
+                                            switch(value.toString())
                                             {
-                                                part.setEjemplar(ejem);
+                                                case "Eliminar":
+                                                    part.setEjemplar(null);
+                                                    session.update(part);
+                                                    session.getTransaction().commit();
+                                                    vector.setElementAt("", col);
+                                                    this.dataVector.setElementAt(vector, row);
+                                                    fireTableCellUpdated(row, col);
+                                                    if(session.isOpen()==true)
+                                                        session.close();
+                                                    break;
+                                                case "Cancelar":
+                                                    break;
+                                                case "Nuevo":
+                                                    altaEjemplar obj1 = new altaEjemplar(new javax.swing.JFrame(), true, usr, sessionPrograma, 0);
+                                                    obj1.t_id_catalogo.setText(t_datos.getValueAt(t_datos.getSelectedRow(), 3).toString());
+                                                    obj1.t_catalogo.setText(t_datos.getValueAt(t_datos.getSelectedRow(), 4).toString());
+                                                    obj1.t_numero.requestFocus();
+                                                    Dimension d1 = Toolkit.getDefaultToolkit().getScreenSize();
+                                                    obj1.setLocation((d1.width/2)-(obj1.getWidth()/2), (d1.height/2)-(obj1.getHeight()/2));
+                                                    obj1.setVisible(true);
+                                                    Ejemplar ejem1=obj1.getReturnStatus();
+                                                    if (ejem1!=null)
+                                                    {
+                                                        Ejemplar ejem = (Ejemplar)session.get(Ejemplar.class, ejem1.getIdParte());
+                                                        if(ejem!=null)
+                                                        {
+                                                            part.setEjemplar(ejem);
+                                                            session.update(part);
+                                                            session.getTransaction().commit();
+                                                            vector.setElementAt(ejem1.getIdParte(), col);
+                                                            this.dataVector.setElementAt(vector, row);
+                                                            fireTableCellUpdated(row, col);
+                                                            if(session.isOpen()==true)
+                                                                session.close();
+                                                        }
+                                                    }
+                                                    break;
+                                                case "Buscar":
+                                                    buscaEjemplar obj = new buscaEjemplar(new javax.swing.JFrame(), true, sessionPrograma, null, 0);
+                                                    obj.t_busca.requestFocus();
+                                                    Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+                                                    obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
+                                                    obj.setVisible(true);
+                                                    Ejemplar ejem=obj.getReturnStatus();
+                                                    if (ejem!=null)
+                                                    {
+                                                        ejem = (Ejemplar)session.get(Ejemplar.class, ejem.getIdParte());
+                                                        part.setEjemplar(ejem);
+                                                        session.update(part);
+                                                        session.getTransaction().commit();
+                                                        vector.setElementAt(ejem.getIdParte(), col);
+                                                        this.dataVector.setElementAt(vector, row);
+                                                        fireTableCellUpdated(row, col);
+                                                        if(session.isOpen()==true)
+                                                            session.close();
+                                                    }
+                                                    break;
+                                                /*default:
+                                                    Ejemplar ejem = (Ejemplar)session.get(Ejemplar.class, value.toString());
+                                                    if(ejem!=null)
+                                                    {
+                                                        part.setEjemplar(ejem);
+                                                        session.update(part);
+                                                        session.getTransaction().commit();
+                                                        vector.setElementAt(value, col);
+                                                        this.dataVector.setElementAt(vector, row);
+                                                        fireTableCellUpdated(row, col);
+                                                        if(session.isOpen()==true)
+                                                            session.close();
+                                                    }
+                                                    break;*/
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if(value.toString().compareTo("")!=0)
+                                            {
+                                                Ejemplar ejem = (Ejemplar)session.get(Ejemplar.class, value.toString());
+                                                if(ejem!=null)
+                                                {
+                                                    part.setEjemplar(ejem);
+                                                    session.update(part);
+                                                    session.getTransaction().commit();
+                                                    vector.setElementAt(value, col);
+                                                    this.dataVector.setElementAt(vector, row);
+                                                    fireTableCellUpdated(row, col);
+                                                    if(session.isOpen()==true)
+                                                        session.close();
+                                                }
+                                            }
+                                            else
+                                            {
+                                                part.setEjemplar(null);
                                                 session.update(part);
                                                 session.getTransaction().commit();
-                                                vector.setElementAt(value, col);
+                                                vector.setElementAt("", col);
                                                 this.dataVector.setElementAt(vector, row);
                                                 fireTableCellUpdated(row, col);
                                                 if(session.isOpen()==true)
                                                     session.close();
                                             }
-                                        }
-                                        else
-                                        {
-                                            part.setEjemplar(null);
-                                            session.update(part);
-                                            session.getTransaction().commit();
-                                            vector.setElementAt("", col);
-                                            this.dataVector.setElementAt(vector, row);
-                                            fireTableCellUpdated(row, col);
-                                            if(session.isOpen()==true)
-                                                session.close();
                                         }
                                     }
                                     else
@@ -3577,7 +4210,56 @@ public class nuevoPedido extends javax.swing.JPanel {
                         }
                     }
                     break;
-                case 9://total
+                case 9://Tipo
+                    if(vector.get(col)==null)
+                    {
+                        vector.setElementAt(value, col);
+                        this.dataVector.setElementAt(vector, row);
+                        fireTableCellUpdated(row, col);
+                    }
+                    else
+                    {
+                        //tipo
+                        if(c_tipo.getSelectedItem().toString().compareTo("Interno")==0)
+                        {
+                            Session session = HibernateUtil.getSessionFactory().openSession();
+                            session.beginTransaction().begin();
+                            Partida part=(Partida) session.createCriteria(Partida.class).add(Restrictions.eq("ordenByIdOrden.idOrden", Integer.parseInt(t_orden.getText()))).add(Restrictions.eq("idEvaluacion", Integer.parseInt(t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString()))).add(Restrictions.eq("subPartida", Integer.parseInt(t_datos.getValueAt(t_datos.getSelectedRow(), 1).toString()))).setMaxResults(1).uniqueResult();
+                            try{
+                                if(part!=null){
+                                    String tipo_pieza =value.toString().toLowerCase();
+                                    if(tipo_pieza.toString().compareTo("-")!=0)
+                                        part.setTipoPieza(tipo_pieza);
+                                    else
+                                        part.setTipoPieza(null);
+                                    
+                                    session.update(part);
+                                    session.getTransaction().commit();
+                                    vector.setElementAt(value, col);
+                                    this.dataVector.setElementAt(vector, row);
+                                    fireTableCellUpdated(row, col);
+                                }
+                            }catch(Exception e)
+                            {
+                                session.getTransaction().rollback();
+                                System.out.println(e);
+                                JOptionPane.showMessageDialog(null, "Error al actualizar");
+                            }
+                            sumaTotales();
+                            
+                            if(session.isOpen())
+                                session.close();
+                        }else
+                        {
+                            vector.setElementAt(value, col);
+                            this.dataVector.setElementAt(vector, row);
+                            fireTableCellUpdated(row, col);
+                            sumaTotales();
+                        }
+                            
+                    }
+                    break;
+                case 10://total
                     vector.setElementAt(value, col);
                     this.dataVector.setElementAt(vector, row);
                     fireTableCellUpdated(row, col);
@@ -3677,7 +4359,7 @@ public class nuevoPedido extends javax.swing.JPanel {
         b_guardar.setEnabled(false);
         b_nuevo_pedido.setEnabled(true);
         b_pedido.setEnabled(true);
-        b_ocompra.setEnabled(true);
+        b_archivo.setEnabled(false);
     }
     
     void envia(String no)
@@ -3687,6 +4369,7 @@ public class nuevoPedido extends javax.swing.JPanel {
         {
             session.beginTransaction().begin();
             Usuario[] autoriza = (Usuario[])session.createCriteria(Usuario.class).add(Restrictions.eq("autorizarPedidos", true)).list().toArray(new Usuario[0]);
+            usr = (Usuario) session.get(Usuario.class, usr.getIdUsuario());
             if(autoriza!=null)
             {
                 String correos="";
@@ -3694,7 +4377,14 @@ public class nuevoPedido extends javax.swing.JPanel {
                 {
                     correos+=autoriza[y].getEmpleado().getEmail()+";";
                 }
-                enviaCorreo("Nuevo Pedido ("+no+")", "Hola buen dia, se te comunica que se genero el pedido No:"+no+" para que sea revisado y autorizado saludos.", correos);
+                String suc="Toluca";
+                if(ruta.compareToIgnoreCase("tbstultitlan.ddns.net")==0)
+                    suc="Tultitlan";
+                else{
+                    if(ruta.compareToIgnoreCase("set-toluca.ddns.net")==0)
+                        suc="Merida";
+                }
+                miCorreo= new EnviaCorreo("Nuevo Pedido de "+suc+"("+no+")", "Hola buen dia, se te comunica que se genero el pedido No:"+no+" para que sea revisado y autorizado saludos.", correos, usr.getEmpleado().getEmail());
             }
             session.beginTransaction().rollback();
         }catch(Exception e)
@@ -3709,100 +4399,75 @@ public class nuevoPedido extends javax.swing.JPanel {
         }
     }
     
-    public void enviaCorreo(String asunto, String mensaje, String from)
+    
+    void agregaArchivo(String nombre, JButton bt)
     {
-        String smtp="";
-        boolean ttl=false;
-        String puerto="";
-        String envia="";
-        String clave="";
-        //String from="";
-        String cc="";
-        String texto = null;
-        
-        try
+        if(nombre.contains(".pdf") || nombre.contains(".PDF"))
+            bt.setIcon(new ImageIcon("imagenes/pdf.png"));
+        else
         {
-            FileReader f = new FileReader("correo.ml");
-            BufferedReader b = new BufferedReader(f);
-            int renglon=0;
-            while((texto = b.readLine())!=null)
+            if(nombre.contains(".docx") || nombre.contains(".DOCX"))
+                bt.setIcon(new ImageIcon("imagenes/word.png"));
+            else
+                bt.setIcon(new ImageIcon("imagenes/desconocido.png"));
+        }
+        bt.setText(nombre);
+   }
+    boolean subeArchivo(String pedido){
+        Ftp miFtp=new Ftp();
+        boolean respuesta=true;
+        respuesta=miFtp.conectar(ruta, "compras", "04650077", 3310);
+        if(respuesta==true){
+            if(miFtp.cambiarDirectorio("/soporte/")!=true)
             {
-                switch(renglon)
+                if(miFtp.crearDirectorio("/soporte/")==true)
+                    miFtp.cambiarDirectorio("/soporte/");
+            }
+            String aux = archivo.getName().substring(archivo.getName().lastIndexOf(".") + 1);
+            respuesta=miFtp.subirArchivo(archivo.getPath(), pedido+"."+aux);
+            if(respuesta==true)
+            {
+                //FTPFile[] lista=miFtp.listarArchivos();
+                ///for(int x=0; x<lista.length; x++)
+                //{
+                    //miFtp.AbrirArchivo(archivo.getName());
+                //}
+                
+                Session session = HibernateUtil.getSessionFactory().openSession();
+                try
                 {
-                    case 1://smtp
-                        smtp=texto.trim();
-                        break;
-                    case 2://ttl
-                        if(texto.compareToIgnoreCase("true")==0)
-                            ttl=true;
-                        else
-                            ttl=false;
-                        break;
-                    case 3://puerto
-                        puerto=texto.trim();
-                        break;
-                    case 4://cuenta
-                        envia=texto.trim();
-                        break;
-                    case 5://contraseña
-                        clave=texto.trim();
-                        break;
+                    session.beginTransaction().begin();
+                    Pedido ped = (Pedido)session.get(Pedido.class, Integer.parseInt(pedido));
+                    if(ped!=null){
+                        ped.setSoporte(true);
+                        session.update(ped);
+                    }
+                    session.beginTransaction().commit();
+                    respuesta=true;
+                }catch(Exception e)
+                {
+                    e.printStackTrace();
+                    session.getTransaction().rollback();
+                    respuesta=false;
                 }
-                renglon+=1;
+                finally
+                {
+                    if(session.isOpen())
+                        session.close();
+                }
+                miFtp.desconectar();
             }
-            b.close();
-        }catch(Exception e){e.printStackTrace();}
-        
-        try
-        {
-            // se obtiene el objeto Session.
-            Properties props = new Properties();
-            props.put("mail.smtp.host", smtp);
-            props.setProperty("mail.smtp.starttls.enable", ""+ttl);
-            props.setProperty("mail.smtp.port", puerto);
-            props.setProperty("mail.smtp.user", envia);
-            props.setProperty("mail.smtp.auth", "true");
-
-            javax.mail.Session session = javax.mail.Session.getDefaultInstance(props, null);
-            // session.setDebug(true);
-
-            // Se compone la parte del texto
-            BodyPart texto_mensaje = new MimeBodyPart();
-            texto_mensaje.setText(mensaje);
-
-            // Una MultiParte para agrupar texto e imagen.
-            MimeMultipart multiParte = new MimeMultipart();
-            multiParte.addBodyPart(texto_mensaje);
-
-            // Se compone el correo, dando to, from, subject y el contenido.
-            MimeMessage message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(envia));
-
-            String [] direcciones=from.split(";");
-            for(int x=0; x<direcciones.length; x++)
+            else
             {
-                if(direcciones[x].compareTo("")!=0)
-                    message.addRecipient(Message.RecipientType.TO, new InternetAddress(direcciones[x].replace(" ","")));
+                agregaArchivo("Agregar Soporte", b_archivo);
+                JOptionPane.showMessageDialog(null, "No fue posible subir el archivo");
             }
-
-            String [] dirCC=cc.split(";");
-            for(int y=0; y<dirCC.length; y++)
-            {
-                if(dirCC[y].compareTo("")!=0)
-                    message.addRecipient(Message.RecipientType.CC, new InternetAddress(dirCC[y].replace(" ","")));
-            }
-
-            message.setSubject(asunto);
-            message.setContent(multiParte);
-
-            Transport t = session.getTransport("smtp");
-            t.connect(envia, clave);
-            t.sendMessage(message, message.getAllRecipients());
-            t.close();
         }
-        catch (Exception e)
+        else
         {
-            e.printStackTrace();
+            agregaArchivo("Agregar Soporte", b_archivo);
+            JOptionPane.showMessageDialog(null, "No fue posible conectar al servidor FTP");
         }
+        return respuesta;
     }
 }

@@ -363,6 +363,7 @@ public class buscaEspecialidad extends javax.swing.JDialog {
                 consulta+=" where obj.idGrupoMecanico like '%" + t_busca.getText() +"%'";
             if(c_filtro.getSelectedItem().toString().compareTo("Grupo Mecánico")==0)
                 consulta+=" where obj.descripcion like '%" + t_busca.getText() +"%'";
+            consulta+=" and plantilla=1  order by orden";
             List <Object[]> resultList=executeHQLQuery(consulta);
             if(resultList.size()>0)
             {

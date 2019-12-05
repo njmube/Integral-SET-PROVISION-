@@ -176,7 +176,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane1" pref="867" max="32767" attributes="0"/>
+                      <Component id="scroll" pref="867" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -184,14 +184,14 @@
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="jScrollPane1" pref="235" max="32767" attributes="0"/>
+                      <Component id="scroll" pref="235" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
           </Layout>
           <SubComponents>
-            <Container class="javax.swing.JScrollPane" name="jScrollPane1">
+            <Container class="javax.swing.JScrollPane" name="scroll">
               <AuxValues>
                 <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
               </AuxValues>
@@ -204,13 +204,13 @@
                       <Table columnCount="9" rowCount="0">
                         <Column editable="false" title="Clave" type="java.lang.String"/>
                         <Column editable="false" title="Nombre" type="java.lang.String"/>
-                        <Column editable="true" title="Direcci&#xf3;n" type="java.lang.Object"/>
-                        <Column editable="true" title="Tel. 1" type="java.lang.Object"/>
-                        <Column editable="true" title="Tel. 2" type="java.lang.Object"/>
-                        <Column editable="true" title="Hoj" type="java.lang.Object"/>
-                        <Column editable="true" title="Mec" type="java.lang.Object"/>
-                        <Column editable="true" title="Sus" type="java.lang.Object"/>
-                        <Column editable="true" title="Ele" type="java.lang.Object"/>
+                        <Column editable="false" title="Direcci&#xf3;n" type="java.lang.Object"/>
+                        <Column editable="false" title="Tel. 1" type="java.lang.Object"/>
+                        <Column editable="false" title="Tel. 2" type="java.lang.Object"/>
+                        <Column editable="false" title="Hoj" type="java.lang.Boolean"/>
+                        <Column editable="false" title="Mec" type="java.lang.Boolean"/>
+                        <Column editable="false" title="Sus" type="java.lang.Boolean"/>
+                        <Column editable="false" title="Ele" type="java.lang.Boolean"/>
                       </Table>
                     </Property>
                     <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">

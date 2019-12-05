@@ -58,13 +58,15 @@ public class formatos extends javax.swing.JPanel {
     String sessionPrograma="";
     Herramientas h;
     String ruta;
+    int configuracion=0;
     
-    public formatos(String id, Usuario usuar1o, String id_seguro, String edo, String ses) {
+    public formatos(String id, Usuario usuar1o, String id_seguro, String edo, String ses, int configuracion) {
         sessionPrograma=ses;
         //estado=edo;
         usr=usuar1o;
         orden=id;
         aseguradora=id_seguro;
+        this.configuracion=configuracion;
         initComponents();
 //        b_salida2.setVisible(false);
         ruta="";
@@ -107,6 +109,8 @@ public class formatos extends javax.swing.JPanel {
         b_checklist_entrega = new javax.swing.JButton();
         b_proceso_pago = new javax.swing.JButton();
         b_desgaste = new javax.swing.JButton();
+        b_proceso_pago1 = new javax.swing.JButton();
+        b_proceso_pago2 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
@@ -314,6 +318,30 @@ public class formatos extends javax.swing.JPanel {
             }
         });
 
+        b_proceso_pago1.setBackground(new java.awt.Color(2, 135, 242));
+        b_proceso_pago1.setForeground(new java.awt.Color(255, 255, 255));
+        b_proceso_pago1.setIcon(new ImageIcon("imagenes/pdf_icon.png"));
+        b_proceso_pago1.setText("Garantia GNP");
+        b_proceso_pago1.setToolTipText("Generar reporte");
+        b_proceso_pago1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        b_proceso_pago1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_proceso_pago1ActionPerformed(evt);
+            }
+        });
+
+        b_proceso_pago2.setBackground(new java.awt.Color(2, 135, 242));
+        b_proceso_pago2.setForeground(new java.awt.Color(255, 255, 255));
+        b_proceso_pago2.setIcon(new ImageIcon("imagenes/pdf_icon.png"));
+        b_proceso_pago2.setText("Hoja Viajera");
+        b_proceso_pago2.setToolTipText("Generar reporte");
+        b_proceso_pago2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        b_proceso_pago2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_proceso_pago2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -341,7 +369,9 @@ public class formatos extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(b_desgaste, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(b_proceso_pago, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(b_checklist_entrega, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(b_checklist_entrega, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(b_proceso_pago1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(b_proceso_pago2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(206, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -366,11 +396,13 @@ public class formatos extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(b_inv_caja)
-                            .addComponent(b_encuenta1))
+                            .addComponent(b_encuenta1)
+                            .addComponent(b_proceso_pago1))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(b_autorizacion)
-                            .addComponent(b_salida)))
+                            .addComponent(b_salida)
+                            .addComponent(b_proceso_pago2)))
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(b_encuenta)
                         .addComponent(b_checklist_entrega)))
@@ -513,7 +545,7 @@ public class formatos extends javax.swing.JPanel {
             BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.WINANSI, BaseFont.NOT_EMBEDDED);
             Orden ord=(Orden)session.get(Orden.class, Integer.parseInt(orden));
             session.beginTransaction().begin();
-            Configuracion con= (Configuracion)session.get(Configuracion.class, 1);
+            Configuracion con= (Configuracion)session.get(Configuracion.class, configuracion);
             
             PDF reporte = new PDF();
             Date fecha = new Date();
@@ -523,7 +555,7 @@ public class formatos extends javax.swing.JPanel {
             folder.mkdirs();
             reporte.Abrir2(PageSize.LETTER, "Inventario de Tractocamión", "reportes/"+ord.getIdOrden()+"/"+valor+"-invTRacto.pdf");
 
-            reporte.agregaObjeto(reporte.crearImagen("imagenes/empresa300115.jpg", 00, -32, 17));
+            reporte.agregaObjeto(reporte.crearImagen("imagenes/"+con.getLogo(), 00, -32, 17));
             
             reporte.contenido.setLineWidth(0.5f);
             reporte.contenido.setColorStroke(new GrayColor(0.2f));
@@ -744,15 +776,15 @@ public class formatos extends javax.swing.JPanel {
             folder.mkdirs();
             reporte.Abrir2(PageSize.LETTER, "Inventario de Caja", "reportes/"+ord.getIdOrden()+"/"+valor+"-invCaja.pdf");
 
-            reporte.agregaObjeto(reporte.crearImagen("imagenes/empresa300115.jpg", 00, -32, 17));
+            session.beginTransaction().begin();
+            Configuracion con= (Configuracion)session.get(Configuracion.class, configuracion);
+            
+            reporte.agregaObjeto(reporte.crearImagen("imagenes/"+con.getLogo(), 00, -32, 17));
             
             reporte.contenido.setLineWidth(0.5f);
             reporte.contenido.setColorStroke(new GrayColor(0.2f));
             reporte.contenido.setColorFill(new GrayColor(0.9f));
             reporte.contenido.roundRectangle(30, 710, 550, 60, 5);
-            
-            session.beginTransaction().begin();
-            Configuracion con= (Configuracion)session.get(Configuracion.class, 1);
             
             reporte.inicioTexto();
                 reporte.contenido.setFontAndSize(bf, 14);
@@ -911,7 +943,7 @@ public class formatos extends javax.swing.JPanel {
         {
             
             Orden ord=(Orden)session.get(Orden.class, Integer.parseInt(orden));
-            
+            Configuracion con= (Configuracion)session.get(Configuracion.class, configuracion);
             Date fecha = new Date();
             DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
             String valor=dateFormat.format(fecha);
@@ -1021,6 +1053,12 @@ public class formatos extends javax.swing.JPanel {
                 }catch(Exception e){
                     fdfDoc.setField("NO MOTOR", "");
                 }
+                //NO MOTOR
+                try{
+                    fdfDoc.setField("TALLER", con.getNombre());
+                }catch(Exception e){
+                    fdfDoc.setField("NO MOTOR", "");
+                }
             cb.endText();
             stamp.close();
             PDF reporte = new PDF();
@@ -1048,7 +1086,7 @@ public class formatos extends javax.swing.JPanel {
         try
         {
             Orden ord=(Orden)session.get(Orden.class, Integer.parseInt(orden));
-            Configuracion con= (Configuracion)session.get(Configuracion.class, 1);
+            Configuracion con= (Configuracion)session.get(Configuracion.class, configuracion);
             Date fecha = new Date();
             DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
             String valor=dateFormat.format(fecha);
@@ -1060,6 +1098,24 @@ public class formatos extends javax.swing.JPanel {
             AcroFields fdfDoc = stamp.getAcroFields();
             BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.EMBEDDED);
            
+            try{
+                Image img = Image.getInstance("imagenes/"+con.getLogo());
+                img.setAbsolutePosition(32, 719);
+                img.scaleAbsoluteWidth(130);
+                img.scaleAbsoluteHeight(50);
+                cb.addImage(img, true);
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            try{
+                Image img = Image.getInstance("imagenes/"+con.getSello());
+                img.setAbsolutePosition(90, 200);
+                img.scaleAbsoluteWidth(120);
+                img.scaleAbsoluteHeight(120);
+                cb.addImage(img, true);
+            }catch(Exception e){
+                e.printStackTrace();
+            }
             cb.beginText();
                 //FECHA DE INGRESO
                 fdfDoc.setField("Fecha de ingreso", ord.getFecha().toString());
@@ -1138,6 +1194,7 @@ public class formatos extends javax.swing.JPanel {
         try
         {
             Orden ord=(Orden)session.get(Orden.class, Integer.parseInt(orden));
+            Configuracion con= (Configuracion)session.get(Configuracion.class, configuracion);
             Date fecha = new Date();
             DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
             String valor=dateFormat.format(fecha);
@@ -1149,6 +1206,15 @@ public class formatos extends javax.swing.JPanel {
             AcroFields fdfDoc = stamp.getAcroFields();
             BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.EMBEDDED);
             
+             try{
+                    Image img = Image.getInstance("imagenes/"+con.getLogo());
+                    img.setAbsolutePosition(32, 700);
+                    img.scaleAbsoluteWidth(100);
+                    img.scaleAbsoluteHeight(70);
+                    cb.addImage(img, true);
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
             cb.beginText();
                 //ORDEN
                     fdfDoc.setField("TALLER", String.valueOf(ord.getIdOrden()));
@@ -1198,6 +1264,7 @@ public class formatos extends javax.swing.JPanel {
         try
         {
             Orden ord=(Orden)session.get(Orden.class, Integer.parseInt(orden));
+            Configuracion con= (Configuracion)session.get(Configuracion.class, configuracion);
             Date fecha = new Date();
             DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
             String valor=dateFormat.format(fecha);
@@ -1208,7 +1275,15 @@ public class formatos extends javax.swing.JPanel {
             PdfContentByte cb = stamp.getUnderContent(1);
             AcroFields fdfDoc = stamp.getAcroFields();
             BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.EMBEDDED);
-            
+            try{
+                    Image img = Image.getInstance("imagenes/"+con.getLogo());
+                    img.setAbsolutePosition(32, 680);
+                    img.scaleAbsoluteWidth(100);
+                    img.scaleAbsoluteHeight(70);
+                    cb.addImage(img, true);
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
             cb.beginText();
                 //MARCA
                 if(ord.getMarca().getMarcaNombre()!=null)
@@ -1293,6 +1368,7 @@ public class formatos extends javax.swing.JPanel {
         try
         {
             Orden ord=(Orden)session.get(Orden.class, Integer.parseInt(orden));
+            Configuracion con= (Configuracion)session.get(Configuracion.class, configuracion);
             Date fecha = new Date();
             DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
             String valor=dateFormat.format(fecha);
@@ -1303,7 +1379,15 @@ public class formatos extends javax.swing.JPanel {
             PdfContentByte cb = stamp.getUnderContent(1);
             AcroFields fdfDoc = stamp.getAcroFields();
             BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.EMBEDDED);
-            
+            try{
+                    Image img = Image.getInstance("imagenes/"+con.getLogo());
+                    img.setAbsolutePosition(32, 700);
+                    img.scaleAbsoluteWidth(100);
+                    img.scaleAbsoluteHeight(70);
+                    cb.addImage(img, true);
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
             cb.beginText();
                 //ORDEN
                     fdfDoc.setField("TALLER", String.valueOf(ord.getIdOrden()));
@@ -1460,7 +1544,7 @@ public class formatos extends javax.swing.JPanel {
         try
         {
             Orden ord=(Orden)session.get(Orden.class, Integer.parseInt(orden));
-            Configuracion con= (Configuracion)session.get(Configuracion.class, 1);
+            Configuracion con= (Configuracion)session.get(Configuracion.class, configuracion);
             Date fecha = new Date();
             DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
             String valor=dateFormat.format(fecha);
@@ -1473,17 +1557,6 @@ public class formatos extends javax.swing.JPanel {
             BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.EMBEDDED);
             
             cb.beginText();
-                //IMAGEN CABECERA
-                Image img;    
-                try{
-                    img = Image.getInstance(ord.getCompania().getFoto());
-                    img.setAbsolutePosition(633, 480);
-                    img.scaleAbsoluteWidth(130);
-                    img.scaleAbsoluteHeight(70);
-                    cb.addImage(img, true);
-                }catch(Exception e){
-                    e.printStackTrace();
-                }
                 //SINIESTRO
                 if(ord.getSiniestro()!=null)
                     fdfDoc.setField("siniestro", ord.getSiniestro());
@@ -1546,15 +1619,6 @@ public class formatos extends javax.swing.JPanel {
                     fdfDoc.setField("tercero", ord.getClientes().getNombre());
                 }
                 
-                try{
-                    img = Image.getInstance(ord.getCompania().getFoto());
-                    img.setAbsolutePosition(25, 38);
-                    img.scaleAbsoluteWidth(77);
-                    img.scaleAbsoluteHeight(38);
-                    cb.addImage(img, true);
-                }catch(Exception e){
-                    e.printStackTrace();
-                }
                 
                 fdfDoc.setField("taller", con.getEmpresa());
             cb.endText();
@@ -1582,7 +1646,7 @@ public class formatos extends javax.swing.JPanel {
         try
         {
             Orden ord=(Orden)session.get(Orden.class, Integer.parseInt(orden));
-            Configuracion con= (Configuracion)session.get(Configuracion.class, 1);
+            Configuracion con= (Configuracion)session.get(Configuracion.class, configuracion);
             Date fecha = new Date();
             DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
             String valor=dateFormat.format(fecha);
@@ -1593,7 +1657,7 @@ public class formatos extends javax.swing.JPanel {
             PdfContentByte cb = stamp.getUnderContent(1);
             AcroFields fdfDoc = stamp.getAcroFields();
             BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.EMBEDDED);
-            
+           
             cb.beginText();
                 //EMPRESA
                 if(con.getEmpresa()!=null)
@@ -1659,7 +1723,7 @@ public class formatos extends javax.swing.JPanel {
         try
         {
             Orden ord=(Orden)session.get(Orden.class, Integer.parseInt(orden));
-            Configuracion con = (Configuracion) session.get(Configuracion.class, 1);
+            Configuracion con = (Configuracion) session.get(Configuracion.class, configuracion);
             Date fecha = new Date();
             DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
             String valor=dateFormat.format(fecha);
@@ -1788,7 +1852,7 @@ public class formatos extends javax.swing.JPanel {
         try
         {
             Orden ord=(Orden)session.get(Orden.class, Integer.parseInt(orden));
-            Configuracion con = (Configuracion) session.get(Configuracion.class, 1);
+            Configuracion con = (Configuracion) session.get(Configuracion.class, configuracion);
             Acceso datos = (Acceso)session.createCriteria(Acceso.class).add(Restrictions.eq("clientes.idClientes", Integer.parseInt(ord.getClientes().getIdClientes().toString()))).setMaxResults(1).uniqueResult();
             Date fecha = new Date();
             DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
@@ -1811,7 +1875,7 @@ public class formatos extends javax.swing.JPanel {
                     e.printStackTrace();
                 }
                 try{
-                    Image img_1 = Image.getInstance(ord.getCompania().getFoto());
+                    Image img_1 = Image.getInstance(ruta+ord.getCompania().getFoto());
                     img_1.setAbsolutePosition(500, 735);
                     img_1.scaleAbsoluteWidth(80);
                     img_1.scaleAbsoluteHeight(50);
@@ -1822,7 +1886,7 @@ public class formatos extends javax.swing.JPanel {
                 Foto foto = (Foto)session.createCriteria(Foto.class).add(Restrictions.eq("orden.idOrden", Integer.parseInt(orden))).addOrder(Order.desc("fecha")).setMaxResults(1).uniqueResult();
                 if(foto!=null){
                     try{
-                    Image img_2 = Image.getInstance("ordenes/"+ord.getIdOrden()+"/miniatura/"+foto.getDescripcion());
+                    Image img_2 = Image.getInstance(ruta+"ordenes/"+ord.getIdOrden()+"/miniatura/"+foto.getDescripcion());
                     img_2.setAbsolutePosition(480, 558);
                     img_2.scaleAbsoluteWidth(90);
                     img_2.scaleAbsoluteHeight(50);
@@ -1918,10 +1982,10 @@ public class formatos extends javax.swing.JPanel {
                 }
                 
                 //Datos de atencion a clientes
-                fdfDoc.setField("Tel1", "722 299 240 25");
-                fdfDoc.setField("Id1", "52*167862*13");
+                fdfDoc.setField("Tel1", "722 522 02 82");
+                fdfDoc.setField("Id1", "N/A");
                 fdfDoc.setField("Email1", "atencionaclientes@tractoservicio.com");
-                fdfDoc.setField("Wat1", "722 299 240 25");
+                fdfDoc.setField("Wat1", "722 522 02 82");
                 
                 //DATOS DE CUENTA DE SMLOGISTICS
                 if(datos!=null)
@@ -1992,7 +2056,7 @@ public class formatos extends javax.swing.JPanel {
         try
         {
             Orden ord=(Orden)session.get(Orden.class, Integer.parseInt(orden));
-            Configuracion con= (Configuracion)session.get(Configuracion.class, 1);
+            Configuracion con= (Configuracion)session.get(Configuracion.class, configuracion);
             Date fecha = new Date();
             DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
             String valor=dateFormat.format(fecha);
@@ -2004,6 +2068,17 @@ public class formatos extends javax.swing.JPanel {
             AcroFields fdfDoc = stamp.getAcroFields();
             BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.EMBEDDED);
            
+            //IMAGEN
+                try{
+                    Image img = Image.getInstance("imagenes/"+con.getCinta());
+                    img.setAbsolutePosition(100, 715);
+                    img.scaleAbsoluteWidth(350);
+                    img.scaleAbsoluteHeight(50);
+                    cb.addImage(img, true);
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                
             cb.beginText();
                fdfDoc.setField("Orden de Trabajo", String.valueOf(ord.getIdOrden()));
                
@@ -2058,7 +2133,7 @@ public class formatos extends javax.swing.JPanel {
         try
         {
             Orden ord=(Orden)session.get(Orden.class, Integer.parseInt(orden));
-            Configuracion con = (Configuracion) session.get(Configuracion.class, 1);
+            Configuracion con = (Configuracion) session.get(Configuracion.class, configuracion);
             Date fecha = new Date();
             DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
             String valor=dateFormat.format(fecha);
@@ -2084,7 +2159,7 @@ public class formatos extends javax.swing.JPanel {
                     e.printStackTrace();
                 }
                 try{
-                    Image img_1 = Image.getInstance(ord.getCompania().getFoto());
+                    Image img_1 = Image.getInstance(ruta+ord.getCompania().getFoto());
                     img_1.setAbsolutePosition(500, 735);
                     img_1.scaleAbsoluteWidth(80);
                     img_1.scaleAbsoluteHeight(50);
@@ -2095,7 +2170,7 @@ public class formatos extends javax.swing.JPanel {
                 Foto foto = (Foto)session.createCriteria(Foto.class).add(Restrictions.eq("orden.idOrden", ord.getIdOrden())).addOrder(Order.desc("fecha")).setMaxResults(1).uniqueResult();
                 if(foto!=null){
                     try{
-                    Image img_2 = Image.getInstance("ordenes/"+ord.getIdOrden()+"/miniatura/"+foto.getDescripcion());
+                    Image img_2 = Image.getInstance(ruta+"ordenes/"+ord.getIdOrden()+"/miniatura/"+foto.getDescripcion());
                     img_2.setAbsolutePosition(480, 558);
                     img_2.scaleAbsoluteWidth(90);
                     img_2.scaleAbsoluteHeight(50);
@@ -2249,7 +2324,7 @@ public class formatos extends javax.swing.JPanel {
         try
         {
             Orden ord=(Orden)session.get(Orden.class, Integer.parseInt(orden));
-            
+            Configuracion con = (Configuracion) session.get(Configuracion.class, configuracion);
             Date fecha = new Date();
             DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
             String valor=dateFormat.format(fecha);
@@ -2261,6 +2336,17 @@ public class formatos extends javax.swing.JPanel {
             AcroFields fdfDoc = stamp.getAcroFields();
             BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.EMBEDDED);
             Image img;
+            
+            //IMAGEN
+                try{
+                    img = Image.getInstance("imagenes/"+con.getCinta());
+                    img.setAbsolutePosition(100, 730);
+                    img.scaleAbsoluteWidth(350);
+                    img.scaleAbsoluteHeight(50);
+                    cb.addImage(img, true);
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
             cb.beginText();
                 
                 try{
@@ -2306,6 +2392,238 @@ public class formatos extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_b_desgasteActionPerformed
 
+    private void b_proceso_pago1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_proceso_pago1ActionPerformed
+        // TODO add your handling code here:
+        h=new Herramientas(usr, 0);
+        h.session(sessionPrograma);
+        
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try
+        {
+            Orden ord=(Orden)session.get(Orden.class, Integer.parseInt(orden));
+            Configuracion con= (Configuracion)session.get(Configuracion.class, configuracion);
+            Date fecha = new Date();
+            DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
+            String valor=dateFormat.format(fecha);
+            File folder = new File("reportes/"+ord.getIdOrden());
+            folder.mkdirs();
+            PdfReader reader = new PdfReader("imagenes/PlantillaGarantia.pdf");
+            PdfStamper stamp = new PdfStamper(reader, new FileOutputStream("reportes/"+ ord.getIdOrden() +"/"+ valor +"-garantia.pdf"));
+            PdfContentByte cb = stamp.getUnderContent(1);
+            AcroFields fdfDoc = stamp.getAcroFields();
+            BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.EMBEDDED);
+           
+            cb.beginText();
+                if(ord.getSiniestro()!=null)
+                    fdfDoc.setField("Siniestro", String.valueOf(ord.getSiniestro()));
+               
+               //MARCA
+               if(ord.getMarca().getMarcaNombre()!=null)
+                   fdfDoc.setField("Marca", ord.getMarca().getMarcaNombre());
+               
+               //TIPO
+               if(ord.getTipo()!=null)
+                   fdfDoc.setField("Tipo", ord.getTipo().getTipoNombre());
+               
+               //MODELO
+               if(ord.getModelo()!=null)
+                   fdfDoc.setField("Modelo", String.valueOf(ord.getModelo()));
+               
+               //PLACAS
+               if(ord.getNoPlacas()!=null)
+                   fdfDoc.setField("Placas", String.valueOf(ord.getNoPlacas()));
+                   
+               //CLIENTE
+               if(ord.getNoSerie()!=null)
+                   fdfDoc.setField("Serie", ord.getNoSerie());
+               
+            cb.endText();
+            stamp.close();
+            PDF reporte = new PDF();
+            reporte.cerrar();
+            reporte.visualizar2("reportes/"+ord.getIdOrden()+"/"+valor+"-garantia.pdf");
+           
+        }catch(Exception e)
+        {
+            System.out.println(e);
+            JOptionPane.showMessageDialog(this, "No se pudo realizar el reporte si el archivo esta abierto");
+        }
+        if(session!=null)
+            if(session.isOpen())
+                session.close();
+    }//GEN-LAST:event_b_proceso_pago1ActionPerformed
+
+    private void b_proceso_pago2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_proceso_pago2ActionPerformed
+        // TODO add your handling code here:
+        h=new Herramientas(usr, 0);
+        h.session(sessionPrograma);
+        
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try
+        {
+            Orden ord=(Orden)session.get(Orden.class, Integer.parseInt(orden));
+            Configuracion con= (Configuracion)session.get(Configuracion.class, configuracion);
+            Date fecha = new Date();
+            DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyyHH-mm-ss");//YYYY-MM-DD HH:MM:SS
+            DateFormat dateFormatFecha = new SimpleDateFormat("dd-MM-yyyy");//YYYY-MM-DD HH:MM:SS
+            DateFormat dateFormatHora = new SimpleDateFormat("HH:mm:ss");//YYYY-MM-DD HH:MM:SS
+            String valor=dateFormat.format(fecha);
+            File folder = new File("reportes/"+ord.getIdOrden());
+            folder.mkdirs();
+            PdfReader reader = new PdfReader("imagenes/PlantillaSeguimientoOrden.pdf");
+            PdfStamper stamp = new PdfStamper(reader, new FileOutputStream("reportes/"+ ord.getIdOrden() +"/"+ valor +"-SeguimientoOrden.pdf"));
+            PdfContentByte cb = stamp.getUnderContent(1);
+            AcroFields fdfDoc = stamp.getAcroFields();
+            BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.EMBEDDED);
+           
+            cb.beginText();
+                fdfDoc.setField("orden", String.valueOf(ord.getIdOrden()));
+                fdfDoc.setField("aseguradora", ord.getCompania().getNombre());
+                fdfDoc.setField("ingresos", ord.getFecha().toString());
+                
+                fecha=ord.getMetaValuacion();
+                if(fecha!=null)
+                    fdfDoc.setField("meta_apertura", dateFormatFecha.format(fecha));
+                
+                fecha=ord.getMetaRefacciones();
+                if(fecha!=null)
+                    fdfDoc.setField("meta_refacciones", dateFormatFecha.format(fecha));
+                
+                fecha=ord.getFechaTaller();
+                if(fecha!=null)
+                    fdfDoc.setField("meta_taller", dateFormatFecha.format(fecha));
+                
+                if(ord.getUsuarioByIdUserApertura()!=null)
+                {
+                    fecha = ord.getFecha();
+                    fdfDoc.setField("apertura", ord.getUsuarioByIdUserApertura().getEmpleado().getNombre());
+                    fdfDoc.setField("f_apertura", dateFormatFecha.format(fecha));
+                }
+                
+                if(ord.getEmpleadoByRExpediente()!=null)
+                {
+                    fecha = ord.getRExpedienteFecha();
+                    fdfDoc.setField("expediente", ord.getEmpleadoByRExpediente().getNombre());
+                    fdfDoc.setField("f_expediente", dateFormatFecha.format(fecha));
+                    fdfDoc.setField("h_expediente", dateFormatHora.format(fecha));
+                }
+               
+                if(ord.getEmpleadoByRLevantamiento()!=null)
+                {
+                    fdfDoc.setField("levantamiento", ord.getEmpleadoByRLevantamiento().getNombre());
+                    fecha = ord.getRLevantamientoInicio();
+                    fdfDoc.setField("f_inicio_levantamiento", dateFormatFecha.format(fecha));
+                    fdfDoc.setField("h_inicio_levantamiento", dateFormatHora.format(fecha));
+                    
+                    fecha = ord.getRLevantamientoCierre();
+                    if(fecha!=null)
+                    {
+                        fdfDoc.setField("f_fin_levantamiento", dateFormatFecha.format(fecha));
+                        fdfDoc.setField("h_fin_levantamiento", dateFormatHora.format(fecha));
+                    }
+                }
+                
+                if(ord.getEmpleadoByRCotiza()!=null)
+                {
+                    fdfDoc.setField("cotizar", ord.getEmpleadoByRCotiza().getNombre());
+                    fecha = ord.getRCotizaInicio();
+                    fdfDoc.setField("f_inicio_cotizar", dateFormatFecha.format(fecha));
+                    fdfDoc.setField("h_inicio_cotizar", dateFormatHora.format(fecha));
+                    fecha = ord.getRCotizaCierre();
+                    if(fecha!=null)
+                    {
+                        fdfDoc.setField("f_cierre_cotizar", dateFormatFecha.format(fecha));
+                        fdfDoc.setField("h_cierre_cotizar", dateFormatHora.format(fecha));
+                    }
+                }
+                
+                if(ord.getEmpleadoByRValuacion()!=null)
+                {
+                    fecha = ord.getRValuacionInicio();
+                    fdfDoc.setField("valuacion", ord.getEmpleadoByRValuacion().getNombre());
+                    fdfDoc.setField("f_valuacion", dateFormatFecha.format(fecha));
+                    fdfDoc.setField("h_valuacion", dateFormatHora.format(fecha));
+                }
+                
+                if(ord.getUsuarioByEnvioCompaniaAsigno()!=null)
+                {
+                    fecha = ord.getEnvioCompania();
+                    fdfDoc.setField("envio_compañia", ord.getUsuarioByEnvioCompaniaAsigno().getEmpleado().getNombre());
+                    fdfDoc.setField("f_envio_compañia", dateFormatFecha.format(fecha));
+                    fdfDoc.setField("h_envio_compañia", dateFormatHora.format(fecha));
+                }
+                
+                if(ord.getUsuarioByAutorizaCompaniaAsigno()!=null)
+                {
+                    fecha = ord.getAutorizaCompania();
+                    fdfDoc.setField("autoriza_compañia", ord.getUsuarioByAutorizaCompaniaAsigno().getEmpleado().getNombre());
+                    fdfDoc.setField("f_autoriza_compañia", dateFormatFecha.format(fecha));
+                    fdfDoc.setField("h_autoriza_compañia", dateFormatHora.format(fecha));
+                }
+                
+                if(ord.getUsuarioByRValuacionCierreAsigno()!=null)
+                {
+                    fecha = ord.getRValuacionCierre();
+                    fdfDoc.setField("autoriza_valuacion", ord.getUsuarioByRValuacionCierreAsigno().getEmpleado().getNombre());
+                    fdfDoc.setField("f_autoriza_valuacion", dateFormatFecha.format(fecha));
+                    fdfDoc.setField("h_autoriza_valuacion", dateFormatHora.format(fecha));
+                }
+                
+                if(ord.getEmpleadoByRRefacciones()!=null)
+                {
+                    fdfDoc.setField("refacciones", ord.getEmpleadoByRRefacciones().getNombre());
+                    fecha = ord.getInicioRefacciones();
+                    fdfDoc.setField("f_inicio_refacciones", dateFormatFecha.format(fecha));
+                    fdfDoc.setField("h_inicio_refacciones", dateFormatHora.format(fecha));
+                    fecha = ord.getCierreRefacciones();
+                    if(fecha!=null)
+                    {
+                        fdfDoc.setField("f_cierre_refacciones", dateFormatFecha.format(fecha));
+                        fdfDoc.setField("h_cierre_refacciones", dateFormatHora.format(fecha));
+                    }
+                }
+                
+                fdfDoc.setField("autoriza_reparacion", "");
+                
+                if(ord.getUsuarioByRPrefacturaAsigno()!=null)
+                {
+                    fdfDoc.setField("prefactura", ord.getUsuarioByRPrefacturaAsigno().getEmpleado().getNombre());
+                    fecha=ord.getRPrefactura();
+                    fdfDoc.setField("f_prefactura", dateFormatFecha.format(fecha));
+                    fdfDoc.setField("h_prefactura", dateFormatHora.format(fecha));
+                }
+                
+                if(ord.getUsuarioByRFactura()!=null)
+                {
+                    fdfDoc.setField("factura", ord.getUsuarioByRFactura().getEmpleado().getNombre());
+                    fecha=ord.getFehaFectura();
+                    fdfDoc.setField("f_factura", dateFormatFecha.format(fecha));
+                    fdfDoc.setField("h_factura", dateFormatHora.format(fecha));
+                }
+                
+                if(ord.getUsuarioByREntregarAsigno()!=null)
+                {
+                    fdfDoc.setField("entrega", ord.getUsuarioByREntregarAsigno().getEmpleado().getNombre());
+                    fecha=ord.getREntregarFecha();
+                    fdfDoc.setField("f_entrega", dateFormatFecha.format(fecha));
+                    fdfDoc.setField("h_entrega", dateFormatHora.format(fecha));
+                }
+            cb.endText();
+            stamp.close();
+            PDF reporte = new PDF();
+            reporte.cerrar();
+            reporte.visualizar2("reportes/"+ord.getIdOrden()+"/"+valor+"-SeguimientoOrden.pdf");
+           
+        }catch(Exception e)
+        {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "No se pudo realizar el reporte si el archivo esta abierto");
+        }
+        if(session!=null)
+            if(session.isOpen())
+                session.close();
+    }//GEN-LAST:event_b_proceso_pago2ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton b_autorizacion;
@@ -2322,6 +2640,8 @@ public class formatos extends javax.swing.JPanel {
     private javax.swing.JButton b_inv_caja;
     private javax.swing.JButton b_inv_tracto;
     private javax.swing.JButton b_proceso_pago;
+    private javax.swing.JButton b_proceso_pago1;
+    private javax.swing.JButton b_proceso_pago2;
     private javax.swing.JButton b_salida;
     private javax.swing.JButton b_salida1;
     private javax.swing.JButton b_salida2;

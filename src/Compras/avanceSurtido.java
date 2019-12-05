@@ -87,7 +87,7 @@ public class avanceSurtido extends javax.swing.JPanel {
     String[] columnas = new String [] {
         "Id","No","#","Descripcion",
         "Esp Hoj","Esp Mec","Esp Sus","Esp Ele", 
-        "Can","Med","Fol","Codigo","Ori","Prov.","Cant C.","$C/U Comp","Plazo","Pedido","F.Pedido","Alm.","Ope.","Pend.", "Factura", "OK"};
+        "Can","Med","Fol","Codigo","Ori","Prov.","Cant C.","$C/U Comp", "Tipo", "Plazo","Pedido","F.Pedido","Alm.","Ope.","Pend.", "Factura", "OK"};
     //private Session session;
     Orden ord;
     FormatoTabla formato;
@@ -113,6 +113,7 @@ public class avanceSurtido extends javax.swing.JPanel {
                     java.lang.String.class/*Proveedor*/, 
                     java.lang.Double.class/*Cant C.*/, 
                     java.lang.Double.class/*c/u* Com*/,
+                    java.lang.String.class/*Tipo*/,
                     java.lang.Integer.class/*Plazo*/, 
                     java.lang.Integer.class/*Pedido*/, 
                     java.lang.String.class/*fecha pedido*/,
@@ -123,9 +124,11 @@ public class avanceSurtido extends javax.swing.JPanel {
                     java.lang.Boolean.class/*OK*/
                 };
     List noPartida;
+    int configuracion=1;
     
-    public avanceSurtido(String ord, Usuario us, String ses) {
+    public avanceSurtido(String ord, Usuario us, String ses, int configuracion) {
         initComponents();
+        this.configuracion=configuracion;
         scroll.getVerticalScrollBar().setUI(new VerticalBarUI());
         scroll.getHorizontalScrollBar().setUI(new HorizontalBarUI());
         sessionPrograma=ses;
@@ -225,25 +228,28 @@ public class avanceSurtido extends javax.swing.JPanel {
                   case 15://cant tot
                       column.setPreferredWidth(85);
                       break;
-                  case 16://Plazo
+                  case 16://Tipo
                       column.setPreferredWidth(35);
                       break;
-                 case 17://PEDIDO
+                  case 17://Plazo
+                      column.setPreferredWidth(35);
+                      break;
+                 case 18://PEDIDO
                       column.setPreferredWidth(50);
                       break;
-                 case 18://f.PEDIDO
+                 case 19://f.PEDIDO
                       column.setPreferredWidth(100);
                       break;
-                 case 19://Entradas
+                 case 20://Entradas
                       column.setPreferredWidth(45);
                       break;
-                 case 20://Dev
+                 case 21://Dev
                       column.setPreferredWidth(45);
                       break;
-                 case 21://Pendiente
+                 case 22://Pendiente
                       column.setPreferredWidth(45);
                       break;
-                 case 22://N FACTURA
+                 case 23://N FACTURA
                      column.setPreferredWidth(70);
                       break;
                  default:
@@ -289,7 +295,7 @@ public class avanceSurtido extends javax.swing.JPanel {
 "-\n" +
 "(select if( sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) as can\n" +
 "from movimiento inner join almacen on movimiento.id_almacen=almacen.id_almacen where id_partida=id and almacen.tipo_movimiento=1 and almacen.operacion=5)) as operario, \n" +
-"surtido   \n" +
+"surtido, if(partida.tipo_pieza is null, '', partida.tipo_pieza) as tipo_pieza   \n" +
 "from partida inner join catalogo on partida.id_catalogo=catalogo.id_catalogo\n" +
 "inner join pedido on pedido.id_pedido=partida.id_pedido where partida.id_orden="+ord.getIdOrden()+" order by partida.id_partida asc;");
                     query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
@@ -329,7 +335,7 @@ public class avanceSurtido extends javax.swing.JPanel {
 "-\n" +
 "(select if( sum(movimiento.cantidad) is null, 0, sum(movimiento.cantidad)) as can\n" +
 "from movimiento inner join almacen on movimiento.id_almacen=almacen.id_almacen where id_partida=id and almacen.tipo_movimiento=1 and almacen.operacion=5)) as operario, \n" +
-"surtido   \n" +
+"surtido, if(partida.tipo_pieza is null, '', partida.tipo_pieza) as tipo_pieza   \n" +
 "from partida inner join catalogo on partida.id_catalogo=catalogo.id_catalogo\n" +
 "inner join pedido on pedido.id_pedido=partida.id_pedido where partida.id_pedido="+c_filtro.getSelectedItem().toString()+" order by partida.id_partida asc;");
                     query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
@@ -389,17 +395,23 @@ public class avanceSurtido extends javax.swing.JPanel {
                         model.setValueAt(map.get("id_proveedor"), i, 13);//proveedor
                         model.setValueAt(map.get("cant_pcp"), i, 14);//cant c
                         model.setValueAt(map.get("pcp"), i, 15);//C/U Com
-                        model.setValueAt(map.get("plazo"), i, 16);//plazo de entrega
-                        model.setValueAt(map.get("id_pedido"), i, 17);//pedido
-                        model.setValueAt(map.get("fecha_pedido"), i, 18);//pedido
-                        model.setValueAt(map.get("almacen"), i, 19);
-                        model.setValueAt(map.get("operario"), i, 20);//pedido
+                        
+                        if(map.get("tipo_pieza")!="")
+                            model.setValueAt(map.get("tipo_pieza"), i, 16);//plazo de entrega
+                        else
+                            model.setValueAt("-", i, 16);//plazo de entrega
+                        
+                        model.setValueAt(map.get("plazo"), i, 17);//plazo de entrega
+                        model.setValueAt(map.get("id_pedido"), i, 18);//pedido
+                        model.setValueAt(map.get("fecha_pedido"), i, 19);//pedido
+                        model.setValueAt(map.get("almacen"), i, 20);
+                        model.setValueAt(map.get("operario"), i, 21);//pedido
                         
                         double pen=Double.parseDouble(map.get("cant_pcp").toString())-Double.parseDouble(map.get("almacen").toString());
-                        model.setValueAt(pen, i, 21);//pedido
-                        model.setValueAt("", i, 22);//surtido
-                        model.setValueAt((boolean)map.get("surtido"), i, 23);//surtido
-                        model.setCeldaEditable(i, 23, true);
+                        model.setValueAt(pen, i, 22);//pedido
+                        model.setValueAt("", i, 23);//surtido
+                        model.setValueAt((boolean)map.get("surtido"), i, 24);//surtido
+                        model.setCeldaEditable(i, 24, true);
                     }
                 }
                                 
@@ -431,20 +443,22 @@ public class avanceSurtido extends javax.swing.JPanel {
                         
                         model.setValueAt(map1.get("costo"), i+partidas1.size(), 15);
                         
-                        model.setValueAt(map1.get("plazo"), i+partidas1.size(), 16);
-                        model.setValueAt(map1.get("id_pedido"), i+partidas1.size(), 17);
-                        model.setValueAt(map1.get("fecha_pedido"), i+partidas1.size(), 18);
-                        model.setValueAt(map1.get("almacen"), i+partidas1.size(), 19);
-                        model.setValueAt(map1.get("operario"), i+partidas1.size(), 20);
+                        model.setValueAt("-", i+partidas1.size(), 16);
+                        
+                        model.setValueAt(map1.get("plazo"), i+partidas1.size(), 17);
+                        model.setValueAt(map1.get("id_pedido"), i+partidas1.size(), 18);
+                        model.setValueAt(map1.get("fecha_pedido"), i+partidas1.size(), 19);
+                        model.setValueAt(map1.get("almacen"), i+partidas1.size(), 20);
+                        model.setValueAt(map1.get("operario"), i+partidas1.size(), 21);
 
                         //double pen=entradas-devoluciones;
                         double pen=Double.parseDouble(map1.get("cantidad").toString())-Double.parseDouble(map1.get("almacen").toString());
 
-                        model.setValueAt(pen, i+partidas1.size(), 21);
-                        model.setValueAt("", i+partidas1.size(), 22);//no factura
+                        model.setValueAt(pen, i+partidas1.size(), 22);
+                        model.setValueAt("", i+partidas1.size(), 23);//no factura
                         
-                        model.setValueAt(map1.get("surtido"), i+partidas1.size(), 23);//surtido
-                        model.setCeldaEditable(i+partidas1.size(), 23, true);
+                        model.setValueAt(map1.get("surtido"), i+partidas1.size(), 24);//surtido
+                        model.setCeldaEditable(i+partidas1.size(), 24, true);
                     }
                 }
                 session.beginTransaction().rollback();
@@ -689,7 +703,7 @@ public class avanceSurtido extends javax.swing.JPanel {
                     session.beginTransaction().begin();
                     Orden ord=(Orden)session.get(Orden.class, Integer.parseInt(orden));
 
-                    Configuracion con= (Configuracion)session.get(Configuracion.class, 1);
+                    Configuracion con= (Configuracion)session.get(Configuracion.class, configuracion);
                     hoja.setColumnWidth(2, 15000);
                     Row r0=hoja.createRow(0);
                     Cell celdaTitulo=r0.createCell(0);
@@ -734,13 +748,14 @@ public class avanceSurtido extends javax.swing.JPanel {
                     r6.createCell(12).setCellValue("Proveedor");
                     r6.createCell(13).setCellValue("Cant C.");
                     r6.createCell(14).setCellValue("C/U Comprado");
-                    r6.createCell(15).setCellValue("Plazo");
-                    r6.createCell(16).setCellValue("Pedido");
-                    r6.createCell(17).setCellValue("F. Pedido");
-                    r6.createCell(18).setCellValue("Entradas");
-                    r6.createCell(19).setCellValue("Devoluciones");
-                    r6.createCell(20).setCellValue("Pendientes");
-                    r6.createCell(21).setCellValue("No Factura");
+                    r6.createCell(15).setCellValue("Tipo");
+                    r6.createCell(16).setCellValue("Plazo");
+                    r6.createCell(17).setCellValue("Pedido");
+                    r6.createCell(18).setCellValue("F. Pedido");
+                    r6.createCell(19).setCellValue("Entradas");
+                    r6.createCell(20).setCellValue("Devoluciones");
+                    r6.createCell(21).setCellValue("Pendientes");
+                    r6.createCell(22).setCellValue("No Factura");
                     
                     hoja.createRow(7).createCell(0).setCellValue("**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************");
 
@@ -808,17 +823,16 @@ public class avanceSurtido extends javax.swing.JPanel {
                     PDF reporte = new PDF();
                     reporte.Abrir2(PageSize.LEGAL.rotate(), "Avance de Pedidos", archivoPDF.getAbsolutePath());
 
-                    reporte.agregaObjeto(reporte.crearImagen("imagenes/empresa300115.jpg", 00, -32, 17));
+                    Session session = HibernateUtil.getSessionFactory().openSession();
+                    session.beginTransaction().begin();
+                    Configuracion con= (Configuracion)session.get(Configuracion.class, configuracion);
+                    reporte.agregaObjeto(reporte.crearImagen("imagenes/"+con.getLogo(), 00, -32, 17));
 
                     reporte.contenido.setLineWidth(0.5f);
                     reporte.contenido.setColorStroke(new GrayColor(0.2f));
                     reporte.contenido.setColorFill(new GrayColor(0.9f));
                     reporte.contenido.roundRectangle(30, 535, 945, 60, 5);
 
-                    Session session = HibernateUtil.getSessionFactory().openSession();
-                    session.beginTransaction().begin();
-                    Configuracion con= (Configuracion)session.get(Configuracion.class, 1);
-                    
                     reporte.inicioTexto();
                         reporte.contenido.setFontAndSize(bf, 14);
                         reporte.contenido.setColorFill(BaseColor.BLACK);
@@ -834,7 +848,7 @@ public class avanceSurtido extends javax.swing.JPanel {
                     reporte.agregaObjeto(new Paragraph(" "));
                     reporte.agregaObjeto(new Paragraph(" "));
 
-                    float tam[]=new float[]{25,25,190,7,7,7,7,20,30,20,100,20,30,20,60,50,30,70,35,30,30,30,7};
+                    float tam[]=new float[]{25,25,190,7,7,7,7,20,30,20,100,20,30,20,60, 30,50,30,70,35,30,30,30,7};
                     com.itextpdf.text.Font font = new com.itextpdf.text.Font(com.itextpdf.text.Font.FontFamily.HELVETICA, 6, com.itextpdf.text.Font.BOLD);
                     PdfPTable tabla=reporte.crearTabla(tam.length, tam, 100, Element.ALIGN_LEFT);
                     BaseColor cabecera=BaseColor.GRAY;
@@ -858,6 +872,7 @@ public class avanceSurtido extends javax.swing.JPanel {
                     tabla.addCell(reporte.celda("Prov", font, cabecera, centro, 0, 1,Rectangle.RECTANGLE));
                     tabla.addCell(reporte.celda("Cant. c.", font, cabecera, centro, 0, 1,Rectangle.RECTANGLE));
                     tabla.addCell(reporte.celda("$C/U Comp", font, cabecera, centro, 0, 1,Rectangle.RECTANGLE));
+                    tabla.addCell(reporte.celda("Tipo", font, cabecera, centro, 0, 1,Rectangle.RECTANGLE));
                     tabla.addCell(reporte.celda("Plazo", font, cabecera, centro, 0, 1,Rectangle.RECTANGLE));
                     tabla.addCell(reporte.celda("Pedido", font, cabecera, centro, 0, 1,Rectangle.RECTANGLE));
                     tabla.addCell(reporte.celda("F. Pedido", font, cabecera, centro, 0, 1,Rectangle.RECTANGLE));
@@ -875,7 +890,7 @@ public class avanceSurtido extends javax.swing.JPanel {
                             
                         for(int col=1; col<t_datos.getColumnCount(); col++)
                         {
-                            if(col>3 && col<8 || col==23)
+                            if(col>3 && col<8 || col==24)
                             {
                                 if((boolean)t_datos.getValueAt(ren, col)==true)
                                     tabla.addCell(reporte.celda("X", font, contenido, izquierda, 0,1,Rectangle.RECTANGLE));
@@ -886,7 +901,7 @@ public class avanceSurtido extends javax.swing.JPanel {
                             {
                                 if(t_datos.getValueAt(ren, col)!=null)
                                 {
-                                    if(col==14 || col==15 || col==19 || col==20 || col==21)
+                                    if(col==14 || col==15 || col==20 || col==21 || col==22)
                                     {
                                         if(col==15)
                                         {
@@ -920,55 +935,6 @@ public class avanceSurtido extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(this, "No se pudo realizar el reporte si el archivo esta abierto.");
         }
     }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void t_userActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_userActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_t_userActionPerformed
-
-    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
-        // TODO add your handling code here:
-        if(t_user.getText().compareTo("")!=0)
-        {
-            if(t_clave.getPassword().toString().compareTo("")!=0)
-            {
-                Session session = HibernateUtil.getSessionFactory().openSession();
-                try
-                {
-                    session.beginTransaction().begin();
-                    Usuario autoriza = (Usuario)session.createCriteria(Usuario.class).add(Restrictions.eq("idUsuario", t_user.getText())).add(Restrictions.eq("clave", t_clave.getText())).setMaxResults(1).uniqueResult();
-                    if(autoriza!=null)
-                    {
-                        if(autoriza.getAutorizarSobrecosto()==true)
-                        {
-                            usrAut=autoriza;
-                            autorizarCosto.dispose();
-                        }
-                        else
-                        JOptionPane.showMessageDialog(this, "¡el usuario no tiene permiso de autorizar!");
-                    }
-                    else
-                    {
-                        session.beginTransaction().rollback();
-                        JOptionPane.showMessageDialog(this, "¡Datos Incorrectos!");
-                    }
-                }catch(Exception e)
-                {
-                    session.beginTransaction().rollback();
-                    JOptionPane.showMessageDialog(this, "¡Error al consultar los datos!");
-                    e.printStackTrace();
-                }
-                finally
-                {
-                    if(session.isOpen()==true)
-                    session.close();
-                }
-            }
-            else
-            JOptionPane.showMessageDialog(this, "¡Ingrese la contraseña!");
-        }
-        else
-        JOptionPane.showMessageDialog(this, "¡Ingrese el Usiario!");
-    }//GEN-LAST:event_jButton10ActionPerformed
 
     private void t_buscaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_buscaActionPerformed
         // TODO add your handling code here:
@@ -1031,6 +997,55 @@ public class avanceSurtido extends javax.swing.JPanel {
             x++;
         }
     }//GEN-LAST:event_b_busca1ActionPerformed
+
+    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
+        // TODO add your handling code here:
+        if(t_user.getText().compareTo("")!=0)
+        {
+            if(t_clave.getPassword().toString().compareTo("")!=0)
+            {
+                Session session = HibernateUtil.getSessionFactory().openSession();
+                try
+                {
+                    session.beginTransaction().begin();
+                    Usuario autoriza = (Usuario)session.createCriteria(Usuario.class).add(Restrictions.eq("idUsuario", t_user.getText())).add(Restrictions.eq("clave", t_clave.getText())).setMaxResults(1).uniqueResult();
+                    if(autoriza!=null)
+                    {
+                        if(autoriza.getAutorizarSobrecosto()==true)
+                        {
+                            usrAut=autoriza;
+                            autorizarCosto.dispose();
+                        }
+                        else
+                        JOptionPane.showMessageDialog(this, "¡el usuario no tiene permiso de autorizar!");
+                    }
+                    else
+                    {
+                        session.beginTransaction().rollback();
+                        JOptionPane.showMessageDialog(this, "¡Datos Incorrectos!");
+                    }
+                }catch(Exception e)
+                {
+                    session.beginTransaction().rollback();
+                    JOptionPane.showMessageDialog(this, "¡Error al consultar los datos!");
+                    e.printStackTrace();
+                }
+                finally
+                {
+                    if(session.isOpen()==true)
+                    session.close();
+                }
+            }
+            else
+            JOptionPane.showMessageDialog(this, "¡Ingrese la contraseña!");
+        }
+        else
+        JOptionPane.showMessageDialog(this, "¡Ingrese el Usiario!");
+    }//GEN-LAST:event_jButton10ActionPerformed
+
+    private void t_userActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_userActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_t_userActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1095,7 +1110,7 @@ public class avanceSurtido extends javax.swing.JPanel {
                         Object celda = ((Vector)this.dataVector.elementAt(row)).elementAt(col);
                         switch(col)
                         {
-                            case 22:
+                            case 23:
                                 if(vector.get(col)==null)
                                 {
                                     vector.setElementAt(value, col);
@@ -1170,7 +1185,7 @@ public class avanceSurtido extends javax.swing.JPanel {
                                 }
                                 break;
                                 
-                            case 23:
+                            case 24:
                                     if(vector.get(col)==null)
                                     {
                                         vector.setElementAt(value, col);

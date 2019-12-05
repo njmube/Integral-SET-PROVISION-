@@ -8,8 +8,11 @@ package Contabilidad;
 
 import Hibernate.Util.HibernateUtil;
 import Hibernate.entidades.Concepto;
+import Hibernate.entidades.DocumentoPago;
 import Hibernate.entidades.Factura;
 import Hibernate.entidades.Nota;
+import Hibernate.entidades.Pago;
+import Hibernate.entidades.Relacion;
 import Hibernate.entidades.Usuario;
 import Integral.calendario;
 import java.awt.Dimension;
@@ -17,11 +20,13 @@ import java.awt.Toolkit;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import org.hibernate.Session;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 /**
@@ -34,12 +39,14 @@ public class Cuentas extends javax.swing.JPanel {
     String sessionPrograma;
     Factura factura=null;
     Nota nota=null;
-    String edo="", edo_factura="", tipo="";
+    String edo="", edo_factura="", tipo="", serie="";
+    int configuracion=1;
     /**
      * Creates new form Cuentas
      */
-    public Cuentas(Usuario usr, String sess) {
+    public Cuentas(Usuario usr, String sess, int configuracion) {
         initComponents();
+        this.configuracion=configuracion;
         this.usr=usr;
         sessionPrograma=sess;
         
@@ -62,9 +69,13 @@ public class Cuentas extends javax.swing.JPanel {
                 if(cb.getSelectedItem().toString().compareTo("FACTURA")==0)
                 {
                     if(tipo.compareTo("M")==0)
-                        factura = (Factura)session.createCriteria(Factura.class).add(Restrictions.eq("folio", t_factura.getText())).uniqueResult();
+                    {
+                        factura = (Factura)session.createCriteria(Factura.class).add(Restrictions.eq("folio", t_factura.getText())).add(Restrictions.eq("serie", serie)).uniqueResult();
+                    }
                     else
-                        factura = (Factura)session.createCriteria(Factura.class).add(Restrictions.eq("folioExterno", Integer.parseInt(t_factura.getText()))).uniqueResult();
+                    {
+                        factura = (Factura)session.createCriteria(Factura.class).add(Restrictions.eq("folioExterno", Integer.parseInt(t_factura.getText()))).add(Restrictions.eq("serieExterno", serie)).uniqueResult();
+                    }
                     if(factura!=null)
                     {
                         this.tf.setText(this.cb.getSelectedItem().toString());
@@ -104,6 +115,7 @@ public class Cuentas extends javax.swing.JPanel {
                             t_monto.commitEdit();
                         }catch(Exception e){}
                         this.c_estatus.setSelectedItem(factura.getEstatus());
+                        System.out.println(factura.getEstatus());
                         edo=factura.getEstatus();
                         if(factura.getfEstatus()!=null)
                         {
@@ -121,8 +133,27 @@ public class Cuentas extends javax.swing.JPanel {
                             this.t_estatus.setText(factura.getTexto());
                         else
                             this.t_estatus.setText("");
-                        session.beginTransaction().commit();
                         estado(true);
+                        Relacion relacion=(Relacion) session.createCriteria(Relacion.class).add(Restrictions.eq("facturaByRelacionFactura.idFactura", factura.getIdFactura())).addOrder(Order.desc("idRelacion")).setMaxResults(1).uniqueResult();
+                        if(relacion !=null)
+                        {
+                            t_estatus.setText("Sustituida por la factura no: "+relacion.getFacturaByIdFactura().getIdFactura());
+                            c_estatus.setEnabled(false);
+                            t_estatus.setEnabled(false);
+                            b_guardar.setEnabled(false);
+                            t_fecha_estatus.setEnabled(false);
+                        }
+                        DocumentoPago docPago=(DocumentoPago) session.createCriteria(DocumentoPago.class).add(Restrictions.eq("factura.idFactura", factura.getIdFactura())).addOrder(Order.desc("idDocumentoPago")).setMaxResults(1).uniqueResult();
+                        if(docPago !=null)
+                        {
+                            Pago pago1=docPago.getPago();
+                            t_estatus.setText("Pagada en en el Doc. de Pago: "+pago1.getSerie()+pago1.getFolio()+ "  Ref: "+ pago1.getReferencia()+"  Fecha: "+pago1.getFechaPago());
+                            c_estatus.setEnabled(false);
+                            t_estatus.setEnabled(false);
+                            b_guardar.setEnabled(false);
+                            t_fecha_estatus.setEnabled(false);
+                        }
+                        session.beginTransaction().commit();
                     }
                     else
                     {
@@ -478,7 +509,7 @@ public class Cuentas extends javax.swing.JPanel {
         jPanel3.setBackground(new java.awt.Color(254, 254, 254));
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "Estatus", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Arial", 1, 12))); // NOI18N
 
-        c_estatus.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "POR COBRAR", "COBRADA", "INCOBRABLE", "CANCELADO", "PENDIENTE" }));
+        c_estatus.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "POR COBRAR", "COBRADA", "INCOBRABLE", "CANCELADO", "PENDIENTE", "SUSTITUIDA" }));
         c_estatus.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 c_estatusActionPerformed(evt);
@@ -584,7 +615,7 @@ public class Cuentas extends javax.swing.JPanel {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(b_guardar, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addContainerGap(35, Short.MAX_VALUE))
         );
 
         b_buscar.setText("Buscar");
@@ -625,8 +656,8 @@ public class Cuentas extends javax.swing.JPanel {
                     .addComponent(b_buscar)
                     .addComponent(cb, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -734,7 +765,7 @@ public class Cuentas extends javax.swing.JPanel {
         // TODO add your handling code here:
         if(t_fecha_estatus.isEnabled()==true)
         {
-            calendario cal =new calendario(new javax.swing.JFrame(), true);
+            calendario cal =new calendario(new javax.swing.JFrame(), true, false);
             Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
             cal.setLocation((d.width/2)-(cal.getWidth()/2), (d.height/2)-(cal.getHeight()/2));
             cal.setVisible(true);
@@ -756,7 +787,7 @@ public class Cuentas extends javax.swing.JPanel {
         // TODO add your handling code here:
         if(cb.getSelectedItem().toString().compareTo("FACTURA")==0)
         {
-            buscaFactura obj = new buscaFactura(new javax.swing.JFrame(), true, this.sessionPrograma, this.usr, 0);
+            buscaFactura obj = new buscaFactura(new javax.swing.JFrame(), true, this.sessionPrograma, this.usr, 0, configuracion);
             obj.t_busca.requestFocus();
             Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
             obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
@@ -767,11 +798,13 @@ public class Cuentas extends javax.swing.JPanel {
                 {
                     t_factura.setText(""+fac.getFolio());
                     tipo="M";
+                    serie=fac.getSerie();
                 }
                 else
                 {
                     t_factura.setText(""+fac.getFolioExterno());
                     tipo="F";
+                    serie=fac.getSerieExterno();
                 }
             }
             obj=null;
@@ -779,14 +812,19 @@ public class Cuentas extends javax.swing.JPanel {
         }
         else
         {
-            buscaNota obj1 = new buscaNota(new javax.swing.JFrame(), true, this.sessionPrograma, this.usr, 0);
+            buscaNota obj1 = new buscaNota(new javax.swing.JFrame(), true, this.sessionPrograma, this.usr, 0, configuracion);
             obj1.t_busca.requestFocus();
             Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
             obj1.setLocation((d.width/2)-(obj1.getWidth()/2), (d.height/2)-(obj1.getHeight()/2));
             obj1.setVisible(true);
             Nota not=obj1.getReturnStatus();
             if(not!=null)
-                t_factura.setText(""+not.getFolio());
+            {
+                if(not.getPac().compareTo("M")==0)
+                    t_factura.setText(""+not.getFolio());
+                else
+                    t_factura.setText(""+not.getFolioExterno());
+            }
             obj1=null;
             buscaDato();
         }

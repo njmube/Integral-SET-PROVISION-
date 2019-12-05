@@ -1,0 +1,159 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 26/02/2018 04:16:48 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.Pago" table="pago">
+        <id name="idPago" type="java.lang.Integer">
+            <column name="id_pago" />
+            <generator class="identity" />
+        </id>
+        <property name="version" type="java.lang.Double">
+            <column name="version" precision="22" scale="0" />
+        </property>
+        <many-to-one name="usoCfdi" class="Hibernate.entidades.UsoCfdi" fetch="select">
+            <column name="id_uso_cfdi" length="6" />
+        </many-to-one>
+        <many-to-one name="usuarioByAutorizo" class="Hibernate.entidades.Usuario" fetch="select">
+            <column name="autorizo" length="10" />
+        </many-to-one>
+        <many-to-one name="usuarioByGenero" class="Hibernate.entidades.Usuario" fetch="select">
+            <column name="genero" length="10" />
+        </many-to-one>
+        <property name="fecha" type="timestamp">
+            <column name="fecha" length="19" />
+        </property>
+        <property name="rfcEmisor" type="string">
+            <column name="rfc_emisor" length="14" />
+        </property>
+        <property name="nombreEmisor" type="string">
+            <column name="nombre_emisor" length="200" />
+        </property>
+        <property name="calleEmisor" type="string">
+            <column name="calle_emisor" length="150" />
+        </property>
+        <property name="coloniaEmisor" type="string">
+            <column name="colonia_emisor" length="100" />
+        </property>
+        <property name="numeroExteriorEmisor" type="string">
+            <column name="numero_exterior_emisor" length="10" />
+        </property>
+        <property name="municipioEmisor" type="string">
+            <column name="municipio_emisor" length="100" />
+        </property>
+        <property name="estadoEmisor" type="string">
+            <column name="estado_emisor" length="80" />
+        </property>
+        <property name="paisEmisor" type="string">
+            <column name="pais_emisor" length="45" />
+        </property>
+        <property name="cpEmisor" type="string">
+            <column name="cp_emisor" length="10" />
+        </property>
+        <property name="rfcReceptor" type="string">
+            <column name="rfc_receptor" length="14" />
+        </property>
+        <property name="nombreReceptor" type="string">
+            <column name="nombre_receptor" length="200" />
+        </property>
+        <property name="calleReceptor" type="string">
+            <column name="calle_receptor" length="200" />
+        </property>
+        <property name="coloniaReceptor" type="string">
+            <column name="colonia_receptor" length="150" />
+        </property>
+        <property name="numeroExteriorReceptor" type="string">
+            <column name="numero_exterior_receptor" length="10" />
+        </property>
+        <property name="municipioReceptor" type="string">
+            <column name="municipio_receptor" length="150" />
+        </property>
+        <property name="estadoReceptor" type="string">
+            <column name="estado_receptor" length="100" />
+        </property>
+        <property name="paisReceptor" type="string">
+            <column name="pais_receptor" length="80" />
+        </property>
+        <property name="cpReceptor" type="string">
+            <column name="cp_receptor" length="6" />
+        </property>
+        <property name="estadoFactura" type="string">
+            <column name="estado_factura" length="15" />
+        </property>
+        <property name="FFiscal" type="string">
+            <column name="f_fiscal" length="45" />
+        </property>
+        <property name="fechaFiscal" type="string">
+            <column name="fecha_fiscal" length="45" />
+        </property>
+        <property name="serie" type="string">
+            <column name="serie" length="4" />
+        </property>
+        <property name="folio" type="java.lang.Integer">
+            <column name="folio" />
+        </property>
+        <property name="metodoPago" type="string">
+            <column name="metodo_pago" length="35" />
+        </property>
+        <property name="moneda" type="string">
+            <column name="moneda" length="3" />
+        </property>
+        <property name="nombreDocumento" type="string">
+            <column name="nombre_documento" length="45" />
+        </property>
+        <property name="monto" type="java.lang.Double">
+            <column name="monto" precision="22" scale="0" />
+        </property>
+        <property name="fechaPago" type="date">
+            <column name="fecha_pago" length="45" />
+        </property>
+        <property name="estatus" type="string">
+            <column name="estatus" length="12" />
+        </property>
+        <property name="FEstatus" type="date">
+            <column name="f_estatus" length="10" />
+        </property>
+        <property name="selloSat" type="string">
+            <column name="sello_sat" length="400" />
+        </property>
+        <property name="selloCfdi" type="string">
+            <column name="sello_cfdi" length="600" />
+        </property>
+        <property name="certificadoSat" type="string">
+            <column name="certificado_sat" length="25" />
+        </property>
+        <property name="certificadoEmisor" type="string">
+            <column name="certificado_emisor" length="25" />
+        </property>
+        <property name="tipoRelacion" type="string">
+            <column name="tipo_relacion" length="3" />
+        </property>
+        <property name="correoReceptor" type="string">
+            <column name="correo_receptor" length="100" />
+        </property>
+        <property name="formaPago" type="string">
+            <column name="forma_pago" length="3" />
+        </property>
+        <property name="referencia" type="string">
+            <column name="referencia" length="50" />
+        </property>
+        <set name="documentoPagos" table="documento_pago" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_factura" />
+            </key>
+            <one-to-many class="Hibernate.entidades.DocumentoPago" />
+        </set>
+        <set name="relacionsForIdPago" table="relacion" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_pago" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Relacion" />
+        </set>
+        <set name="relacionsForRelacionPago" table="relacion" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="relacion_pago" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Relacion" />
+        </set>
+    </class>
+</hibernate-mapping>

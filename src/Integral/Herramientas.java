@@ -10,6 +10,17 @@ import Hibernate.Util.HibernateUtil;
 import Hibernate.entidades.Orden;
 import Hibernate.entidades.Pedido;
 import Hibernate.entidades.Usuario;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.util.Properties;
+import javax.mail.BodyPart;
+import javax.mail.Message;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import javax.swing.JOptionPane;
 import org.hibernate.Session;
 
 /**
@@ -33,9 +44,10 @@ public class Herramientas {
         Session session = HibernateUtil.getSessionFactory().openSession();
         try
         {
-            session.beginTransaction().begin();
+            session.getTransaction().begin();
             usr=(Usuario)session.get(Usuario.class, usr.getIdUsuario());
-            Orden[] bloqueadas = (Orden[]) usr.getOrdensForBloqueada().toArray(new Orden[0]);
+            session.createQuery("Update Orden Set ventana=null, usuarioByBloqueada=null where usuarioByBloqueada.idUsuario='"+usr.getIdUsuario()+"' and ventana="+menu).executeUpdate();
+            /*Orden[] bloqueadas = (Orden[]) usr.getOrdensForBloqueada().toArray(new Orden[0]);
             for(int a=0; a<bloqueadas.length; a++)
             {
                 String v=""+menu;
@@ -47,7 +59,7 @@ public class Herramientas {
                     session.update(bloqueadas[a]);
                     session.update(usr);
                 }
-            }
+            }*/
             session.getTransaction().commit();
         }catch(Exception e)
         {
@@ -125,10 +137,7 @@ public class Herramientas {
         try
         {
             usr=(Usuario) session.get(Usuario.class, usr.getIdUsuario());
-            if(usr.getSession().compareTo(sessionPrograma)==0)
-            {
-            }
-            else
+            if(usr.getSession().compareTo(sessionPrograma)!=0)
             {
                 javax.swing.JOptionPane.showMessageDialog(null, "has iniciado session en otra maquina!");
                 System.exit(0);
@@ -262,5 +271,105 @@ public class Herramientas {
                     session.close(); 
         }
         return val;
+    }
+    
+    /**
+     * Envia un correo electronico
+     * @param asunto asunto del correo
+     * @param mensaje mensaje contenido en el correo
+     * @param from direcciones de correo destinatario
+     */
+    public void enviaCorreo(String asunto, String mensaje, String from)
+    {
+        String smtp="";
+        boolean ttl=false;
+        String puerto="";
+        String envia="";
+        String clave="";
+        //String from="";
+        String cc="";
+        String texto = null;
+        
+        try
+        {
+            FileReader f = new FileReader("correo.ml");
+            BufferedReader b = new BufferedReader(f);
+            int renglon=0;
+            while((texto = b.readLine())!=null)
+            {
+                switch(renglon)
+                {
+                    case 1://smtp
+                        smtp=texto.trim();
+                        break;
+                    case 2://ttl
+                        if(texto.compareToIgnoreCase("true")==0)
+                            ttl=true;
+                        else
+                            ttl=false;
+                        break;
+                    case 3://puerto
+                        puerto=texto.trim();
+                        break;
+                    case 4://cuenta
+                        envia=texto.trim();
+                        break;
+                    case 5://contraseña
+                        clave=texto.trim();
+                        break;
+                }
+                renglon+=1;
+            }
+            b.close();
+        }catch(Exception e){e.printStackTrace();}
+        
+        try
+        {
+            // se obtiene el objeto Session.
+            Properties props = new Properties();
+            props.put("mail.smtp.host", smtp);
+            props.setProperty("mail.smtp.starttls.enable", ""+ttl);
+            props.setProperty("mail.smtp.port", puerto);
+            props.setProperty("mail.smtp.user", envia);
+            props.setProperty("mail.smtp.auth", "true");
+
+            javax.mail.Session session = javax.mail.Session.getDefaultInstance(props, null);
+            // session.setDebug(true);
+
+            // Se compone la parte del texto
+            BodyPart texto_mensaje = new MimeBodyPart();
+            texto_mensaje.setContent(mensaje, "text/html");
+
+            // Una MultiParte para agrupar texto e imagen.
+            MimeMultipart multiParte = new MimeMultipart();
+            multiParte.addBodyPart(texto_mensaje);
+
+            // Se compone el correo, dando to, from, subject y el contenido.
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(envia));
+
+            String [] direcciones=from.split(";");
+            for(int x=0; x<direcciones.length; x++)
+            {
+                if(direcciones[x].compareTo("")!=0)
+                    message.addRecipient(Message.RecipientType.TO, new InternetAddress(direcciones[x].replace(" ","")));
+            }
+
+            String [] dirCC=cc.split(";");
+            for(int y=0; y<dirCC.length; y++)
+            {
+                if(dirCC[y].compareTo("")!=0)
+                    message.addRecipient(Message.RecipientType.CC, new InternetAddress(dirCC[y].replace(" ","")));
+            }
+
+            message.setSubject(asunto);
+            message.setContent(multiParte);
+
+            Transport t = session.getTransport("smtp");
+            t.connect(envia, clave);
+            t.sendMessage(message, message.getAllRecipients());
+            t.close();
+        }
+        catch (Exception e){e.printStackTrace();}
     }
 }

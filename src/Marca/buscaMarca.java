@@ -42,16 +42,18 @@ public class buscaMarca extends javax.swing.JDialog {
     //private Session session;
     InputMap map = new InputMap();
     DefaultTableModel model;
-    String[] columnas = new String [] {"Prefijo","Nombre"};
+    String[] columnas = new String [] {"Prefijo","Nombre", "Inventario"};
     String sessionPrograma="";
     Herramientas h;
     Usuario usr;
+    boolean ejemplar;
     
     /** Creates new form acceso */
-    public buscaMarca(javax.swing.JFrame parent, boolean modal, String ses, Usuario usuario) {
+    public buscaMarca(javax.swing.JFrame parent, boolean modal, String ses, Usuario usuario, boolean ejemplar) {
         super(parent, modal);
         sessionPrograma=ses;
         usr=usuario;
+        this.ejemplar=ejemplar;
         initComponents();
         getRootPane().setDefaultButton(jButton1);
         //formatoTabla();
@@ -66,10 +68,10 @@ public class buscaMarca extends javax.swing.JDialog {
                 Class[] types = new Class [] {
                     java.lang.String.class, 
                     java.lang.String.class,
-                    java.lang.String.class
+                    java.lang.Integer.class
                 };
                 boolean[] canEdit = new boolean [] {
-                    false, false
+                    false, false, false
                 };
 
                 public void setValueAt(Object value, int row, int col)
@@ -179,14 +181,14 @@ public class buscaMarca extends javax.swing.JDialog {
 
             },
             new String [] {
-                "Prefijo", "Nombre"
+                "Prefijo", "Nombre", "Inventario"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.Boolean.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false
+                false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -293,6 +295,7 @@ public class buscaMarca extends javax.swing.JDialog {
                     Marca op= new Marca();
                     op.setIdMarca(t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString());
                     op.setMarcaNombre(t_datos.getValueAt(t_datos.getSelectedRow(), 1).toString());
+                    op.setEjemplar(Integer.parseInt(t_datos.getValueAt(t_datos.getSelectedRow(), 2).toString()));
                     if(session!=null)
                         if(session.isOpen())
                             session.close();
@@ -354,6 +357,8 @@ public class buscaMarca extends javax.swing.JDialog {
 private void buscaDato()
 {
     String consulta="from Marca obj where obj.marcaNombre like '%" + t_busca.getText() +"%'";
+    if(ejemplar==false)
+        consulta+=" and obj.ejemplar in(0,2)";
     List <Object[]> resultList=executeHQLQuery(consulta);
     if(resultList.size()>0)
     {
@@ -364,6 +369,7 @@ private void buscaDato()
             Marca actor = (Marca) o;
             model.setValueAt(actor.getIdMarca(), i, 0);
             model.setValueAt(actor.getMarcaNombre(), i, 1);
+            model.setValueAt(actor.getEjemplar(), i, 2);
             i++;
         }
     }

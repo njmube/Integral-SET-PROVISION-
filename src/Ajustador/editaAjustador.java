@@ -39,6 +39,7 @@ public class editaAjustador extends javax.swing.JPanel {
     private Ajustador actor1;
     String ic="";
     String[] columnas = new String [] {"Clave","Ajustador"};
+    int x=0;
     /**
      * Creates new form EditaCiclo
      */
@@ -64,18 +65,100 @@ public class editaAjustador extends javax.swing.JPanel {
             public void setValueAt(Object value, int row, int col)
             {
                 Vector vector = (Vector)this.dataVector.elementAt(row);
-                Object celda = ((Vector)this.dataVector.elementAt(row)).elementAt(col);
                 switch(col)
                 {
                     case 0:
-                        vector.setElementAt(value, col);
-                        this.dataVector.setElementAt(vector, row);
-                        fireTableCellUpdated(row, col);
+                        if(vector.get(col)==null)
+                        {
+                            vector.setElementAt(value, col);
+                            this.dataVector.setElementAt(vector, row);
+                            fireTableCellUpdated(row, col);
+                        }
+                        else
+                        {
+                            Session session = HibernateUtil.getSessionFactory().openSession();
+                            String valor = (String)value;
+                            String valorAnterior = t_datos.getValueAt(row, col).toString();
+                            if(valorAnterior.compareToIgnoreCase(valor)!=0)
+                            {
+                                try   
+                                {   
+                                    session.beginTransaction();
+                                    Object resp=session.createQuery("from Ajustador obj where obj.idAjustador='"+valor+"'").uniqueResult();
+                                    if(resp==null)
+                                    {
+                                        Query q = session.createQuery("update Ajustador obj set obj.idAjustador='"+valor+"' where obj.idAjustador='"+valorAnterior+"'");
+                                        q.executeUpdate();
+                                        session.getTransaction().commit();
+                                        vector.setElementAt(value, col);
+                                        this.dataVector.setElementAt(vector, row);
+                                        fireTableCellUpdated(row, col);
+                                    }
+                                    else
+                                    {
+                                        JOptionPane.showMessageDialog(null, "No se pueden guardar claves duplicadas");  
+                                    }
+                                }
+                                catch (HibernateException he)
+                                {
+                                    he.printStackTrace(); 
+                                    System.out.println(he.hashCode());
+                                    session.getTransaction().rollback();
+                                }
+                                finally
+                                {
+                                    if(session.isOpen())
+                                    session.close();
+                                }
+                            }
+                        }
                         break;
                     default:
-                        vector.setElementAt(value, col);
-                        this.dataVector.setElementAt(vector, row);
-                        fireTableCellUpdated(row, col);
+                        if(vector.get(col)==null)
+                        {
+                            vector.setElementAt(value, col);
+                            this.dataVector.setElementAt(vector, row);
+                            fireTableCellUpdated(row, col);
+                        }
+                        else
+                        {
+                            Session session = HibernateUtil.getSessionFactory().openSession();
+                            String valor = (String)value;
+                            String valorAnterior = t_datos.getValueAt(row, col).toString();
+                            if(valorAnterior.compareToIgnoreCase(valor)!=0)
+                            {
+                                try   
+                                {   
+                                    ic = t_datos.getValueAt(row, 0).toString();
+                                    session.beginTransaction();
+                                    Object resp=session.createQuery("from Ajustador obj where obj.nombre='"+valor+"'").uniqueResult();
+                                    if(resp==null)
+                                    {
+                                        Query q = session.createQuery("update Ajustador obj set obj.nombre='"+valor+"'where obj.idAjustador='"+ic+"'");
+                                        q.executeUpdate();
+                                        session.getTransaction().commit();
+                                        vector.setElementAt(value, col);
+                                        this.dataVector.setElementAt(vector, row);
+                                        fireTableCellUpdated(row, col);
+                                    }
+                                    else
+                                    {
+                                        JOptionPane.showMessageDialog(null, "No se pueden guardar claves duplicadas");  
+                                    }
+                                }
+                                catch (HibernateException he)
+                                {
+                                    he.printStackTrace(); 
+                                    System.out.println(he.hashCode());
+                                    session.getTransaction().rollback();
+                                }
+                                finally
+                                {
+                                    if(session.isOpen())
+                                    session.close();
+                                }
+                            }
+                        }
                         break;
                 }
             }
@@ -97,34 +180,16 @@ public class editaAjustador extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel2 = new javax.swing.JPanel();
-        jPanel1 = new javax.swing.JPanel();
-        jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         t_datos = new javax.swing.JTable();
-        Selecciona2 = new javax.swing.JButton();
-        Eliminar1 = new javax.swing.JButton();
-        Selecciona1 = new javax.swing.JButton();
-        bt_actualiza1 = new javax.swing.JButton();
         t_busca = new javax.swing.JTextField();
         b_busca = new javax.swing.JButton();
-        jPanel4 = new javax.swing.JPanel();
-        jLabel8 = new javax.swing.JLabel();
-        t_ajustador = new javax.swing.JTextField();
-        jLabel9 = new javax.swing.JLabel();
-        t_descripcion = new javax.swing.JTextField();
-        b_cancelar = new javax.swing.JButton();
-        b_guardar = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        Eliminar1 = new javax.swing.JButton();
+        bt_actualiza1 = new javax.swing.JButton();
+        Selecciona2 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(254, 254, 254));
-
-        jPanel2.setBackground(new java.awt.Color(254, 254, 254));
-
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "Edita Ajustador", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Arial", 1, 12))); // NOI18N
-
-        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "Lista", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Arial", 1, 11))); // NOI18N
 
         jScrollPane1.setBackground(new java.awt.Color(254, 254, 254));
 
@@ -155,20 +220,21 @@ public class editaAjustador extends javax.swing.JPanel {
         t_datos.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(t_datos);
 
-        Selecciona2.setBackground(new java.awt.Color(2, 135, 242));
-        Selecciona2.setForeground(new java.awt.Color(254, 254, 254));
-        Selecciona2.setIcon(new ImageIcon("imagenes/add-user.png"));
-        Selecciona2.setText("Nuevo");
-        Selecciona2.setToolTipText("Agregar un registo actual");
-        Selecciona2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        Selecciona2.setMaximumSize(new java.awt.Dimension(87, 23));
-        Selecciona2.setMinimumSize(new java.awt.Dimension(87, 23));
-        Selecciona2.setNextFocusableComponent(b_cancelar);
-        Selecciona2.addActionListener(new java.awt.event.ActionListener() {
+        t_busca.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Selecciona2ActionPerformed(evt);
+                t_buscaActionPerformed(evt);
             }
         });
+
+        b_busca.setIcon(new ImageIcon("imagenes/buscar1.png"));
+        b_busca.setToolTipText("Busca una partida");
+        b_busca.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_buscaActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("Buscar:");
 
         Eliminar1.setBackground(new java.awt.Color(2, 135, 242));
         Eliminar1.setForeground(new java.awt.Color(254, 254, 254));
@@ -185,19 +251,6 @@ public class editaAjustador extends javax.swing.JPanel {
             }
         });
 
-        Selecciona1.setBackground(new java.awt.Color(2, 135, 242));
-        Selecciona1.setForeground(new java.awt.Color(254, 254, 254));
-        Selecciona1.setIcon(new ImageIcon("imagenes/update-user.png"));
-        Selecciona1.setText("Seleccionar");
-        Selecciona1.setToolTipText("Seleccionar un registro de la tabla para editar");
-        Selecciona1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        Selecciona1.setNextFocusableComponent(Eliminar1);
-        Selecciona1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Selecciona1ActionPerformed(evt);
-            }
-        });
-
         bt_actualiza1.setBackground(new java.awt.Color(2, 135, 242));
         bt_actualiza1.setForeground(new java.awt.Color(254, 254, 254));
         bt_actualiza1.setIcon(new ImageIcon("imagenes/tabla.png"));
@@ -206,251 +259,79 @@ public class editaAjustador extends javax.swing.JPanel {
         bt_actualiza1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         bt_actualiza1.setMaximumSize(new java.awt.Dimension(87, 23));
         bt_actualiza1.setMinimumSize(new java.awt.Dimension(87, 23));
-        bt_actualiza1.setNextFocusableComponent(Selecciona1);
         bt_actualiza1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 bt_actualiza1ActionPerformed(evt);
             }
         });
 
-        t_busca.addActionListener(new java.awt.event.ActionListener() {
+        Selecciona2.setBackground(new java.awt.Color(2, 135, 242));
+        Selecciona2.setForeground(new java.awt.Color(254, 254, 254));
+        Selecciona2.setIcon(new ImageIcon("imagenes/add-user.png"));
+        Selecciona2.setText("Nuevo");
+        Selecciona2.setToolTipText("Agregar un registo actual");
+        Selecciona2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        Selecciona2.setMaximumSize(new java.awt.Dimension(87, 23));
+        Selecciona2.setMinimumSize(new java.awt.Dimension(87, 23));
+        Selecciona2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                t_buscaActionPerformed(evt);
+                Selecciona2ActionPerformed(evt);
             }
         });
-        t_busca.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                t_buscaKeyTyped(evt);
-            }
-        });
-
-        b_busca.setIcon(new ImageIcon("imagenes/buscar1.png"));
-        b_busca.setToolTipText("Busca una partida");
-        b_busca.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                b_buscaActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addGap(0, 106, Short.MAX_VALUE)
-                        .addComponent(bt_actualiza1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(Selecciona1)
-                        .addGap(18, 18, 18)
-                        .addComponent(Eliminar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(Selecciona2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(t_busca)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(b_busca, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 403, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(t_busca)
-                    .addComponent(b_busca, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(Selecciona2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Eliminar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Selecciona1)
-                    .addComponent(bt_actualiza1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
-
-        jPanel4.setBackground(new java.awt.Color(254, 254, 254));
-        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "Actualizar", javax.swing.border.TitledBorder.RIGHT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Arial", 1, 11))); // NOI18N
-
-        jLabel8.setText("Clave:");
-
-        t_ajustador.setEnabled(false);
-        t_ajustador.setNextFocusableComponent(t_descripcion);
-        t_ajustador.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                t_ajustadorActionPerformed(evt);
-            }
-        });
-        t_ajustador.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                t_ajustadorKeyTyped(evt);
-            }
-        });
-
-        jLabel9.setText("Ajustador:");
-
-        t_descripcion.setNextFocusableComponent(b_guardar);
-        t_descripcion.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                t_descripcionActionPerformed(evt);
-            }
-        });
-        t_descripcion.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                t_descripcionKeyTyped(evt);
-            }
-        });
-
-        b_cancelar.setBackground(new java.awt.Color(2, 135, 242));
-        b_cancelar.setForeground(new java.awt.Color(254, 254, 254));
-        b_cancelar.setIcon(new ImageIcon("imagenes/cancelar.png"));
-        b_cancelar.setText("Cancelar");
-        b_cancelar.setEnabled(false);
-        b_cancelar.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        b_cancelar.setMaximumSize(new java.awt.Dimension(87, 23));
-        b_cancelar.setMinimumSize(new java.awt.Dimension(87, 23));
-        b_cancelar.setNextFocusableComponent(t_ajustador);
-        b_cancelar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                b_cancelarActionPerformed(evt);
-            }
-        });
-
-        b_guardar.setBackground(new java.awt.Color(2, 135, 242));
-        b_guardar.setForeground(new java.awt.Color(254, 254, 254));
-        b_guardar.setIcon(new ImageIcon("imagenes/guardar.png"));
-        b_guardar.setText("Actualizar");
-        b_guardar.setEnabled(false);
-        b_guardar.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        b_guardar.setMaximumSize(new java.awt.Dimension(87, 23));
-        b_guardar.setMinimumSize(new java.awt.Dimension(87, 23));
-        b_guardar.setNextFocusableComponent(bt_actualiza1);
-        b_guardar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                b_guardarActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(b_cancelar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(b_guardar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(32, 32, 32)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel8)
-                    .addComponent(jLabel9))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(t_descripcion, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(t_ajustador, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(24, Short.MAX_VALUE))
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(127, 127, 127)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(t_ajustador, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(38, 38, 38)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(t_descripcion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(134, 134, 134)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(b_guardar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(b_cancelar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(29, 29, 29))
-        );
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(44, 44, 44)
-                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(32, 32, 32))
-        );
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 996, Short.MAX_VALUE)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(t_busca, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(b_busca, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(Selecciona2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(bt_actualiza1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(Eliminar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 976, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 501, Short.MAX_VALUE)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel1)
+                        .addComponent(t_busca))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(b_busca, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(11, 11, 11))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(Eliminar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(bt_actualiza1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(Selecciona2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 448, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void Selecciona2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Selecciona2ActionPerformed
-        b_cancelar.requestFocus();
         h=new Herramientas(usr, 0);
         h.session(sessionPrograma);
         Session session = HibernateUtil.getSessionFactory().openSession();
         usr = (Usuario)session.get(Usuario.class, usr.getIdUsuario());
-//        if(usr.getEditarCiclo()==true)
-//        {
-            altaAjustador obj = new altaAjustador(new javax.swing.JFrame(), true, usr, sessionPrograma);
-            Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-            obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
-            obj.setVisible(true);
-            borra_cajas();
-            cajas(false, false, false, false);
-            buscaDato();
-//        }
-//        else
-//            JOptionPane.showMessageDialog(null, "¡Acceso denegado!");
+        altaAjustador obj = new altaAjustador(new javax.swing.JFrame(), true, usr, sessionPrograma);
+        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+        obj.setLocation((d.width/2)-(obj.getWidth()/2), (d.height/2)-(obj.getHeight()/2));
+        obj.setVisible(true);
+        buscaDato();
         if(session!=null)
             if(session.isOpen())
                 session.close();
@@ -462,139 +343,34 @@ public class editaAjustador extends javax.swing.JPanel {
         h.session(sessionPrograma);
         Session session = HibernateUtil.getSessionFactory().openSession();
         usr = (Usuario)session.get(Usuario.class, usr.getIdUsuario());
-        /*if(usr.getEditaCiclo()==true)
-        {*/
-            if(this.t_datos.getSelectedRow()>=0)
-            {
-                DefaultTableModel model = (DefaultTableModel) t_datos.getModel();
-                int a = t_datos.getSelectedRow();
-                int opt=JOptionPane.showConfirmDialog(this, "¡Los datos capturados se eliminarán!");
-                if (JOptionPane.YES_OPTION == opt)
-                {
-                    boolean respuesta=eliminar(t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString());
-                    if(respuesta==true)
-                    {
-                        JOptionPane.showMessageDialog(null, "El Ajustador ha sido eliminado");
-                        model.removeRow(a);
-                        borra_cajas();
-                        cajas(false, false, false, false);
-                        buscaDato();
-                    }
-                }
-            }
-            else
-            cajas(false, false, false, false);
-        /*}
-        else
-        JOptionPane.showMessageDialog(null, "Acceso denegado");*/
-            if(session!=null)
-            if(session.isOpen())
-                session.close();
-    }//GEN-LAST:event_Eliminar1ActionPerformed
-
-    private void Selecciona1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Selecciona1ActionPerformed
-        Eliminar1.requestFocus();
-        h=new Herramientas(usr, 0);
-        h.session(sessionPrograma);
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        usr = (Usuario)session.get(Usuario.class, usr.getIdUsuario());
-//        if(usr!=null)
-//        {
-            if(t_datos.getSelectedRow()>=0)
-            {
-                this.borra_cajas();
-                t_ajustador.setText(t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString());
-                ic=t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString();
-                t_descripcion.setText(t_datos.getValueAt(t_datos.getSelectedRow(), 1).toString());         
-                this.cajas(true, true, true, true);
-            }
-            else
-                JOptionPane.showMessageDialog(null, "¡No hay un Ajuste seleccionado!");
-//        }
-//        else
-//            JOptionPane.showMessageDialog(null, "¡Acceso denegado!");
-        if(session!=null)
-            if(session.isOpen())
-                session.close();
-    }//GEN-LAST:event_Selecciona1ActionPerformed
-
-    private void bt_actualiza1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_actualiza1ActionPerformed
-        Selecciona1.requestFocus();
-        borra_cajas();
-        cajas(false, false, false, false);
-        buscaDato();
-    }//GEN-LAST:event_bt_actualiza1ActionPerformed
-
-    private void t_ajustadorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_ajustadorActionPerformed
-        t_descripcion.requestFocus();
-    }//GEN-LAST:event_t_ajustadorActionPerformed
-
-    private void t_ajustadorKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_ajustadorKeyTyped
-        char car = evt.getKeyChar();
-        if(this.t_ajustador.getText().length()>=2)
-            evt.consume();
-        if((car<'0' || car>'9'))
-            evt.consume();
-    }//GEN-LAST:event_t_ajustadorKeyTyped
-
-    private void t_descripcionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_descripcionActionPerformed
-        b_guardar.requestFocus();
-    }//GEN-LAST:event_t_descripcionActionPerformed
-
-    private void t_descripcionKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_descripcionKeyTyped
-        evt.setKeyChar(Character.toUpperCase(evt.getKeyChar()));
-        char car = evt.getKeyChar();
-        if(t_descripcion.getText().length()>=200)
-        evt.consume();
-    }//GEN-LAST:event_t_descripcionKeyTyped
-
-    private void b_cancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_cancelarActionPerformed
-        t_ajustador.requestFocus();
-        int opt=JOptionPane.showConfirmDialog(this, "¡Los datos capturados se eliminarán!");
-        if(opt==0)
+        if(this.t_datos.getSelectedRow()>=0)
         {
-            borra_cajas();
-            cajas(false, false, false, false);
-            t_ajustador.requestFocus();
-        }
-    }//GEN-LAST:event_b_cancelarActionPerformed
-
-    private void b_guardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_guardarActionPerformed
-        h=new Herramientas(usr, 0);
-        h.session(sessionPrograma);
-        bt_actualiza1.requestFocus();
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        usr = (Usuario)session.get(Usuario.class, usr.getIdUsuario());
-//        if(usr!=null)
-//        {
-            if(t_ajustador.getText().compareTo("")!=0)
+            DefaultTableModel model = (DefaultTableModel) t_datos.getModel();
+            int a = t_datos.getSelectedRow();
+            int opt=JOptionPane.showConfirmDialog(this, "¡Los datos capturados se eliminarán!");
+            if (JOptionPane.YES_OPTION == opt)
             {
-                boolean respuesta=modifica();
+                boolean respuesta=eliminar(t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString());
                 if(respuesta==true)
                 {
-                    this.borra_cajas();
-                    cajas(false, false, false, false);
+                    JOptionPane.showMessageDialog(null, "El Ajustador ha sido eliminado");
+                    model.removeRow(a);
                     buscaDato();
                 }
             }
-            else
-            {
-                JOptionPane.showMessageDialog(null, "¡Debe introducir el Ajustador que desees modificar!");
-                t_ajustador.requestFocus();
-            }
-//        }
-//        else
-//            JOptionPane.showMessageDialog(null, "¡Acceso denegado!");
+        }
         if(session!=null)
-            if(session.isOpen())
-                session.close();
-    }//GEN-LAST:event_b_guardarActionPerformed
-int x=0;
+        if(session.isOpen())
+            session.close();
+    }//GEN-LAST:event_Eliminar1ActionPerformed
+
+    private void bt_actualiza1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_actualiza1ActionPerformed
+        buscaDato();
+    }//GEN-LAST:event_bt_actualiza1ActionPerformed
     private void t_buscaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_buscaActionPerformed
         // TODO add your handling code here:
        if(this.t_busca.getText().compareToIgnoreCase("")!=0)
         {
-            //buscaCuentas();
             if(x>=t_datos.getRowCount())
             {
                 x=0;
@@ -621,46 +397,17 @@ int x=0;
          this.t_buscaActionPerformed(null);
     }//GEN-LAST:event_b_buscaActionPerformed
 
-    private void t_buscaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_buscaKeyTyped
-        // TODO add your handling code here:
-         
-    }//GEN-LAST:event_t_buscaKeyTyped
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Eliminar1;
-    private javax.swing.JButton Selecciona1;
     private javax.swing.JButton Selecciona2;
     private javax.swing.JButton b_busca;
-    private javax.swing.JButton b_cancelar;
-    private javax.swing.JButton b_guardar;
     private javax.swing.JButton bt_actualiza1;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    public javax.swing.JPanel jPanel4;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
-    public javax.swing.JTextField t_ajustador;
     private javax.swing.JTextField t_busca;
     private javax.swing.JTable t_datos;
-    public javax.swing.JTextField t_descripcion;
     // End of variables declaration//GEN-END:variables
-
-    public void borra_cajas()
-    {
-        this.t_ajustador.setText("");
-        this.t_descripcion.setText("");
-    }
-
-    public void cajas(boolean ajustador, boolean descripcion, boolean cancelar, boolean guardar)
-    {
-        //this.t_ajustador.setEnabled(ajustador);
-        this.t_descripcion.setEnabled(descripcion);
-        this.b_cancelar.setEnabled(cancelar);
-        this.b_guardar.setEnabled(guardar);
-    }
-    
+  
     private List<Object[]> executeHQLQuery(String hql) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         try {
@@ -700,46 +447,6 @@ int x=0;
         }catch(Exception e)
         {
             e.printStackTrace();
-            session.getTransaction().rollback();
-            return false;
-        }
-        finally
-        {
-            if(session.isOpen())
-            session.close();
-        }
-    }
-    
-    private boolean modifica()
-    {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        try   
-        {   
-            session.beginTransaction();
-            ic=t_ajustador.getText();
-            Object resp=session.createQuery("from Ajustador obj where obj.idAjustador='"+t_ajustador.getText()+"' and obj.idAjustador!='"+ic+"'").uniqueResult();
-            
-            actor1 = (Ajustador)session.get(Ajustador.class, (Integer.parseInt(t_ajustador.getText())));
-            
-                if(resp==null)
-                {
-                    Query q = session.createQuery("update Ajustador obj set obj.nombre='"+t_descripcion.getText()+"', obj.idAjustador='"+t_ajustador.getText()+"'where obj.idAjustador='"+ic+"'");
-                    q.executeUpdate();
-                    session.getTransaction().commit();
-                    JOptionPane.showMessageDialog(null, "Registro modificado");
-                    return true;
-                }
-                else
-                {
-                    JOptionPane.showMessageDialog(null, "No se pueden guardar claves duplicadas");  
-                    return false;
-                }
-            //}
-        }
-        catch (HibernateException he)
-        {
-            he.printStackTrace(); 
-            System.out.println(he.hashCode());
             session.getTransaction().rollback();
             return false;
         }

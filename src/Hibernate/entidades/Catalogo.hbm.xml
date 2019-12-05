@@ -14,6 +14,33 @@
         <property name="nombre" type="string">
             <column name="nombre" length="100" />
         </property>
+        <property name="CDesm" type="java.lang.Double">
+            <column name="c_desm" precision="22" scale="0" />
+        </property>
+        <property name="CCamb" type="java.lang.Double">
+            <column name="c_camb" precision="22" scale="0" />
+        </property>
+        <property name="CRepMin" type="java.lang.Double">
+            <column name="c_rep_min" precision="22" scale="0" />
+        </property>
+        <property name="CRepMed" type="java.lang.Double">
+            <column name="c_rep_med" precision="22" scale="0" />
+        </property>
+        <property name="CRepMax" type="java.lang.Double">
+            <column name="c_rep_max" precision="22" scale="0" />
+        </property>
+        <property name="CPinMin" type="java.lang.Double">
+            <column name="c_pin_min" precision="22" scale="0" />
+        </property>
+        <property name="CPinMed" type="java.lang.Double">
+            <column name="c_pin_med" precision="22" scale="0" />
+        </property>
+        <property name="CPinMax" type="java.lang.Double">
+            <column name="c_pin_max" precision="22" scale="0" />
+        </property>
+        <property name="actual" type="java.lang.Boolean">
+            <column name="actual"/>
+        </property>
         <set name="partidas" table="partida" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="id_catalogo">
@@ -21,6 +48,22 @@
                 </column>
             </key>
             <one-to-many class="Hibernate.entidades.Partida" />
+        </set>
+        <set name="items" table="item" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_catalogo">
+                    <comment>id de la partida en una plantilla</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Item" />
+        </set>
+        <set name="ejemplars" table="ejemplar" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_catalogo">
+                    <comment>id del ejemplar en un catalogo</comment>
+                </column>
+            </key>
+            <one-to-many class="Hibernate.entidades.Ejemplar" />
         </set>
     </class>
 </hibernate-mapping>

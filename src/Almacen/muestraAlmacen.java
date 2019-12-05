@@ -39,6 +39,7 @@ public class muestraAlmacen extends javax.swing.JPanel {
     String sessionPrograma="";
     Herramientas h;
     int menu;
+    int configuracion=1;
     muestraAlmacen.MyModel model;
     public Orden orden_act=null;
     public Almacen actual=null;
@@ -56,8 +57,9 @@ public class muestraAlmacen extends javax.swing.JPanel {
     /**
      * Creates new form nuevAlmacen
      */
-    public muestraAlmacen(Usuario usuario, String ses, Almacen ped) {
+    public muestraAlmacen(Usuario usuario, String ses, Almacen ped, int configuracion) {
         initComponents();
+        this.configuracion=configuracion;
         actual=ped;
         usr=usuario;
         sessionPrograma=ses;
@@ -135,6 +137,7 @@ public class muestraAlmacen extends javax.swing.JPanel {
         l_orden = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
+        cb_almacen = new javax.swing.JComboBox();
 
         datos.setTitle("Datos de la Orden de Taller");
 
@@ -335,7 +338,7 @@ public class muestraAlmacen extends javax.swing.JPanel {
                         .addComponent(r2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(t_folio, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 234, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -422,46 +425,61 @@ public class muestraAlmacen extends javax.swing.JPanel {
             }
         });
 
+        cb_almacen.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "ALMACEN 1", "ALMACEN 2" }));
+        cb_almacen.setEnabled(false);
+        cb_almacen.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cb_almacenActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanelProveedor1Layout = new javax.swing.GroupLayout(jPanelProveedor1);
         jPanelProveedor1.setLayout(jPanelProveedor1Layout);
         jPanelProveedor1Layout.setHorizontalGroup(
             jPanelProveedor1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelProveedor1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(t_nmovimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(l_fecha)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(t_fecha, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(l_orden)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(t_orden, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(l_pedido)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(t_pedido, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(l_tipo_pedido, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(l_nreferencia)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(t_nreferencia, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addGroup(jPanelProveedor1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelProveedor1Layout.createSequentialGroup()
+                        .addComponent(jButton2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(t_nmovimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(l_fecha)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(t_fecha, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cb_almacen, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanelProveedor1Layout.createSequentialGroup()
+                        .addComponent(l_orden)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(t_orden, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(l_pedido)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(t_pedido, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(l_tipo_pedido, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(l_nreferencia)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(t_nreferencia, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanelProveedor1Layout.setVerticalGroup(
             jPanelProveedor1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelProveedor1Layout.createSequentialGroup()
+                .addGroup(jPanelProveedor1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(t_nmovimiento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(l_fecha)
+                    .addComponent(t_fecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cb_almacen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanelProveedor1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanelProveedor1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(t_nmovimiento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(l_fecha)
-                        .addComponent(t_fecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(l_orden)
                         .addComponent(t_orden, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -471,8 +489,7 @@ public class muestraAlmacen extends javax.swing.JPanel {
                         .addGroup(jPanelProveedor1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(l_nreferencia)
                             .addComponent(t_nreferencia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(l_tipo_pedido, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+                        .addComponent(l_tipo_pedido, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE))))
         );
 
         javax.swing.GroupLayout jPanelMalmacenLayout = new javax.swing.GroupLayout(jPanelMalmacen);
@@ -492,7 +509,7 @@ public class muestraAlmacen extends javax.swing.JPanel {
             .addGroup(jPanelMalmacenLayout.createSequentialGroup()
                 .addComponent(jPanelProveedor1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 281, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanelM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -529,16 +546,25 @@ public class muestraAlmacen extends javax.swing.JPanel {
                 session.close();
         if(actual.getOperacion()==1 || actual.getOperacion()==2  || actual.getOperacion()==3 || actual.getOperacion()==6)
         {
-            formatosPedido f1=new formatosPedido(this.usr, this.sessionPrograma, this.actual);
-            f1.formato(false);//chava
+            int seleccion =JOptionPane.showOptionDialog(null, "Numero de copias:","Registro almacenado",JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,new Object[] { "1", "2" },   "1");
+            formatosPedido f1=new formatosPedido(this.usr, this.sessionPrograma, this.actual,configuracion);
+            if (seleccion != -1)
+            {
+                if(seleccion==0)
+                    f1.formato(false);
+                else
+                    f1.formato(true);
+            }
+            else
+                f1.formato(false);
         }
         else
         {
-            formatosOrden f1=new formatosOrden(this.usr, this.sessionPrograma, this.actual);
+            formatosOrden f1=new formatosOrden(this.usr, this.sessionPrograma, this.actual,configuracion);
             if(actual.getOperacion()==8)
                 f1.formato1();
             else
-                f1.formato();
+                f1.formato(false);
         }
     }//GEN-LAST:event_b_recargarActionPerformed
 
@@ -600,11 +626,16 @@ public class muestraAlmacen extends javax.swing.JPanel {
         datos.setVisible(true);
     }//GEN-LAST:event_jButton3ActionPerformed
 
+    private void cb_almacenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_almacenActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cb_almacenActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton b_recargar;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JComboBox c_tmovimiento;
     private javax.swing.JComboBox c_toperacion;
+    private javax.swing.JComboBox cb_almacen;
     private javax.swing.JDialog datos;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
@@ -744,6 +775,10 @@ public class muestraAlmacen extends javax.swing.JPanel {
                 t_notas.setText(actual.getNotas());
             else
                 t_notas.setText("");
+            if(actual.getAlmacen().compareTo("0")==0)
+                cb_almacen.setSelectedIndex(0);
+            else
+                cb_almacen.setSelectedIndex(1);
             
             
             //**********************cargamos datos de la orden***********************
@@ -917,7 +952,7 @@ public class muestraAlmacen extends javax.swing.JPanel {
                         PartidaExterna par=(PartidaExterna)session.get(PartidaExterna.class, mov[r].getPartidaExterna().getIdPartidaExterna());
                         if(par.getPedido()!=null)
                         {
-                            if(par.getPedido().getPartida()!=null)
+                            /*if(par.getPedido().getPartida()!=null)
                             {
                                 model.setValueAt(""+par.getPedido().getPartida().getIdEvaluacion(), r, 0);
                                 model.setValueAt(""+par.getPedido().getPartida().getSubPartida(), r, 1);
@@ -927,20 +962,25 @@ public class muestraAlmacen extends javax.swing.JPanel {
                                     model.setValueAt("", r, 2);
                                 model.setValueAt(par.getPedido().getPartida().getCatalogo().getNombre()+"/"+par.getDescripcion(), r, 3);
                                 model.setValueAt(par.getUnidad(), r, 4);
-                                model.setValueAt(par.getCantidad(), r, 5);
+                                model.setValueAt(mov[r].getCantidad(), r, 5);
                             }
                             else
-                            {
+                            {*/
                                 model.setValueAt("", r, 0);
                                 model.setValueAt("", r, 1);
-                                if(par.getNoParte()!=null)
-                                    model.setValueAt(par.getNoParte(), r, 2);
+                                if(par.getEjemplar()!=null)
+                                    model.setValueAt(par.getEjemplar().getIdParte(), r, 2);
                                 else
-                                    model.setValueAt("", r, 2);
+                                {
+                                    if(par.getNoParte()!=null)
+                                        model.setValueAt(par.getNoParte(), r, 2);
+                                    else
+                                        model.setValueAt("", r, 2);
+                                }
                                 model.setValueAt(par.getDescripcion(), r, 3);
                                 model.setValueAt(par.getUnidad(), r, 4);
-                                model.setValueAt(par.getCantidad(), r, 5);
-                            }
+                                model.setValueAt(mov[r].getCantidad(), r, 5);
+                            //}
                         }
                         else
                         {
@@ -952,7 +992,7 @@ public class muestraAlmacen extends javax.swing.JPanel {
                                 model.setValueAt("", r, 2);
                             model.setValueAt(par.getDescripcion(), r, 3);
                             model.setValueAt(par.getUnidad(), r, 4);
-                            model.setValueAt(par.getCantidad(), r, 5);
+                            model.setValueAt(mov[r].getCantidad(), r, 5);
                         }
                     }
                     else
@@ -963,7 +1003,8 @@ public class muestraAlmacen extends javax.swing.JPanel {
                             model.setValueAt("", r, 0);
                             model.setValueAt("", r, 1);
                             model.setValueAt(eje.getIdParte(), r, 2);
-                            model.setValueAt(eje.getCatalogo(), r, 3);
+                            //model.setValueAt(eje.getCatalogo().getNombre(), r, 3);
+                            model.setValueAt(eje.getComentario(), r, 3);
                             model.setValueAt(eje.getMedida(), r, 4);
                             model.setValueAt(mov[r].getCantidad(), r, 5);
                         }

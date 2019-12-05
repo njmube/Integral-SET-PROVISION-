@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 13/02/2018 11:12:19 AM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.HistorialFecha" table="historial_fecha">
+        <id name="idHistorial" type="java.lang.Integer">
+            <column name="id_historial" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="orden" class="Hibernate.entidades.Orden" fetch="select">
+            <column name="id_orden" />
+        </many-to-one>
+        <many-to-one name="usuario" class="Hibernate.entidades.Usuario" fetch="select">
+            <column name="id_usuario" length="10" />
+        </many-to-one>
+        <property name="fecha" type="date">
+            <column name="fecha" length="10" />
+        </property>
+        <property name="atributo" type="string">
+            <column name="atributo" length="3" />
+        </property>
+        <property name="fechaModificacion" type="timestamp">
+            <column name="fecha_modificacion" length="19" />
+        </property>
+    </class>
+</hibernate-mapping>

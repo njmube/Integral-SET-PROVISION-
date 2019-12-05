@@ -537,7 +537,6 @@ public class buscaCompania extends javax.swing.JDialog {
         }
         else
             t_datos.setModel(ModeloTablaReporte(0, columnas));
-        t_busca.requestFocus();
         formatoTabla();
 }
     private Compania returnStatus = RET_CANCEL;

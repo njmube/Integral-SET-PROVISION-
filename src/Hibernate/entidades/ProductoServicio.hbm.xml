@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 25/09/2017 04:58:24 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="Hibernate.entidades.ProductoServicio" table="producto_servicio">
+        <id name="idProductoServicio" type="string">
+            <column name="id_producto_servicio" length="13" />
+            <generator class="assigned" />
+        </id>
+        <property name="descripcion" type="string">
+            <column name="descripcion" length="200" />
+        </property>
+        <property name="fechaInicioVigencia" type="date">
+            <column name="fecha_inicio_vigencia" length="10" />
+        </property>
+        <property name="fechaFinVigencia" type="date">
+            <column name="fecha_fin_vigencia" length="10" />
+        </property>
+        <set name="conceptos" table="concepto" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_producto_servicio" length="13" />
+            </key>
+            <one-to-many class="Hibernate.entidades.Concepto" />
+        </set>
+    </class>
+</hibernate-mapping>

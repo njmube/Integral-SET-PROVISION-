@@ -91,12 +91,13 @@ public class Egresos extends javax.swing.JPanel {
         Session session = HibernateUtil.getSessionFactory().openSession();
         try
         {
-            Asiento[] Asientos= new Asiento[0];
+            Asiento[] Asientos= new Asiento[0];      
             if(NoPoliza.compareTo("")!=0)
             {
                 Query query1 = session.createQuery("SELECT DISTINCT reg FROM Asiento reg "
                     + "LEFT JOIN reg.excelPago ex "
-                    + "where ex.poliza="+NoPoliza+" AND MONTH(ex.fecha)="+NoMes+" and ex.tipo='Eg' ORDER BY reg.idAsiento ASC");
+                    + "WHERE ex.poliza="+NoPoliza+" AND MONTH(ex.fecha)='"+NoMes+"' and ex.tipo='Eg' ORDER BY reg.idAsiento ASC");
+                System.out.println(query1.getQueryString());
                 Asientos = (Asiento[])query1.list().toArray(new Asiento[0]);
             }
             else
@@ -109,7 +110,7 @@ public class Egresos extends javax.swing.JPanel {
             if(Asientos.length>0)
             {
                 Calendar calendario = Calendar.getInstance();
-                calendario.setTime(Asientos[0].getExcelProvision().getFecha());
+                calendario.setTime(Asientos[0].getExcelPago().getFecha());
                 javax.swing.JFileChooser jF1= new javax.swing.JFileChooser(); 
                 jF1.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                 String ruta = null; 
@@ -138,7 +139,7 @@ public class Egresos extends javax.swing.JPanel {
         try
         {
             Query query1 = session.createQuery("SELECT DISTINCT ex FROM Excel ex "
-                        + "where MONTH(ex.fecha)="+cb_mes1.getSelectedItem()+" AND ex.tipo='Eg' ORDER BY poliza ASC");
+                        + "where MONTH(ex.fecha)='"+cb_mes1.getSelectedItem()+"' AND ex.tipo='Eg' ORDER BY poliza ASC");
             Excel[] listaPoliza = (Excel[])query1.list().toArray(new Excel[0]); 
             t_datos.setModel(ModeloTablaReporte(listaPoliza.length, columnas));
              for(int x=0; x<listaPoliza.length; x++)
@@ -175,7 +176,7 @@ public class Egresos extends javax.swing.JPanel {
         {
             Query query1 = session.createQuery("SELECT DISTINCT reg FROM Asiento reg "
                 + "LEFT JOIN reg.excelPago ex "
-                + "where ex.poliza="+noPoliza+" AND MONTH(ex.fecha)="+noMes+" AND ex.tipo='Eg' ORDER BY reg.idAsiento ASC");
+                + "where ex.poliza="+noPoliza+" AND MONTH(ex.fecha)='"+noMes+"' AND ex.tipo='Eg' ORDER BY reg.idAsiento ASC");
             Asiento[] Asientos = (Asiento[])query1.list().toArray(new Asiento[0]);
 
             Path FROM = Paths.get("imagenes/Diario.xls");
@@ -942,7 +943,7 @@ public class Egresos extends javax.swing.JPanel {
                 {
                     Query query1 = session.createQuery("SELECT DISTINCT reg FROM Asiento reg "
                         + "LEFT JOIN reg.excelPago ex "
-                        + "where ex.poliza="+t_poliza1.getText()+" AND MONTH(ex.fecha)="+cb_mes.getSelectedItem()+" AND ex.tipo='Eg' ORDER BY reg.idAsiento ASC");
+                        + "where ex.poliza="+t_poliza1.getText()+" AND MONTH(ex.fecha)='"+cb_mes.getSelectedItem()+"' AND ex.tipo='Eg' ORDER BY reg.idAsiento ASC");
                     Asientos = (Asiento[])query1.list().toArray(new Asiento[0]);
                 }
                 else

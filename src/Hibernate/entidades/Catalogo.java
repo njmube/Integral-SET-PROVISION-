@@ -14,7 +14,18 @@ public class Catalogo  implements java.io.Serializable {
      private Integer idCatalogo;
      private Especialidad especialidad;
      private String nombre;
+     private double CDesm;
+     private double CCamb;
+     private double CRepMin;
+     private double CRepMed;
+     private double CRepMax;
+     private double CPinMin;
+     private double CPinMed;
+     private double CPinMax;
+     private Boolean actual;
      private Set partidas = new HashSet(0);
+     private Set items = new HashSet(0);
+     private Set ejemplars = new HashSet(0);
 
     public Catalogo() {
     }
@@ -23,10 +34,21 @@ public class Catalogo  implements java.io.Serializable {
     public Catalogo(Especialidad especialidad) {
         this.especialidad = especialidad;
     }
-    public Catalogo(Especialidad especialidad, String nombre, Set partidas) {
+    public Catalogo(Especialidad especialidad, String nombre, double CDesm, double CCamb, double CRepMin, double CRepMed, double CRepMax, double CPinMin, double CPinMed, double CPinMax, Boolean actual, Set partidas, Set items, Set ejemplars) {
        this.especialidad = especialidad;
        this.nombre = nombre;
+        this.CDesm = CDesm;
+       this.CCamb = CCamb;
+       this.CRepMin = CRepMin;
+       this.CRepMed = CRepMed;
+       this.CRepMax = CRepMax;
+       this.CPinMin = CPinMin;
+       this.CPinMed = CPinMed;
+       this.CPinMax = CPinMax;
+       this.actual = actual;
        this.partidas = partidas;
+       this.items = items;
+       this.ejemplars= ejemplars;
     }
    
     public Integer getIdCatalogo() {
@@ -50,6 +72,71 @@ public class Catalogo  implements java.io.Serializable {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
+
+    public Double getCDesm() {
+        return this.CDesm;
+    }
+    
+    public void setCDesm(Double CDesm) {
+        this.CDesm = CDesm;
+    }
+    public Double getCCamb() {
+        return this.CCamb;
+    }
+    
+    public void setCCamb(Double CCamb) {
+        this.CCamb = CCamb;
+    }
+    public Double getCRepMin() {
+        return this.CRepMin;
+    }
+    
+    public void setCRepMin(Double CRepMin) {
+        this.CRepMin = CRepMin;
+    }
+    public Double getCRepMed() {
+        return this.CRepMed;
+    }
+    
+    public void setCRepMed(Double CRepMed) {
+        this.CRepMed = CRepMed;
+    }
+    public Double getCRepMax() {
+        return this.CRepMax;
+    }
+    
+    public void setCRepMax(Double CRepMax) {
+        this.CRepMax = CRepMax;
+    }
+    public Double getCPinMin() {
+        return this.CPinMin;
+    }
+    
+    public void setCPinMin(Double CPinMin) {
+        this.CPinMin = CPinMin;
+    }
+    public Double getCPinMed() {
+        return this.CPinMed;
+    }
+    
+    public void setCPinMed(Double CPinMed) {
+        this.CPinMed = CPinMed;
+    }
+    public Double getCPinMax() {
+        return this.CPinMax;
+    }
+    
+    public void setCPinMax(Double CPinMax) {
+        this.CPinMax = CPinMax;
+    }
+    
+    public boolean getActual() {
+        return this.actual;
+    }
+    
+    public void setActual(Boolean actual) {
+        this.actual = actual;
+    }
     
     public Set getPartidas() {
         return this.partidas;
@@ -59,8 +146,21 @@ public class Catalogo  implements java.io.Serializable {
         this.partidas = partidas;
     }
 
+    public Set getItems() {
+        return this.items;
+    }
+    
+    public void setItems(Set items) {
+        this.items = items;
+    }
 
-
+    public Set getEjemplars() {
+        return this.ejemplars;
+    }
+    
+    public void setEjemplars(Set ejemplars) {
+        this.ejemplars = ejemplars;
+    }
 
 }
 

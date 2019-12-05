@@ -43,7 +43,7 @@ public class editaEspecialidad extends javax.swing.JPanel {
     private Especialidad actor;
     int[] puestos;
     DefaultTableModel model;
-    String[] columnas = new String [] {"Clave","Grupo Mecánico"}; 
+    String[] columnas = new String [] {"NO", "Grupo Mecánico", "Clave"}; 
     private Especialidad returnStatus;
     Usuario usr;
     //private Session session;
@@ -66,7 +66,7 @@ public class editaEspecialidad extends javax.swing.JPanel {
             Class[] types = new Class [] {
                 java.lang.Integer.class,
                 java.lang.String.class, 
-                java.lang.String.class
+                java.lang.Integer.class
             };
             boolean[] canEdit = new boolean [] {
                 false,false,false
@@ -120,6 +120,8 @@ public class editaEspecialidad extends javax.swing.JPanel {
         t_busca = new javax.swing.JTextField();
         b_busca = new javax.swing.JButton();
         bt_actualiza2 = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         grupomecanico = new javax.swing.JTextField();
@@ -141,14 +143,14 @@ public class editaEspecialidad extends javax.swing.JPanel {
 
             },
             new String [] {
-                "Clave", "Grupo Mecánico"
+                "NO", "Grupo Mecánico", "Clave"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.Object.class
+                java.lang.Object.class, java.lang.Object.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, true
+                false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -252,9 +254,8 @@ public class editaEspecialidad extends javax.swing.JPanel {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 402, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(0, 7, Short.MAX_VALUE)
                         .addComponent(bt_actualiza2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(bt_actualiza1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -264,16 +265,27 @@ public class editaEspecialidad extends javax.swing.JPanel {
                         .addComponent(Eliminar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(Selecciona2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addComponent(t_busca)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(t_busca)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(b_busca, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(b_busca, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jButton2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(t_busca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -342,11 +354,6 @@ public class editaEspecialidad extends javax.swing.JPanel {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                        .addGap(0, 26, Short.MAX_VALUE)
-                        .addComponent(jLabel3)
-                        .addGap(18, 18, 18)
-                        .addComponent(grupomecanico, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
@@ -356,7 +363,12 @@ public class editaEspecialidad extends javax.swing.JPanel {
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                                 .addComponent(b_cancelar1)
                                 .addGap(18, 18, 18)
-                                .addComponent(b_guardar)))))
+                                .addComponent(b_guardar))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                        .addGap(0, 26, Short.MAX_VALUE)
+                        .addComponent(jLabel3)
+                        .addGap(18, 18, 18)
+                        .addComponent(grupomecanico, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -374,7 +386,7 @@ public class editaEspecialidad extends javax.swing.JPanel {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(b_guardar)
                     .addComponent(b_cancelar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(53, 53, 53))
+                .addGap(69, 69, 69))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -384,7 +396,7 @@ public class editaEspecialidad extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(21, 21, 21)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -499,7 +511,7 @@ public class editaEspecialidad extends javax.swing.JPanel {
                  int opt=JOptionPane.showConfirmDialog(this, "¡Los datos capturados se eliminarán!");
                  if (JOptionPane.YES_OPTION == opt)
                  {
-                     boolean respuesta=eliminar(t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString());
+                     boolean respuesta=eliminar(t_datos.getValueAt(t_datos.getSelectedRow(), 2).toString());
                      if(respuesta==true)
                      { 
                          this.borra_cajas();
@@ -538,7 +550,7 @@ public class editaEspecialidad extends javax.swing.JPanel {
             this.borra_cajas();
             if(t_datos.getSelectedRow()>=0)
             {
-                IdEspecialidad.setText(t_datos.getValueAt(t_datos.getSelectedRow(), 0).toString());
+                IdEspecialidad.setText(t_datos.getValueAt(t_datos.getSelectedRow(), 2).toString());
                 grupomecanico.setText(t_datos.getValueAt(t_datos.getSelectedRow(), 1).toString());
                 cajas(true, true, true);
             }
@@ -676,6 +688,8 @@ public class editaEspecialidad extends javax.swing.JPanel {
     private javax.swing.JButton bt_actualiza1;
     private javax.swing.JButton bt_actualiza2;
     public javax.swing.JTextField grupomecanico;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
@@ -709,7 +723,7 @@ public class editaEspecialidad extends javax.swing.JPanel {
     
     private void buscaDato()
     {
-        String consulta="from Especialidad";
+        String consulta="from Especialidad where plantilla=1 order by orden asc";
         List <Object[]> resultList=executeHQLQuery(consulta);
         if(resultList.size()>0)
         {
@@ -718,8 +732,9 @@ public class editaEspecialidad extends javax.swing.JPanel {
             for (Object o : resultList)
             {
                 Especialidad actor = (Especialidad) o;
-                model.setValueAt(actor.getIdGrupoMecanico(), i, 0);
+                model.setValueAt(actor.getOrden(), i, 0);
                 model.setValueAt(actor.getDescripcion(), i, 1);
+                model.setValueAt(actor.getIdGrupoMecanico(), i, 2);
                 i++;
             }
         }else

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Comprobante xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="3.3" Serie="T" Folio="54" Fecha="2019-08-30T05:09:22" Sello="hd2+wNdGRo0ZErSHKoNZyog81Blyfxee6sbsXlpLoDztAiKM0crGsQyygIdKq4zj0pHs0SSp9+1LrMBycPwa7Bg3y5QUbukZ6/a3FOwlGe3mN6fDOKjyiD7DSMxHXBAcXag+Mmt30mpKJfXdHAxZvzLzyslD+Lkcmhkr4KssI0gM8FeBC0SbH3Xgg2J9V1idbl3PnO93rnGEQPxpTFNnrWFntQ1BmtLukvxKL8tcIXkiSdr0tgH4bm8BRP22iJIFt97M/5A7ucuqfp4PhOpPoC+4ywndv1Nu2PC63HSU0tuQSPWuN2er7CddJWLAGjPuStGLskh5ttjzPvuu5S1CwA==" FormaPago="99" NoCertificado="00001000000403028284" Certificado="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" CondicionesDePago="PAGO EN UNA SOLA EXHIBICION" SubTotal="14080.00" Moneda="MXN" TipoCambio="1" Total="16332.80" TipoDeComprobante="I" MetodoPago="PUE" LugarExpedicion="52120" xsi:schemaLocation="http://www.sat.gob.mx/cfd/3 http://www.sat.gob.mx/sitio_internet/cfd/3/cfdv33.xsd">
+    <Emisor Rfc="TBS160622L39" Nombre="TRUCK BODY SHOP S.A. DE C.V." RegimenFiscal="601"/>
+    <Receptor Rfc="ENC030925BR2" Nombre="EXPRESS NACIONAL DE CARGA S.A. DE C.V." UsoCFDI="G_03"/>
+    <Conceptos>
+        <Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="POSTE MARCO PUERTAS IZQUIERDO SECCIONES 18&quot;" ValorUnitario="850.00" Importe="850.00">
+            <Impuestos>
+                <Traslados>
+                    <Traslado Base="850.00" Impuesto="002" TipoFactor="TASA" TasaOCuota="0.160000" Importe="136.00"/>
+                </Traslados>
+            </Impuestos>
+        </Concepto>
+        <Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="POSTE MARCO PUERTA DERECHO SECCIONES 18&quot;" ValorUnitario="850.00" Importe="850.00">
+            <Impuestos>
+                <Traslados>
+                    <Traslado Base="850.00" Impuesto="002" TipoFactor="TASA" TasaOCuota="0.160000" Importe="136.00"/>
+                </Traslados>
+            </Impuestos>
+        </Concepto>
+        <Concepto ClaveProdServ="25174700" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="REFUERZO MARCO PUERTAS TRASERAS DE SOLERA 5/16 X 4&quot; X 8&quot;" ValorUnitario="550.00" Importe="1100.00">
+            <Impuestos>
+                <Traslados>
+                    <Traslado Base="1100.00" Impuesto="002" TipoFactor="TASA" TasaOCuota="0.160000" Importe="176.00"/>
+                </Traslados>
+            </Impuestos>
+        </Concepto>
+        <Concepto ClaveProdServ="25174700" Cantidad="2.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="POSTE LATERAL TRAMOS DE 2&quot; X 5&quot; DE 20&quot; S/M" ValorUnitario="670.00" Importe="1340.00">
+            <Impuestos>
+                <Traslados>
+                    <Traslado Base="1340.00" Impuesto="002" TipoFactor="TASA" TasaOCuota="0.160000" Importe="214.40"/>
+                </Traslados>
+            </Impuestos>
+        </Concepto>
+        <Concepto ClaveProdServ="25174700" Cantidad="4.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="SOLERA 5/16 DE 4&quot; X 8&quot;" ValorUnitario="390.00" Importe="1560.00">
+            <Impuestos>
+                <Traslados>
+                    <Traslado Base="1560.00" Impuesto="002" TipoFactor="TASA" TasaOCuota="0.160000" Importe="249.60"/>
+                </Traslados>
+            </Impuestos>
+        </Concepto>
+        <Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="SOLERA ALUMINIO EN 1/4 DE 4 1/2 X 102&quot;" ValorUnitario="613.00" Importe="613.00">
+            <Impuestos>
+                <Traslados>
+                    <Traslado Base="613.00" Impuesto="002" TipoFactor="TASA" TasaOCuota="0.160000" Importe="98.08"/>
+                </Traslados>
+            </Impuestos>
+        </Concepto>
+        <Concepto ClaveProdServ="25174700" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="SOLERA 1/4 X 3&quot; X 60&quot;" ValorUnitario="613.00" Importe="613.00">
+            <Impuestos>
+                <Traslados>
+                    <Traslado Base="613.00" Impuesto="002" TipoFactor="TASA" TasaOCuota="0.160000" Importe="98.08"/>
+                </Traslados>
+            </Impuestos>
+        </Concepto>
+        <Concepto ClaveProdServ="31161500" Cantidad="40.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="TORNILLO 3/8 X 11/2&quot; PUERTAS TRASERAS CABEZA TORK PARA BORDA" ValorUnitario="18.00" Importe="720.00">
+            <Impuestos>
+                <Traslados>
+                    <Traslado Base="720.00" Impuesto="002" TipoFactor="TASA" TasaOCuota="0.160000" Importe="115.20"/>
+                </Traslados>
+            </Impuestos>
+        </Concepto>
+        <Concepto ClaveProdServ="01010101" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="CONSUMIBLES" ValorUnitario="450.00" Importe="450.00">
+            <Impuestos>
+                <Traslados>
+                    <Traslado Base="450.00" Impuesto="002" TipoFactor="TASA" TasaOCuota="0.160000" Importe="72.00"/>
+                </Traslados>
+            </Impuestos>
+        </Concepto>
+        <Concepto ClaveProdServ="78181508" Cantidad="1.00" ClaveUnidad="H87" Unidad="PZAS" Descripcion="MANO DE OBRA" ValorUnitario="5984.00" Importe="5984.00">
+            <Impuestos>
+                <Traslados>
+                    <Traslado Base="5984.00" Impuesto="002" TipoFactor="TASA" TasaOCuota="0.160000" Importe="957.44"/>
+                </Traslados>
+            </Impuestos>
+        </Concepto>
+    </Conceptos>
+    <Impuestos TotalImpuestosTrasladados="2252.80">
+        <Traslados>
+            <Traslado Impuesto="002" TipoFactor="TASA" TasaOCuota="0.160000" Importe="2252.80"/>
+        </Traslados>
+    </Impuestos>
+</Comprobante>
