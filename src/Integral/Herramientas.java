@@ -13,6 +13,7 @@ import Hibernate.entidades.Usuario;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.Properties;
+import java.util.Random;
 import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.Transport;
@@ -372,4 +373,16 @@ public class Herramientas {
         }
         catch (Exception e){e.printStackTrace();}
     }
+    
+    public String randomString(int numero) {
+    String vector = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    int longitud = vector.length();
+    String randomString = "";
+     Random rnd = new Random();
+    for (int i = 0; i < longitud; i++) {
+        randomString += vector.charAt((int)(rnd.nextDouble() * numero + 1));
+    }
+    return randomString;
+} 
+
 }

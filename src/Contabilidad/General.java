@@ -199,6 +199,7 @@ public class General extends javax.swing.JDialog {
         cfdi = new javax.swing.JComboBox();
         medida = new javax.swing.JComboBox();
         t_iva1 = new javax.swing.JFormattedTextField();
+        c_iva = new javax.swing.JComboBox();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         l_emisor = new javax.swing.JLabel();
@@ -451,6 +452,9 @@ public class General extends javax.swing.JDialog {
                 t_iva1KeyTyped(evt);
             }
         });
+
+        c_iva.setFont(new java.awt.Font("Dialog", 0, 9)); // NOI18N
+        c_iva.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "16", "0" }));
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
@@ -2757,12 +2761,13 @@ public class General extends javax.swing.JDialog {
         con.setDescripcion("");
         con.setPrecio(0.0);
         con.setDescuento(0.0);
+        con.setIva(16.0);
         con.setFactura(factura);
         int dato=(int)session.save(con);
         session.beginTransaction().commit();
 
         DefaultTableModel temp = (DefaultTableModel) t_datos.getModel();
-        Object nuevo[]= {dato,0.0d,"PZAS","","",0.0d, 0.0d, 0.0d};
+        Object nuevo[]= {dato,0.0d,"PZAS","","",0.0d, 0.0d, 16.0d, 0.0d};
         temp.addRow(nuevo);
         formatoTabla();
         t_datos.setRowSelectionInterval(t_datos.getRowCount()-1, t_datos.getRowCount()-1);
@@ -2797,7 +2802,7 @@ public class General extends javax.swing.JDialog {
                 h1r0.createCell(3).setCellValue("Clave");
                 h1r0.createCell(4).setCellValue("c/u");
                 h1r0.createCell(5).setCellValue("Descuento");
-                h1r0.createCell(6).setCellValue("iva");
+                h1r0.createCell(6).setCellValue("IVA");
                 for(int x=0; x<t_datos.getRowCount(); x++)
                 {
                     Row h1=hoja.createRow(x+1);
@@ -3212,6 +3217,7 @@ public class General extends javax.swing.JDialog {
     private javax.swing.JButton b_xml;
     private javax.swing.JComboBox c_estado;
     private javax.swing.JComboBox c_forma_pago;
+    private javax.swing.JComboBox c_iva;
     private javax.swing.JComboBox c_metodo_pago;
     private javax.swing.JComboBox c_moneda;
     private javax.swing.JComboBox c_pais;
@@ -4216,6 +4222,12 @@ public void consulta()
                   case 6:
                       column.setPreferredWidth(40);
                       break;
+                  case 7:
+                      column.setPreferredWidth(20);
+                      DefaultCellEditor editor3 = new DefaultCellEditor(c_iva);
+                      column.setCellEditor(editor3); 
+                      editor3.setClickCountToStart(2);
+                      break;
                   default:
                       column.setPreferredWidth(5);
                       break;
@@ -4858,7 +4870,6 @@ public void consulta()
                             //cantidades netas
                             BigDecimal big_general_descuento=(big_cantidad.multiply(big_total_descuento)).setScale(2, BigDecimal.ROUND_HALF_UP);
                             BigDecimal big_precio_neto=(big_precio_lista.subtract(big_total_descuento)).setScale(2, BigDecimal.ROUND_HALF_UP);
-                            System.out.println("neto:"+big_precio_neto+"cantidad:"+big_cantidad);
                             BigDecimal big_total_neto=(big_total_lista.subtract(big_general_descuento)).setScale(2, BigDecimal.ROUND_HALF_UP);//(big_precio_neto.multiply(big_cantidad)).setScale(2, BigDecimal.ROUND_HALF_UP);
                             big_sub_total = big_sub_total.add(big_total_neto);
 
@@ -4866,7 +4877,6 @@ public void consulta()
                             renglon.setCantidad(big_cantidad.setScale(2, BigDecimal.ROUND_HALF_UP));
                             renglon.setClaveProdServ(t_datos.getValueAt(ren, 4).toString().trim());
                             ClaveUnidad cve_unidad=(ClaveUnidad)session.createCriteria(ClaveUnidad.class).add(Restrictions.eq("simbolo", t_datos.getValueAt(ren, 2).toString().trim())).uniqueResult();
-                            System.out.println(ren+"--"+t_datos.getValueAt(ren, 2).toString().trim());
                             renglon.setClaveUnidad(cve_unidad.getIdClaveUnidad());
                             renglon.setUnidad(t_datos.getValueAt(ren, 2).toString().trim());
                             renglon.setDescripcion(t_datos.getValueAt(ren, 3).toString().trim());
@@ -4890,7 +4900,6 @@ public void consulta()
                                     traslado.setTasaOCuota(porc.setScale(6, BigDecimal.ROUND_HALF_UP));
                                     traslado.setImporte(monto.setScale(2, BigDecimal.ROUND_HALF_UP));
                                     big_iva_total=big_iva_total.add(monto.setScale(2, BigDecimal.ROUND_HALF_UP));
-                                    //System.out.println("Lista:"+big_total_lista.setScale(2, BigDecimal.ROUND_HALF_UP)+"Descuento"+big_general_descuento.setScale(2, BigDecimal.ROUND_HALF_UP)+"Iva:"+monto.setScale(2, BigDecimal.ROUND_HALF_UP)+"neto:"+big_total_neto);
                                 misTrasladados.getTraslado().add(traslado);
                             impuestos.setTraslados(misTrasladados);
                             renglon.setImpuestos(impuestos);
@@ -4922,21 +4931,15 @@ public void consulta()
                                 dec=t_datos.getRowCount();
                             }
                         }
-                        
                     impuestos.setTraslados(misTrasladados);
                 comprobante33.setImpuestos(impuestos);
 
                 comprobante33.setSubTotal(big_total_bruto.setScale(2, BigDecimal.ROUND_HALF_UP));
-                //BigDecimal big_descuento=big_total_bruto.subtract(big_sub_total);
-                System.out.println(big_total_bruto);
                 if(big_suma_descuento.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue()>0)
                 {
                     comprobante33.setDescuento(big_suma_descuento.setScale(2, BigDecimal.ROUND_HALF_UP));//Falta
                 }
                 comprobante33.setTotal(big_sub_total.add(big_iva_total.setScale(2, BigDecimal.ROUND_HALF_UP)));
-                System.out.println(big_sub_total);
-                System.out.println(big_iva_total);
-
                     //Addenda adenda = objeto.createComprobanteAddenda();
                     //adenda.getAny().add("<H><H>");//agregar cada adenda
                 //comprobante.setAddenda(adenda);

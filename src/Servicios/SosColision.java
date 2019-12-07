@@ -115,8 +115,6 @@ public class SosColision extends javax.swing.JPanel {
         c_estatus1 = new javax.swing.JComboBox();
         jPanel1 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
-        t_solicitud = new javax.swing.JTextField();
-        b_guardar = new javax.swing.JButton();
         jPanel16 = new javax.swing.JPanel();
         jPanel18 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
@@ -137,6 +135,10 @@ public class SosColision extends javax.swing.JPanel {
         t_autorizo = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
         t_reporte = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
+        t_deducible = new javax.swing.JTextField();
+        jLabel11 = new javax.swing.JLabel();
+        t_demerito = new javax.swing.JTextField();
         jPanel8 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         b_inventario_carga = new javax.swing.JButton();
@@ -151,11 +153,9 @@ public class SosColision extends javax.swing.JPanel {
         b_desgaste_carga = new javax.swing.JButton();
         b_desgaste = new javax.swing.JButton();
         jPanel9 = new javax.swing.JPanel();
-        jLabel10 = new javax.swing.JLabel();
-        t_deducible = new javax.swing.JTextField();
-        jLabel11 = new javax.swing.JLabel();
-        t_demerito = new javax.swing.JTextField();
         jLabel12 = new javax.swing.JLabel();
+        jLabel14 = new javax.swing.JLabel();
+        t_solicitud = new javax.swing.JTextField();
 
         ListaSOS.setModalExclusionType(null);
         ListaSOS.setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
@@ -239,25 +239,6 @@ public class SosColision extends javax.swing.JPanel {
 
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Servicios/icono.png"))); // NOI18N
-
-        t_solicitud.setBackground(new java.awt.Color(204, 255, 255));
-        t_solicitud.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        t_solicitud.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_solicitud.setEnabled(false);
-
-        b_guardar.setBackground(new java.awt.Color(2, 135, 242));
-        b_guardar.setForeground(new java.awt.Color(255, 255, 255));
-        b_guardar.setText("SN");
-        b_guardar.setToolTipText("Calendario");
-        b_guardar.setEnabled(false);
-        b_guardar.setMaximumSize(new java.awt.Dimension(32, 8));
-        b_guardar.setMinimumSize(new java.awt.Dimension(32, 8));
-        b_guardar.setPreferredSize(new java.awt.Dimension(33, 33));
-        b_guardar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                b_guardarActionPerformed(evt);
-            }
-        });
 
         jPanel16.setBackground(new java.awt.Color(255, 255, 255));
         jPanel16.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "GENERAL", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Arial", 1, 10))); // NOI18N
@@ -350,6 +331,7 @@ public class SosColision extends javax.swing.JPanel {
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
 
+        t_descripcion.setEditable(false);
         t_descripcion.setColumns(20);
         t_descripcion.setRows(5);
         jScrollPane2.setViewportView(t_descripcion);
@@ -384,6 +366,26 @@ public class SosColision extends javax.swing.JPanel {
         t_reporte.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         t_reporte.setEnabled(false);
 
+        jLabel10.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel10.setText("Deducible:");
+
+        t_deducible.setEditable(false);
+        t_deducible.setBackground(new java.awt.Color(204, 255, 255));
+        t_deducible.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        t_deducible.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        t_deducible.setEnabled(false);
+
+        jLabel11.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel11.setText("Demerito:");
+
+        t_demerito.setEditable(false);
+        t_demerito.setBackground(new java.awt.Color(204, 255, 255));
+        t_demerito.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        t_demerito.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        t_demerito.setEnabled(false);
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -403,8 +405,19 @@ public class SosColision extends javax.swing.JPanel {
                     .addComponent(jLabel7)
                     .addComponent(jLabel9)
                     .addComponent(t_reporte)
-                    .addComponent(t_economico, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(211, Short.MAX_VALUE))
+                    .addComponent(t_economico, javax.swing.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(12, 12, 12)
+                        .addComponent(jLabel10)
+                        .addGap(139, 139, 139))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel11)
+                            .addComponent(t_deducible, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(t_demerito, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -414,17 +427,25 @@ public class SosColision extends javax.swing.JPanel {
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
-                        .addGap(7, 7, 7))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel7)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel7)
+                            .addComponent(jLabel10))
                         .addGap(7, 7, 7)
-                        .addComponent(t_economico, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(t_economico, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(t_deducible, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel9)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel9)
+                            .addComponent(jLabel11))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(t_reporte, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(t_reporte, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(t_demerito, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addGap(7, 7, 7)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
                     .addComponent(t_autorizo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -625,7 +646,7 @@ public class SosColision extends javax.swing.JPanel {
                         .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(180, Short.MAX_VALUE))
+                .addContainerGap(178, Short.MAX_VALUE))
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -647,7 +668,7 @@ public class SosColision extends javax.swing.JPanel {
         jPanel9.setLayout(jPanel9Layout);
         jPanel9Layout.setHorizontalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 750, Short.MAX_VALUE)
+            .addGap(0, 748, Short.MAX_VALUE)
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -656,29 +677,17 @@ public class SosColision extends javax.swing.JPanel {
 
         jTabbedPane1.addTab("Galeria", jPanel9);
 
-        jLabel10.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel10.setText("Deducible:");
-
-        t_deducible.setEditable(false);
-        t_deducible.setBackground(new java.awt.Color(204, 255, 255));
-        t_deducible.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        t_deducible.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_deducible.setEnabled(false);
-
-        jLabel11.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel11.setText("Demerito:");
-
-        t_demerito.setEditable(false);
-        t_demerito.setBackground(new java.awt.Color(204, 255, 255));
-        t_demerito.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        t_demerito.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        t_demerito.setEnabled(false);
-
         jLabel12.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel12.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel12.setText("Estatus:");
+
+        jLabel14.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel14.setText("REPARACION:");
+
+        t_solicitud.setBackground(new java.awt.Color(204, 255, 255));
+        t_solicitud.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        t_solicitud.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        t_solicitud.setEnabled(false);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -687,24 +696,19 @@ public class SosColision extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel10)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(t_deducible, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel16, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(8, 8, 8)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jPanel16, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel14)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(t_solicitud))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(b_guardar, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel12)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(t_solicitud))
-                    .addComponent(c_estatus, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel11)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(t_demerito, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(c_estatus, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jTabbedPane1)
                 .addContainerGap())
@@ -713,34 +717,22 @@ public class SosColision extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jTabbedPane1)
+                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(b_guardar, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(t_solicitud, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jPanel16, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(c_estatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel12))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel11)
-                                    .addComponent(t_demerito, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addGap(35, 35, 35)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel10)
-                                    .addComponent(t_deducible, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                                    .addComponent(jLabel14)
+                                    .addComponent(t_solicitud, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jPanel16, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel12)
+                            .addComponent(c_estatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(3, 3, 3)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -907,6 +899,30 @@ public class SosColision extends javax.swing.JPanel {
                 {
                     if(archivo.exists())
                     {
+                        Herramientas h = new Herramientas(this.usr, 0);
+                        String nombre=b_desgaste.getText();
+                        if(nombre.compareTo("pendiente")==0)
+                            nombre=h.randomString(15)+".pdf";
+                        Ftp miFtp=new Ftp();
+                        if(miFtp.conectar(ruta, "sm", "04650077", 3310))
+                        {
+                            if(miFtp.cambiarDirectorio("/recursos/reparacion/documentos/desgaste/"))
+                            {
+                                if(miFtp.subirArchivo(archivo.getPath(), nombre))
+                                {
+                                    
+                                }
+                                miFtp.desconectar();
+                            }
+                            else
+                                JOptionPane.showMessageDialog(null, "No fue posible encontrar el directorio");
+                        }
+                        else
+                            JOptionPane.showMessageDialog(null, "No fue posible conectar al servidor FTP");
+                        
+                        
+                        
+                        
                         Date fecha_orden = new Date();
                         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");//YYYY-MM-DD HH:MM:SS
                         String valor=dateFormat.format(fecha_orden);
@@ -1307,105 +1323,83 @@ public class SosColision extends javax.swing.JPanel {
 
     private void b_inventarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_inventarioActionPerformed
         // TODO add your handling code here:
-        Ftp miFtp=new Ftp();
-        boolean respuesta=true;
-        respuesta=miFtp.conectar(ruta, "compras", "04650077", 3310);
-        if(respuesta==true)
+        if(b_inventario.getText().compareToIgnoreCase("pendiente")!=0)
         {
-            miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/");
-            miFtp.AbrirArchivo(b_inventario.getText());
-            miFtp.desconectar();
+            Ftp miFtp=new Ftp();
+            if(miFtp.conectar(ruta, "sm", "04650077", 3310))
+            {
+                if(miFtp.cambiarDirectorio("/recursos/reparacion/documentos/inventario/"))
+                {
+                    miFtp.AbrirArchivo(b_inventario.getText());
+                    miFtp.desconectar();
+                }
+                else
+                    JOptionPane.showMessageDialog(null, "No fue posible encontrar el directorio");
+            }
+            else
+                JOptionPane.showMessageDialog(null, "No fue posible conectar al servidor FTP");
         }
-        else
-            JOptionPane.showMessageDialog(null, "No fue posible conectar al servidor FTP");
     }//GEN-LAST:event_b_inventarioActionPerformed
 
     private void b_desgasteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_desgasteActionPerformed
         // TODO add your handling code here:
-        Ftp miFtp=new Ftp();
-        boolean respuesta=true;
-        respuesta=miFtp.conectar(ruta, "compras", "04650077", 3310);
-        if(respuesta==true)
+        if(b_desgaste.getText().compareToIgnoreCase("pendiente")!=0)
         {
-            miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/");
-            miFtp.AbrirArchivo(b_desgaste.getText());
-            miFtp.desconectar();
+            Ftp miFtp=new Ftp();
+            if(miFtp.conectar(ruta, "sm", "04650077", 3310))
+            {
+                if(miFtp.cambiarDirectorio("/recursos/reparacion/documentos/desgaste/"))
+                {
+                    miFtp.AbrirArchivo(b_desgaste.getText());
+                    miFtp.desconectar();
+                }
+                else
+                    JOptionPane.showMessageDialog(null, "No fue posible encontrar el directorio");
+            }
+            else
+                JOptionPane.showMessageDialog(null, "No fue posible conectar al servidor FTP");
         }
-        else
-            JOptionPane.showMessageDialog(null, "No fue posible conectar al servidor FTP");
     }//GEN-LAST:event_b_desgasteActionPerformed
 
     private void b_pagoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_pagoActionPerformed
         // TODO add your handling code here:
-        Ftp miFtp=new Ftp();
-        boolean respuesta=true;
-        respuesta=miFtp.conectar(ruta, "compras", "04650077", 3310);
-        if(respuesta==true)
+        if(b_pago.getText().compareToIgnoreCase("pendiente")!=0)
         {
-            miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/");
-            miFtp.AbrirArchivo(b_pago.getText());
-            miFtp.desconectar();
+            Ftp miFtp=new Ftp();
+            if(miFtp.conectar(ruta, "sm", "04650077", 3310))
+            {
+                if(miFtp.cambiarDirectorio("/recursos/reparacion/documentos/pago/"))
+                {
+                    miFtp.AbrirArchivo(b_pago.getText());
+                    miFtp.desconectar();
+                }
+                else
+                    JOptionPane.showMessageDialog(null, "No fue posible encontrar el directorio");
+            }
+            else
+                JOptionPane.showMessageDialog(null, "No fue posible conectar al servidor FTP");
         }
-        else
-            JOptionPane.showMessageDialog(null, "No fue posible conectar al servidor FTP");
     }//GEN-LAST:event_b_pagoActionPerformed
 
     private void b_cotizacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_cotizacionActionPerformed
         // TODO add your handling code here:
-        Ftp miFtp=new Ftp();
-        boolean respuesta=true;
-        respuesta=miFtp.conectar(ruta, "compras", "04650077", 3310);
-        if(respuesta==true)
+        if(b_cotizacion.getText().compareToIgnoreCase("pendiente")!=0)
         {
-            miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/");
-            miFtp.AbrirArchivo(b_cotizacion.getText());
-            miFtp.desconectar();
-        }
-        else
-            JOptionPane.showMessageDialog(null, "No fue posible conectar al servidor FTP");
-    }//GEN-LAST:event_b_cotizacionActionPerformed
-
-    private void b_guardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_guardarActionPerformed
-        // TODO add your handling code here:
-        if(t_solicitud.getText().trim().compareTo("")!=0)
-        {
-            try{
-                PeticionPost service=new PeticionPost("http://tbstoluca.ddns.net/integral/service/api.php");
-                service.add("METODO", "SOLICITUD.GET_SOLICITUD_SM");
-                service.add("ID_SOLICITUD", t_solicitud.getText().trim());
-                String respuesta=service.getRespueta();
-                JSONObject resp=new JSONObject(respuesta);
-                System.out.println(resp.get("ESTADO"));
-                if(resp.get("ESTADO").toString().compareTo("1")==0)
+            Ftp miFtp=new Ftp();
+            if(miFtp.conectar(ruta, "sm", "04650077", 3310))
+            {
+                if(miFtp.cambiarDirectorio("/recursos/reparacion/documentos/cotizacion/"))
                 {
-                     Session session = HibernateUtil.getSessionFactory().openSession();
-                     try
-                     {
-                        session.beginTransaction().begin();
-                        orden_act = (Orden)session.get(Orden.class, orden_act.getIdOrden());
-                        orden_act.setIdSm(t_solicitud.getText());
-                        session.update(orden_act);
-                        session.beginTransaction().commit();   
-                        JOptionPane.showMessageDialog(this, "La solicitud se enlazo a la orden!");
-                     }catch(Exception e){
-                         session.beginTransaction().rollback();
-                         JOptionPane.showMessageDialog(this, "Error en la conexión al servidor, intente mas tarde.");
-                     }
+                    miFtp.AbrirArchivo(b_cotizacion.getText());
+                    miFtp.desconectar();
                 }
-                else{
-                    t_solicitud.setText(orden_act.getIdSm());
-                    JOptionPane.showMessageDialog(this, "No fue posible encontrar la solicitud en el servidor");
-                }
-            }catch(Exception e){
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Error en la conexión al servidor, intente mas tarde.");
+                else
+                    JOptionPane.showMessageDialog(null, "No fue posible encontrar el directorio");
             }
-        }else{
-            JOptionPane.showMessageDialog(this, "Ingrese un Número de Solicitud");
-            t_solicitud.requestFocus();
+            else
+                JOptionPane.showMessageDialog(null, "No fue posible conectar al servidor FTP");
         }
-      
-    }//GEN-LAST:event_b_guardarActionPerformed
+    }//GEN-LAST:event_b_cotizacionActionPerformed
 
     private void c_estatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_c_estatusActionPerformed
         // TODO add your handling code here:
@@ -1474,7 +1468,6 @@ public class SosColision extends javax.swing.JPanel {
     private javax.swing.JButton b_cotizacion_carga;
     private javax.swing.JButton b_desgaste;
     private javax.swing.JButton b_desgaste_carga;
-    private javax.swing.JButton b_guardar;
     private javax.swing.JButton b_inventario;
     private javax.swing.JButton b_inventario_carga;
     private javax.swing.JButton b_pago;
@@ -1485,6 +1478,7 @@ public class SosColision extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -1539,9 +1533,7 @@ public class SosColision extends javax.swing.JPanel {
                       b_desgaste_carga.setEnabled(true);
                       b_pago_carga.setEnabled(true);
                       b_cotizacion_carga.setEnabled(true);
-                      b_guardar.setEnabled(true);
-                      //t_solicitud.setEnabled(true);
-                      c_estatus.setEnabled(true);
+                      //c_estatus.setEnabled(true);
                   }
                   
                   try{
@@ -1555,75 +1547,77 @@ public class SosColision extends javax.swing.JPanel {
                           JSONArray datos_array=respuesta.getJSONArray("DATOS");
                           JSONObject datos = datos_array.getJSONObject(0);
                           
-                          if(datos.get("fecha_llegada").toString().compareTo("")!=0 || datos.get("fecha_llegada").toString().compareTo("null")!=0)
+                          if(datos.get("fecha_llegada").toString().compareToIgnoreCase("null")!=0)
                             t_ingreso.setText(datos.get("fecha_llegada").toString());
                           else
                               t_ingreso.setText(datos.get("pendiente").toString());
                           
-                          if(datos.get("fecha_promesa").toString().compareTo("")!=0 || datos.get("fecha_promesa").toString().compareTo("null")!=0)
+                          if(datos.get("fecha_promesa").toString().compareToIgnoreCase("null")!=0)
                             t_promesa.setText(datos.get("fecha_promesa").toString());
                           else
                               t_promesa.setText("pendiente");
                           
-                          if(datos.get("fecha_entrega").toString().compareTo("")!=0 || datos.get("fecha_entrega").toString().compareTo("null")!=0)
+                          if(datos.get("fecha_entrega").toString().compareToIgnoreCase("null")!=0)
                             t_salida.setText(datos.get("fecha_entrega").toString());
                           else
-                              t_salida.setText("");
+                              t_salida.setText("pendiente");
                           
-                          if(datos.get("deducible").toString().compareTo("")!=0 || datos.get("deducible").toString().compareTo("null")!=0)
+                          if(datos.get("deducible").toString().compareToIgnoreCase("null")!=0)
                             t_deducible.setText(datos.get("deducible").toString());
                           else
-                              t_deducible.setText("");
+                              t_deducible.setText("pendiente");
                           
-                          if(datos.get("demerito").toString().compareTo("")!=0 || datos.get("demerito").toString().compareTo("null")!=0)
+                          if(datos.get("demerito").toString().compareToIgnoreCase("null")!=0)
                             t_demerito.setText(datos.get("demerito").toString());
                           else
-                              t_demerito.setText("");
+                              t_demerito.setText("pendiente");
                           
-                          if(datos.get("descripcion").toString().compareTo("")!=0 || datos.get("descripcion").toString().compareTo("null")!=0)
+                          if(datos.get("descripcion").toString().compareToIgnoreCase("null")!=0)
                             t_descripcion.setText(datos.get("descripcion").toString());
                           else
                               t_descripcion.setText("");
                           
-                          if(datos.get("autorizo").toString().compareTo("")!=0 || datos.get("autorizo").toString().compareTo("null")!=0)
+                          if(datos.get("autorizo").toString().compareToIgnoreCase("null")!=0)
                             t_autorizo.setText(datos.get("autorizo").toString());
                           else
-                              t_autorizo.setText("");
+                              t_autorizo.setText("pendiente");
                           
-                          if(datos.get("n_economico").toString().compareTo("")!=0 || datos.get("n_economico").toString().compareTo("null")!=0)
+                          if(datos.get("n_economico").toString().compareToIgnoreCase("null")!=0)
                             t_economico.setText(datos.get("n_economico").toString());
                           else
-                              t_economico.setText("");
+                              t_economico.setText("-");
                           
-                          if(datos.get("no_reporte_cabina").toString().compareTo("")!=0 || datos.get("no_reporte_cabina").toString().compareTo("null")!=0)
+                          if(datos.get("no_reporte_cabina").toString().compareToIgnoreCase("null")!=0)
                               t_reporte.setText(datos.get("no_reporte_cabina").toString());
                           else
-                              t_reporte.setText("");
+                              t_reporte.setText("-");
                           
-                          if(datos.get("").toString().compareTo("inventario")!=0 || datos.get("inventario").toString().compareTo("null")!=0)
+                          if(datos.get("inventario").toString().compareToIgnoreCase("null")!=0)
                               b_inventario.setText(datos.get("inventario").toString());
                           else
-                              b_inventario.setText("");
+                              b_inventario.setText("pendiente");
                           
-                          if(datos.get("pago").toString().compareTo("")!=0 || datos.get("pago").toString().compareTo("null")!=0)
+                          if(datos.get("pago").toString().compareToIgnoreCase("null")!=0)
                               b_pago.setText(datos.get("pago").toString().toString());
                           else
-                              b_pago.setText("");
+                              b_pago.setText("pendiente");
                           
-                          if(datos.get("cotizacion").toString().compareTo("")!=0 || datos.get("cotizacion").toString().compareTo("null")!=0)
+                          if(datos.get("cotizacion").toString().compareToIgnoreCase("null")!=0)
                               b_cotizacion.setText(datos.get("cotizacion").toString());
                           else
-                              b_cotizacion.setText("");
+                              b_cotizacion.setText("pendiente");
                           
-                          if(datos.get("").toString().compareTo("")!=0 || datos.get("").toString().compareTo("null")!=0)
-                          b_desgaste.setText(datos.get("desgaste").toString());
+                          if(datos.get("desgaste").toString().compareToIgnoreCase("null")!=0)
+                            b_desgaste.setText(datos.get("desgaste").toString());
+                          else
+                               b_desgaste.setText("pendiente");
                       }
                       else
                       {
                           JOptionPane.showMessageDialog(this, respuesta.getString("MENSAJE"));
                       }
                   }catch(Exception e){
-                      System.out.println(e);
+                      e.printStackTrace();
                       JOptionPane.showMessageDialog(this, "Error Al Conectar con el Servidor");
                   }
                   
@@ -1663,8 +1657,6 @@ public class SosColision extends javax.swing.JPanel {
                       b_desgaste_carga.setEnabled(false);
                       b_pago_carga.setEnabled(false);
                       b_cotizacion_carga.setEnabled(false);
-                      b_guardar.setEnabled(false);
-                      //t_solicitud.setEnabled(false);
                       c_estatus.setEnabled(false);
                   }
               }

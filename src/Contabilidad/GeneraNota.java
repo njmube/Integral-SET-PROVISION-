@@ -132,7 +132,7 @@ public class GeneraNota extends javax.swing.JDialog {
     DefaultTableModel modeloFactura;
     int iva=0;
     String[] columnas = new String [] {
-        "Id","Can","Med","Descripción","Cve-Prod","Costo c/u","Descuento","Total"
+        "Id","Can","Med","Descripción","Cve-Prod","Costo c/u","Descuento","IVA","Total"
     };
     String[] columnas1 = new String [] {
         "RFC","UUID","SUCURSAL","SERIE","FOLIO","FECHA","MONTO","MONEDA"
@@ -195,6 +195,7 @@ public class GeneraNota extends javax.swing.JDialog {
         cfdi = new javax.swing.JComboBox();
         medida = new javax.swing.JComboBox();
         t_iva1 = new javax.swing.JFormattedTextField();
+        c_iva = new javax.swing.JComboBox();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         l_emisor = new javax.swing.JLabel();
@@ -448,6 +449,9 @@ public class GeneraNota extends javax.swing.JDialog {
                 t_iva1KeyTyped(evt);
             }
         });
+
+        c_iva.setFont(new java.awt.Font("Dialog", 0, 9)); // NOI18N
+        c_iva.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "16", "0" }));
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
@@ -2739,12 +2743,13 @@ public class GeneraNota extends javax.swing.JDialog {
         con.setDescripcion("");
         con.setPrecio(0.0);
         con.setDescuento(0.0);
+        con.setIva(16.0);
         con.setNota(factura);
         int dato=(int)session.save(con);
         session.beginTransaction().commit();
 
         DefaultTableModel temp = (DefaultTableModel) t_datos.getModel();
-        Object nuevo[]= {dato,0.0d,"PZAS","","",0.0d, 0.0d, 0.0d};
+        Object nuevo[]= {dato,0.0d,"PZAS","","",0.0d, 0.0d, 16.0d, 0.0d};
         temp.addRow(nuevo);
         formatoTabla();
         t_datos.setRowSelectionInterval(t_datos.getRowCount()-1, t_datos.getRowCount()-1);
@@ -2779,6 +2784,7 @@ public class GeneraNota extends javax.swing.JDialog {
                 h1r0.createCell(3).setCellValue("Clave");
                 h1r0.createCell(4).setCellValue("c/u");
                 h1r0.createCell(5).setCellValue("Descuento");
+                h1r0.createCell(5).setCellValue("IVA");
                 for(int x=0; x<t_datos.getRowCount(); x++)
                 {
                     Row h1=hoja.createRow(x+1);
@@ -2788,6 +2794,7 @@ public class GeneraNota extends javax.swing.JDialog {
                     h1.createCell(3).setCellValue((String)t_datos.getValueAt(x, 4));
                     h1.createCell(4).setCellValue((double)t_datos.getValueAt(x, 5));
                     h1.createCell(5).setCellValue((double)t_datos.getValueAt(x, 6));
+                    h1.createCell(5).setCellValue((double)t_datos.getValueAt(x, 7));
                 }
                 libro.write(archivo);
                 Biff8EncryptionKey.setCurrentUserPassword(null);
@@ -3132,6 +3139,7 @@ public class GeneraNota extends javax.swing.JDialog {
     private javax.swing.JButton b_xml;
     private javax.swing.JComboBox c_estado;
     private javax.swing.JComboBox c_forma_pago;
+    private javax.swing.JComboBox c_iva;
     private javax.swing.JComboBox c_metodo_pago;
     private javax.swing.JComboBox c_moneda;
     private javax.swing.JComboBox c_pais;
@@ -3488,6 +3496,7 @@ public void consulta()
                                 cve_producto,
                                 partidas[a].getPrecio(),
                                 partidas[a].getDescuento(),
+                                partidas[a].getIva(),
                                total
                             });
                 }
@@ -3704,17 +3713,18 @@ public void consulta()
     {
         try
         {
-            iva=Integer.parseInt(t_iva1.getValue().toString());
-            BigDecimal total=new BigDecimal("0.0");
+            //iva=Integer.parseInt(t_iva1.getValue().toString());
+            BigDecimal total=new BigDecimal("0.0"), total_iva=new BigDecimal("0.0");
             for(int ren=0; ren<t_datos.getRowCount(); ren++)
-                total = total.add(new BigDecimal(t_datos.getValueAt(ren, 7).toString()));
+            {
+                BigDecimal monto=new BigDecimal(t_datos.getValueAt(ren, 8).toString());
+                total = total.add(monto);
+                BigDecimal iva=new BigDecimal(t_datos.getValueAt(ren, 7).toString()).divide(new BigDecimal("100"));
+                total_iva = total_iva.add(monto.multiply(iva));
+            }
             t_subtotal.setValue(new Double(total.toString()));
-            BigDecimal valor_iva=new BigDecimal(""+iva);
-            valor_iva=valor_iva.divide(new BigDecimal("100"));
-            valor_iva=total.multiply(valor_iva);
-            System.out.println("iva:"+iva+"valor:"+valor_iva.toString());
-            t_iva.setValue(new Double(valor_iva.toString()));
-            total = total.add(valor_iva);
+            t_iva.setValue(new Double(total_iva.toString()));
+            total = total.add(total_iva);
             t_total.setValue(new Double(total.toString()));
         }
         catch(Exception e)
@@ -3725,7 +3735,7 @@ public void consulta()
     
     DefaultTableModel ModeloTablaReporte(int renglones, String columnas[])
         {
-            model = new DefaultTableModel(new Object [renglones][7], columnas)
+            model = new DefaultTableModel(new Object [renglones][columnas.length], columnas)
             {
                 Class[] types = new Class [] {
                     java.lang.String.class,
@@ -3735,10 +3745,11 @@ public void consulta()
                     java.lang.String.class, 
                     java.lang.Double.class,
                     java.lang.Double.class,
+                    java.lang.Double.class,
                     java.lang.Double.class
                 };
                 boolean[] canEdit = new boolean [] {
-                    false, true, true, true, true, true, true, false
+                    false, true, true, true, true, true, true, true, false
                 };
 
                 public void setValueAt(Object value, int row, int col)
@@ -3778,7 +3789,7 @@ public void consulta()
                                                 double suma=(((double)t_datos.getValueAt(row, 5))*((double)value));
                                                 double desc=((double)t_datos.getValueAt(row, 6))/100;
                                                 double total=suma-(suma*desc);
-                                                t_datos.setValueAt(total, row, 7);
+                                                t_datos.setValueAt(total, row, 8);
                                             }catch(Exception e)
                                             {
                                                 session.beginTransaction().rollback();
@@ -3941,7 +3952,7 @@ public void consulta()
                                                 double suma=(((double)value)*((double)t_datos.getValueAt(row, 1)));
                                                 double desc=((double)t_datos.getValueAt(row, 6))/100;
                                                 double total=suma-(suma*desc);
-                                                t_datos.setValueAt(total, row, 7);
+                                                t_datos.setValueAt(total, row, 8);
                                             }catch(Exception e)
                                             {
                                                 session.beginTransaction().rollback();
@@ -3983,7 +3994,7 @@ public void consulta()
                                                 double suma=(((double)t_datos.getValueAt(row, 5))*((double)t_datos.getValueAt(row, 1)));
                                                 double desc=((double)value)/100;
                                                 double total=suma-(suma*desc);
-                                                t_datos.setValueAt(total, row, 7);
+                                                t_datos.setValueAt(total, row, 8);
                                             }catch(Exception e)
                                             {
                                                 session.beginTransaction().rollback();
@@ -4000,6 +4011,44 @@ public void consulta()
                                     }
                                     sumaTotales();
                                     break;
+                                
+                            case 7:
+                                    if(vector.get(col)==null)
+                                    {
+                                        vector.setElementAt(value, col);
+                                        this.dataVector.setElementAt(vector, row);
+                                        fireTableCellUpdated(row, col);
+                                    }
+                                    else
+                                    {
+                                        Session session = HibernateUtil.getSessionFactory().openSession();
+                                        try 
+                                        {
+                                            session.beginTransaction().begin();
+                                            Concepto con = (Concepto)session.get(Concepto.class, Integer.parseInt(t_datos.getValueAt(row, 0).toString()));
+                                            con.setIva((double)value);
+                                            session.update(con);
+                                            session.beginTransaction().commit();
+
+                                            vector.setElementAt(value, col);
+                                            this.dataVector.setElementAt(vector, row);
+                                            fireTableCellUpdated(row, col);
+                                        }catch(Exception e)
+                                        {
+                                            session.beginTransaction().rollback();
+                                            e.printStackTrace();
+                                            JOptionPane.showMessageDialog(null, "Error al almacenar los datos");
+                                        }
+                                        finally
+                                        {
+                                            if(session!=null)
+                                                if(session.isOpen())
+                                                    session.close();
+                                        }
+                                    }
+                                    sumaTotales();
+                                    break;
+                                
                             default:
                                     vector.setElementAt(value, col);
                                     this.dataVector.setElementAt(vector, row);
@@ -4093,6 +4142,12 @@ public void consulta()
                       break;
                   case 6:
                       column.setPreferredWidth(40);
+                      break;
+                  case 7:
+                      column.setPreferredWidth(20);
+                      DefaultCellEditor editor3 = new DefaultCellEditor(c_iva);
+                      column.setCellEditor(editor3); 
+                      editor3.setClickCountToStart(2);
                       break;
                   default:
                       column.setPreferredWidth(5);
@@ -6361,6 +6416,7 @@ public void consulta()
                         BigDecimal big_total_bruto= new BigDecimal("0.0");
                         BigDecimal big_sub_total=new BigDecimal("0.0");
                         BigDecimal big_iva_total=new BigDecimal("0.0");
+                        BigDecimal big_suma_descuento=new BigDecimal("0.0");
 
                         for(int ren=0; ren<t_datos.getRowCount(); ren++)
                         {
@@ -6370,14 +6426,14 @@ public void consulta()
                             //cantidades de lista
                             BigDecimal big_cantidad=new BigDecimal(t_datos.getValueAt(ren, 1).toString()).setScale(2, BigDecimal.ROUND_HALF_UP);
                             BigDecimal big_precio_lista=new BigDecimal(t_datos.getValueAt(ren, 5).toString()).setScale(2, BigDecimal.ROUND_HALF_UP);
-                            BigDecimal big_total_lista=big_precio_lista.multiply(big_cantidad);
+                            BigDecimal big_total_lista=(big_precio_lista.multiply(big_cantidad)).setScale(2, BigDecimal.ROUND_HALF_UP);
                             big_total_bruto = big_total_bruto.add(big_total_lista.setScale(2, BigDecimal.ROUND_HALF_UP));
-                            BigDecimal big_total_descuento=big_precio_lista.multiply(big_porciento_dectuento.setScale(2, BigDecimal.ROUND_HALF_UP)).setScale(2, BigDecimal.ROUND_HALF_UP);
+                            BigDecimal big_total_descuento=(big_precio_lista.multiply(big_porciento_dectuento)).setScale(2, BigDecimal.ROUND_HALF_UP);
                             //cantidades netas
-                            BigDecimal big_general_descuento=big_cantidad.multiply(big_total_descuento);
-                            BigDecimal big_precio_neto=big_precio_lista.subtract(big_total_descuento);
-                            BigDecimal big_total_neto=big_precio_neto.multiply(big_cantidad);
-                            big_sub_total = big_sub_total.add(big_total_neto.setScale(2, BigDecimal.ROUND_HALF_UP));
+                            BigDecimal big_general_descuento=(big_cantidad.multiply(big_total_descuento)).setScale(2, BigDecimal.ROUND_HALF_UP);
+                            BigDecimal big_precio_neto=(big_precio_lista.subtract(big_total_descuento)).setScale(2, BigDecimal.ROUND_HALF_UP);
+                            BigDecimal big_total_neto=(big_total_lista.subtract(big_general_descuento)).setScale(2, BigDecimal.ROUND_HALF_UP);//(big_precio_neto.multiply(big_cantidad)).setScale(2, BigDecimal.ROUND_HALF_UP);
+                            big_sub_total = big_sub_total.add(big_total_neto);
 
                             finkok33.Comprobante.Conceptos.Concepto renglon= objeto.createComprobanteConceptosConcepto();
                             renglon.setCantidad(big_cantidad.setScale(2, BigDecimal.ROUND_HALF_UP));
@@ -6389,10 +6445,14 @@ public void consulta()
                             renglon.setImporte(big_total_lista.setScale(2, BigDecimal.ROUND_HALF_UP));
                             renglon.setValorUnitario(big_precio_lista.setScale(2, BigDecimal.ROUND_HALF_UP));
                             if(big_general_descuento.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue()>0)
+                            {
                                 renglon.setDescuento(big_general_descuento.setScale(2, BigDecimal.ROUND_HALF_UP));
+                                big_suma_descuento=big_suma_descuento.add(big_general_descuento.setScale(2, BigDecimal.ROUND_HALF_UP));
+                            }
                             
                             finkok33.Comprobante.Conceptos.Concepto.Impuestos impuestos =objeto.createComprobanteConceptosConceptoImpuestos();
-                            BigDecimal porc=valorIva.divide(new BigDecimal("100.0")).setScale(2, BigDecimal.ROUND_HALF_UP);
+                            BigDecimal iva=new BigDecimal(t_datos.getValueAt(ren, 7).toString());
+                            BigDecimal porc=iva.divide(new BigDecimal("100.0")).setScale(2, BigDecimal.ROUND_HALF_UP);
                             BigDecimal monto=big_total_neto.multiply(porc).setScale(2, BigDecimal.ROUND_HALF_UP);
                                 finkok33.Comprobante.Conceptos.Concepto.Impuestos.Traslados misTrasladados=objeto.createComprobanteConceptosConceptoImpuestosTraslados();
                                     finkok33.Comprobante.Conceptos.Concepto.Impuestos.Traslados.Traslado traslado= objeto.createComprobanteConceptosConceptoImpuestosTrasladosTraslado();
@@ -6401,7 +6461,7 @@ public void consulta()
                                     traslado.setTipoFactor(CTipoFactor.TASA);
                                     traslado.setTasaOCuota(porc.setScale(6, BigDecimal.ROUND_HALF_UP));
                                     traslado.setImporte(monto.setScale(2, BigDecimal.ROUND_HALF_UP));
-                                    big_iva_total=big_iva_total.add(monto);
+                                    big_iva_total=big_iva_total.add(monto.setScale(2, BigDecimal.ROUND_HALF_UP));
                                 misTrasladados.getTraslado().add(traslado);
                             impuestos.setTraslados(misTrasladados);
                             renglon.setImpuestos(impuestos);
@@ -6420,17 +6480,28 @@ public void consulta()
                             traslado.setTasaOCuota(porc.setScale(6, BigDecimal.ROUND_HALF_UP));
                             traslado.setImporte(big_iva_total.setScale(2, BigDecimal.ROUND_HALF_UP));
                         misTrasladados.getTraslado().add(traslado);
+                        for(int dec=0; dec<t_datos.getRowCount(); dec++)
+                        {
+                            if(Double.parseDouble(t_datos.getValueAt(dec, 7).toString())==0.0)
+                            {
+                                finkok33.Comprobante.Impuestos.Traslados.Traslado traslado_0= objeto.createComprobanteImpuestosTrasladosTraslado();
+                                traslado_0.setImpuesto("002");
+                                traslado_0.setTipoFactor(CTipoFactor.TASA);
+                                traslado_0.setTasaOCuota(new BigDecimal("0.0").setScale(6, BigDecimal.ROUND_HALF_UP));
+                                traslado_0.setImporte(new BigDecimal("0.0").setScale(2, BigDecimal.ROUND_HALF_UP));
+                                misTrasladados.getTraslado().add(traslado_0);
+                                dec=t_datos.getRowCount();
+                            }
+                        }
                     impuestos.setTraslados(misTrasladados);
                 comprobante33.setImpuestos(impuestos);
 
                 comprobante33.setSubTotal(big_total_bruto.setScale(2, BigDecimal.ROUND_HALF_UP));
-                BigDecimal big_descuento=big_total_bruto.subtract(big_sub_total);
-                if(big_descuento.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue()>0)
+                if(big_suma_descuento.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue()>0)
                 {
-                    comprobante33.setDescuento(big_descuento.setScale(2, BigDecimal.ROUND_HALF_UP));//Falta
+                    comprobante33.setDescuento(big_suma_descuento.setScale(2, BigDecimal.ROUND_HALF_UP));//Falta
                 }
                 comprobante33.setTotal(big_sub_total.add(big_iva_total.setScale(2, BigDecimal.ROUND_HALF_UP)));
-
                     //Addenda adenda = objeto.createComprobanteAddenda();
                     //adenda.getAny().add("<H><H>");//agregar cada adenda
                 //comprobante.setAddenda(adenda);
