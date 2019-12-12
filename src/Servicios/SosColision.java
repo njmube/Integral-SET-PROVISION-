@@ -113,6 +113,8 @@ public class SosColision extends javax.swing.JPanel {
         jTable1 = new javax.swing.JTable();
         jLabel2 = new javax.swing.JLabel();
         c_estatus1 = new javax.swing.JComboBox();
+        id_unidad = new javax.swing.JLabel();
+        id_sucursal = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jPanel16 = new javax.swing.JPanel();
@@ -233,6 +235,10 @@ public class SosColision extends javax.swing.JPanel {
             ListaSOSLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
+
+        id_unidad.setText("jLabel13");
+
+        id_sucursal.setText("jLabel13");
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "SOS Collision", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Arial", 1, 12))); // NOI18N
@@ -409,15 +415,14 @@ public class SosColision extends javax.swing.JPanel {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(12, 12, 12)
-                        .addComponent(jLabel10)
-                        .addGap(139, 139, 139))
+                        .addComponent(jLabel10))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel11)
                             .addComponent(t_deducible, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(t_demerito, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(t_demerito, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -751,65 +756,30 @@ public class SosColision extends javax.swing.JPanel {
     private void b_inventario_cargaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_inventario_cargaActionPerformed
         // TODO add your handling code here:
             Session session = HibernateUtil.getSessionFactory().openSession();
-            try
+        try
+        {
+            File destino=null;
+            int estado=selector.showOpenDialog(null);
+            File archivo = selector.getSelectedFile();
+            if(estado==0)
             {
-                File destino=null;
-                int estado=selector.showOpenDialog(null);
-                File archivo = selector.getSelectedFile();
-                if(estado==0)
+                if(archivo.exists())
                 {
-                    if(archivo.exists())
+                    Herramientas h = new Herramientas(this.usr, 0);
+                    String nombre=b_inventario.getText();
+                    if(nombre.compareTo("pendiente")==0)
+                        nombre=h.randomString(11)+".pdf";
+                    System.out.println(nombre);
+                    Ftp miFtp=new Ftp();
+                    if(miFtp.conectar(ruta, "sm", "04650077", 3310))
                     {
-                        Date fecha_orden = new Date();
-                        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");//YYYY-MM-DD HH:MM:SS
-                        String valor=dateFormat.format(fecha_orden);
-                        String [] aux=valor.split(" ");
-                        String [] fecha = aux[0].split("-");
-                        String [] hora=aux[1].split(":");
-
-                        Calendar calendario = Calendar.getInstance();
-                        calendario.set(
-                            Integer.parseInt(fecha[2]), 
-                            Integer.parseInt(fecha[1])-1, 
-                            Integer.parseInt(fecha[0]), 
-                            Integer.parseInt(hora[0]), 
-                            Integer.parseInt(hora[1]), 
-                            Integer.parseInt(hora[2]));
-                        
-                        String[] ext=archivo.getName().split("\\.");
-                        String nom="inventario";
-                        if(ext.length>0)
-                            nom+="."+ext[ext.length-1];
-                        
-                        Ftp miFtp=new Ftp();
-                        boolean respuesta=true;
-                        respuesta=miFtp.conectar(ruta, "compras", "04650077", 3310);
-                        if(respuesta==true){
-                            if(!miFtp.cambiarDirectorio("/ordenes"))
-                                if(miFtp.crearDirectorio("/ordenes"))
-                                    miFtp.cambiarDirectorio("/ordenes");
-                            miFtp.cambiarDirectorio(miFtp.raiz);
-                            if(!miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()))
-                                if(miFtp.crearDirectorio("/ordenes/"+orden_act.getIdOrden()))
-                                    miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden());
-                            miFtp.cambiarDirectorio(miFtp.raiz);
-                            if(!miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos"))
-                                if(miFtp.crearDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos"))
-                                    miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos");
-                            miFtp.cambiarDirectorio(miFtp.raiz);
-                            if(!miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/"))
-                                if(miFtp.crearDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/"))
-                                    miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/");
-                        }
-
-                        try
+                        if(miFtp.cambiarDirectorio("/recursos/reparacion/documentos/inventario/"))
                         {
-                            respuesta=miFtp.subirArchivo(archivo.getPath(), nom);
-                            if(respuesta==true)
+                            if(miFtp.subirArchivo(archivo.getPath(), nombre))
                             {
                                 session.beginTransaction().begin();
                                 orden_act = (Orden)session.get(Orden.class, orden_act.getIdOrden()); 
-                                orden_act.setInventario(nom);
+                                orden_act.setInventario(nombre);
                                 session.saveOrUpdate(orden_act);
 
                                 //creamos las notificaciones**************
@@ -826,8 +796,7 @@ public class SosColision extends javax.swing.JPanel {
                                     aux1 = (Acceso[])orden_act.getAgente().getAccesos().toArray(new Acceso[0]);
                                     accesos.addAll(Arrays.asList(aux1));
                                 }
-                                if(accesos!=null)
-                                {
+
                                     String notificaciones="{\"NOTIFICACIONES\":[";
                                     for(int a=0; a<accesos.size(); a++)
                                     {
@@ -839,7 +808,7 @@ public class SosColision extends javax.swing.JPanel {
                                         nueva.setAcceso(accesos.get(a));
                                         Integer id = (Integer)session.save(nueva);
                                         nueva=(Notificacion)session.get(Notificacion.class, id);
-                                        nueva.setExtra("{\"VENTANA\":\"MuestraPDF\",\"ID_ORDEN\":\""+orden_act.getIdOrden()+"\",\"ID_NOTIFICACION\":\""+id+"\",\"ID_USUARIO\":\""+accesos.get(a).getIdAcceso()+"\",\"ARCHIVO\":\""+nom+"\"}");
+                                        nueva.setExtra("{\"VENTANA\":\"MuestraPDF\",\"ID_ORDEN\":\""+orden_act.getIdOrden()+"\",\"ID_NOTIFICACION\":\""+id+"\",\"ID_USUARIO\":\""+accesos.get(a).getIdAcceso()+"\",\"ARCHIVO\":\""+nombre+"\"}");
                                         session.update(nueva);
                                         notificaciones+="{\"ID\":\""+id+"\"}";
                                         if(a+1 < accesos.size())
@@ -848,130 +817,72 @@ public class SosColision extends javax.swing.JPanel {
                                     notificaciones+="]}";
                                     session.beginTransaction().commit();
                                     try{
-                                    PeticionPost service=new PeticionPost("http://tracto.ddns.net:8085/integral/service/api.php");
-                                    service.add("METODO", "NOTIFICACION.MENSAJE");
-                                    service.add("NOTIFICACIONES", notificaciones);
-                                    System.out.println(service.getRespueta());
-                                    JOptionPane.showMessageDialog(this, "El archivo fue cargado con exito y se notificó al Cliente.");
+                                    PeticionPost service=new PeticionPost("http://tbstoluca.ddns.net/sm-l/service/api.php");
+                                    service.add("METODO", "REPARACION.GUARDA_ARCHIVO");
+                                    service.add("ID_REPARACION", t_solicitud.getText());
+                                    service.add("TIPO", "INVENTARIO");
+                                    service.add("ARCHIVO_NOMBRE", nombre);
+                                    String resp=service.getRespueta();
+                                    System.out.println(resp);
+                                    JSONObject respuesta = new JSONObject(resp);
+                                    if(respuesta.getInt("ESTADO")==1)
+                                    {
+                                        JOptionPane.showMessageDialog(this, "EL ARCHIVO FUE CARGADO Y SE NOTIFICO AL CLIENTE");
+                                    }
+                                    else
+                                        JOptionPane.showMessageDialog(this, respuesta.getString("MENSAJE"));
+                                    agregaArchivo(nombre, b_desgaste);
                                     }catch(Exception e){
-                                        System.out.println("error");
+                                        e.printStackTrace();
                                         JOptionPane.showMessageDialog(this, "El archivo fue cargado con exito pero no se pudo notificar al cliente.");
                                     }
-                                }
-                                else{
-                                    session.beginTransaction().commit();
-                                    JOptionPane.showMessageDialog(this, "Se archivo fue cargado con exito");
-                                }
-                            }else
-                            {
-                                JOptionPane.showMessageDialog(this, "No fue posible subir el archivo");
                             }
-
-                            //****************************************
-                            agregaArchivo(nom, b_inventario);
-                        }    
-                        catch(Exception e)
-                        {
-                            e.printStackTrace();
-                            javax.swing.JOptionPane.showMessageDialog(null, "Error no se pudo eliminar el archivo NO° Error:3");
+                            miFtp.desconectar();
                         }
+                        else
+                            JOptionPane.showMessageDialog(null, "No fue posible encontrar el directorio");
                     }
+                    else
+                        JOptionPane.showMessageDialog(null, "No fue posible conectar al servidor FTP");
                 }
-            }catch (Exception ioe)
-            {
-                ioe.printStackTrace();
-                javax.swing.JOptionPane.showMessageDialog(null, "Error no se pudo cargar el archivo");
             }
-            if(session!= null)
-                if(session.isOpen())
-                    session.close(); 
+        }catch (Exception ioe)
+        {
+            ioe.printStackTrace();
+            javax.swing.JOptionPane.showMessageDialog(null, "Error no se pudo cargar el archivo");
+        }
+        if(session!= null)
+            if(session.isOpen())
+                session.close(); 
     }//GEN-LAST:event_b_inventario_cargaActionPerformed
 
     private void b_desgaste_cargaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_desgaste_cargaActionPerformed
         // TODO add your handling code here:
         Session session = HibernateUtil.getSessionFactory().openSession();
-            try
+        try
+        {
+            File destino=null;
+            int estado=selector.showOpenDialog(null);
+            File archivo = selector.getSelectedFile();
+            if(estado==0)
             {
-                File destino=null;
-                int estado=selector.showOpenDialog(null);
-                File archivo = selector.getSelectedFile();
-                if(estado==0)
+                if(archivo.exists())
                 {
-                    if(archivo.exists())
+                    Herramientas h = new Herramientas(this.usr, 0);
+                    String nombre=b_desgaste.getText();
+                    if(nombre.compareTo("pendiente")==0)
+                        nombre=h.randomString(11)+".pdf";
+                    System.out.println(nombre);
+                    Ftp miFtp=new Ftp();
+                    if(miFtp.conectar(ruta, "sm", "04650077", 3310))
                     {
-                        Herramientas h = new Herramientas(this.usr, 0);
-                        String nombre=b_desgaste.getText();
-                        if(nombre.compareTo("pendiente")==0)
-                            nombre=h.randomString(15)+".pdf";
-                        Ftp miFtp=new Ftp();
-                        if(miFtp.conectar(ruta, "sm", "04650077", 3310))
+                        if(miFtp.cambiarDirectorio("/recursos/reparacion/documentos/desgaste/"))
                         {
-                            if(miFtp.cambiarDirectorio("/recursos/reparacion/documentos/desgaste/"))
-                            {
-                                if(miFtp.subirArchivo(archivo.getPath(), nombre))
-                                {
-                                    
-                                }
-                                miFtp.desconectar();
-                            }
-                            else
-                                JOptionPane.showMessageDialog(null, "No fue posible encontrar el directorio");
-                        }
-                        else
-                            JOptionPane.showMessageDialog(null, "No fue posible conectar al servidor FTP");
-                        
-                        
-                        
-                        
-                        Date fecha_orden = new Date();
-                        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");//YYYY-MM-DD HH:MM:SS
-                        String valor=dateFormat.format(fecha_orden);
-                        String [] aux=valor.split(" ");
-                        String [] fecha = aux[0].split("-");
-                        String [] hora=aux[1].split(":");
-
-                        Calendar calendario = Calendar.getInstance();
-                        calendario.set(
-                            Integer.parseInt(fecha[2]), 
-                            Integer.parseInt(fecha[1])-1, 
-                            Integer.parseInt(fecha[0]), 
-                            Integer.parseInt(hora[0]), 
-                            Integer.parseInt(hora[1]), 
-                            Integer.parseInt(hora[2]));
-                        
-                        String[] ext=archivo.getName().split("\\.");
-                        String nom="desgaste";
-                        if(ext.length>0)
-                            nom+="."+ext[ext.length-1];
-                        
-                        Ftp miFtp=new Ftp();
-                        boolean respuesta=true;
-                        respuesta=miFtp.conectar(ruta, "compras", "04650077", 3310);
-                        if(respuesta==true){
-                            if(!miFtp.cambiarDirectorio("/ordenes"))
-                                if(miFtp.crearDirectorio("/ordenes"))
-                                    miFtp.cambiarDirectorio("/ordenes");
-                            miFtp.cambiarDirectorio(miFtp.raiz);
-                            if(!miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()))
-                                if(miFtp.crearDirectorio("/ordenes/"+orden_act.getIdOrden()))
-                                    miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden());
-                            miFtp.cambiarDirectorio(miFtp.raiz);
-                            if(!miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos"))
-                                if(miFtp.crearDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos"))
-                                    miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos");
-                            miFtp.cambiarDirectorio(miFtp.raiz);
-                            if(!miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/"))
-                                if(miFtp.crearDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/"))
-                                    miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/");
-                        }
-                        try
-                        {
-                            respuesta=miFtp.subirArchivo(archivo.getPath(), nom);
-                            if(respuesta==true)
+                            if(miFtp.subirArchivo(archivo.getPath(), nombre))
                             {
                                 session.beginTransaction().begin();
                                 orden_act = (Orden)session.get(Orden.class, orden_act.getIdOrden()); 
-                                orden_act.setDesgaste(nom);
+                                orden_act.setDesgaste(nombre);
                                 session.saveOrUpdate(orden_act);
 
                                 //creamos las notificaciones**************
@@ -1000,7 +911,7 @@ public class SosColision extends javax.swing.JPanel {
                                         nueva.setAcceso(accesos.get(a));
                                         Integer id = (Integer)session.save(nueva);
                                         nueva=(Notificacion)session.get(Notificacion.class, id);
-                                        nueva.setExtra("{\"VENTANA\":\"MuestraPDF\",\"ID_ORDEN\":\""+orden_act.getIdOrden()+"\",\"ID_NOTIFICACION\":\""+id+"\",\"ID_USUARIO\":\""+accesos.get(a).getIdAcceso()+"\",\"ARCHIVO\":\""+nom+"\"}");
+                                        nueva.setExtra("{\"VENTANA\":\"MuestraPDF\",\"ID_ORDEN\":\""+orden_act.getIdOrden()+"\",\"ID_NOTIFICACION\":\""+id+"\",\"ID_USUARIO\":\""+accesos.get(a).getIdAcceso()+"\",\"ARCHIVO\":\""+nombre+"\"}");
                                         session.update(nueva);
                                         notificaciones+="{\"ID\":\""+id+"\"}";
                                         if(a+1 < accesos.size())
@@ -1009,105 +920,74 @@ public class SosColision extends javax.swing.JPanel {
                                     notificaciones+="]}";
                                     session.beginTransaction().commit();
                                     try{
-                                    PeticionPost service=new PeticionPost("http://tracto.ddns.net:8085/integral/service/api.php");
-                                    service.add("METODO", "NOTIFICACION.MENSAJE");
-                                    service.add("NOTIFICACIONES", notificaciones);
-                                    System.out.println(service.getRespueta());
-                                    JOptionPane.showMessageDialog(this, "El archivo fue cargado con exito y se notificó al Cliente.");
+                                    PeticionPost service=new PeticionPost("http://tbstoluca.ddns.net/sm-l/service/api.php");
+                                    service.add("METODO", "REPARACION.GUARDA_ARCHIVO");
+                                    service.add("ID_REPARACION", t_solicitud.getText());
+                                    service.add("TIPO", "DESGASTE");
+                                    service.add("ARCHIVO_NOMBRE", nombre);
+                                    String resp=service.getRespueta();
+                                    System.out.println(resp);
+                                    JSONObject respuesta = new JSONObject(resp);
+                                    if(respuesta.getInt("ESTADO")==1)
+                                    {
+                                        JOptionPane.showMessageDialog(this, "EL ARCHIVO FUE CARGADO Y SE NOTIFICO AL CLIENTE");
+                                    }
+                                    else
+                                        JOptionPane.showMessageDialog(this, respuesta.getString("MENSAJE"));
+                                    agregaArchivo(nombre, b_desgaste);
                                     }catch(Exception e){
-                                        System.out.println("error");
+                                        e.printStackTrace();
                                         JOptionPane.showMessageDialog(this, "El archivo fue cargado con exito pero no se pudo notificar al cliente.");
                                     }
-
-                                //****************************************
-                                agregaArchivo(nom, b_desgaste);
                             }
-                            else
-                            {
-                                JOptionPane.showMessageDialog(this, "No fue posible subir el archivo");
-                            }
-                        }    
-                        catch(Exception e)
-                        {
-                            e.printStackTrace();
-                            javax.swing.JOptionPane.showMessageDialog(null, "Error no se pudo eliminar el archivo NO° Error:3");
+                            miFtp.desconectar();
                         }
+                        else
+                            JOptionPane.showMessageDialog(null, "No fue posible encontrar el directorio");
                     }
+                    else
+                        JOptionPane.showMessageDialog(null, "No fue posible conectar al servidor FTP");
                 }
-            }catch (Exception ioe)
-            {
-                ioe.printStackTrace();
-                javax.swing.JOptionPane.showMessageDialog(null, "Error no se pudo cargar el archivo");
             }
-            if(session!= null)
-                if(session.isOpen())
-                    session.close(); 
+        }catch (Exception ioe)
+        {
+            ioe.printStackTrace();
+            javax.swing.JOptionPane.showMessageDialog(null, "Error no se pudo cargar el archivo");
+        }
+        if(session!= null)
+            if(session.isOpen())
+                session.close(); 
     }//GEN-LAST:event_b_desgaste_cargaActionPerformed
 
     private void b_pago_cargaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_pago_cargaActionPerformed
         // TODO add your handling code here:        
         Session session = HibernateUtil.getSessionFactory().openSession();
-            try
+        try
+        {
+            File destino=null;
+            int estado=selector.showOpenDialog(null);
+            File archivo = selector.getSelectedFile();
+            if(estado==0)
             {
-                File destino=null;
-                int estado=selector.showOpenDialog(null);
-                File archivo = selector.getSelectedFile();
-                if(estado==0)
+                if(archivo.exists())
                 {
-                    if(archivo.exists())
+                    Herramientas h = new Herramientas(this.usr, 0);
+                    String nombre=b_pago.getText();
+                    if(nombre.compareTo("pendiente")==0)
+                        nombre=h.randomString(11)+".pdf";
+                    System.out.println(nombre);
+                    Ftp miFtp=new Ftp();
+                    if(miFtp.conectar(ruta, "sm", "04650077", 3310))
                     {
-                        Date fecha_orden = new Date();
-                        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");//YYYY-MM-DD HH:MM:SS
-                        String valor=dateFormat.format(fecha_orden);
-                        String [] aux=valor.split(" ");
-                        String [] fecha = aux[0].split("-");
-                        String [] hora=aux[1].split(":");
-
-                        Calendar calendario = Calendar.getInstance();
-                        calendario.set(
-                            Integer.parseInt(fecha[2]), 
-                            Integer.parseInt(fecha[1])-1, 
-                            Integer.parseInt(fecha[0]), 
-                            Integer.parseInt(hora[0]), 
-                            Integer.parseInt(hora[1]), 
-                            Integer.parseInt(hora[2]));
-                        
-                        String[] ext=archivo.getName().split("\\.");
-                        String nom="pago";
-                        if(ext.length>0)
-                            nom+="."+ext[ext.length-1];
-                        
-                        Ftp miFtp=new Ftp();
-                        boolean respuesta=true;
-                        respuesta=miFtp.conectar(ruta, "compras", "04650077", 3310);
-                        if(respuesta==true){
-                            if(!miFtp.cambiarDirectorio("/ordenes"))
-                                if(miFtp.crearDirectorio("/ordenes"))
-                                    miFtp.cambiarDirectorio("/ordenes");
-                            miFtp.cambiarDirectorio(miFtp.raiz);
-                            if(!miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()))
-                                if(miFtp.crearDirectorio("/ordenes/"+orden_act.getIdOrden()))
-                                    miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden());
-                            miFtp.cambiarDirectorio(miFtp.raiz);
-                            if(!miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos"))
-                                if(miFtp.crearDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos"))
-                                    miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos");
-                            miFtp.cambiarDirectorio(miFtp.raiz);
-                            if(!miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/"))
-                                if(miFtp.crearDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/"))
-                                    miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/");
-                        }
-
-                        try
+                        if(miFtp.cambiarDirectorio("/recursos/reparacion/documentos/pago/"))
                         {
-                            respuesta=miFtp.subirArchivo(archivo.getPath(), nom);
-                            if(respuesta==true)
+                            if(miFtp.subirArchivo(archivo.getPath(), nombre))
                             {
                                 session.beginTransaction().begin();
                                 orden_act = (Orden)session.get(Orden.class, orden_act.getIdOrden()); 
-                                orden_act.setPago(nom);
+                                orden_act.setPago(nombre);
                                 session.saveOrUpdate(orden_act);
-                                
+
                                 //creamos las notificaciones**************
                                 ArrayList<Acceso> accesos=new ArrayList();
                                 Acceso [] aux1 = (Acceso[])orden_act.getClientes().getAccesos().toArray(new Acceso[0]);
@@ -1122,20 +1002,19 @@ public class SosColision extends javax.swing.JPanel {
                                     aux1 = (Acceso[])orden_act.getAgente().getAccesos().toArray(new Acceso[0]);
                                     accesos.addAll(Arrays.asList(aux1));
                                 }
-                                if(accesos!=null)
-                                {
+
                                     String notificaciones="{\"NOTIFICACIONES\":[";
                                     for(int a=0; a<accesos.size(); a++)
                                     {
                                         Notificacion nueva=new Notificacion();
-                                        nueva.setMensaje("OT:"+orden_act.getIdOrden()+" Proceso de Pago");
+                                        nueva.setMensaje("OT:"+orden_act.getIdOrden()+" Pago");
                                         nueva.setExtra("");
                                         nueva.setIntentos(0);
                                         nueva.setVisto(false);
                                         nueva.setAcceso(accesos.get(a));
                                         Integer id = (Integer)session.save(nueva);
                                         nueva=(Notificacion)session.get(Notificacion.class, id);
-                                        nueva.setExtra("{\"VENTANA\":\"MuestraPDF\",\"ID_ORDEN\":\""+orden_act.getIdOrden()+"\",\"ID_NOTIFICACION\":\""+id+"\",\"ID_USUARIO\":\""+accesos.get(a).getIdAcceso()+"\",\"ARCHIVO\":\""+nom+"\"}");
+                                        nueva.setExtra("{\"VENTANA\":\"MuestraPDF\",\"ID_ORDEN\":\""+orden_act.getIdOrden()+"\",\"ID_NOTIFICACION\":\""+id+"\",\"ID_USUARIO\":\""+accesos.get(a).getIdAcceso()+"\",\"ARCHIVO\":\""+nombre+"\"}");
                                         session.update(nueva);
                                         notificaciones+="{\"ID\":\""+id+"\"}";
                                         if(a+1 < accesos.size())
@@ -1144,106 +1023,72 @@ public class SosColision extends javax.swing.JPanel {
                                     notificaciones+="]}";
                                     session.beginTransaction().commit();
                                     try{
-                                    PeticionPost service=new PeticionPost("http://tbstoluca.ddns.net:8085/integral/service/api.php");
-                                    service.add("METODO", "NOTIFICACION.MENSAJE");
-                                    service.add("NOTIFICACIONES", notificaciones);
-                                    System.out.println(service.getRespueta());
-                                    JOptionPane.showMessageDialog(this, "El archivo fue cargado con exito y se notificó al Cliente.");
+                                    PeticionPost service=new PeticionPost("http://tbstoluca.ddns.net/sm-l/service/api.php");
+                                    service.add("METODO", "REPARACION.GUARDA_ARCHIVO");
+                                    service.add("ID_REPARACION", t_solicitud.getText());
+                                    service.add("TIPO", "PAGO");
+                                    service.add("ARCHIVO_NOMBRE", nombre);
+                                    String resp=service.getRespueta();
+                                    System.out.println(resp);
+                                    JSONObject respuesta = new JSONObject(resp);
+                                    if(respuesta.getInt("ESTADO")==1)
+                                    {
+                                        JOptionPane.showMessageDialog(this, "EL ARCHIVO FUE CARGADO Y SE NOTIFICO AL CLIENTE");
+                                    }
+                                    else
+                                        JOptionPane.showMessageDialog(this, respuesta.getString("MENSAJE"));
+                                    agregaArchivo(nombre, b_pago);
                                     }catch(Exception e){
-                                        System.out.println("error");
+                                        e.printStackTrace();
                                         JOptionPane.showMessageDialog(this, "El archivo fue cargado con exito pero no se pudo notificar al cliente.");
                                     }
-                                }
-                                else{
-                                    session.beginTransaction().commit();
-                                    JOptionPane.showMessageDialog(this, "Se archivo fue cargado con exito");
-                                }
-                            }else
-                            {
-                                JOptionPane.showMessageDialog(this, "No fue posible subir el archivo");
                             }
-
-                            //****************************************
-                            agregaArchivo(nom, b_pago);
-                        }    
-                        catch(Exception e)
-                        {
-                            e.printStackTrace();
-                            javax.swing.JOptionPane.showMessageDialog(null, "Error no se pudo eliminar el archivo NO° Error:3");
+                            miFtp.desconectar();
                         }
+                        else
+                            JOptionPane.showMessageDialog(null, "No fue posible encontrar el directorio");
                     }
+                    else
+                        JOptionPane.showMessageDialog(null, "No fue posible conectar al servidor FTP");
                 }
-            }catch (Exception ioe)
-            {
-                ioe.printStackTrace();
-                javax.swing.JOptionPane.showMessageDialog(null, "Error no se pudo cargar el archivo");
             }
-            if(session!= null)
-                if(session.isOpen())
-                    session.close(); 
+        }catch (Exception ioe)
+        {
+            ioe.printStackTrace();
+            javax.swing.JOptionPane.showMessageDialog(null, "Error no se pudo cargar el archivo");
+        }
+        if(session!= null)
+            if(session.isOpen())
+                session.close();
     }//GEN-LAST:event_b_pago_cargaActionPerformed
 
     private void b_cotizacion_cargaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_cotizacion_cargaActionPerformed
         // TODO add your handling code here:
-        Session session = HibernateUtil.getSessionFactory().openSession();
-            try
+                Session session = HibernateUtil.getSessionFactory().openSession();
+        try
+        {
+            File destino=null;
+            int estado=selector.showOpenDialog(null);
+            File archivo = selector.getSelectedFile();
+            if(estado==0)
             {
-                File destino=null;
-                int estado=selector.showOpenDialog(null);
-                File archivo = selector.getSelectedFile();
-                if(estado==0)
+                if(archivo.exists())
                 {
-                    if(archivo.exists())
+                    Herramientas h = new Herramientas(this.usr, 0);
+                    String nombre=b_cotizacion.getText();
+                    if(nombre.compareTo("pendiente")==0)
+                        nombre=h.randomString(11)+".pdf";
+                    System.out.println(nombre);
+                    Ftp miFtp=new Ftp();
+                    if(miFtp.conectar(ruta, "sm", "04650077", 3310))
                     {
-                        Date fecha_orden = new Date();
-                        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");//YYYY-MM-DD HH:MM:SS
-                        String valor=dateFormat.format(fecha_orden);
-                        String [] aux=valor.split(" ");
-                        String [] fecha = aux[0].split("-");
-                        String [] hora=aux[1].split(":");
-
-                        Calendar calendario = Calendar.getInstance();
-                        calendario.set(
-                            Integer.parseInt(fecha[2]), 
-                            Integer.parseInt(fecha[1])-1, 
-                            Integer.parseInt(fecha[0]), 
-                            Integer.parseInt(hora[0]), 
-                            Integer.parseInt(hora[1]), 
-                            Integer.parseInt(hora[2]));
-                        
-                        String[] ext=archivo.getName().split("\\.");
-                        String nom="entrega";
-                        if(ext.length>0)
-                            nom+="."+ext[ext.length-1];
-                        
-                        Ftp miFtp=new Ftp();
-                        boolean respuesta=true;
-                        respuesta=miFtp.conectar(ruta, "compras", "04650077", 3310);
-                        if(respuesta==true){
-                            if(!miFtp.cambiarDirectorio("/ordenes"))
-                                if(miFtp.crearDirectorio("/ordenes"))
-                                    miFtp.cambiarDirectorio("/ordenes");
-                            miFtp.cambiarDirectorio(miFtp.raiz);
-                            if(!miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()))
-                                if(miFtp.crearDirectorio("/ordenes/"+orden_act.getIdOrden()))
-                                    miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden());
-                            miFtp.cambiarDirectorio(miFtp.raiz);
-                            if(!miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos"))
-                                if(miFtp.crearDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos"))
-                                    miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos");
-                            miFtp.cambiarDirectorio(miFtp.raiz);
-                            if(!miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/"))
-                                if(miFtp.crearDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/"))
-                                    miFtp.cambiarDirectorio("/ordenes/"+orden_act.getIdOrden()+"/archivos/sm-logistics/");
-                        }
-                        try
+                        if(miFtp.cambiarDirectorio("/recursos/reparacion/documentos/cotizacion/"))
                         {
-                            respuesta=miFtp.subirArchivo(archivo.getPath(), nom);
-                            if(respuesta==true)
+                            if(miFtp.subirArchivo(archivo.getPath(), nombre))
                             {
                                 session.beginTransaction().begin();
                                 orden_act = (Orden)session.get(Orden.class, orden_act.getIdOrden()); 
-                                orden_act.setEntrega(nom);
+                                orden_act.setEntrega(nombre);
                                 session.saveOrUpdate(orden_act);
 
                                 //creamos las notificaciones**************
@@ -1260,20 +1105,19 @@ public class SosColision extends javax.swing.JPanel {
                                     aux1 = (Acceso[])orden_act.getAgente().getAccesos().toArray(new Acceso[0]);
                                     accesos.addAll(Arrays.asList(aux1));
                                 }
-                                if(accesos!=null)
-                                {
+
                                     String notificaciones="{\"NOTIFICACIONES\":[";
                                     for(int a=0; a<accesos.size(); a++)
                                     {
                                         Notificacion nueva=new Notificacion();
-                                        nueva.setMensaje("OT:"+orden_act.getIdOrden()+" Check List de Entrega");
+                                        nueva.setMensaje("OT:"+orden_act.getIdOrden()+" Cotizacion");
                                         nueva.setExtra("");
                                         nueva.setIntentos(0);
                                         nueva.setVisto(false);
                                         nueva.setAcceso(accesos.get(a));
                                         Integer id = (Integer)session.save(nueva);
                                         nueva=(Notificacion)session.get(Notificacion.class, id);
-                                        nueva.setExtra("{\"VENTANA\":\"MuestraPDF\",\"ID_ORDEN\":\""+orden_act.getIdOrden()+"\",\"ID_NOTIFICACION\":\""+id+"\",\"ID_USUARIO\":\""+accesos.get(a).getIdAcceso()+"\",\"ARCHIVO\":\""+nom+"\"}");
+                                        nueva.setExtra("{\"VENTANA\":\"MuestraPDF\",\"ID_ORDEN\":\""+orden_act.getIdOrden()+"\",\"ID_NOTIFICACION\":\""+id+"\",\"ID_USUARIO\":\""+accesos.get(a).getIdAcceso()+"\",\"ARCHIVO\":\""+nombre+"\"}");
                                         session.update(nueva);
                                         notificaciones+="{\"ID\":\""+id+"\"}";
                                         if(a+1 < accesos.size())
@@ -1282,43 +1126,43 @@ public class SosColision extends javax.swing.JPanel {
                                     notificaciones+="]}";
                                     session.beginTransaction().commit();
                                     try{
-                                    PeticionPost service=new PeticionPost("http://tracto.ddns.net:8085/integral/service/api.php");
-                                    service.add("METODO", "NOTIFICACION.MENSAJE");
-                                    service.add("NOTIFICACIONES", notificaciones);
-                                    System.out.println(service.getRespueta());
-                                    JOptionPane.showMessageDialog(this, "El archivo fue cargado con exito y se notificó al Cliente.");
+                                    PeticionPost service=new PeticionPost("http://tbstoluca.ddns.net/sm-l/service/api.php");
+                                    service.add("METODO", "REPARACION.GUARDA_ARCHIVO");
+                                    service.add("ID_REPARACION", t_solicitud.getText());
+                                    service.add("TIPO", "COTIZACION");
+                                    service.add("ARCHIVO_NOMBRE", nombre);
+                                    String resp=service.getRespueta();
+                                    System.out.println(resp);
+                                    JSONObject respuesta = new JSONObject(resp);
+                                    if(respuesta.getInt("ESTADO")==1)
+                                    {
+                                        JOptionPane.showMessageDialog(this, "EL ARCHIVO FUE CARGADO Y SE NOTIFICO AL CLIENTE");
+                                    }
+                                    else
+                                        JOptionPane.showMessageDialog(this, respuesta.getString("MENSAJE"));
+                                    agregaArchivo(nombre, b_cotizacion);
                                     }catch(Exception e){
-                                        System.out.println("error");
+                                        e.printStackTrace();
                                         JOptionPane.showMessageDialog(this, "El archivo fue cargado con exito pero no se pudo notificar al cliente.");
                                     }
-                                }
-                                else{
-                                    session.beginTransaction().commit();
-                                    JOptionPane.showMessageDialog(this, "Se archivo fue cargado con exito");
-                                }
                             }
-                            else
-                            {
-                                JOptionPane.showMessageDialog(this, "No fue posible subir el archivo");
-                            }
-                            //****************************************
-                            agregaArchivo(nom, b_cotizacion);
-                        }    
-                        catch(Exception e)
-                        {
-                            e.printStackTrace();
-                            javax.swing.JOptionPane.showMessageDialog(null, "Error no se pudo eliminar el archivo NO° Error:3");
+                            miFtp.desconectar();
                         }
+                        else
+                            JOptionPane.showMessageDialog(null, "No fue posible encontrar el directorio");
                     }
+                    else
+                        JOptionPane.showMessageDialog(null, "No fue posible conectar al servidor FTP");
                 }
-            }catch (Exception ioe)
-            {
-                ioe.printStackTrace();
-                javax.swing.JOptionPane.showMessageDialog(null, "Error no se pudo cargar el archivo");
             }
-            if(session!= null)
-                if(session.isOpen())
-                    session.close(); 
+        }catch (Exception ioe)
+        {
+            ioe.printStackTrace();
+            javax.swing.JOptionPane.showMessageDialog(null, "Error no se pudo cargar el archivo");
+        }
+        if(session!= null)
+            if(session.isOpen())
+                session.close(); 
     }//GEN-LAST:event_b_cotizacion_cargaActionPerformed
 
     private void b_inventarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_inventarioActionPerformed
@@ -1474,6 +1318,8 @@ public class SosColision extends javax.swing.JPanel {
     private javax.swing.JButton b_pago_carga;
     private javax.swing.JComboBox c_estatus;
     private javax.swing.JComboBox c_estatus1;
+    private javax.swing.JLabel id_sucursal;
+    private javax.swing.JLabel id_unidad;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -1593,24 +1439,35 @@ public class SosColision extends javax.swing.JPanel {
                               t_reporte.setText("-");
                           
                           if(datos.get("inventario").toString().compareToIgnoreCase("null")!=0)
-                              b_inventario.setText(datos.get("inventario").toString());
+                              agregaArchivo(datos.get("inventario").toString(), b_inventario);
                           else
                               b_inventario.setText("pendiente");
                           
                           if(datos.get("pago").toString().compareToIgnoreCase("null")!=0)
-                              b_pago.setText(datos.get("pago").toString().toString());
+                              agregaArchivo(datos.get("pago").toString(), b_pago);
                           else
                               b_pago.setText("pendiente");
                           
                           if(datos.get("cotizacion").toString().compareToIgnoreCase("null")!=0)
-                              b_cotizacion.setText(datos.get("cotizacion").toString());
+                              agregaArchivo(datos.get("cotizacion").toString(), b_cotizacion);
                           else
                               b_cotizacion.setText("pendiente");
                           
                           if(datos.get("desgaste").toString().compareToIgnoreCase("null")!=0)
-                            b_desgaste.setText(datos.get("desgaste").toString());
+                            agregaArchivo(datos.get("desgaste").toString(), b_desgaste);
                           else
                                b_desgaste.setText("pendiente");
+                          
+                          if(datos.get("id_unidad").toString().compareToIgnoreCase("null")!=0)
+                            id_unidad.setText(datos.get("id_unidad").toString());
+                          else
+                               id_unidad.setText("");
+                          
+                          if(datos.get("id_sucursal").toString().compareToIgnoreCase("null")!=0)
+                            id_sucursal.setText(datos.get("id_sucursal").toString());
+                          else
+                               id_sucursal.setText("");
+                          
                       }
                       else
                       {
@@ -1621,33 +1478,6 @@ public class SosColision extends javax.swing.JPanel {
                       JOptionPane.showMessageDialog(this, "Error Al Conectar con el Servidor");
                   }
                   
-                  if(orden_act.getInventario()!=null){
-                      try{
-                          String nombre=orden_act.getInventario();
-                          agregaArchivo(nombre, b_inventario);
-                      }catch(Exception e){}
-                  }
-
-                  if(orden_act.getDesgaste()!=null){
-                      try{
-                          String nombre=orden_act.getDesgaste();
-                          agregaArchivo(nombre, b_desgaste);
-                      }catch(Exception e){}
-                  }
-                  
-                  if(orden_act.getPago()!=null){
-                      try{
-                          String nombre=orden_act.getPago();
-                          agregaArchivo(nombre, b_pago);
-                      }catch(Exception e){}
-                  }
-                  if(orden_act.getEntrega()!=null)
-                  {
-                      try{
-                          String nombre=orden_act.getEntrega();
-                          agregaArchivo(nombre, b_cotizacion);
-                      }catch(Exception e){}
-                  }
               }
               else
               {

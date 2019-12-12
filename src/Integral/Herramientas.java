@@ -376,11 +376,11 @@ public class Herramientas {
     
     public String randomString(int numero) {
     String vector = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    int longitud = vector.length();
+    int charactersLength = vector.length();
     String randomString = "";
      Random rnd = new Random();
-    for (int i = 0; i < longitud; i++) {
-        randomString += vector.charAt((int)(rnd.nextDouble() * numero + 1));
+    for (int i = 0; i < numero; i++) {
+        randomString += vector.charAt((int)(rnd.nextDouble() * charactersLength - 1));
     }
     return randomString;
 } 
