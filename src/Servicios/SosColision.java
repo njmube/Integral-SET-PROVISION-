@@ -17,52 +17,31 @@ import Hibernate.entidades.Usuario;
 import Integral.ExtensionFileFilter;
 import Integral.Ftp;
 import Integral.Herramientas;
-import Integral.PDF;
 import Integral.PeticionPost;
-import com.itextpdf.text.BaseColor;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.Image;
-import com.itextpdf.text.PageSize;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.Rectangle;
-import com.itextpdf.text.pdf.AcroFields;
-import com.itextpdf.text.pdf.BaseFont;
-import com.itextpdf.text.pdf.GrayColor;
-import com.itextpdf.text.pdf.PdfContentByte;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfReader;
-import com.itextpdf.text.pdf.PdfStamper;
 import java.awt.Desktop;
-import java.awt.Dimension;
-import java.awt.Toolkit;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.text.DateFormat;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
+import javax.imageio.ImageIO;
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.ListModel;
+import org.apache.commons.net.ftp.FTPFile;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -79,7 +58,11 @@ public class SosColision extends javax.swing.JPanel {
     Herramientas h;
     Orden orden_act;
     JFileChooser selector;
+    JFileChooser selectorFoto;
     String ruta;
+    String n_carpeta="";
+    DefaultListModel modeloLista= new DefaultListModel();
+    File foto=null;
     /**
      * Creates new form SmLogistics
      */
@@ -95,6 +78,12 @@ public class SosColision extends javax.swing.JPanel {
         selector.setFileFilter(new ExtensionFileFilter("Documentos(PDF y DOCX)", new String[] { "PDF", "DOCX" }));
         selector.setAcceptAllFileFilterUsed(false);
         selector.setMultiSelectionEnabled(true);
+        
+        selectorFoto=new JFileChooser();
+        selectorFoto.setFileFilter(new ExtensionFileFilter("Documentos(JPG y JPEG)", new String[] { "JPG", "JPEG" }));
+        selectorFoto.setAcceptAllFileFilterUsed(false);
+        selectorFoto.setMultiSelectionEnabled(true);
+        
     }
 
     /**
@@ -115,6 +104,7 @@ public class SosColision extends javax.swing.JPanel {
         c_estatus1 = new javax.swing.JComboBox();
         id_unidad = new javax.swing.JLabel();
         id_sucursal = new javax.swing.JLabel();
+        l_carpeta = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jPanel16 = new javax.swing.JPanel();
@@ -155,6 +145,13 @@ public class SosColision extends javax.swing.JPanel {
         b_desgaste_carga = new javax.swing.JButton();
         b_desgaste = new javax.swing.JButton();
         jPanel9 = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        lista_fotos = new javax.swing.JList(modeloLista);
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        c_carpetas = new javax.swing.JComboBox();
+        b_foto = new javax.swing.JButton();
+        jLabel13 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
         t_solicitud = new javax.swing.JTextField();
@@ -239,6 +236,8 @@ public class SosColision extends javax.swing.JPanel {
         id_unidad.setText("jLabel13");
 
         id_sucursal.setText("jLabel13");
+
+        l_carpeta.setText("jLabel13");
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "SOS Collision", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Arial", 1, 12))); // NOI18N
@@ -332,6 +331,12 @@ public class SosColision extends javax.swing.JPanel {
         c_estatus.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 c_estatusActionPerformed(evt);
+            }
+        });
+
+        jTabbedPane1.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jTabbedPane1StateChanged(evt);
             }
         });
 
@@ -432,7 +437,7 @@ public class SosColision extends javax.swing.JPanel {
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel7)
@@ -493,17 +498,18 @@ public class SosColision extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(b_inventario, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(b_inventario_carga, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(b_inventario_carga, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(b_inventario, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(b_inventario_carga, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(30, 30, 30)))
+                        .addGap(1, 1, 1)
+                        .addComponent(b_inventario, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(b_inventario_carga, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -539,15 +545,16 @@ public class SosColision extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(b_pago, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(b_pago_carga, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(b_pago_carga, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(b_pago, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addComponent(b_pago_carga, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30))
+                .addGap(1, 1, 1)
+                .addComponent(b_pago, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(b_pago_carga, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         jPanel6.setBackground(new java.awt.Color(255, 255, 255));
@@ -582,15 +589,16 @@ public class SosColision extends javax.swing.JPanel {
                 .addGap(6, 6, 6)
                 .addComponent(b_cotizacion, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(b_cotizacion_carga, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(b_cotizacion_carga, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(b_cotizacion, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                .addComponent(b_cotizacion_carga, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30))
+                .addGap(1, 1, 1)
+                .addComponent(b_cotizacion, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(b_cotizacion_carga, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         jPanel4.setBackground(new java.awt.Color(255, 255, 255));
@@ -625,15 +633,16 @@ public class SosColision extends javax.swing.JPanel {
                 .addGap(6, 6, 6)
                 .addComponent(b_desgaste, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(b_desgaste_carga, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(b_desgaste_carga, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(b_desgaste, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addComponent(b_desgaste_carga, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30))
+                .addGap(1, 1, 1)
+                .addComponent(b_desgaste, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(b_desgaste_carga, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
@@ -651,7 +660,7 @@ public class SosColision extends javax.swing.JPanel {
                         .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(178, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -669,15 +678,75 @@ public class SosColision extends javax.swing.JPanel {
 
         jTabbedPane1.addTab("Informes", jPanel8);
 
+        lista_fotos.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                lista_fotosValueChanged(evt);
+            }
+        });
+        jScrollPane3.setViewportView(lista_fotos);
+
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/menos.png"))); // NOI18N
+
+        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/mas.png"))); // NOI18N
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        c_carpetas.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "INGRESO", "CAMBIOS", "PROCESO", "SALIDA" }));
+        c_carpetas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                c_carpetasActionPerformed(evt);
+            }
+        });
+
+        b_foto.setBackground(new java.awt.Color(255, 255, 255));
+        b_foto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/login.jpg"))); // NOI18N
+        b_foto.setOpaque(false);
+        b_foto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_fotoActionPerformed(evt);
+            }
+        });
+
+        jLabel13.setText("Carpeta:");
+
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
         jPanel9Layout.setHorizontalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 748, Short.MAX_VALUE)
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel9Layout.createSequentialGroup()
+                        .addComponent(jLabel13)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(c_carpetas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(b_foto, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 176, Short.MAX_VALUE)
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(b_foto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel9Layout.createSequentialGroup()
+                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(c_carpetas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel13)
+                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE)))
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("Galeria", jPanel9);
@@ -720,10 +789,10 @@ public class SosColision extends javax.swing.JPanel {
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -731,14 +800,13 @@ public class SosColision extends javax.swing.JPanel {
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jLabel14)
                                     .addComponent(t_solicitud, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(12, 12, 12)
                                 .addComponent(jPanel16, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(42, 42, 42)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel12)
-                            .addComponent(c_estatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(3, 3, 3)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(c_estatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -755,7 +823,7 @@ public class SosColision extends javax.swing.JPanel {
 
     private void b_inventario_cargaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_inventario_cargaActionPerformed
         // TODO add your handling code here:
-            Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = HibernateUtil.getSessionFactory().openSession();
         try
         {
             File destino=null;
@@ -1304,6 +1372,88 @@ public class SosColision extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_c_estatus1ActionPerformed
 
+    private void lista_fotosValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_lista_fotosValueChanged
+        // TODO add your handling code here:
+        if(!lista_fotos.isSelectionEmpty())
+            b_foto.setIcon(imagenFTP("/recursos/reparacion/"+l_carpeta.getText()+"/", lista_fotos.getSelectedValue().toString(), b_foto.getWidth()-1, b_foto.getHeight()-2));
+        else
+            b_foto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/login.jpg")));
+    }//GEN-LAST:event_lista_fotosValueChanged
+
+    private void jTabbedPane1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jTabbedPane1StateChanged
+        // TODO add your handling code here:
+        String ventana=jTabbedPane1.getTitleAt(jTabbedPane1.getSelectedIndex());          
+        if(ventana.compareTo("Galeria")==0)
+        {
+            leerDirectorio();
+        }
+    }//GEN-LAST:event_jTabbedPane1StateChanged
+
+    private void c_carpetasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_c_carpetasActionPerformed
+        // TODO add your handling code here:
+        leerDirectorio();
+    }//GEN-LAST:event_c_carpetasActionPerformed
+
+    private void b_fotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_fotoActionPerformed
+        // TODO add your handling code here:
+        if(foto!=null && foto.exists()){
+            try{
+                Desktop.getDesktop().open(foto);
+            }catch(Exception e){}
+        }
+    }//GEN-LAST:event_b_fotoActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        try
+        {
+            File destino=null;
+            int estado=selectorFoto.showOpenDialog(null);
+            File archivo = selectorFoto.getSelectedFile();
+            if(estado==0)
+            {
+                if(archivo.exists())
+                {
+                    Herramientas h = new Herramientas(this.usr, 0);
+                    Ftp miFtp=new Ftp();
+                    if(miFtp.conectar(ruta, "sm", "04650077", 3310))
+                    {
+                        if(miFtp.cambiarDirectorio("/recursos/reparacion/"))
+                        {
+                            boolean existe=true;
+                            if(!miFtp.cambiarDirectorio("/"+l_carpeta.getText()+"/"))
+                            {
+                                if(miFtp.crearDirectorio("/"+l_carpeta.getText()))
+                                {
+                                    if(!miFtp.cambiarDirectorio("/"+l_carpeta.getText()+"/"))
+                                        existe=false;
+                                }
+                                else
+                                    existe=false;
+                            }
+                            if(existe)
+                            {
+                                if(miFtp.subirArchivo(archivo.getPath(), archivo.getName()))
+                                    modeloLista.addElement(archivo.getName());
+                                miFtp.desconectar();
+                            }
+                            else
+                                JOptionPane.showMessageDialog(null, "No fue posible encontrar el directorio");
+                        }
+                        else
+                                JOptionPane.showMessageDialog(null, "No fue posible encontrar el directorio RAIZ");
+                    }
+                    else
+                        JOptionPane.showMessageDialog(null, "No fue posible conectar al servidor FTP");
+                }
+            }
+        }catch (Exception ioe)
+        {
+            ioe.printStackTrace();
+            javax.swing.JOptionPane.showMessageDialog(null, "Error no se pudo cargar el archivo");
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDialog ListaSOS;
@@ -1312,18 +1462,23 @@ public class SosColision extends javax.swing.JPanel {
     private javax.swing.JButton b_cotizacion_carga;
     private javax.swing.JButton b_desgaste;
     private javax.swing.JButton b_desgaste_carga;
+    private javax.swing.JButton b_foto;
     private javax.swing.JButton b_inventario;
     private javax.swing.JButton b_inventario_carga;
     private javax.swing.JButton b_pago;
     private javax.swing.JButton b_pago_carga;
+    private javax.swing.JComboBox c_carpetas;
     private javax.swing.JComboBox c_estatus;
     private javax.swing.JComboBox c_estatus1;
     private javax.swing.JLabel id_sucursal;
     private javax.swing.JLabel id_unidad;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -1346,8 +1501,11 @@ public class SosColision extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable1;
+    private javax.swing.JLabel l_carpeta;
+    private javax.swing.JList lista_fotos;
     private javax.swing.JTextField t_autorizo;
     private javax.swing.JTextField t_deducible;
     private javax.swing.JTextField t_demerito;
@@ -1467,6 +1625,11 @@ public class SosColision extends javax.swing.JPanel {
                             id_sucursal.setText(datos.get("id_sucursal").toString());
                           else
                                id_sucursal.setText("");
+                          if(datos.get("n_carpeta").toString().compareToIgnoreCase("null")!=0)
+                            l_carpeta.setText(datos.get("n_carpeta").toString());
+                          else
+                               l_carpeta.setText("");
+                          
                           
                       }
                       else
@@ -1566,6 +1729,82 @@ public class SosColision extends javax.swing.JPanel {
                 session.close();
             }
         }
+    }
+    
+    /**
+     * 
+     * @param rutaImagen ej "ftp://username:password@www.superland.example/server"
+     * @param w size of image with 
+     * @param h size of imae height
+     * @return Imae icon of file ftp
+     */
+    public ImageIcon imagenFTP(String rutaImagen, String nombreImagen, int w, int h){
+        ImageIcon imageIcon=null;
+        try {
+            Ftp miFtp=new Ftp();
+            if(miFtp.conectar(ruta, "sm", "04650077", 3310))
+            {
+                if(miFtp.cambiarDirectorio(rutaImagen))
+                {
+                    String ruta = miFtp.descargaTemporal(nombreImagen);
+                    miFtp.desconectar();
+
+                    BufferedImage img = null;
+                    foto = new File (ruta);
+                    img = ImageIO.read(foto);
+                    Image dimg = img.getScaledInstance(w, h, Image.SCALE_SMOOTH);
+                    imageIcon = new ImageIcon(dimg);
+                }
+                else
+                {
+                    imageIcon = new javax.swing.ImageIcon(getClass().getResource("/recursos/error.jpg"));
+                    JOptionPane.showMessageDialog(null, "No fue posible encontrar el directorio");
+                }
+            }
+            else{
+                imageIcon = new javax.swing.ImageIcon(getClass().getResource("/recursos/error.jpg"));
+                JOptionPane.showMessageDialog(null, "No fue posible conectar al servidor FTP");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            imageIcon = new javax.swing.ImageIcon(getClass().getResource("/recursos/error.jpg"));
+        }
+        return imageIcon;
+    }
+    void leerDirectorio(){
+        Ftp miFtp=new Ftp();
+        foto=null;
+        if(miFtp.conectar(ruta, "sm", "04650077", 3310))
+        {
+            if(miFtp.cambiarDirectorio("/recursos/reparacion/"+l_carpeta.getText()+"/"))
+            {
+                boolean existe=true;
+                if(!miFtp.cambiarDirectorio(c_carpetas.getSelectedItem().toString()))
+                {
+                    if(miFtp.crearDirectorio("/"+c_carpetas.getSelectedItem().toString()))
+                    {
+                        if(!miFtp.cambiarDirectorio(c_carpetas.getSelectedItem().toString()))
+                            existe=false;
+                    }
+                    else
+                        existe=false;
+                }
+                modeloLista.clear();
+                if(existe)
+                {
+                    FTPFile[] lista = miFtp.listarArchivos();
+                    int cantidad=lista.length;
+                    for(int x=0; x<cantidad; x++){
+                        modeloLista.addElement(lista[x].getName());
+                    }
+                }try{
+                miFtp.desconectar();}catch(Exception e){}
+            }
+            else
+                JOptionPane.showMessageDialog(null, "No fue posible encontrar el directorio");
+        }
+        else
+            JOptionPane.showMessageDialog(null, "No fue posible conectar al servidor FTP");
     }
  }
 

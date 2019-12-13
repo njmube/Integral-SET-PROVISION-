@@ -5313,7 +5313,7 @@ public class nuevoAlmacen extends javax.swing.JPanel {
                         break;
                             
                         case "TBS160622L39":
-                        enviaCorreo("Recepción de material en Matriz, OT("+t_orden.getText()+")", mensaje, "jorgerios@tractoservicio.com;edwinaldair@tractoservicio.com;luiscarrillo@tractoservicio.com;servicio.especializado.toluca@gmail.com;octavio.castaneda@tractoservicio.com"); 
+                        enviaCorreo("Recepción de material en Matriz, OT("+t_orden.getText()+")", mensaje, "gerardolaureles@tractoservicio.com;edwinaldair@tractoservicio.com;luiscarrillo@tractoservicio.com;servicio.especializado.toluca@gmail.com;octavio.castaneda@tractoservicio.com"); 
                         break;
                             
                     }
