@@ -61,6 +61,7 @@ import java.util.Random;
 import org.hibernate.criterion.Restrictions;
 import Integral.Herramientas;
 import Integral.HorizontalBarUI;
+import Integral.PeticionPost;
 import Integral.VerticalBarUI;
 import Operaciones.Destajo;
 import Valuacion.Autorizacion;
@@ -78,6 +79,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import org.json.JSONObject;
 
 /**
  *
@@ -3935,7 +3937,7 @@ public class ModificarOrden extends javax.swing.JPanel {
                 registro.setClientes(cliente);
             }
 
-            if(t_fecha_interna.getText().compareTo("DD-MM-AAAA HH:MM:SS")!=0)
+            /*if(t_fecha_interna.getText().compareTo("DD-MM-AAAA HH:MM:SS")!=0)
             {
                 String [] cadena = t_fecha_interna.getText().split(" ");
                 String [] fecha = cadena[0].split("-");
@@ -3966,9 +3968,9 @@ public class ModificarOrden extends javax.swing.JPanel {
                 }
             }
             else
-                registro.setFechaTaller(null);
+                registro.setFechaTaller(null);*/
 
-            if(t_fecha_cliente.getText().compareTo("DD-MM-AAAA HH:MM:SS")!=0)
+            /*if(t_fecha_cliente.getText().compareTo("DD-MM-AAAA HH:MM:SS")!=0)
             {
                 String [] cadena = t_fecha_cliente.getText().split(" ");
                 String [] fecha = cadena[0].split("-");
@@ -3998,7 +4000,7 @@ public class ModificarOrden extends javax.swing.JPanel {
                 }
             }
             else
-                registro.setFechaCliente(null);
+                registro.setFechaCliente(null);*/
 
             //**********guardamos en estatus de la orden******************
             String [] campos = t_fecha_estatus.getText().split("-");                                
@@ -4008,10 +4010,15 @@ public class ModificarOrden extends javax.swing.JPanel {
             calendario3.set(Calendar.DAY_OF_MONTH, Integer.parseInt(campos[0]));
 
             registro.setFechaEstatus(calendario3.getTime());
-
+            
+            boolean cambioEstatus=false;
+            if(registro.getEstatus().getEstatusNombre().compareTo(c_estatus.getSelectedItem().toString())!=0)
+                cambioEstatus=true;
             Estatus est = new Estatus();
             est.setEstatusNombre(c_estatus.getSelectedItem().toString());
             registro.setEstatus(est);
+            
+            
             registro.setKm(t_km.getText());
             registro.setColor(t_color.getText());
 
@@ -4132,6 +4139,22 @@ public class ModificarOrden extends javax.swing.JPanel {
 
                     session.update(registro);
                     session.getTransaction().commit();
+                    //
+                    if(cambioEstatus==true && registro.getIdSm()!=null)
+                    {
+                        try{
+                            PeticionPost service=new PeticionPost("http://tbstoluca.ddns.net/sm-l/service/api.php");
+                            service.add("METODO", "REPARACION.GUARDA_ESTATUS");
+                            service.add("ID_REPARACION", registro.getIdSm());
+                            //service.add("ESTATUS", );
+                            String resp=service.getRespueta();
+                            System.out.println(resp);
+                            //JSONObject respuesta = new JSONObject(resp);
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                    
                     int valor= orden_act.getIdOrden();
                     orden_act=null;
                     Orden aux=(Orden)session.get(Orden.class, valor);

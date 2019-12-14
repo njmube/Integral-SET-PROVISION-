@@ -50,6 +50,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import org.json.JSONObject;
 
 /**
  *
@@ -2883,11 +2884,13 @@ public class Responsables extends javax.swing.JPanel {
                     notificaciones+="]}";
                     session.getTransaction().commit();
                     try{
-                    PeticionPost service=new PeticionPost("http://tracto.ddns.net:8085/integral/service/api.php");
+                    PeticionPost service=new PeticionPost("http://tbstoluca.ddns.net/integral/service/api.php");
                     service.add("METODO", "NOTIFICACION.MENSAJE");
                     service.add("NOTIFICACIONES", notificaciones);
                     System.out.println(service.getRespueta());
                     }catch(Exception e){}
+                    
+                    //agregar lo de sos collision fecha meta
                     //******************************************
                     JOptionPane.showMessageDialog(null, "¡Asignación actualizada!");
                     return true;

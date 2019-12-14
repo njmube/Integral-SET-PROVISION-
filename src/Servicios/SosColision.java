@@ -23,6 +23,7 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -39,6 +40,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.ListModel;
 import org.apache.commons.net.ftp.FTPFile;
+import org.apache.poi.util.IOUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -63,6 +65,7 @@ public class SosColision extends javax.swing.JPanel {
     String n_carpeta="";
     DefaultListModel modeloLista= new DefaultListModel();
     File foto=null;
+    Hilo miHilo=null;
     /**
      * Creates new form SmLogistics
      */
@@ -147,8 +150,8 @@ public class SosColision extends javax.swing.JPanel {
         jPanel9 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         lista_fotos = new javax.swing.JList(modeloLista);
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        b_menos = new javax.swing.JButton();
+        b_mas = new javax.swing.JButton();
         c_carpetas = new javax.swing.JComboBox();
         b_foto = new javax.swing.JButton();
         jLabel13 = new javax.swing.JLabel();
@@ -326,7 +329,7 @@ public class SosColision extends javax.swing.JPanel {
 
         c_estatus.setBackground(new java.awt.Color(204, 255, 255));
         c_estatus.setForeground(new java.awt.Color(51, 0, 255));
-        c_estatus.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "PROGRAMADA", "PROCESO", "VALUACION", "EN REPARACION", "TERMINADA", "ENTREGADA", "CANCELADA", "PERDIDA TOTAL" }));
+        c_estatus.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "PROGRAMADA", "PROCESO", "VALUACION", "EN REPARACION", "TERMINADO", "ENTREGADA", "CANCELADA", "PERDIDA TOTAL" }));
         c_estatus.setEnabled(false);
         c_estatus.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -437,7 +440,7 @@ public class SosColision extends javax.swing.JPanel {
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel7)
@@ -483,6 +486,7 @@ public class SosColision extends javax.swing.JPanel {
             }
         });
 
+        b_inventario.setEnabled(false);
         b_inventario.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         b_inventario.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -530,6 +534,7 @@ public class SosColision extends javax.swing.JPanel {
             }
         });
 
+        b_pago.setEnabled(false);
         b_pago.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         b_pago.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -574,6 +579,7 @@ public class SosColision extends javax.swing.JPanel {
             }
         });
 
+        b_cotizacion.setEnabled(false);
         b_cotizacion.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         b_cotizacion.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -618,6 +624,7 @@ public class SosColision extends javax.swing.JPanel {
             }
         });
 
+        b_desgaste.setEnabled(false);
         b_desgaste.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         b_desgaste.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -678,6 +685,7 @@ public class SosColision extends javax.swing.JPanel {
 
         jTabbedPane1.addTab("Informes", jPanel8);
 
+        lista_fotos.setEnabled(false);
         lista_fotos.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
                 lista_fotosValueChanged(evt);
@@ -685,16 +693,24 @@ public class SosColision extends javax.swing.JPanel {
         });
         jScrollPane3.setViewportView(lista_fotos);
 
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/menos.png"))); // NOI18N
-
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/mas.png"))); // NOI18N
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        b_menos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/menos.png"))); // NOI18N
+        b_menos.setEnabled(false);
+        b_menos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                b_menosActionPerformed(evt);
+            }
+        });
+
+        b_mas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/mas.png"))); // NOI18N
+        b_mas.setEnabled(false);
+        b_mas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_masActionPerformed(evt);
             }
         });
 
         c_carpetas.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "INGRESO", "CAMBIOS", "PROCESO", "SALIDA" }));
+        c_carpetas.setEnabled(false);
         c_carpetas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 c_carpetasActionPerformed(evt);
@@ -703,6 +719,7 @@ public class SosColision extends javax.swing.JPanel {
 
         b_foto.setBackground(new java.awt.Color(255, 255, 255));
         b_foto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/login.jpg"))); // NOI18N
+        b_foto.setEnabled(false);
         b_foto.setOpaque(false);
         b_foto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -725,28 +742,29 @@ public class SosColision extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(c_carpetas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(b_menos, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(b_foto, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
-                .addContainerGap())
+                        .addComponent(b_mas, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(b_foto, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(124, 124, 124))
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(b_foto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(c_carpetas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel13)
-                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(b_foto, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
+                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(b_menos, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(b_mas, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(c_carpetas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel13)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Galeria", jPanel9);
@@ -1375,76 +1393,95 @@ public class SosColision extends javax.swing.JPanel {
     private void lista_fotosValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_lista_fotosValueChanged
         // TODO add your handling code here:
         if(!lista_fotos.isSelectionEmpty())
-            b_foto.setIcon(imagenFTP("/recursos/reparacion/"+l_carpeta.getText()+"/", lista_fotos.getSelectedValue().toString(), b_foto.getWidth()-1, b_foto.getHeight()-2));
+        {
+           b_foto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/gearsan.gif")));
+            miHilo=null;
+            miHilo = new Hilo("http://tbstoluca.ddns.net/sm-l/recursos/reparacion/"+l_carpeta.getText()+"/"+c_carpetas.getSelectedItem().toString()+"/", lista_fotos.getSelectedValue().toString(), b_foto.getWidth()-40, b_foto.getHeight()-40);
+        }
         else
             b_foto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/login.jpg")));
     }//GEN-LAST:event_lista_fotosValueChanged
 
     private void jTabbedPane1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jTabbedPane1StateChanged
         // TODO add your handling code here:
+        try{
         String ventana=jTabbedPane1.getTitleAt(jTabbedPane1.getSelectedIndex());          
         if(ventana.compareTo("Galeria")==0)
         {
             leerDirectorio();
         }
+        }catch(Exception e){
+            b_foto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/login.jpg")));
+        }
     }//GEN-LAST:event_jTabbedPane1StateChanged
 
     private void c_carpetasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_c_carpetasActionPerformed
         // TODO add your handling code here:
-        leerDirectorio();
+        if(l_carpeta.getText().compareTo("")!=0)
+        {
+            //System.out.println("Evento");
+            leerDirectorio();
+        }
     }//GEN-LAST:event_c_carpetasActionPerformed
 
     private void b_fotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_fotoActionPerformed
         // TODO add your handling code here:
         if(foto!=null && foto.exists()){
             try{
+                
                 Desktop.getDesktop().open(foto);
             }catch(Exception e){}
         }
     }//GEN-LAST:event_b_fotoActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void b_masActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_masActionPerformed
         // TODO add your handling code here:
         try
         {
             File destino=null;
             int estado=selectorFoto.showOpenDialog(null);
-            File archivo = selectorFoto.getSelectedFile();
+            File[] archivos = selectorFoto.getSelectedFiles();
             if(estado==0)
             {
-                if(archivo.exists())
+                for(int p=0; p<archivos.length; p++)
                 {
-                    Herramientas h = new Herramientas(this.usr, 0);
-                    Ftp miFtp=new Ftp();
-                    if(miFtp.conectar(ruta, "sm", "04650077", 3310))
+                    if(archivos[p].exists())
                     {
-                        if(miFtp.cambiarDirectorio("/recursos/reparacion/"))
+                        if(!modeloLista.contains(archivos[p].getName()))
                         {
-                            boolean existe=true;
-                            if(!miFtp.cambiarDirectorio("/"+l_carpeta.getText()+"/"))
+                            Herramientas h = new Herramientas(this.usr, 0);
+                            Ftp miFtp=new Ftp();
+                            if(miFtp.conectar("tbstoluca.ddns.net", "sm", "04650077", 3310))
                             {
-                                if(miFtp.crearDirectorio("/"+l_carpeta.getText()))
+                                if(miFtp.cambiarDirectorio("/recursos/reparacion/"+l_carpeta.getText()))
                                 {
-                                    if(!miFtp.cambiarDirectorio("/"+l_carpeta.getText()+"/"))
-                                        existe=false;
+                                    boolean existe=true;
+                                    if(!miFtp.cambiarDirectorio("/recursos/reparacion/"+l_carpeta.getText()+"/"+c_carpetas.getSelectedItem().toString()+"/"))
+                                    {
+                                        if(miFtp.crearDirectorio("/"+c_carpetas.getSelectedItem().toString()))
+                                        {
+                                            if(!miFtp.cambiarDirectorio("/"+c_carpetas.getSelectedItem().toString()+"/"))
+                                                existe=false;
+                                        }
+                                        else
+                                            existe=false;
+                                    }
+                                    if(existe)
+                                    {
+                                        if(miFtp.subirArchivo(archivos[p].getPath(), archivos[p].getName()))
+                                            modeloLista.addElement(archivos[p].getName());
+                                        miFtp.desconectar();
+                                    }
+                                    else
+                                        JOptionPane.showMessageDialog(null, "No fue posible encontrar el directorio");
                                 }
                                 else
-                                    existe=false;
-                            }
-                            if(existe)
-                            {
-                                if(miFtp.subirArchivo(archivo.getPath(), archivo.getName()))
-                                    modeloLista.addElement(archivo.getName());
-                                miFtp.desconectar();
+                                        JOptionPane.showMessageDialog(null, "No fue posible encontrar el directorio RAIZ");
                             }
                             else
-                                JOptionPane.showMessageDialog(null, "No fue posible encontrar el directorio");
+                                JOptionPane.showMessageDialog(null, "No fue posible conectar al servidor FTP");
                         }
-                        else
-                                JOptionPane.showMessageDialog(null, "No fue posible encontrar el directorio RAIZ");
                     }
-                    else
-                        JOptionPane.showMessageDialog(null, "No fue posible conectar al servidor FTP");
                 }
             }
         }catch (Exception ioe)
@@ -1452,7 +1489,42 @@ public class SosColision extends javax.swing.JPanel {
             ioe.printStackTrace();
             javax.swing.JOptionPane.showMessageDialog(null, "Error no se pudo cargar el archivo");
         }
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_b_masActionPerformed
+
+    private void b_menosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_menosActionPerformed
+        // TODO add your handling code here:
+        int[] totalEliminar = lista_fotos.getSelectedIndices();
+        if(totalEliminar.length>0){
+            int opt=JOptionPane.showConfirmDialog(this, "¡Las Fotos se eliminarán del Servidor!");
+            if (JOptionPane.YES_OPTION == opt)
+            {
+                Herramientas h = new Herramientas(this.usr, 0);
+                for(int x=0; x<totalEliminar.length; x++)
+                {
+                    Ftp miFtp=new Ftp();
+                    if(miFtp.conectar("tbstoluca.ddns.net", "sm", "04650077", 3310))
+                    {
+                        if(miFtp.cambiarDirectorio("/recursos/reparacion/"+l_carpeta.getText()+"/"+c_carpetas.getSelectedItem().toString()+"/"))
+                        {
+                            if(miFtp.borrarArchivo(modeloLista.elementAt(totalEliminar[x]-x).toString()))
+                                modeloLista.removeElementAt(totalEliminar[x]-x);
+                            else{
+                                x=totalEliminar.length;
+                                JOptionPane.showMessageDialog(null, "Algunas fotos no fue posible eliminarlas intente mas tarde!");
+                            }
+                        }
+                        else
+                                JOptionPane.showMessageDialog(null, "No fue posible encontrar el directorio RAIZ");
+                    }
+                    else
+                        JOptionPane.showMessageDialog(null, "No fue posible conectar al servidor FTP");
+                    miFtp.desconectar();
+                }
+            }
+        }
+        else
+            JOptionPane.showMessageDialog(null, "Seleccione las fotos a eliminar");
+    }//GEN-LAST:event_b_menosActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1465,6 +1537,8 @@ public class SosColision extends javax.swing.JPanel {
     private javax.swing.JButton b_foto;
     private javax.swing.JButton b_inventario;
     private javax.swing.JButton b_inventario_carga;
+    private javax.swing.JButton b_mas;
+    private javax.swing.JButton b_menos;
     private javax.swing.JButton b_pago;
     private javax.swing.JButton b_pago_carga;
     private javax.swing.JComboBox c_carpetas;
@@ -1472,8 +1546,6 @@ public class SosColision extends javax.swing.JPanel {
     private javax.swing.JComboBox c_estatus1;
     private javax.swing.JLabel id_sucursal;
     private javax.swing.JLabel id_unidad;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -1537,6 +1609,17 @@ public class SosColision extends javax.swing.JPanel {
                       b_desgaste_carga.setEnabled(true);
                       b_pago_carga.setEnabled(true);
                       b_cotizacion_carga.setEnabled(true);
+                      
+                      b_inventario.setEnabled(true);
+                      b_desgaste.setEnabled(true);
+                      b_pago.setEnabled(true);
+                      b_cotizacion.setEnabled(true);
+                      
+                      b_mas.setEnabled(true);
+                      b_menos.setEnabled(true);
+                      c_carpetas.setEnabled(true);
+                      lista_fotos.setEnabled(true);
+                      b_foto.setEnabled(true);
                       //c_estatus.setEnabled(true);
                   }
                   
@@ -1733,38 +1816,26 @@ public class SosColision extends javax.swing.JPanel {
     
     /**
      * 
-     * @param rutaImagen ej "ftp://username:password@www.superland.example/server"
+     * @param rutaImagen ej "http://tbstoluca.ddns.net/sm-l/"
      * @param w size of image with 
      * @param h size of imae height
-     * @return Imae icon of file ftp
+     * @return Imae icon of file url
      */
     public ImageIcon imagenFTP(String rutaImagen, String nombreImagen, int w, int h){
         ImageIcon imageIcon=null;
         try {
-            Ftp miFtp=new Ftp();
-            if(miFtp.conectar(ruta, "sm", "04650077", 3310))
-            {
-                if(miFtp.cambiarDirectorio(rutaImagen))
-                {
-                    String ruta = miFtp.descargaTemporal(nombreImagen);
-                    miFtp.desconectar();
-
-                    BufferedImage img = null;
-                    foto = new File (ruta);
-                    img = ImageIO.read(foto);
-                    Image dimg = img.getScaledInstance(w, h, Image.SCALE_SMOOTH);
-                    imageIcon = new ImageIcon(dimg);
-                }
-                else
-                {
-                    imageIcon = new javax.swing.ImageIcon(getClass().getResource("/recursos/error.jpg"));
-                    JOptionPane.showMessageDialog(null, "No fue posible encontrar el directorio");
-                }
-            }
-            else{
-                imageIcon = new javax.swing.ImageIcon(getClass().getResource("/recursos/error.jpg"));
-                JOptionPane.showMessageDialog(null, "No fue posible conectar al servidor FTP");
-            }
+            InputStream in=new URL(rutaImagen+nombreImagen).openStream();
+            foto = File.createTempFile("tmp", ".jpg");
+            OutputStream out = new FileOutputStream(foto.getAbsolutePath());
+            IOUtils.copy(in,out);
+            in.close();
+            out.close();
+            foto.deleteOnExit();
+                
+            imageIcon = new javax.swing.ImageIcon(new URL(rutaImagen+nombreImagen));
+            Image img = imageIcon.getImage();
+            Image dimg = img.getScaledInstance(w, h, Image.SCALE_SMOOTH);
+            imageIcon.setImage(dimg);
         } catch (Exception e) {
             e.printStackTrace();
             imageIcon = new javax.swing.ImageIcon(getClass().getResource("/recursos/error.jpg"));
@@ -1774,7 +1845,7 @@ public class SosColision extends javax.swing.JPanel {
     void leerDirectorio(){
         Ftp miFtp=new Ftp();
         foto=null;
-        if(miFtp.conectar(ruta, "sm", "04650077", 3310))
+        if(miFtp.conectar("tbstoluca.ddns.net", "sm", "04650077", 3310))
         {
             if(miFtp.cambiarDirectorio("/recursos/reparacion/"+l_carpeta.getText()+"/"))
             {
@@ -1805,6 +1876,29 @@ public class SosColision extends javax.swing.JPanel {
         }
         else
             JOptionPane.showMessageDialog(null, "No fue posible conectar al servidor FTP");
+    }
+    
+    public class Hilo implements Runnable
+    {
+        Thread t;
+        String rutaImagen;
+        String nombreImagen;
+        int w;
+        int h;
+        public Hilo(String rutaImagen, String nombreImagen, int w, int h) 
+        {
+            this.rutaImagen=rutaImagen;
+            this.nombreImagen=nombreImagen;
+            this.w=w;
+            this.h=h;
+            t=new Thread(this,"Fotos");
+            t.start();
+        }
+        @Override
+        public void run() {
+            b_foto.setIcon(imagenFTP(rutaImagen, nombreImagen, w, h));
+            t.interrupt();
+        }
     }
  }
 
