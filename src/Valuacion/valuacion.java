@@ -80,6 +80,7 @@ import Integral.Ftp;
 import Integral.Herramientas;
 import Integral.HorizontalBarUI;
 import Integral.PDF;
+import Integral.PeticionPost;
 import Integral.VerticalBarUI;
 import Integral.VerticalTableHeaderCellRenderer;
 import java.awt.Point;
@@ -90,6 +91,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableModel;
 import org.hibernate.Query;
+import org.json.JSONObject;
 
 /**
  *
@@ -2805,7 +2807,30 @@ public class valuacion extends javax.swing.JPanel implements	ListSelectionListen
             
             session.update(ord);
             session.beginTransaction().commit();
-            JOptionPane.showMessageDialog(this, "Los datos han sido almacenados");
+            
+            try{
+                if(ord.getIdSm()!=null)
+                {
+                    PeticionPost service=new PeticionPost("http://tbstoluca.ddns.net/sm-l/service/api.php");
+                    service.add("METODO", "REPARACION.GUARDA_MONTOS");
+                    service.add("ID_REPARACION", ord.getIdSm());
+                    service.add("DEDUCIBLE", ""+((Number)t_deducible.getValue()).doubleValue());
+                    service.add("DEMERITO", ""+((Number)t_demerito.getValue()).doubleValue());
+                    String resp=service.getRespueta();
+                    System.out.println(resp);
+                    JSONObject respuesta = new JSONObject(resp);
+                    if(respuesta.getInt("ESTADO")==1)
+                        JOptionPane.showMessageDialog(this, "LOS MONTOS FUERON ACTUALIZADOS Y SE NOTIFICO AL CLIENTE");
+                    else
+                        JOptionPane.showMessageDialog(this, respuesta.getString("MENSAJE"));
+                }
+                else
+                    JOptionPane.showMessageDialog(this, "LOS MONTOS FUERON ACTUALIZADOS");
+            }catch(Exception e){
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "LOS MONTOS FUERON ACTUALIZADOS");
+            }
+            
         }
         catch(Exception e)
         {

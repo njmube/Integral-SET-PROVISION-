@@ -4153,6 +4153,46 @@ public class ModificarOrden extends javax.swing.JPanel {
                         }catch(Exception e){
                             e.printStackTrace();
                         }
+                        
+                        //sos collision
+                        try{
+                            PeticionPost service=new PeticionPost("http://tbstoluca.ddns.net/sm-l/service/api.php");
+                            service.add("METODO", "REPARACION.GUARDA_ESTATUS");
+                            service.add("ID_REPARACION", registro.getIdSm());
+                            String nuevoEstatus="PROCESO";
+                            switch(registro.getEstatus().getEstatusNombre())
+                            {
+                                case "NO SE REPARA":
+                                    nuevoEstatus="CANCELADA";
+                                    break;
+                                case "PERDIDA TOTAL":
+                                    nuevoEstatus="";
+                                    break;
+                                case "TERMINADO":
+                                    nuevoEstatus="TERMINADO";
+                                    break;
+                                case "TRANSITO":
+                                    nuevoEstatus="ENTREGADA";
+                                    break;
+                                case "VALUACION":
+                                    nuevoEstatus="VALUACION";
+                                    break;
+                                default:
+                                    nuevoEstatus="PROCESO";
+                                    break;
+                            }
+                            service.add("ESTATUS", nuevoEstatus);
+                            String resp=service.getRespueta();
+                            System.out.println(resp);
+                            JSONObject respuesta = new JSONObject(resp);
+                            if(respuesta.getInt("ESTADO")==1)
+                                JOptionPane.showMessageDialog(this, "LOS MONTOS FUERON ACTUALIZADOS Y SE NOTIFICO AL CLIENTE");
+                            else
+                                JOptionPane.showMessageDialog(this, respuesta.getString("MENSAJE"));
+                        }catch(Exception e){
+                            e.printStackTrace();
+                            JOptionPane.showMessageDialog(this, "LOS MONTOS FUERON ACTUALIZADOS");
+                        }
                     }
                     
                     int valor= orden_act.getIdOrden();
